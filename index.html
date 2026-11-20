@@ -63,6 +63,8 @@ main{padding:10px 16px 6px}
 /* panels */
 .plate{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
 .sub{margin:0 0 10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}.sub:last-child{margin-bottom:0}
+.callout{margin:0 0 12px;padding:9px 12px;border:1px solid var(--border);border-left:3px solid var(--accent-gold);border-radius:6px;background:var(--bg-subtle);font-size:.875rem;line-height:1.5;color:var(--text-main)}
+.callout b{color:var(--accent-gold)}
 .subtitle{margin:0 0 8px;font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .stack{display:flex;flex-direction:column;gap:12px;flex:1 1 560px;min-width:320px}
 .coltitle{display:flex;align-items:center;gap:12px;margin:0 0 10px;font-weight:700;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
@@ -166,7 +168,9 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 .beam{width:3px;height:70px;background:linear-gradient(180deg,rgba(255,255,255,0),var(--c));box-shadow:0 0 12px var(--c)}
 
 /* drop test */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 12px}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0 12px}
+.stat.zero{opacity:.45}
+@media(max-width:560px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .stat{padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
 .stat b{display:block;font-size:1.375rem;font-weight:700;font-variant-numeric:tabular-nums}
 .stat span{font-size:.75rem;color:var(--text-muted)}
@@ -308,8 +312,8 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   </aside>
   <div class="stack dropwrap">
   <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
-    <p class="hint" style="margin:0 0 10px">Estimates, not game data: <button type="button" class="linkbtn" data-view="info">see the Guide</button>. <b>SHOW*</b> = never hidden by the game.</p>
-    <div class="stats"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div><div class="stat" id="stSell" hidden><b id="nSell" style="color:var(--sell-fg)">0</b><span>Sell</span></div></div>
+    <p class="hint" style="margin:0 0 10px">Sample items test which rules match and in what order. They are not real drop rates (<button type="button" class="linkbtn" data-view="info">how it works</button>). <b>SHOW*</b> = never hidden by the game.</p>
+    <div class="stats"><div class="stat"><b id="nAll">0</b><span>Total samples</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div><div class="stat zero" id="stSell" title="Sell: how the game handles it is not confirmed. The Drop Test treats it like Hide and counts it separately."><b id="nSell" style="color:var(--sell-fg)">0</b><span>Sell</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i><i id="bSell" style="width:0"></i></div></section>
   <section class="plate" aria-labelledby="h-gv"><h2 id="h-gv" class="coltitle">Ground view</h2>
     <div class="seg" role="group" aria-label="Ground view" id="sceneMode" style="max-width:360px;margin-bottom:10px"><button type="button" data-sm="all" aria-pressed="true">All visible items</button><button type="button" data-sm="hl" aria-pressed="false">Highlights and beams only</button></div>
@@ -334,75 +338,98 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 <div class="panel" id="p-info" role="tabpanel" aria-labelledby="t-info" hidden><div class="cols">
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g1"><h2 id="h-g1" class="coltitle">Quick start</h2>
     <ul class="pl">
-     <li><b>1. Pick a start.</b> In the Editor choose a game preset (All loot, Tidy, Strict, Very strict, End Game). It is only a starting point; change anything.</li>
-     <li><b>2. Edit the rules.</b> Select a rule in the list and set what it checks and what it does. Add, duplicate or remove rules (red X), and drag a rule up or down to change its place.</li>
-     <li><b>3. Test it.</b> Open Drop Test and press Drop 25 or a Quick spawn button. Every sample item shows the rule that caught it.</li>
-     <li><b>4. Export.</b> Open Import / Export (or use “Copy filter code” at the top), then paste the code into the game’s loot filter window.</li>
+     <li><b>1. Pick a start.</b> Choose a game preset in the Editor. It is only a starting point.</li>
+     <li><b>2. Edit the rules.</b> Select a rule and set what it checks and what it does. Add, duplicate or remove rules (red X) and drag them into order.</li>
+     <li><b>3. Test it.</b> Open Drop Test and press Drop 25 or a Quick spawn button. Each sample item shows which rule caught it.</li>
+     <li><b>4. Export.</b> Use “Copy filter code” at the top or the Import / Export tab, then paste the code into the game’s loot filter window.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g2"><h2 id="h-g2" class="coltitle">How rules work</h2>
-    <p class="hint" style="margin:0 0 10px">The order is the most important part of a filter.</p>
+    <p class="callout"><b>Order is the most important part of a filter.</b> The game checks the rules from top to bottom. The first rule that matches an item decides, and the rules below it never see that item.</p>
+    <h3 class="subtitle">The basics</h3>
     <ul class="pl">
-     <li><b>Up to 40 rules.</b> The game takes 40 rules at most. The counter at the top shows how many you use.</li>
-     <li><b>Top to bottom.</b> The game checks the rules in list order. The first matching rule wins, and the rules below it are not looked at for that item.</li>
-     <li><b>No match.</b> If no rule matches, the item is shown as normal.</li>
-     <li><b>Never hidden.</b> Uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks always stay visible, even when a hide rule matches. The Drop Test marks them <b>SHOW*</b>.</li>
-     <li><b>Rule on or off.</b> The switch on a rule turns it off without deleting it. A rule that is off is skipped.</li>
+     <li><b>Up to 40 rules.</b> The counter at the top shows how many you use.</li>
+     <li><b>No match.</b> An item that no rule matches is shown as normal.</li>
+     <li><b>On or off.</b> The switch on a rule skips it without deleting it.</li>
      <li><b>One line group per rule.</b> To look for two line groups, use two rules.</li>
-    </ul></section>
+    </ul>
+    <h3 class="subtitle">Never hidden</h3>
+    <p class="hint" style="margin:0">Uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks always stay visible, even when a Hide rule matches. The Drop Test marks them <b>SHOW*</b>.</p></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g3"><h2 id="h-g3" class="coltitle">What a rule can check</h2>
-    <p class="hint" style="margin:0 0 10px">Everything you set on one rule must fit at the same time.</p>
+    <p class="callout">Everything you set on one rule must fit at the same time.</p>
     <ul class="pl">
-     <li><b>Rarity.</b> Any, normal, magic, normal and magic, rare, rare and unique, and so on.</li>
-     <li><b>Item type.</b> One type: any gear, weapons or a single weapon kind, armour slots, rings, amulets, belts, idols, gems, rune bases, core-touched, 4+ sockets or Truesworn.</li>
-     <li><b>Item level.</b> One step: below 20, 40, 60 or 75, or 60, 75 or 82 and up. The MORE options also take a from–to range.</li>
+     <li><b>Rarity.</b> Any, normal, magic, normal and magic, rare, or rare and unique.</li>
+     <li><b>Item type.</b> Any gear, weapons or one weapon kind, armour slots, rings, amulets, belts, idols, gems, rune bases, core-touched, 4+ sockets or Truesworn.</li>
+     <li><b>Item level.</b> One step: below 20, 40, 60 or 75, or 60, 75 or 82 and up. MORE adds a from–to range.</li>
      <li><b>Line group.</b> One group of affix lines, such as life, resistance, critical, minion or fire damage.</li>
      <li><b>Roll quality.</b> Any roll, good roll or top roll.</li>
      <li><b>Lines needed.</b> How many matching lines the item needs: 1+, 2+ or 3+.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g4"><h2 id="h-g4" class="coltitle">More conditions (the MORE button)</h2>
-    <p class="hint" style="margin:0 0 10px">All MORE options must fit together with the options above.</p>
+    <p class="callout">All MORE options must fit together with the options above.</p>
+    <h3 class="subtitle">Item options</h3>
     <ul class="pl">
-     <li><b>Tier.</b> A tier and how many lines of that tier or better the item needs.</li>
+     <li><b>Tier.</b> A tier, and how many lines of that tier or better the item needs.</li>
      <li><b>Sockets and levels.</b> Sockets, item level and required level, as from–to ranges.</li>
      <li><b>Grade.</b> Base grade (50+, 70+, Truesworn) and top grade.</li>
-     <li><b>Reds.</b> Reds only, or chase reds only. Unsworn or not.</li>
+     <li><b>Reds and unsworn.</b> Reds only, chase reds only, and unsworn or not.</li>
      <li><b>Runes.</b> Runes up to a chosen tier.</li>
-     <li><b>Named entries.</b> Up to four named bases, lines or reds in one rule. A named line matches when the item has an affix of that line. With several named lines, “Any of them” (default) needs one of them, “All of them” needs every one.</li>
+    </ul>
+    <h3 class="subtitle">Named entries</h3>
+    <ul class="pl">
+     <li><b>Up to four.</b> Name up to four bases, lines or reds in one rule.</li>
+     <li><b>Any or all.</b> A named line matches when the item has an affix of that line. With several named lines, “Any of them” (default) needs one, “All of them” needs every one.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g5"><h2 id="h-g5" class="coltitle">Actions, colours and sounds</h2>
+    <h3 class="subtitle">Actions</h3>
     <ul class="pl">
-     <li><b>Hide.</b> The item is not shown. Never works on the items listed under “Never hidden”.</li>
+     <li><b>Hide.</b> The item is not shown. It never works on the items under “Never hidden”.</li>
      <li><b>Show.</b> The item is shown as normal.</li>
-     <li><b>Sell.</b> The game has a Sell action for items you do not need. How exactly it works in the game is not confirmed yet. The Drop Test treats it like Hide (nothing on the ground) and counts it separately as Sell.</li>
      <li><b>Highlight.</b> The item name is drawn in the chosen colour.</li>
      <li><b>Highlight + beam.</b> Colour plus a light beam on the ground.</li>
+     <li><b>Sell.</b> The game has a Sell action. How it behaves exactly is <b>not confirmed yet</b>. The Drop Test treats it like Hide (nothing on the ground) and counts it as Sell.</li>
+    </ul>
+    <h3 class="subtitle">Look and sound</h3>
+    <ul class="pl">
      <li><b>Colours.</b> Ember, Jade, Frost, Bone, Gold, Blood, Ash and White.</li>
      <li><b>Sounds.</b> Auto (game default), Silent, Chime, Soft, Jewel and Wind.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g6"><h2 id="h-g6" class="coltitle">Building a good filter</h2>
+    <h3 class="subtitle">A good order</h3>
     <ul class="pl">
-     <li><b>Valuable first.</b> Put the most precious rules (high rolls, top tiers, named reds) at the top, with Highlight + beam and their own colour and sound.</li>
-     <li><b>Then wider Highlights.</b> Next come rules for items that are good but common, with a plain highlight or no sound.</li>
-     <li><b>Hide last.</b> Rules that hide junk (low item level, normal or bad magic items) go near the bottom, so they cannot catch something above them.</li>
+     <li><b>1. Valuable first.</b> Put the most precious rules (high rolls, top tiers, named reds) at the top, with Highlight + beam and their own colour and sound.</li>
+     <li><b>2. Then wider highlights.</b> Rules for good but common items, with a plain highlight or no sound.</li>
+     <li><b>3. Hide last.</b> Rules that hide junk (low item level, normal or bad magic items) go near the bottom, so they cannot catch something above them.</li>
+    </ul>
+    <h3 class="subtitle">Tips</h3>
+    <ul class="pl">
      <li><b>Start from a preset.</b> Load Tidy or Strict and change only what you need.</li>
      <li><b>Check the order.</b> A broad rule above a narrow one means the narrow one never fires. The rule list warns “May be caught by rule N” when it is sure. “Check rule order” in the Editor also runs sample items through your filter and lists rules that never decide anything.</li>
-     <li><b>Test before you trust.</b> Always confirm the finished filter in the game.</li>
+     <li><b>Confirm in the game.</b> Always check the finished filter in the game.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g7"><h2 id="h-g7" class="coltitle">Using the Drop Test</h2>
+    <p class="callout"><b>The Drop Test checks your rules, not drop rates.</b> It makes up sample items across many rarities, bases and tiers, so you can see which rule catches each one and in what order. How often an item really drops is not tested.</p>
+    <h3 class="subtitle">Controls</h3>
     <ul class="pl">
-     <li><b>Drop 1 / Drop 25 / Auto-drop.</b> Random sample items. Reset clears the log and the counters.</li>
-     <li><b>Quick spawn.</b> Targeted items: White, Magic good or bad, Rare valuable, decent, bad or mid, Unique / Red and Idol. Use these to test a rule that random drops rarely hit.</li>
-     <li><b>Sliders.</b> “Lines at T1” sets how many T1 lines Rare valuable has (1–6), “Idol size” the idol size (1–4) and “Per click” how many items one press creates.</li>
-     <li><b>Result.</b> The counters and the bar show how many drops are shown, highlighted or hidden. Hidden drops stay visible in the log with a dashed border.</li>
-     <li><b>Ground view and log.</b> The ground view shows what you would see in the game. Each log entry names the rule that caught it, or says that no rule matched.</li>
-     <li><b>A best guess.</b> Sample drops use real bases, affixes and uniques from the public API. How they are rolled has not been checked in the game.</li>
+     <li><b>Drop 1 / Drop 25 / Auto-drop.</b> Varied sample items. Reset clears the log and the counters.</li>
+     <li><b>Quick spawn.</b> Targeted items: White, Magic good or bad, Rare valuable, decent, bad or mid, Unique / Red and Idol. Use them to test a rule that random samples rarely hit.</li>
+     <li><b>Sliders.</b> “Lines at T1” sets how many T1 lines Rare valuable has (1–6), “Item level” the item level, “Idol size” the idol size (1–4) and “Per click” how many items one press creates.</li>
+    </ul>
+    <h3 class="subtitle">Reading the result</h3>
+    <ul class="pl">
+     <li><b>Counters and bar.</b> How many samples are shown, highlighted, hidden or sold. Hidden and sold samples stay in the log with a dashed border.</li>
+     <li><b>Ground view and log.</b> The ground view shows what you would see in the game. Each log entry names the rule that caught the item, or says that no rule matched.</li>
+     <li><b>What the samples are.</b> They use real bases, affixes and uniques from the public API. How they are rolled (mods per item, tiers) only needs to be varied enough to exercise your rules. It is not the game’s roll logic.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g8"><h2 id="h-g8" class="coltitle">Import and export</h2>
+    <h3 class="subtitle">Import</h3>
     <ul class="pl">
      <li><b>The code.</b> The game’s BOFILTER 1 code, for example <code>BOFILTER:1,…</code>. Copy it in the game’s loot filter window and paste it in Import / Export.</li>
      <li><b>MORE options.</b> They follow the ten numbers of a rule as <code>,3:key=value;key=value</code>. The page reads them and you can change them in the Editor.</li>
      <li><b>Unknown fields.</b> Fields this page does not know are kept as they are.</li>
-     <li><b>Export.</b> “Game code” is what you paste into the game. “Readable” is a plain list of your rules.</li>
+    </ul>
+    <h3 class="subtitle">Export</h3>
+    <ul class="pl">
+     <li><b>Two views.</b> “Game code” is what you paste into the game. “Readable” is a plain list of your rules.</li>
      <li><b>Saved in your browser.</b> Your current filter is kept automatically, so it is still there next time.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g9"><h2 id="h-g9" class="coltitle">Keyboard shortcuts</h2>
@@ -417,14 +444,16 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 </div></div>
 <div class="panel" id="p-about" role="tabpanel" aria-labelledby="t-about" hidden><div class="cols ab">
   <section class="plate" aria-labelledby="h-ab"><h2 id="h-ab" class="coltitle">About Oathfilter</h2>
+    <h3 class="subtitle">What it is</h3>
     <ul class="bl">
-     <li>Free, unofficial fan tool for Broken Oath.</li>
-     <li>No connection to Crater Studios.</li>
-     <li>Names and game data belong to their owners.</li>
-     <li>Open source. The code is under the GPL-3.0, on <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">GitHub</a>. Game content is not covered by it.</li>
-     <li>Feedback: open an issue on <a href="https://github.com/2m22/Oathfilter/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.</li>
-     <li>No warranty, provided as it is. Check every filter in the game.</li>
-     <li><b>Planned:</b> archetype modules, for example Caster Cold, Caster Lightning, Melee Physical, Melee Cold and Bow Physical.</li></ul></section>
+     <li>A free, unofficial fan tool for Broken Oath. It has no connection to Crater Studios.</li>
+     <li>Names and game data belong to their owners.</li></ul>
+    <h3 class="subtitle">Open source</h3>
+    <ul class="bl">
+     <li>The code is under the GPL-3.0, on <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">GitHub</a>. Game content is not covered by it.</li>
+     <li>Found a bug or have an idea? Open an issue on <a href="https://github.com/2m22/Oathfilter/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.</li>
+     <li>No warranty, provided as it is. Check every filter in the game.</li></ul>
+    <p class="callout" style="margin:12px 0 0"><b>Planned:</b> archetype modules, for example Caster Cold, Caster Lightning, Melee Physical, Melee Cold and Bow Physical.</p></section>
   <section class="plate" aria-labelledby="h-pv"><h2 id="h-pv" class="coltitle">Privacy &amp; technical</h2>
     <ul class="bl">
      <li>Runs entirely in your browser.</li>
@@ -434,25 +463,31 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
      <li>Hosted on GitHub Pages. GitHub may log visits, for example your IP address. The operator cannot see these logs.</li>
      <li>Every 5 minutes the page checks a small file (<code>version.json</code>) for a new version. No filter data is sent.</li></ul></section>
   <section class="plate" aria-labelledby="h-cr"><h2 id="h-cr" class="coltitle">Credits &amp; sources</h2>
+    <h3 class="subtitle">Thanks</h3>
     <ul class="bl">
      <li><b>Lilshrimper:</b> <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. Game presets, colour and sound names, the idea of testing with sample drops.</li>
-     <li><b>Crater Studios:</b> the developer file <code>loot_filter.md</code> (code format).</li>
-     <li><b>Data: Broken Oath public API</b> (build 85): item bases, affixes, uniques.</li>
+     <li><b>Crater Studios:</b> the developer file <code>loot_filter.md</code> (code format).</li></ul>
+    <h3 class="subtitle">Data</h3>
+    <ul class="bl">
+     <li><b>Broken Oath public API</b> (build 85): item bases, affixes, uniques.</li>
      <li><b>Game files:</b> lists of bases, named reds and named lines.</li>
-     <li>Fan project. Not official data.</li></ul></section>
+     <li>A fan project, not official data.</li></ul></section>
   <section class="plate" aria-labelledby="h-rg"><h2 id="h-rg" class="coltitle">Real vs. guessed</h2>
     <h3 class="subtitle">Real</h3>
     <ul class="bl"><li>BOFILTER 1 code format.</li><li>Rule order: the first match wins.</li><li>Limit of 40 rules (tested in the game).</li><li>The five game presets.</li><li>Bases, levels and tags; affix groups; unique names and bases (public API).</li></ul>
     <h3 class="subtitle">From game files</h3>
     <ul class="bl"><li>MORE options and their keys (read from exported codes).</li><li>Lists of bases, named reds and named lines.</li><li>Item level of each affix tier.</li></ul>
+    <h3 class="subtitle">Drop Test samples</h3>
+    <ul class="bl"><li>Sample items are made up on purpose: they cover many rarities, bases and tiers to exercise your rules.</li><li>Drop rates are not simulated and not tested. The Drop Test checks rule matching and order only.</li><li>Mods per item and tier rolls are varied for coverage. They are not the game’s roll logic.</li></ul>
     <h3 class="subtitle">Guessed</h3>
-    <ul class="bl"><li>Drop rates of bases and rarities; mods per item; which tier rolls.</li><li>Which affix belongs to which line group; what counts as a good or top roll.</li><li>Uniques: their mods are ignored by line rules.</li><li>How a Gems rule reads.</li><li>Random sample flags: core-touched, 4+ sockets, truesworn, rune base, grade, required level, unsworn, chase red, sample runes.</li><li>Left out: bases that never drop at random (core-touched, ashen, gnome-made) and uniques with drop weight 0.</li></ul>
+    <ul class="bl"><li>Which affix belongs to which line group; what counts as a good or top roll.</li><li>Uniques: their mods are ignored by line rules.</li><li>How a Gems rule reads.</li><li>Random sample flags: core-touched, 4+ sockets, truesworn, rune base, grade, required level, unsworn, chase red, sample runes.</li><li>Left out: bases that never drop at random (core-touched, ashen, gnome-made) and uniques with drop weight 0.</li></ul>
     <h3 class="subtitle">Not checked</h3>
-    <ul class="bl"><li>Whether newer builds changed the code format. The developer file is older than the game (12 rules, the game takes 40).</li><li>If a game export does not load, please report it on GitHub.</li></ul></section>
+    <ul class="bl"><li>Whether newer builds changed the code format. The developer file <code>loot_filter.md</code> is older than the game: it still says 12 rules, while the game takes 40.</li><li>How the Sell action behaves in the game (items on the ground, uniques).</li><li>If a game export does not load, please report it on GitHub.</li></ul></section>
 </div></div>
 </main>
 <footer class="site-footer">
-  Oathfilter is an unofficial fan project and is not affiliated with Crater Studios. Thanks to <b>Lilshrimper</b> and his <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. <button type="button" class="linkbtn" data-view="about">About, privacy and credits</button> · <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
+  <p style="margin:0">Oathfilter is an unofficial fan project and is not affiliated with Crater Studios. Thanks to <b>Lilshrimper</b> and his <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>.</p>
+  <p style="margin:4px 0 0"><button type="button" class="linkbtn" data-view="about">About, privacy and credits</button><span aria-hidden="true"> · </span><a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">Source on GitHub</a></p>
 </footer>
 <div class="gt" id="gt" role="status" hidden></div>
 <div class="upd" id="upd" role="status" aria-live="polite" hidden><div><b>A new version is available</b><span>Your filter is saved in this browser and stays as it is.</span></div><div class="bt"><button type="button" class="btn gold" id="updNow">Reload now</button><button type="button" class="btn" id="updLater">Remind me in 5 minutes</button></div></div>
@@ -1465,7 +1500,7 @@ function dropHTML(it,e,anim){
   const rule=e.i>=0?`<span class="rn">Rule ${e.i+1} · ${esc(summary(F.rules[e.i]))}</span>`:`<span class="rn">No rule matched</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
    <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
-   <span class="vd" title="${e.guard?"never hidden":""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM","SELL"][e.v]}</span></li>`;
+   <span class="vd" title="${e.guard?"never hidden":e.v===4?"Sell: not confirmed in the game. The Drop Test treats it like Hide.":""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM","SELL"][e.v]}</span></li>`;
 }
 function renderDrops(animId){
   const t={all:S.items.length,hl:0,show:0,hide:0,sell:0},ev=S.items.map(it=>evalC(it));
@@ -1476,7 +1511,7 @@ function renderDrops(animId){
   $("#scene").innerHTML=dps||`<p class="empty">${S.items.length?"No highlights or beams in the latest drops.":"Press “Drop 1”, “Drop 25” or a Quick spawn button."}</p>`;
   $$("#sceneMode button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.sm==="hl")===S.hlOnly));
   const n=t.all||1;
-  $("#nAll").textContent=t.all;$("#nHl").textContent=t.hl;$("#nShow").textContent=t.show;$("#nHide").textContent=t.hide;$("#nSell").textContent=t.sell;$("#stSell").hidden=!t.sell;
+  $("#nAll").textContent=t.all;$("#nHl").textContent=t.hl;$("#nShow").textContent=t.show;$("#nHide").textContent=t.hide;$("#nSell").textContent=t.sell;$("#stSell").classList.toggle("zero",!t.sell);
   renderStrip();
   $("#bHl").style.width=t.hl/n*100+"%";$("#bShow").style.width=t.show/n*100+"%";$("#bHide").style.width=t.hide/n*100+"%";$("#bSell").style.width=t.sell/n*100+"%";
 }
@@ -1487,7 +1522,7 @@ function updateHits(){
 function renderStrip(){updateHits();
   const t={hl:0,show:0,hide:0,sell:0};S.items.forEach(it=>{const e=evalC(it);if(e.v===0)t.hide++;else if(e.v===4)t.sell++;else if(isHl(e.v))t.hl++;else t.show++;});
   const n=S.items.length;
-  $("#strip").innerHTML=n?`<span>Total<b>${n}</b></span><span>Shown<b class="c-show">${t.show}</b></span><span>Highlighted<b class="c-hl">${t.hl}</b></span><span>Hidden<b class="c-hide">${t.hide}</b></span>${t.sell?`<span>Sell<b style="color:var(--sell-fg)">${t.sell}</b></span>`:""}<button type="button" class="btn" id="stripRoll">Roll 25 more</button>`:`<span>No test drops yet. See what this filter does.</span><button type="button" class="btn" id="stripRoll">Roll 25 test drops</button>`;
+  $("#strip").innerHTML=n?`<span>Total<b>${n}</b></span><span>Shown<b class="c-show">${t.show}</b></span><span>Highlighted<b class="c-hl">${t.hl}</b></span><span>Hidden<b class="c-hide">${t.hide}</b></span><span title="Sell: not confirmed in the game, counted separately" style="${t.sell?"":"visibility:hidden"}">Sell<b style="color:var(--sell-fg)">${t.sell}</b></span><button type="button" class="btn" id="stripRoll">Roll 25 more</button>`:`<span>No test drops yet. See what this filter does.</span><button type="button" class="btn" id="stripRoll">Roll 25 test drops</button>`;
 }
 function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genFiltered();const sl=(S.slot=(S.slot||0)+1)*7%15;last.x=10+(sl%5)*20+(Math.random()*6-3);last.y=6+Math.floor(sl/5)*30+(Math.random()*6-3);S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
 
