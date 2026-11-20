@@ -20,19 +20,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
-          path: site
-      - uses: actions/checkout@v4
-        with:
-          ref: test
-          path: site/test
-      - name: Clean up
-        run: rm -rf site/.git site/test/.git site/.github site/test/.github site/test/test
-      - name: Mark test page
-        run: sed -i 's#<title>#<title>[TEST] #' site/test/index.html
+          fetch-depth: 0
+      - name: Build site (main at /, test at /test/)
+        run: |
+          set -e
+          mkdir -p _site/test
+          git archive origin/main | tar -x -C _site
+          if git rev-parse --verify -q origin/test >/dev/null; then
+            git archive origin/test | tar -x -C _site/test
+            sed -i 's#<title>#<title>[TEST] #' _site/test/index.html
+          fi
+          rm -rf _site/.github _site/test/.github _site/test/test
+          ls -R _site | head -30
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
