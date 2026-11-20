@@ -40,6 +40,13 @@ jobs:
           stamp _site origin/main
           if [ -d _site/test ] && [ -f _site/test/index.html ]; then stamp _site/test origin/test; fi
           cat _site/version.json _site/test/version.json 2>/dev/null || true
+          # guard: a page that has the update check must have a real build id and a version.json
+          for d in _site _site/test; do
+            [ -f "$d/index.html" ] || continue
+            if grep -q 'const BUILD=' "$d/index.html"; then
+              grep -q 'const BUILD="[0-9a-f]\{10\}"' "$d/index.html" && [ -f "$d/version.json" ] || { echo "::error::$d has no build id / version.json"; exit 1; }
+            fi
+          done
           ls -R _site | head -30
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

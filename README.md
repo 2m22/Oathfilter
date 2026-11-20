@@ -10,7 +10,7 @@ Unofficial fan tool, not affiliated with Crater Studios.
 
 Open `index.html` in a browser. No build, no install.
 
-- **Filter Editor**: rule cards with action, rarity, item type, level, line, quality, count, colour and sound. Search and filter the rule list.
+- **Editor**: rule cards with action, rarity, item type, level, line, quality, count, colour and sound. Search and filter the rule list.
 - **Drop Test**: roll random drops against your filter and see which rule catches each item.
 - **Import / Export**: paste a `BOFILTER:1,...` code or export one for the game, plus a readable text version.
 - Game presets: the menu above the rule list loads the five in-game filters (All loot, Tidy, Strict, Very strict, End Game).
@@ -18,6 +18,14 @@ Open `index.html` in a browser. No build, no install.
 ## Format
 
 `BOFILTER:1,<preset>` followed by rules `|on,type,rarity,level,line,action,colour,quality,count,sound` (10 integers per rule). The first matching rule wins; items that match no rule are shown. Maximum 40 rules (tested in game on 2026-11-20). The options of the game's MORE window follow the ten numbers as `,3:key=value;key=value` (`3` is the filter version): `t` tier, `n` lines, `s` sockets, `i` item level `from-to`, `q` required level `from-to`, `g` grade, `gx` top grade, `r` red (1 reds only, 2 chase reds), `u` unsworn (1 not, 2 only), `rt` runes up to tier, `b` base, `a` named line, `rn` named red (several entries joined with `+`, up to 4). The keys were read from filter codes exported in the game. Fields this page does not know are kept unchanged.
+
+## Release (merging `test` into `main`)
+
+The Pages workflow (`.github/workflows/pages.yml`) builds `main` to `/` and `test` to `/test/`. It writes `version.json` and the build id into `index.html` of each site; the page uses them for the "new version" banner. When merging `test` into `main`, make sure `.github/workflows/pages.yml` is part of the merge (check `git diff main test -- .github/workflows/pages.yml` is empty afterwards). The workflow fails the build if a page has the update check but no build id or `version.json`.
+
+## License
+
+The code is under the GPL-3.0 (see `LICENSE`). Broken Oath names, item data and game content belong to Crater Studios and are not covered by it.
 
 ## Credits
 

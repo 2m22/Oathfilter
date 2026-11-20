@@ -225,22 +225,27 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .dctlb{display:grid;grid-template-columns:1fr 1fr;gap:6px}.dctlb .btn{min-height:34px;padding:0 8px;font-size:.8125rem}
 .qsb{display:flex;flex-wrap:wrap;gap:5px}.qsb .btn{min-height:30px;padding:0 9px;font-size:.78rem}
 .qsr{display:grid;gap:2px;margin-top:10px}
-.qsr label{display:grid;grid-template-columns:78px 1fr 2.2em;align-items:center;gap:8px;min-height:26px;font-size:.78rem;color:var(--text-muted)}
+.qsr label{display:grid;grid-template-columns:78px 1fr 3.2em;align-items:center;gap:8px;min-height:26px;font-size:.78rem;color:var(--text-muted)}
 .qsr input[type=range]{width:100%;min-width:0;height:18px;margin:0;accent-color:var(--accent-gold)}
 .qsr output{text-align:center;font-weight:700;color:var(--accent-gold);background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:0 4px;font-variant-numeric:tabular-nums}
-@media (max-width:900px){.dctl{flex:1 1 100%;position:static}}
+@media (max-width:900px){.dctl{flex:1 1 100%;position:static}
+ nav.nav{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}nav.nav::-webkit-scrollbar{display:none}nav.nav button{flex:none}
+ .rc{padding:6px 8px;gap:6px}.plate{padding:12px}.sub{padding:8px 10px}}
 /* compact ground view, hidden drops set apart but readable */
 .scene{height:200px!important}
 @media (max-height:820px){.scene{height:150px!important}.stat{padding:6px 10px}}
 .dropwrap .stats{margin:0 0 10px!important}.dropwrap .drops{margin:0}
 .drop[data-v="0"]{opacity:.78;border-style:dashed;background:var(--bg-subtle)}
-.drop[data-v="0"] .nm{text-decoration:none;color:var(--text-muted)}
+.drop[data-v="0"] .nm{text-decoration:none;color:#9aa3b2}
+.drop[data-v="0"] .meta,.drop[data-v="0"] .rn{color:#9aa3b2}.drop[data-v="0"] .rn{border-color:#3a4150}
+.tf{color:var(--text-dim);font-style:italic}
 /* update banner */
 .upd{position:fixed;right:16px;bottom:16px;z-index:50;display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;max-width:min(440px,calc(100vw - 32px));padding:12px 14px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-panel);box-shadow:0 8px 28px rgba(0,0,0,.5);font-size:.875rem;color:var(--text-main)}
 .upd b{display:block;color:var(--accent-gold)}.upd span{color:var(--text-muted);font-size:.8125rem}
 .upd .btn{min-height:34px;padding:0 12px;font-size:.8125rem}.upd div.bt{display:flex;gap:8px;flex-wrap:wrap}
 .chk{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .chkb{display:block;width:100%;padding:8px 10px;border:1px solid var(--border);border-left:3px solid var(--warn-fg);border-radius:8px;background:var(--bg-card);text-align:left;font-size:.8125rem;line-height:1.4;color:var(--text-muted);cursor:pointer}.chkb b{color:var(--text-main)}.chkb:hover{background:var(--bg-card-hover)}
+mark.ph{padding:0 5px;border:1px dashed var(--accent-gold);border-radius:4px;background:var(--accent-gold-soft);color:var(--accent-gold)}
 </style>
 </head>
 <body>
@@ -294,14 +299,14 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
       <button type="button" class="btn" data-q="white">White</button><button type="button" class="btn" data-q="magicgood">Magic good</button><button type="button" class="btn" data-q="magicbad">Magic bad</button>
       <button type="button" class="btn gold" data-q="rarevaluable" id="qVal">Rare valuable 3×T1</button><button type="button" class="btn" data-q="raredecent">Rare decent</button><button type="button" class="btn" data-q="rarebad">Rare bad</button><button type="button" class="btn" data-q="raremid">Rare mid</button>
       <button type="button" class="btn" data-q="unique">Unique / Red</button><button type="button" class="btn" data-q="idol" id="qIdol">Idol size 1</button></div>
-      <div class="qsr"><label for="sN">Lines at T1<input id="sN" type="range" min="1" max="6" value="3"><output id="oN">3</output></label>
-      <label for="sI">Idol size<input id="sI" type="range" min="1" max="4" value="1"><output id="oI">1</output></label>
-      <label for="sL">Item level<input id="sL" type="range" min="0" max="90" value="0"><output id="oL">auto</output></label>
-      <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC">1</output></label></div></div>
+      <div class="qsr"><label for="sN">Lines at T1<input id="sN" type="range" min="1" max="6" value="3"><output id="oN" aria-live="polite">3</output></label>
+      <label for="sI">Idol size<input id="sI" type="range" min="1" max="4" value="1"><output id="oI" aria-live="polite">1</output></label>
+      <label for="sL">Item level<input id="sL" type="range" min="0" max="90" value="0"><output id="oL" aria-live="polite">auto</output></label>
+      <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC" aria-live="polite">1</output></label></div></div>
   </aside>
   <div class="stack dropwrap">
   <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
-    <p class="hint" style="margin:0 0 10px">Sample drops are a best guess (see the Guide). <b>SHOW*</b> = never hidden by the game.</p>
+    <p class="hint" style="margin:0 0 10px">Estimates, not game data: <button type="button" class="linkbtn" data-view="info">see the Guide</button>. <b>SHOW*</b> = never hidden by the game.</p>
     <div class="stats"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div></section>
   <section class="plate" aria-labelledby="h-gv"><h2 id="h-gv" class="coltitle">Ground view</h2>
@@ -315,12 +320,12 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 <div class="panel" id="p-io" role="tabpanel" aria-labelledby="t-io" hidden><div class="cols">
   <section class="plate" style="flex:1 1 420px" aria-labelledby="h-imp"><h2 id="h-imp" class="coltitle">Import</h2>
     <label class="lab" for="codeIn">Paste a BOFILTER code</label><textarea id="codeIn" class="field" placeholder="BOFILTER:1,..." style="min-height:200px"></textarea>
-    <div style="margin-top:12px"><button type="button" class="btn gold" id="load">Load filter</button></div><div class="toast" id="loadMsg" role="status"></div>
+    <div style="margin-top:12px"><button type="button" class="btn gold" id="load">Load filter</button></div><div class="sub" id="loadConf" hidden style="margin-top:10px"><p class="hint" style="margin:0 0 8px" id="loadConfT"></p><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn danger" id="loadYes">Replace my filter</button><button type="button" class="btn" id="loadNo">Cancel</button></div></div><div class="toast" id="loadMsg" role="status"></div>
     <p class="hint" style="margin:8px 0 0">Copy the code from the game's loot filter window.</p></section>
   <section class="plate" style="flex:1 1 520px" aria-labelledby="h-exp"><h2 id="h-exp" class="coltitle">Export</h2>
     <div class="tabs" role="tablist" aria-label="Export format"><button type="button" role="tab" id="tabCode" aria-selected="true" data-tab="code">Game code</button><button type="button" role="tab" id="tabText" aria-selected="false" data-tab="text">Readable</button></div>
     <pre class="out" id="out" tabindex="0" style="max-height:420px"></pre>
-    <div style="margin-top:12px"><button type="button" class="btn gold" id="copy">Copy filter code</button></div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn gold" id="copy">Copy filter code</button><button type="button" class="btn" id="dl">Download .txt</button></div>
     <p class="hint" style="margin:8px 0 0">Paste the game code into the game's loot filter window.</p></section>
 </div></div>
 
@@ -425,10 +430,18 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
      <li><b>Browser storage.</b> Your filter and your saved pick lists are kept in local storage only to bring them back next time. They never leave your device.</li>
      <li><b>Links.</b> Links to GitHub and other sites lead to services with their own privacy rules.</li>
      <li><b>Credits.</b> Thanks to <b>Lilshrimper</b>, creator of the <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. The five game presets, the colour and sound names and the idea of testing a filter with sample drops come from his tool. Format details are from the developer file loot_filter.md (Crater Studios). Item bases, affixes and uniques for the drop test come from the Broken Oath public API (build 85). This is a fan project and not official data.</li></ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-pr"><h2 id="h-pr" class="coltitle">Provider and privacy contact</h2>
+    <!-- TODO: fill in the marked fields before the site is public. Do not leave the placeholders in. -->
+    <p class="hint" style="margin:0 0 10px">Non-commercial fan project without ads. Details of the person responsible:</p>
+    <ul class="pl">
+     <li><b>Provider.</b> <mark class="ph">[First and last name]</mark>, <mark class="ph">[Street and number]</mark>, <mark class="ph">[Postcode and town]</mark>, <mark class="ph">[Country]</mark></li>
+     <li><b>Contact.</b> <mark class="ph">[Project e-mail address]</mark></li>
+     <li><b>Responsible for the content.</b> <mark class="ph">[First and last name]</mark>, address as above.</li>
+     <li><b>Responsible for data protection.</b> The provider named above. You have the right to information, correction, deletion, restriction and objection, and to complain to a data protection authority. Write to the contact address.</li></ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-rg"><h2 id="h-rg" class="coltitle">What is real and what is guessed</h2>
     <ul class="pl">
      <li><b>Real:</b> the BOFILTER 1 code (rule fields and their value lists), the rule order (the top matching rule wins), the limit of 40 rules (tested in the game) and the five game presets. Also real, from the public API: item bases with their levels and tags, affix groups with their tier counts and item levels, and unique names with their bases.</li>
-     <li><b>Guessed:</b> how often each base and rarity drops, how many mods an item gets, which tier is rolled, the item levels between the first and last tier of an affix, which affix group belongs to which line group, what counts as a good or top roll, whether the mods of a unique count for a line rule (the page ignores them), and how a rule with item type Gems reads. Core-touched, 4+ sockets, truesworn and rune base are random flags here. Bases that never drop at random in the API (core-touched, ashen, gnome-made) and uniques with drop weight 0 are left out. The drop test is only a rough preview.</li>
+     <li><b>Guessed:</b> how often each base and rarity drops, how many mods an item gets, which tier is rolled, which affix group belongs to which line group, what counts as a good or top roll, whether the mods of a unique count for a line rule (the page ignores them), and how a rule with item type Gems reads. Core-touched, 4+ sockets, truesworn and rune base are random flags here. Bases that never drop at random in the API (core-touched, ashen, gnome-made) and uniques with drop weight 0 are left out. The drop test is only a rough preview.</li>
      <li><b>From the game itself:</b> the MORE options and their keys (read from filter codes exported in the game), and the lists of bases, named reds and named lines (from the game files). Guessed in the drop test: grade, required level, sockets, unsworn and chase red of a sample item, and which sample runes drop. A named line matches when the item has an affix of that line.</li>
      <li><b>Not checked:</b> whether the game's code format changed in newer builds. The developer file this page follows is older than the game (it names 12 rules, the game takes 40). If an export from the game does not load, please report it on GitHub.</li></ul></section>
 </div></div>
@@ -758,115 +771,117 @@ BASE_BY_ID.dwarven_rune={id:"dwarven_rune",name:"Dwarven Rune",kind:"rune",sub:"
 /* red uniques that are chase reds in the game files */
 const CHASE=new Set(["Oathbreaker", "The First Vow", "Crown of the Bone King", "Hand of Dawn", "Stormstring", "Crown of the Unbroken", "Heart of the Rupture", "Stride of the First Oath", "The Mirror Oath", "The Last Feast", "The Hollow Star", "Ashbrand of the Tyrant", "The Regent's Thirst", "Oath of the Last Jarl", "Hoarfrost Signet", "The Glacier's Oath", "Rime of the Long Watch", "Grasp of the Sworn", "The Keeper's Ember"]);
 /* gear affixes: id|P or S|group|BaseTags|ExcludeTags|weight|tiers|top ilvl|lowest ilvl */
-const AFF_SRC=`life_large|P|Life|Chest;Belt||120|8|84|1
-life|P|Life|Helm;Gloves;Boots;Ring;Amulet;Quiver;Shield;Tome||110|7|70|1
-mana|P|Mana|Ring;Amulet;Helm;Gloves;Caster;RuneDagger;Chest;Boots||80|7|70|1
-es_global|P|EnergyShieldGlobal|Ring;Amulet;Belt;Chest;Boots;Gloves||60|7|70|1
-armour_local|P|DefenceFlat|Armour|Helm;Gloves;Boots;Shield;Tome|100|8|84|1
-armour_local_small|P|DefenceFlat|Armour;Shield|Chest|100|8|84|1
-evasion_local|P|DefenceFlatEvasion|Evasion|Helm;Gloves;Boots;Shield;Tome|100|8|84|1
-evasion_local_small|P|DefenceFlatEvasion|Evasion;Shield|Chest|100|8|84|1
-es_local|P|DefenceFlatEnergyShield|EnergyShield|Helm;Gloves;Boots;Shield;Tome|100|8|84|1
-es_local_small|P|DefenceFlatEnergyShield|EnergyShield;Shield|Chest|100|8|84|1
-defence_inc|P|DefenceInc|Defences;Shield||100|8|84|1
-phys_inc_local|P|PhysInc|Melee;Bow||100|8|84|1
-phys_added_local|P|PhysAdded|Melee;Bow||90|8|84|1
-fire_added_local|P|FireAdded|Melee;Bow||70|8|84|1
-fire_spell_added|P|FireSpellAdded|Caster;RuneDagger|Staff|60|8|84|1
-fire_dmg_inc|P|FireInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1
-fire_spell_added_2h|P|FireSpellAdded|Staff||60|8|84|1
-fire_dmg_inc_2h|P|FireInc|Staff||70|8|84|1
-cold_added_local|P|ColdAdded|Melee;Bow||70|8|84|1
-cold_spell_added|P|ColdSpellAdded|Caster;RuneDagger|Staff|60|8|84|1
-cold_dmg_inc|P|ColdInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1
-cold_spell_added_2h|P|ColdSpellAdded|Staff||60|8|84|1
-cold_dmg_inc_2h|P|ColdInc|Staff||70|8|84|1
-lightning_added_local|P|LightningAdded|Melee;Bow||70|8|84|1
-lightning_spell_added|P|LightningSpellAdded|Caster;RuneDagger|Staff|60|8|84|1
-lightning_dmg_inc|P|LightningInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1
-lightning_spell_added_2h|P|LightningSpellAdded|Staff||60|8|84|1
-lightning_dmg_inc_2h|P|LightningInc|Staff||70|8|84|1
-poison_spell_added|P|PoisonSpellAdded|Caster;RuneDagger|Staff|60|8|84|1
-poison_dmg_inc|P|PoisonInc|Caster;RuneDagger|Staff;Tome|70|8|84|1
-poison_spell_added_2h|P|PoisonSpellAdded|Staff||60|8|84|1
-poison_dmg_inc_2h|P|PoisonInc|Staff||70|8|84|1
-spell_inc|P|SpellInc|Caster;RuneDagger|Staff|100|8|84|1
-spell_inc_2h|P|SpellInc|Staff||100|8|84|1
-skill_level|P|SkillLevel|Amulet;Caster;Melee;Helm;RuneDagger|Staff|18|2|68|46
-skill_level_bow|P|SkillLevel|Bow||18|2|75|46
-skill_level_2h|P|SkillLevel|Staff||18|3|80|46
-attack_added_phys|P|AttackAdded|Ring;Amulet;Gloves;Quiver;Chest||50|7|70|1
-attack_added_lightning|P|AttackLightning|Gloves;Quiver;Ring;Amulet;Boots||40|7|70|1
-fire_res|S|FireRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1
-cold_res|S|ColdRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1
-lightning_res|S|LightningRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1
-poison_res|S|PoisonRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1
-all_res|S|AllRes|Ring;Amulet||40|6|70|10
-phys_as_elem|S|PhysAsElem|Chest;Shield;Helm||35|4|84|44
-str_flat|S|Str|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Shield||90|8|84|1
-dex_flat|S|Dex|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Quiver;Shield||90|8|84|1
-int_flat|S|Int|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Shield||90|8|84|1
-all_attr|S|Attributes|Amulet||50|7|70|1
-attack_speed_local|S|AttackSpeed|Melee;Wand;Staff||90|8|84|1
-attack_speed|S|AttackSpeed|Gloves;Quiver||50|4|56|20
-cast_speed|S|CastSpeed|Caster;RuneDagger|Staff|90|8|84|1
-cast_speed_2h|S|CastSpeed|Staff||90|8|84|1
-cast_speed_jewel|S|CastSpeed|Amulet||50|4|56|20
-cooldown_recovery|S|CooldownRecovery|Amulet;Weapon||40|3|70|44
-crit_local|S|Crit|Weapon||70|6|84|20
-crit_global|S|Crit|Amulet;Quiver||50|6|84|20
-crit_multi|S|CritMulti|Weapon;Amulet||60|6|84|20
-move_speed|S|MoveSpeed|Boots||80|6|56|1
-life_regen|S|LifeRegen|Helm;Chest;Belt;Ring;Amulet;Boots;Gloves;Shield||60|8|84|1
-mana_regen|S|ManaRegen|Ring;Amulet;Caster;Helm;RuneDagger||70|7|70|1
-life_on_kill|S|LifeOnKill|Weapon;Gloves||50|6|56|1
-ring_life_on_kill|P|LifeOnKill|Ring||50|6|56|1
-mana_on_kill|S|ManaOnKill|Weapon||40|6|56|1
-ring_mana_on_kill|P|ManaOnKill|Ring||40|6|56|1
-mana_leech|S|ManaLeech|Gloves;Amulet||30|3|44|20
-ring_mana_leech|P|ManaLeech|Ring||30|3|44|20
-es_leech|S|EnergyShieldLeech|Gloves;Amulet;EnergyShield|Chest;Boots;Shield|30|4|56|20
-ring_es_leech|P|EnergyShieldLeech|Ring|Chest;Boots;Shield|30|4|56|20
-life_leech|S|LifeLeech|Weapon;Gloves||35|4|44|10
-ring_life_leech|P|LifeLeech|Ring||35|4|44|10
-area|S|Area|Amulet;Helm||40|5|84|32
-ignite_chance|S|IgniteChance|Weapon;Gloves;Quiver;Tome||40|4|56|20
-shock_chance|S|ShockChance|Weapon;Gloves;Quiver;Tome||40|4|56|20
-ignite_effect|P|IgniteDamage|Weapon;Amulet;Belt||40|4|56|20
-poison_effect|P|PoisonDamage|Weapon;Amulet;Belt||40|4|56|20
-shock_effect|P|ShockEffect|Weapon;Amulet;Belt||40|4|56|20
-freeze_duration|S|FreezeDuration|Weapon;Ring||40|4|56|20
-bleed_chance|S|BleedChance|Weapon;Gloves;Quiver||40|4|56|20
-bleed_effect|P|BleedDamage|Weapon;Amulet;Belt;Quiver||40|4|56|20
-dot_multi|P|DotMulti|Weapon;Amulet;Quiver;Tome||30|4|70|32
-chill_effect|S|ChillEffect|Weapon;Ring;Quiver;Tome||40|4|56|20
-minion_dmg|P|MinionDamage|Wand;Tome||50|8|84|1
-minion_dmg_2h|P|MinionDamage|Staff;Scythe||50|8|84|1
-minion_dmg_jewel|P|MinionDamage|Amulet;Helm||40|7|84|10
-minion_life|S|MinionLife|Helm;Chest;Belt;Shield;Tome||50|7|70|1
-minion_speed|S|MinionSpeed|Gloves;Amulet;Boots||40|4|56|20
-minion_crit|S|MinionCrit|Wand;Tome;Staff;Scythe;Amulet||40|6|84|20
-minion_crit_multi|S|MinionCritMulti|Wand;Tome;Amulet||30|5|70|20
-curse_effect|S|CurseEffect|Amulet;Helm;Wand;Tome||30|4|56|20
-curse_limit|P|CurseLimit|Amulet||8|1|44|44
-max_fire_res91|S|MaxFireRes91|Shield;Chest||12|2|84|70
-max_cold_res91|S|MaxColdRes91|Shield;Chest||12|2|84|70
-max_lightning_res91|S|MaxLightningRes91|Shield;Chest||12|2|84|70
-max_poison_res91|S|MaxPoisonRes91|Shield;Chest||12|2|84|70
-req_reduce|S|ReqReduce93|Weapon;Chest;Helm;Gloves;Boots;Shield;Tome||30|6|70|10
-ring_move_speed|S|RingMove|Ring||40|3|84|56
-gloves_cast_speed|S|CastSpeedGloves|Gloves||50|4|56|20
-ring_attack_speed|S|AttackSpeedRing|Ring||40|3|70|44
-ring_cast_speed|S|CastSpeedRing|Ring||40|3|70|44
-poison_pen85_2h|S|PoisonPen85|TwoHand||35|4|84|44
-poison_pen85_1h|S|PoisonPen85|OneHand||35|4|84|44`;
-const AFF=AFF_SRC.split("\n").map(l=>{const p=l.split("|");return{id:p[0],type:p[1],group:p[2],tags:p[3].split(";"),ex:p[4]?p[4].split(";"):[],w:+p[5],n:+p[6],hi:+p[7],lo:+p[8]};});
+const AFF_SRC=`life_large|P|Life|Chest;Belt||120|8|84|1|84;70;56;44;32;20;10;1
+life|P|Life|Helm;Gloves;Boots;Ring;Amulet;Quiver;Shield;Tome||110|7|70|1|70;56;44;32;20;10;1
+mana|P|Mana|Ring;Amulet;Helm;Gloves;Caster;RuneDagger;Chest;Boots||80|7|70|1|70;56;44;32;20;10;1
+es_global|P|EnergyShieldGlobal|Ring;Amulet;Belt;Chest;Boots;Gloves||60|7|70|1|70;56;44;32;20;10;1
+armour_local|P|DefenceFlat|Armour|Helm;Gloves;Boots;Shield;Tome|100|8|84|1|84;70;56;44;32;20;10;1
+armour_local_small|P|DefenceFlat|Armour;Shield|Chest|100|8|84|1|84;70;56;44;32;20;10;1
+evasion_local|P|DefenceFlatEvasion|Evasion|Helm;Gloves;Boots;Shield;Tome|100|8|84|1|84;70;56;44;32;20;10;1
+evasion_local_small|P|DefenceFlatEvasion|Evasion;Shield|Chest|100|8|84|1|84;70;56;44;32;20;10;1
+es_local|P|DefenceFlatEnergyShield|EnergyShield|Helm;Gloves;Boots;Shield;Tome|100|8|84|1|84;70;56;44;32;20;10;1
+es_local_small|P|DefenceFlatEnergyShield|EnergyShield;Shield|Chest|100|8|84|1|84;70;56;44;32;20;10;1
+defence_inc|P|DefenceInc|Defences;Shield||100|8|84|1|84;70;56;44;32;20;10;1
+phys_inc_local|P|PhysInc|Melee;Bow||100|8|84|1|84;70;56;44;32;20;10;1
+phys_added_local|P|PhysAdded|Melee;Bow||90|8|84|1|84;70;56;44;32;20;10;1
+fire_added_local|P|FireAdded|Melee;Bow||70|8|84|1|84;70;56;44;32;20;10;1
+fire_spell_added|P|FireSpellAdded|Caster;RuneDagger|Staff|60|8|84|1|84;70;56;44;32;20;10;1
+fire_dmg_inc|P|FireInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1|84;70;56;44;32;20;10;1
+fire_spell_added_2h|P|FireSpellAdded|Staff||60|8|84|1|84;70;56;44;32;20;10;1
+fire_dmg_inc_2h|P|FireInc|Staff||70|8|84|1|84;70;56;44;32;20;10;1
+cold_added_local|P|ColdAdded|Melee;Bow||70|8|84|1|84;70;56;44;32;20;10;1
+cold_spell_added|P|ColdSpellAdded|Caster;RuneDagger|Staff|60|8|84|1|84;70;56;44;32;20;10;1
+cold_dmg_inc|P|ColdInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1|84;70;56;44;32;20;10;1
+cold_spell_added_2h|P|ColdSpellAdded|Staff||60|8|84|1|84;70;56;44;32;20;10;1
+cold_dmg_inc_2h|P|ColdInc|Staff||70|8|84|1|84;70;56;44;32;20;10;1
+lightning_added_local|P|LightningAdded|Melee;Bow||70|8|84|1|84;70;56;44;32;20;10;1
+lightning_spell_added|P|LightningSpellAdded|Caster;RuneDagger|Staff|60|8|84|1|84;70;56;44;32;20;10;1
+lightning_dmg_inc|P|LightningInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1|84;70;56;44;32;20;10;1
+lightning_spell_added_2h|P|LightningSpellAdded|Staff||60|8|84|1|84;70;56;44;32;20;10;1
+lightning_dmg_inc_2h|P|LightningInc|Staff||70|8|84|1|84;70;56;44;32;20;10;1
+poison_spell_added|P|PoisonSpellAdded|Caster;RuneDagger|Staff|60|8|84|1|84;70;56;44;32;20;10;1
+poison_dmg_inc|P|PoisonInc|Caster;RuneDagger|Staff;Tome|70|8|84|1|84;70;56;44;32;20;10;1
+poison_spell_added_2h|P|PoisonSpellAdded|Staff||60|8|84|1|84;70;56;44;32;20;10;1
+poison_dmg_inc_2h|P|PoisonInc|Staff||70|8|84|1|84;70;56;44;32;20;10;1
+spell_inc|P|SpellInc|Caster;RuneDagger|Staff|100|8|84|1|84;70;56;44;32;20;10;1
+spell_inc_2h|P|SpellInc|Staff||100|8|84|1|84;70;56;44;32;20;10;1
+skill_level|P|SkillLevel|Amulet;Caster;Melee;Helm;RuneDagger|Staff|18|2|68|46|68;46
+skill_level_bow|P|SkillLevel|Bow||18|2|75|46|75;46
+skill_level_2h|P|SkillLevel|Staff||18|3|80|46|80;60;46
+attack_added_phys|P|AttackAdded|Ring;Amulet;Gloves;Quiver;Chest||50|7|70|1|70;56;44;32;20;10;1
+attack_added_lightning|P|AttackLightning|Gloves;Quiver;Ring;Amulet;Boots||40|7|70|1|70;56;44;32;20;10;1
+fire_res|S|FireRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1|84;70;56;44;32;20;10;1
+cold_res|S|ColdRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1|84;70;56;44;32;20;10;1
+lightning_res|S|LightningRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1|84;70;56;44;32;20;10;1
+poison_res|S|PoisonRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1|84;70;56;44;32;20;10;1
+all_res|S|AllRes|Ring;Amulet||40|6|70|10|70;56;44;32;20;10
+phys_as_elem|S|PhysAsElem|Chest;Shield;Helm||35|4|84|44|84;70;56;44
+str_flat|S|Str|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Shield||90|8|84|1|84;70;56;44;32;20;10;1
+dex_flat|S|Dex|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Quiver;Shield||90|8|84|1|84;70;56;44;32;20;10;1
+int_flat|S|Int|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Shield||90|8|84|1|84;70;56;44;32;20;10;1
+all_attr|S|Attributes|Amulet||50|7|70|1|70;56;44;32;20;10;1
+attack_speed_local|S|AttackSpeed|Melee;Wand;Staff||90|8|84|1|84;70;56;44;32;20;10;1
+attack_speed|S|AttackSpeed|Gloves;Quiver||50|4|56|20|56;44;32;20
+cast_speed|S|CastSpeed|Caster;RuneDagger|Staff|90|8|84|1|84;70;56;44;32;20;10;1
+cast_speed_2h|S|CastSpeed|Staff||90|8|84|1|84;70;56;44;32;20;10;1
+cast_speed_jewel|S|CastSpeed|Amulet||50|4|56|20|56;44;32;20
+cooldown_recovery|S|CooldownRecovery|Amulet;Weapon||40|3|70|44|70;56;44
+crit_local|S|Crit|Weapon||70|6|84|20|84;70;56;44;32;20
+crit_global|S|Crit|Amulet;Quiver||50|6|84|20|84;70;56;44;32;20
+crit_multi|S|CritMulti|Weapon;Amulet||60|6|84|20|84;70;56;44;32;20
+move_speed|S|MoveSpeed|Boots||80|6|56|1|56;44;32;20;10;1
+life_regen|S|LifeRegen|Helm;Chest;Belt;Ring;Amulet;Boots;Gloves;Shield||60|8|84|1|84;70;56;44;32;20;10;1
+mana_regen|S|ManaRegen|Ring;Amulet;Caster;Helm;RuneDagger||70|7|70|1|70;56;44;32;20;10;1
+life_on_kill|S|LifeOnKill|Weapon;Gloves||50|6|56|1|56;44;32;20;10;1
+ring_life_on_kill|P|LifeOnKill|Ring||50|6|56|1|56;44;32;20;10;1
+mana_on_kill|S|ManaOnKill|Weapon||40|6|56|1|56;44;32;20;10;1
+ring_mana_on_kill|P|ManaOnKill|Ring||40|6|56|1|56;44;32;20;10;1
+mana_leech|S|ManaLeech|Gloves;Amulet||30|3|44|20|44;32;20
+ring_mana_leech|P|ManaLeech|Ring||30|3|44|20|44;32;20
+es_leech|S|EnergyShieldLeech|Gloves;Amulet;EnergyShield|Chest;Boots;Shield|30|4|56|20|56;44;32;20
+ring_es_leech|P|EnergyShieldLeech|Ring|Chest;Boots;Shield|30|4|56|20|56;44;32;20
+life_leech|S|LifeLeech|Weapon;Gloves||35|4|44|10|44;32;20;10
+ring_life_leech|P|LifeLeech|Ring||35|4|44|10|44;32;20;10
+area|S|Area|Amulet;Helm||40|5|84|32|84;70;56;44;32
+ignite_chance|S|IgniteChance|Weapon;Gloves;Quiver;Tome||40|4|56|20|56;44;32;20
+shock_chance|S|ShockChance|Weapon;Gloves;Quiver;Tome||40|4|56|20|56;44;32;20
+ignite_effect|P|IgniteDamage|Weapon;Amulet;Belt||40|4|56|20|56;44;32;20
+poison_effect|P|PoisonDamage|Weapon;Amulet;Belt||40|4|56|20|56;44;32;20
+shock_effect|P|ShockEffect|Weapon;Amulet;Belt||40|4|56|20|56;44;32;20
+freeze_duration|S|FreezeDuration|Weapon;Ring||40|4|56|20|56;44;32;20
+bleed_chance|S|BleedChance|Weapon;Gloves;Quiver||40|4|56|20|56;44;32;20
+bleed_effect|P|BleedDamage|Weapon;Amulet;Belt;Quiver||40|4|56|20|56;44;32;20
+dot_multi|P|DotMulti|Weapon;Amulet;Quiver;Tome||30|4|70|32|70;56;44;32
+chill_effect|S|ChillEffect|Weapon;Ring;Quiver;Tome||40|4|56|20|56;44;32;20
+minion_dmg|P|MinionDamage|Wand;Tome||50|8|84|1|84;70;56;44;32;20;10;1
+minion_dmg_2h|P|MinionDamage|Staff;Scythe||50|8|84|1|84;70;56;44;32;20;10;1
+minion_dmg_jewel|P|MinionDamage|Amulet;Helm||40|7|84|10|84;70;56;44;32;20;10
+minion_life|S|MinionLife|Helm;Chest;Belt;Shield;Tome||50|7|70|1|70;56;44;32;20;10;1
+minion_speed|S|MinionSpeed|Gloves;Amulet;Boots||40|4|56|20|56;44;32;20
+minion_crit|S|MinionCrit|Wand;Tome;Staff;Scythe;Amulet||40|6|84|20|84;70;56;44;32;20
+minion_crit_multi|S|MinionCritMulti|Wand;Tome;Amulet||30|5|70|20|70;56;44;32;20
+curse_effect|S|CurseEffect|Amulet;Helm;Wand;Tome||30|4|56|20|56;44;32;20
+curse_limit|P|CurseLimit|Amulet||8|1|44|44|44
+max_fire_res91|S|MaxFireRes91|Shield;Chest||12|2|84|70|84;70
+max_cold_res91|S|MaxColdRes91|Shield;Chest||12|2|84|70|84;70
+max_lightning_res91|S|MaxLightningRes91|Shield;Chest||12|2|84|70|84;70
+max_poison_res91|S|MaxPoisonRes91|Shield;Chest||12|2|84|70|84;70
+req_reduce|S|ReqReduce93|Weapon;Chest;Helm;Gloves;Boots;Shield;Tome||30|6|70|10|70;56;44;32;20;10
+ring_move_speed|S|RingMove|Ring||40|3|84|56|84;70;56
+gloves_cast_speed|S|CastSpeedGloves|Gloves||50|4|56|20|56;44;32;20
+ring_attack_speed|S|AttackSpeedRing|Ring||40|3|70|44|70;56;44
+ring_cast_speed|S|CastSpeedRing|Ring||40|3|70|44|70;56;44
+poison_pen85_2h|S|PoisonPen85|TwoHand||35|4|84|44|84;70;56;44
+poison_pen85_1h|S|PoisonPen85|OneHand||35|4|84|44|84;70;56;44`;
+const AFF=AFF_SRC.split("\n").map(l=>{const p=l.split("|");return{id:p[0],type:p[1],group:p[2],tags:p[3].split(";"),ex:p[4]?p[4].split(";"):[],w:+p[5],n:+p[6],hi:+p[7],lo:+p[8],lv:p[9]?p[9].split(";").map(Number):null};});
 /* idol affixes: group|P or S|sizes (s,m,l,x = Idol1-4)|tiers; "x" suffixes also fit grand idols */
 const IDOL_G="IdolLife|P|smlx|4;IdolMana|P|smlx|4;IdolEs|P|smlx|4;IdolArmour|P|smlx|4;IdolEvasion|P|smlx|4;IdolPhys|P|smlx|4;IdolElemental|P|smlx|4;IdolSpell|P|smlx|4;IdolMelee|P|smlx|4;IdolMinion|P|smlx|4;IdolFireRes|S|smlx|4;IdolColdRes|S|smlx|4;IdolLightningRes|S|smlx|4;IdolPoisonRes|S|smlx|4;IdolMove|S|smlx|3;IdolRegen|S|smlx|3;IdolAttackSpeed|S|smlx|3;IdolCastSpeed|S|smlx|3;IdolCrit|S|smlx|4;IdolCritMulti|S|smlx|4;IdolLifeKill|S|smlx|3;IdolManaRegen|S|smlx|4;IdolArea|S|smlx|3;IdolStr|S|smlx|4;IdolDex|S|smlx|4;IdolInt|S|smlx|4;IdolTotemSpeed|P|mlx|4;IdolTotemLife|S|mlx|4;IdolMinionLife|S|mlx|4;IdolMinionSpeed|S|mlx|4;IdolChannelArea|P|mlx|4;IdolChannelCost|S|mlx|4;IdolSlam|P|mlx|4;IdolSlamArea|S|mlx|4;IdolChain|P|mlx|4;IdolOrbit|P|mlx|4;IdolBowArea|S|mlx|4;IdolProjectile|P|mlx|4;IdolHoly|P|mlx|4;IdolPoison|P|mlx|4;IdolFire|P|mlx|4;IdolCold|P|mlx|4;IdolLightning|P|mlx|4;IdolMovement|P|mlx|4;IdolTrap|P|mlx|4;IdolShield|P|mlx|4;IdolBleed|P|mlx|4;IdolManaLeech|S|lx|4";
+const IDOL_LV={"IdolLife_s":"84;70;56;20","IdolLife_m":"84;70;56;20","IdolLife_l":"84;70;56;20","IdolLife_x":"84;70;56;20","IdolMana_s":"84;70;56;20","IdolMana_m":"84;70;56;20","IdolMana_l":"84;70;56;20","IdolMana_x":"84;70;56;20","IdolEs_s":"84;70;56;20","IdolEs_m":"84;70;56;20","IdolEs_l":"84;70;56;20","IdolEs_x":"84;70;56;20","IdolArmour_s":"84;70;56;20","IdolArmour_m":"84;70;56;20","IdolArmour_l":"84;70;56;20","IdolArmour_x":"84;70;56;20","IdolEvasion_s":"84;70;56;20","IdolEvasion_m":"84;70;56;20","IdolEvasion_l":"84;70;56;20","IdolEvasion_x":"84;70;56;20","IdolPhys_s":"84;70;56;20","IdolPhys_m":"84;70;56;20","IdolPhys_l":"84;70;56;20","IdolPhys_x":"84;70;56;20","IdolElemental_s":"84;70;56;20","IdolElemental_m":"84;70;56;20","IdolElemental_l":"84;70;56;20","IdolElemental_x":"84;70;56;20","IdolSpell_s":"84;70;56;20","IdolSpell_m":"84;70;56;20","IdolSpell_l":"84;70;56;20","IdolSpell_x":"84;70;56;20","IdolMelee_s":"84;70;56;20","IdolMelee_m":"84;70;56;20","IdolMelee_l":"84;70;56;20","IdolMelee_x":"84;70;56;20","IdolMinion_s":"84;70;56;20","IdolMinion_m":"84;70;56;20","IdolMinion_l":"84;70;56;20","IdolMinion_x":"84;70;56;20","IdolFireRes_s":"84;70;56;20","IdolFireRes_m":"84;70;56;20","IdolFireRes_l":"84;70;56;20","IdolFireRes_x":"84;70;56;20","IdolColdRes_s":"84;70;56;20","IdolColdRes_m":"84;70;56;20","IdolColdRes_l":"84;70;56;20","IdolColdRes_x":"84;70;56;20","IdolLightningRes_s":"84;70;56;20","IdolLightningRes_m":"84;70;56;20","IdolLightningRes_l":"84;70;56;20","IdolLightningRes_x":"84;70;56;20","IdolPoisonRes_s":"84;70;56;20","IdolPoisonRes_m":"84;70;56;20","IdolPoisonRes_l":"84;70;56;20","IdolPoisonRes_x":"84;70;56;20","IdolMove_s":"84;70;56","IdolMove_m":"84;70;56;20","IdolMove_l":"84;70;56;20","IdolMove_x":"84;70;56;20","IdolRegen_s":"84;70;56","IdolRegen_m":"84;70;56;20","IdolRegen_l":"84;70;56;20","IdolRegen_x":"84;70;56;20","IdolAttackSpeed_s":"84;70;56","IdolAttackSpeed_m":"84;70;56;20","IdolAttackSpeed_l":"84;70;56;20","IdolAttackSpeed_x":"84;70;56;20","IdolCastSpeed_s":"84;70;56","IdolCastSpeed_m":"84;70;56;20","IdolCastSpeed_l":"84;70;56;20","IdolCastSpeed_x":"84;70;56;20","IdolCrit_s":"84;70;56;20","IdolCrit_m":"84;70;56;20","IdolCrit_l":"84;70;56;20","IdolCrit_x":"84;70;56;20","IdolCritMulti_s":"84;70;56;20","IdolCritMulti_m":"84;70;56;20","IdolCritMulti_l":"84;70;56;20","IdolCritMulti_x":"84;70;56;20","IdolLifeKill_s":"84;70;56","IdolLifeKill_m":"84;70;56;20","IdolLifeKill_l":"84;70;56;20","IdolLifeKill_x":"84;70;56;20","IdolManaRegen_s":"84;70;56;20","IdolManaRegen_m":"84;70;56;20","IdolManaRegen_l":"84;70;56;20","IdolManaRegen_x":"84;70;56;20","IdolArea_s":"84;70;56","IdolArea_m":"84;70;56;20","IdolArea_l":"84;70;56;20","IdolArea_x":"84;70;56;20","IdolStr_s":"84;70;56;20","IdolStr_m":"84;70;56;20","IdolStr_l":"84;70;56;20","IdolStr_x":"84;70;56;20","IdolDex_s":"84;70;56;20","IdolDex_m":"84;70;56;20","IdolDex_l":"84;70;56;20","IdolDex_x":"84;70;56;20","IdolInt_s":"84;70;56;20","IdolInt_m":"84;70;56;20","IdolInt_l":"84;70;56;20","IdolInt_x":"84;70;56;20","IdolTotemSpeed_m":"84;70;56;20","IdolTotemSpeed_l":"84;70;56;20","IdolTotemSpeed_x":"84;70;56;20","IdolTotemLife_m":"84;70;56;20","IdolTotemLife_l":"84;70;56;20","IdolTotemLife_x":"84;70;56;20","IdolMinionLife_m":"84;70;56;20","IdolMinionLife_l":"84;70;56;20","IdolMinionLife_x":"84;70;56;20","IdolMinionSpeed_m":"84;70;56;20","IdolMinionSpeed_l":"84;70;56;20","IdolMinionSpeed_x":"84;70;56;20","IdolChannelArea_m":"84;70;56;20","IdolChannelArea_l":"84;70;56;20","IdolChannelArea_x":"84;70;56;20","IdolChannelCost_m":"84;70;56;20","IdolChannelCost_l":"84;70;56;20","IdolChannelCost_x":"84;70;56;20","IdolSlam_m":"84;70;56;20","IdolSlam_l":"84;70;56;20","IdolSlam_x":"84;70;56;20","IdolSlamArea_m":"84;70;56;20","IdolSlamArea_l":"84;70;56;20","IdolSlamArea_x":"84;70;56;20","IdolChain_m":"84;70;56;20","IdolChain_l":"84;70;56;20","IdolChain_x":"84;70;56;20","IdolOrbit_m":"84;70;56;20","IdolOrbit_l":"84;70;56;20","IdolOrbit_x":"84;70;56;20","IdolBowArea_m":"84;70;56;20","IdolBowArea_l":"84;70;56;20","IdolBowArea_x":"84;70;56;20","IdolProjectile_m":"84;70;56;20","IdolProjectile_l":"84;70;56;20","IdolProjectile_x":"84;70;56;20","IdolHoly_m":"84;70;56;20","IdolHoly_l":"84;70;56;20","IdolHoly_x":"84;70;56;20","IdolPoison_m":"84;70;56;20","IdolPoison_l":"84;70;56;20","IdolPoison_x":"84;70;56;20","IdolFire_m":"84;70;56;20","IdolFire_l":"84;70;56;20","IdolFire_x":"84;70;56;20","IdolCold_m":"84;70;56;20","IdolCold_l":"84;70;56;20","IdolCold_x":"84;70;56;20","IdolLightning_m":"84;70;56;20","IdolLightning_l":"84;70;56;20","IdolLightning_x":"84;70;56;20","IdolMovement_m":"84;70;56;20","IdolMovement_l":"84;70;56;20","IdolMovement_x":"84;70;56;20","IdolTrap_m":"84;70;56;20","IdolTrap_l":"84;70;56;20","IdolTrap_x":"84;70;56;20","IdolShield_m":"84;70;56;20","IdolShield_l":"84;70;56;20","IdolShield_x":"84;70;56;20","IdolBleed_m":"84;70;56;20","IdolBleed_l":"84;70;56;20","IdolBleed_x":"84;70;56;20","IdolManaLeech_l":"84;70;56;20","IdolManaLeech_x":"84;70;56;20"}; /* real tier item levels of idol affixes (game files) */
 IDOL_G.split(";").forEach(g=>{const p=g.split("|"),n=+p[3];p[2].split("").forEach(sz=>{
   const tag="Idol"+({s:1,m:2,l:3,x:4})[sz];const tiers=(sz==="s"&&n===3)?3:n;
   const tg=[tag];if(sz==="x"&&p[1]==="S"&&!/Total|Minion(Life|Speed)|Channel|Slam|Bow/.test(p[0]))tg.push("IdolGrand");
-  AFF.push({id:p[0]+"_"+sz,type:p[1],group:p[0],tags:tg,ex:[],w:100,n:tiers,hi:84,lo:tiers===3?56:20});});});
+  const lvs=IDOL_LV[p[0]+"_"+sz],lv=lvs?lvs.split(";").map(Number):null;
+  AFF.push({id:p[0]+"_"+sz,type:p[1],group:p[0],tags:tg,ex:[],w:100,n:lv?lv.length:tiers,hi:lv?lv[0]:84,lo:lv?lv[lv.length-1]:(tiers===3?56:20),lv});});});
 /* fixed grand idol prefixes (group IdolGrand): name|weight|tiers|top ilvl|lowest ilvl */
 "chain_plus|4|1|84|84;ballista_plus|1|1|84|84;orbit_plus|4|1|84|84;skeleton_plus|4|1|84|84;slam_spike|4|1|84|84;bow_projectile|4|1|84|84;channel_ramp|60|2|70|56;phys_as_fire|60|2|70|56;phys_as_cold|60|2|70|56;phys_as_lightning|60|2|70|56;elemental_pen|60|2|70|56;life_inc|70|2|70|56;max_res|40|1|56|56;max_poison_res|40|1|56|56;melee_afterimage|4|1|84|84;skeleton_wizard_plus|4|1|84|84;eng_totem|30|2|84|70;eng_afterimage|30|2|84|70;eng_orbit|30|2|84|70;eng_trap|30|2|84|70;eng_minion|30|2|84|70;eng_brand|30|2|84|70;eng_slam|30|2|84|70;trap_plus|4|1|84|84;spark_plus|4|1|84|84".split(";").forEach(s=>{const p=s.split("|");AFF.push({id:"idol_grand_"+p[0],type:"P",group:"IdolGrand",tags:["IdolGrand"],ex:[],w:+p[1],n:+p[2],hi:+p[3],lo:+p[4]});});
 /* uniques with a drop weight above 0: name|base id|level|weight|flag (C chase, P primal, S signature)|first three stat keys */
@@ -1121,8 +1136,8 @@ function wpick(a,wf){let t=0;a.forEach(x=>t+=wf(x));let r=Math.random()*t;for(co
 const CATKEYS=[];BASES.forEach(b=>{const k=b.kind+":"+b.sub;if(!CATKEYS.includes(k))CATKEYS.push(k);});
 const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem","Skill Gem"];
 const NAMES_KIND={weapon:"",shield:"",tome:"",quiver:"",helm:"",chest:"",gloves:"",boots:"",ring:"",amulet:"",belt:"",idol:""};
-/* an affix tier needs an item level; only the top and lowest levels are known, the steps in between are spread evenly (a guess) */
-function tierLvl(a,k){return a.n===1?a.hi:Math.round(a.hi+(a.lo-a.hi)*(k-1)/(a.n-1));}
+/* an affix tier needs an item level (the real levels per tier come from the game files) */
+function tierLvl(a,k){if(a.lv&&a.lv[k-1]!==undefined)return a.lv[k-1];return a.n===1?a.hi:Math.round(a.hi+(a.lo-a.hi)*(k-1)/(a.n-1));} /* real item levels from the game files; the even spread is only a fallback */
 /* tier choice for one affix; mode: any (lower tiers likelier, a guess), t1, t2 (T1-T2), bad (the two lowest tiers) */
 function tierPick(a,lvl,mode){
   const ok=[];for(let t=1;t<=a.n;t++)if(tierLvl(a,t)<=lvl)ok.push(t);
@@ -1247,9 +1262,34 @@ function setView(v){V.view=v;$$(".panel").forEach(p=>p.hidden=p.id!=="p-"+v);$$(
   if(v==="test"){renderDrops();}if(v==="io")renderOut();}
 /* does an earlier active rule catch at least everything this rule catches? (same reading as the drop test) */
 const TYPE_KIDS={1:[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],2:[5,6,7,8],3:[10,11,12]};
+/* true when every item that passes rule b's MORE options also passes rule a's (so a's options cannot exclude anything b would take) */
+function moreImplies(a,b){
+  if(!a.m.length)return true;
+  if(hasRaw(a)||hasRaw(b)||mval(a,"rt")||mval(b,"rt"))return false;
+  const N=(r,k)=>+mval(r,k)||0;
+  const ta=N(a,"t"),na=N(a,"n"),tb=N(b,"t"),nb=N(b,"n");
+  if(ta||na){
+    const need=Math.max(1,na);
+    if(ta){if(!(tb&&tb<=ta&&Math.max(1,nb)>=need))return false;}
+    else if(!(Math.max(1,nb)>=need||(!b.line&&!b.quality&&b.count+1>=need)))return false; /* any tier: b needs at least as many lines */
+  }
+  if(N(a,"s")&&N(b,"s")<N(a,"s"))return false;
+  for(const k of ["i","q"]){
+    const[al,ah]=mrng(a,k),[bl,bh]=mrng(b,k);
+    if(al&&bl<al)return false;
+    if(ah&&!(bh&&bh<=ah))return false;
+  }
+  if(N(a,"g")&&N(b,"g")<N(a,"g"))return false;
+  if(N(a,"gx")&&!(N(b,"gx")&&N(b,"gx")<=N(a,"gx")))return false;
+  const ra=N(a,"r"),rb=N(b,"r");if(ra===1&&rb<1)return false;if(ra===2&&rb!==2)return false;
+  const ua=N(a,"u");if(ua&&N(b,"u")!==ua)return false;
+  for(const k of ["b","rn"]){const A=mlist(a,k),B=mlist(b,k);if(A.length&&!(B.length&&B.every(x=>A.includes(x))))return false;}
+  {const A=mlist(a,"a"),B=mlist(b,"a");if(A.length&&!A.every(x=>B.includes(x)))return false;}
+  return true;
+}
 function covers(a,b){
   if(!a.on||!b.on)return false;
-  if(a.m.length||mval(b,"rt"))return false;
+  if(!moreImplies(a,b))return false;
   const ra=RAR[a.rarity],rb=RAR[b.rarity];if(!ra||!rb||![...rb].every(c=>ra.includes(c)))return false;
   if(!(a.type===0||a.type===b.type||(TYPE_KIDS[a.type]||[]).includes(b.type)))return false;
   const la=LEVEL[a.level],lb=LEVEL[b.level];if(!la||!lb||la[0]>lb[0]||la[1]<lb[1])return false;
@@ -1261,8 +1301,8 @@ function badges(r){
   if(r.line||r.quality||r.count){const n=r.count+1;b.push(["afx",n+"+ "+(r.line?nameOf("line",r.line)+" ":"")+"line"+(n>1?"s":"")+(r.quality?" · "+nameOf("quality",r.quality).toLowerCase():"")]);}
   moreParts(r).forEach(x=>b.push(["more",x]));
   if(!b.length)b.push(["any","All items"]);
-  if((r.extra&&r.extra.length)||hasRaw(r))b.push(["more","Unknown fields"]);
-  return b.map(x=>`<span class="b ${x[0]}"${x[1]==="Unknown fields"?' title="This rule has fields this page does not know. They stay in the export as they are."':""}>${esc(x[1])}</span>`).join("");
+  if((r.extra&&r.extra.length)||hasRaw(r))b.push(["more","Unknown fields · ignored in test"]);
+  return b.map(x=>`<span class="b ${x[0]}"${x[1].startsWith("Unknown fields")?' title="This rule has fields this page does not know. They stay in the export as they are, but the drop test ignores them."':""}>${esc(x[1])}</span>`).join("");
 }
 function sampleName(r){const t={31:"Hoarfrost Staff",32:"Ember Wand",18:"Gravewind Bow",10:"Serpent Ring",11:"Vow of Embers",4:"Rune Tablet",14:"Hollow Idol",20:"Ashen Dagger",23:"Cinder Greatsword",13:"Core-touched Relic"}[r.type];return t||(r.rarity===5?"Oathbound Relic":"Iron Visage");}
 function labelHTML(r){
@@ -1393,10 +1433,22 @@ function syncEditor(){
 }
 
 /* ---- test ---- */
+/* random test flags are shown only when an active rule looks at them, and are marked as test flags */
+let _uf=null,_ufr=-1;
+function usedFlags(){
+  if(_ufr===REV&&_uf)return _uf;const u=new Set();
+  F.rules.forEach(r=>{if(!r.on)return;const m=k=>+mval(r,k)||0;
+    if(r.type===13)u.add("core");if(r.type===15||m("s"))u.add("sock");if(r.type===16||m("g")||m("gx"))u.add("grade"),r.type===16&&u.add("truesworn");
+    if(m("u"))u.add("unsworn");if(m("r"))u.add("chase");if(r.type===4)u.add("runebase");});
+  _uf=u;_ufr=REV;return u;
+}
 function dropHTML(it,e,anim){
   const hc=colOf(e.col)[2];
   const mods=it.label?it.label:it.mods.length?it.mods.map(m=>`${m.group} T${m.tier}`).join(" · "):it.rar==="U"?"fixed mods":"no mods";
-  const fl=(it.core?" · core-touched":"")+(it.sock?" · "+it.sock+" sockets":"")+(it.kind!=="misc"&&it.grade?" · grade "+it.grade:"")+(it.unsworn?" · unsworn":"")+(it.chase?" · chase red":"")+(it.truesworn?" · truesworn":"")+(it.runebase?" · rune base":"");
+  const uf=usedFlags(),fa=[];
+  if(it.core&&uf.has("core"))fa.push("core-touched");if(it.sock&&uf.has("sock"))fa.push(it.sock+" sockets");if(it.kind!=="misc"&&it.grade&&uf.has("grade"))fa.push("grade "+it.grade);
+  if(it.unsworn&&uf.has("unsworn"))fa.push("unsworn");if(it.chase&&uf.has("chase"))fa.push("chase red");if(it.truesworn&&uf.has("truesworn"))fa.push("truesworn");if(it.runebase&&uf.has("runebase"))fa.push("rune base");
+  const fl=fa.length?` · <span class="tf" title="Random test flags. Real drops may differ.">test flags: ${fa.join(", ")}</span>`:"";
   const rule=e.i>=0?`<span class="rn">Rule ${e.i+1} · ${esc(summary(F.rules[e.i]))}</span>`:`<span class="rn">No rule matched</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
    <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
@@ -1406,8 +1458,8 @@ function renderDrops(animId){
   const t={all:S.items.length,hl:0,show:0,hide:0},ev=S.items.map(it=>evalC(it));
   ev.forEach(e=>{if(e.v===0)t.hide++;else if(e.v>=2)t.hl++;else t.show++;});
   $("#drops").innerHTML=S.items.map((it,k)=>dropHTML(it,ev[k],it.id===animId)).join("");
-  const dps=S.items.slice(0,18).map((it,k)=>({it,e:ev[k]})).filter(o=>o.e.v!==0&&(!S.hlOnly||o.e.v>=2)).reverse().map(({it,e})=>{const c=colOf(e.col)[2],col=e.v>=2;
-    return `<div class="dp" style="left:${it.x}%;bottom:${it.y}px">${e.v===3?`<span class="beam" style="--c:${c}"></span>`:""}<span class="lbl" style="--c:${col?c:"#d9d2c0"}">${esc(it.name)}</span></div>`;}).join("");
+  const dps=S.items.slice(0,15).map((it,k)=>({it,e:ev[k]})).filter(o=>o.e.v!==0&&(!S.hlOnly||o.e.v>=2)).reverse().map(({it,e})=>{const c=colOf(e.col)[2],col=e.v>=2;
+    return `<div class="dp" style="left:${it.x}%;bottom:${it.y}%">${e.v===3?`<span class="beam" style="--c:${c}"></span>`:""}<span class="lbl" style="--c:${col?c:"#d9d2c0"}">${esc(it.name)}</span></div>`;}).join("");
   $("#scene").innerHTML=dps||`<p class="empty">${S.items.length?"No highlights or beams in the latest drops.":"Press “Drop 1”, “Drop 25” or a Quick spawn button."}</p>`;
   $$("#sceneMode button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.sm==="hl")===S.hlOnly));
   const n=t.all||1;
@@ -1424,7 +1476,7 @@ function renderStrip(){updateHits();
   const n=S.items.length;
   $("#strip").innerHTML=n?`<span>Total<b>${n}</b></span><span>Shown<b class="c-show">${t.show}</b></span><span>Highlighted<b class="c-hl">${t.hl}</b></span><span>Hidden<b class="c-hide">${t.hide}</b></span><button type="button" class="btn" id="stripRoll">Roll 25 more</button>`:`<span>No test drops yet. See what this filter does.</span><button type="button" class="btn" id="stripRoll">Roll 25 test drops</button>`;
 }
-function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genFiltered();last.x=8+Math.random()*84;last.y=12+Math.random()*230;S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
+function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genFiltered();const sl=(S.slot=(S.slot||0)+1)*7%15;last.x=10+(sl%5)*20+(Math.random()*6-3);last.y=6+Math.floor(sl/5)*30+(Math.random()*6-3);S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
 
 /* ---- export ---- */
 function readable(){
@@ -1509,8 +1561,18 @@ document.addEventListener("input",e=>{
   if(t.id==="rq"){V.q=t.value;clearTimeout(input.t);input.t=setTimeout(renderRows,100);return;}
   if(t.dataset.pk){S.pk[t.dataset.pk]=t.value;renderPickList(t.dataset.pk);}
 });
+function downloadCode(){const d=new Date(),p=n=>String(n).padStart(2,"0"),name="oathfilter-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".txt";
+  const a=document.createElement("a"),url=URL.createObjectURL(new Blob([encode(F)+"\n"],{type:"text/plain"}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Saved "+name+".");}
+$("#dl").onclick=downloadCode;
 $("#copyTop").onclick=copyCode;$("#copy").onclick=copyCode;
-$("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").value);setFilter(g.filter);m.className="toast";m.textContent="Loaded "+g.filter.rules.length+" rules. "+g.notes.join(" ");}catch(err){m.className="toast bad";m.textContent=err.message;}};
+let pendingImport=null;
+const doLoad=g=>{const m=$("#loadMsg");setFilter(g.filter);m.className="toast";m.textContent="Loaded "+g.filter.rules.length+" rules. "+g.notes.join(" ")+" Undo is in the Editor.";$("#loadConf").hidden=true;pendingImport=null;};
+$("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").value);
+  if(F.rules.length){pendingImport=g;$("#loadConfT").textContent="This replaces your current filter ("+F.rules.length+" rule"+(F.rules.length>1?"s":"")+") with "+g.filter.rules.length+" imported rule"+(g.filter.rules.length===1?"":"s")+". Export it first if you want to keep it.";$("#loadConf").hidden=false;m.textContent="";m.className="toast";}
+  else doLoad(g);}catch(err){$("#loadConf").hidden=true;m.className="toast bad";m.textContent=err.message;}};
+$("#loadYes").onclick=()=>{if(pendingImport)doLoad(pendingImport);};
+$("#loadNo").onclick=()=>{$("#loadConf").hidden=true;pendingImport=null;};
+$("#codeIn").addEventListener("input",()=>{$("#loadConf").hidden=true;pendingImport=null;});
 (function(){const sp={n:3,sz:1,c:1,lv:0};
   const upd=()=>{$("#oN").textContent=sp.n;$("#oI").textContent=sp.sz;$("#oC").textContent=sp.c;$("#oL").textContent=sp.lv||"auto";$("#qVal").textContent="Rare valuable "+sp.n+"×T1";$("#qIdol").textContent="Idol size "+sp.sz;};
   $("#sN").oninput=e=>{sp.n=+e.target.value;upd();};$("#sI").oninput=e=>{sp.sz=+e.target.value;upd();};$("#sC").oninput=e=>{sp.c=+e.target.value;upd();};$("#sL").oninput=e=>{sp.lv=+e.target.value;upd();};
