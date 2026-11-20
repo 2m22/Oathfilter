@@ -53,9 +53,9 @@ nav.nav{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 18px;max-widt
 nav.nav button{min-height:42px;padding:0 6px;border:0;border-bottom:2px solid transparent;background:none;font-weight:600;font-size:.875rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
 nav.nav button:hover{color:var(--text-main)}
 nav.nav button[aria-selected="true"]{color:var(--accent-gold);border-bottom-color:var(--accent-gold)}
-main{padding:16px 20px 8px}
-.panel{max-width:1600px;margin:0 auto}
-.cols{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+main{padding:10px 16px 6px}
+.panel{max-width:1900px;margin:0 auto}
+.cols{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
 .cols>.l{flex:1 1 34%;min-width:320px;max-width:540px}.cols>.r{flex:1 1 60%;min-width:340px}
 @media (max-width:900px){main{padding:12px}nav.nav{padding:0 8px;gap:2px 12px}.header-top{grid-template-columns:1fr;justify-items:center;padding-bottom:10px}.brand-center,.header-right{grid-column:1;justify-self:center}.header-left{display:none}}
 
@@ -220,6 +220,12 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .pklist button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:0 12px;border:0;border-bottom:1px solid var(--border);background:none;text-align:left;font-weight:600;color:var(--text-main);cursor:pointer}
 .pklist button:hover:not(:disabled){background:var(--bg-card)}.pklist button:disabled{opacity:.45;cursor:not-allowed}
 .pklist small{color:var(--text-muted);font-weight:500;white-space:nowrap}
+/* quick spawn */
+.qs{margin:0 0 14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
+.qs h3{margin:0 0 8px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.qsb{display:flex;flex-wrap:wrap;gap:6px}.qsb .btn{min-height:34px;padding:0 12px;font-size:.8125rem}
+.qsr{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px 18px;margin-top:10px}
+.qsr label{display:flex;align-items:center;gap:8px;font-size:.8125rem;color:var(--text-muted)}.qsr input[type=range]{flex:1;min-width:80px;accent-color:var(--accent-gold)}.qsr output{min-width:1.6em;text-align:right;font-weight:700;color:var(--text-main);font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -273,6 +279,14 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px"><span class="hint" id="totalSel"></span><button type="button" class="btn" id="clearSel">Clear all</button></div></section>
   <section class="plate dropwrap" style="flex:1 1 640px;min-width:320px" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Drop test</h2>
     <p class="note">Test drops use real item bases, affixes and uniques from the Broken Oath public API, but how they are rolled and how the game reads a rule is a best guess. It has not been checked in the game. <b>SHOW*</b> marks items the game never hides: uniques, runes, idols, gems, currency, gold and flasks.</p>
+    <div class="qs" id="qs"><h3>Quick spawn</h3><div class="qsb">
+      <button type="button" class="btn" data-q="white">White</button><button type="button" class="btn" data-q="magicgood">Magic good</button><button type="button" class="btn" data-q="magicbad">Magic bad</button>
+      <button type="button" class="btn gold" data-q="rarevaluable" id="qVal">Rare valuable 3×T1</button><button type="button" class="btn" data-q="raredecent">Rare decent</button><button type="button" class="btn" data-q="rarebad">Rare bad</button><button type="button" class="btn" data-q="raremid">Rare mid</button>
+      <button type="button" class="btn" data-q="unique">Unique / Red</button><button type="button" class="btn" data-q="idol" id="qIdol">Idol size 1</button></div>
+      <div class="qsr"><label for="sN">Lines at T1<input id="sN" type="range" min="1" max="6" value="3"><output id="oN">3</output></label>
+      <label for="sI">Idol size<input id="sI" type="range" min="1" max="4" value="1"><output id="oI">1</output></label>
+      <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC">1</output></label></div>
+      <p class="hint" style="margin:8px 0 0">Quick spawns ignore the “What can drop” choices and go through the same rules, counters and log as Drop 1.</p></div>
     <div style="display:flex;flex-wrap:wrap;gap:10px"><button type="button" class="btn gold" id="roll1">Drop 1</button><button type="button" class="btn" id="roll25">Drop 25</button><button type="button" class="btn" id="auto" aria-pressed="false">Auto-drop: off</button><button type="button" class="btn danger" id="clear">Reset</button></div>
     <div class="stats" style="margin-top:18px"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div>
@@ -1022,41 +1036,70 @@ const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem","Skill Gem"];
 const NAMES_KIND={weapon:"",shield:"",tome:"",quiver:"",helm:"",chest:"",gloves:"",boots:"",ring:"",amulet:"",belt:"",idol:""};
 /* an affix tier needs an item level; only the top and lowest levels are known, the steps in between are spread evenly (a guess) */
 function tierLvl(a,k){return a.n===1?a.hi:Math.round(a.hi+(a.lo-a.hi)*(k-1)/(a.n-1));}
-function rollMods(tags,lvl,want,maxEach){
+/* tier choice for one affix; mode: any (lower tiers likelier, a guess), t1, t2 (T1-T2), bad (the two lowest tiers) */
+function tierPick(a,lvl,mode){
+  const ok=[];for(let t=1;t<=a.n;t++)if(tierLvl(a,t)<=lvl)ok.push(t);
+  if(!ok.length)ok.push(a.n);
+  let c=ok;
+  if(mode==="t1")c=ok.filter(t=>t===1);else if(mode==="t2")c=ok.filter(t=>t<=2);else if(mode==="bad")c=ok.filter(t=>t>=a.n-1);
+  if(mode&&mode!=="any")return c.length?c[rnd(c.length)]:(mode==="bad"?a.n:ok[0]);
+  return wpick(ok,t=>t);
+}
+/* tp: {top:n lines forced to tiers[T1 or T1-T2], rest:mode for every other line} */
+function rollMods(tags,lvl,want,maxEach,tp){
+  tp=tp||{};
   const pool=AFF.filter(a=>a.tags.some(t=>tags.includes(t))&&!a.ex.some(t=>tags.includes(t))&&a.lo<=lvl);
   const mods=[],used=new Set();let p=0,s=0;
-  for(let k=0;k<want*6&&mods.length<want&&pool.length;k++){
-    const a=wpick(pool,x=>x.w);if(used.has(a.group))continue;
-    if(a.type==="P"?p>=maxEach:s>=maxEach)continue;
+  const add=(a,mode)=>{
     used.add(a.group);a.type==="P"?p++:s++;
-    const ok=[];for(let t=1;t<=a.n;t++)if(tierLvl(a,t)<=lvl)ok.push(t);
-    const tier=wpick(ok,t=>t); /* lower tiers are more common (a guess) */
+    const tier=tierPick(a,lvl,mode);
     mods.push({id:a.id,lineLabel:LINEN[a.id]||LINEN[a.id.replace(/^Idol(.+?)_/,(m,x)=>"idol_"+x.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase()+"_")]||"",group:a.group,tier,tiers:a.n,lines:LINEMAP[a.group]||[]});
+  };
+  const full=a=>used.has(a.group)||(a.type==="P"?p>=maxEach:s>=maxEach);
+  if(tp.top){ /* forced good lines first, from affixes that can reach T1 at this item level */
+    let fp=pool.filter(a=>tierLvl(a,1)<=lvl);const multi=fp.filter(a=>a.n>1);if(multi.length>=tp.top)fp=multi;
+    for(let k=0;k<tp.top*8&&mods.length<tp.top&&fp.length;k++){const a=wpick(fp,x=>x.w);if(!full(a))add(a,tp.tiers===1?"t1":"t2");}
   }
+  for(let k=0;k<want*6&&mods.length<want&&pool.length;k++){const a=wpick(pool,x=>x.w);if(!full(a))add(a,tp.rest||"any");}
   return mods;
 }
-function genItem(){
+/* quick-spawn classes: rarity, how the lines are rolled, how many lines are forced good */
+const CLASSES={
+  white:{label:"White",rar:"N"},
+  magicgood:{label:"Magic good",rar:"M",rest:"t2",hi:1},
+  magicbad:{label:"Magic bad",rar:"M",rest:"bad"},
+  rarevaluable:{label:"Rare valuable",rar:"R",top:"n",tiers:1,hi:1},
+  raredecent:{label:"Rare decent",rar:"R",top:2,tiers:2,hi:1},
+  rarebad:{label:"Rare bad",rar:"R",rest:"bad"},
+  raremid:{label:"Rare mid",rar:"R"},
+  unique:{label:"Unique / Red",rar:"U"},
+  idol:{label:"Idol",rar:"I"}
+};
+function genItem(f){
+  f=f||{};const cl=f.cls?CLASSES[f.cls]:null;
   const x=Math.random()*100;
-  if(x<10){const mn=pick(MISC),rune=mn==="Rune of Reid",rt=1+rnd(6);return{id:uid(),name:rune?"Rune of Reid (tier "+rt+")":mn,gem:mn==="Skill Gem",rune,rtier:rt,kind:"misc",rar:"X",lvl:1,mods:[],sub:"",core:false,sockets4Plus:false,truesworn:false,runebase:false,sock:0,grade:0,req:1,label:rune?"rune · tier "+rt:"never hidden"};}
-  const rar=x<44?"N":x<72?"M":x<94?"R":"U";
+  if(!cl&&x<10){const mn=pick(MISC),rune=mn==="Rune of Reid",rt=1+rnd(6);return{id:uid(),name:rune?"Rune of Reid (tier "+rt+")":mn,gem:mn==="Skill Gem",rune,rtier:rt,kind:"misc",rar:"X",lvl:1,mods:[],sub:"",core:false,sockets4Plus:false,truesworn:false,runebase:false,sock:0,grade:0,req:1,label:rune?"rune · tier "+rt:"never hidden"};}
+  const rar=cl?(cl.rar==="I"?(Math.random()<.5?"M":"R"):cl.rar):x<44?"N":x<72?"M":x<94?"R":"U";
   if(rar==="U"){
     const u=pick(UNIQUES),b=u.base; /* every red is equally likely, so every named red can be tested */
     const sk=Math.random()<.06?4+rnd(3):rnd(4);
     return{id:uid(),name:u.name,baseId:b.id,redId:u.id||redIdOf(u.name),kind:b.kind,sub:b.sub,rar:"U",lvl:u.lvl,mods:[],core:false,sock:sk,sockets4Plus:sk>=4,truesworn:false,runebase:false,grade:0,req:Math.max(1,Math.round(u.lvl*.8)),unsworn:Math.random()<.12,chase:CHASE.has(u.name),label:b.name+" · "+u.stats+(u.flag==="P"?" · primal":u.flag==="S"?" · signature":u.flag==="C"?" · chase":"")};
   }
-  const key=pick(CATKEYS);
-  const lvl=1+rnd(84);
+  const key=cl?(cl.rar==="I"?"idol:":pick(CATKEYS.filter(k=>k!=="idol:"))):pick(CATKEYS);
+  let lvl=1+rnd(84);if(cl&&cl.hi)lvl=84; /* T1 and T2 of most affixes only roll at the top item level */
   let cand=BASES.filter(b=>b.kind+":"+b.sub===key&&b.lvl<=lvl&&b.lvl>=lvl-35);
   if(!cand.length)cand=BASES.filter(b=>b.kind+":"+b.sub===key&&b.lvl<=lvl);
   if(!cand.length)cand=BASES.filter(b=>b.kind+":"+b.sub===key).slice(0,1);
-  let b=key.startsWith("idol:")?wpick(BASES.filter(q=>q.kind==="idol"),q=>({idol_pebble:26,idol_chisel:15,idol_ingot:15,idol_pick:10,idol_seam:10,idol_pillar:7,idol_tunnel:7,idol_ancestor:10})[q.id]||10):pick(cand);
+  const idolPool=f.size?BASES.filter(q=>q.kind==="idol"&&q.tags.includes("Idol"+f.size)):null;
+  let b=key.startsWith("idol:")?wpick(idolPool&&idolPool.length?idolPool:BASES.filter(q=>q.kind==="idol"),q=>({idol_pebble:26,idol_chisel:15,idol_ingot:15,idol_pick:10,idol_seam:10,idol_pillar:7,idol_tunnel:7,idol_ancestor:10})[q.id]||10):pick(cand);
   {const vs=VARIANTS[b.id];if(vs&&Math.random()<.08)b=pick(vs);else if(SPECIAL.length&&b.kind!=="idol"&&Math.random()<.02)b=pick(SPECIAL);}
   let mods=[];
-  if(rar==="M")mods=rollMods(b.tags,Math.max(lvl,b.lvl),1+rnd(2),1);
-  if(rar==="R")mods=rollMods(b.tags,Math.max(lvl,b.lvl),3+rnd(3),3);
+  const tp=cl?{top:cl.top==="n"?f.n:cl.top,tiers:cl.tiers,rest:cl.rest}:null;
+  if(rar==="M")mods=rollMods(b.tags,Math.max(lvl,b.lvl),1+rnd(2),1,tp);
+  if(rar==="R")mods=rollMods(b.tags,Math.max(lvl,b.lvl),Math.min(6,Math.max(3+rnd(3),tp&&tp.top||0)),3,tp);
   const nm={N:"Normal",M:"Magic",R:"Rare"}[rar];
   const sock=Math.random()<.06?4+rnd(3):rnd(4),tw=Math.random()<.05,il=Math.max(lvl,b.lvl);
-  return{id:uid(),name:nm+" "+b.name,baseId:b.id,kind:b.kind,sub:b.sub,rar,lvl:il,mods,core:b.variant==="ct"||Math.random()<.04,sock,sockets4Plus:sock>=4,truesworn:tw,grade:tw?90+rnd(11):1+rnd(89),req:Math.max(1,Math.round(il*.8)),unsworn:rar==="R"&&Math.random()<.12,runebase:rar==="N"&&Math.random()<.2,label:""};
+  return{id:uid(),name:nm+" "+b.name,baseId:b.id,kind:b.kind,sub:b.sub,rar,lvl:il,mods,core:b.variant==="ct"||Math.random()<.04,cls:cl?(cl.rar==='I'?'Idol size '+f.size:cl.label+(cl.top==='n'?' '+f.n+'×T1':'')):'',sock,sockets4Plus:sock>=4,truesworn:tw,grade:tw?90+rnd(11):1+rnd(89),req:Math.max(1,Math.round(il*.8)),unsworn:rar==="R"&&Math.random()<.12,runebase:rar==="N"&&Math.random()<.2,label:""};
 }
 
 /* left column: which sample drops may appear */
@@ -1282,7 +1325,7 @@ function dropHTML(it,e,anim){
   const fl=(it.core?" · core-touched":"")+(it.sock?" · "+it.sock+" sockets":"")+(it.kind!=="misc"&&it.grade?" · grade "+it.grade:"")+(it.unsworn?" · unsworn":"")+(it.chase?" · chase red":"")+(it.truesworn?" · truesworn":"")+(it.runebase?" · rune base":"");
   const rule=e.i>=0?`<span class="rn">Rule ${e.i+1} · ${esc(summary(F.rules[e.i]))}</span>`:`<span class="rn">No rule matched</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
-   <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
+   <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
    <span class="vd" title="${e.guard?"never hidden":""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM"][e.v]}</span></li>`;
 }
 function renderDrops(animId){
@@ -1307,7 +1350,7 @@ function renderStrip(){updateHits();
   const n=S.items.length;
   $("#strip").innerHTML=n?`<span>Total<b>${n}</b></span><span>Shown<b class="c-show">${t.show}</b></span><span>Highlighted<b class="c-hl">${t.hl}</b></span><span>Hidden<b class="c-hide">${t.hide}</b></span><button type="button" class="btn" id="stripRoll">Roll 25 more</button>`:`<span>No test drops yet. See what this filter does.</span><button type="button" class="btn" id="stripRoll">Roll 25 test drops</button>`;
 }
-function addDrops(n){let last=null;for(let k=0;k<n;k++){last=genFiltered();last.x=8+Math.random()*84;last.y=12+Math.random()*230;S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
+function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genFiltered();last.x=8+Math.random()*84;last.y=12+Math.random()*230;S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
 
 /* ---- export ---- */
 function readable(){
@@ -1399,6 +1442,11 @@ document.addEventListener("input",e=>{
 $("#copyTop").onclick=copyCode;$("#copy").onclick=copyCode;
 $("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").value);setFilter(g.filter);m.className="toast";m.textContent="Loaded "+g.filter.rules.length+" rules. "+g.notes.join(" ");}catch(err){m.className="toast bad";m.textContent=err.message;}};
 $("#clearSel").onclick=()=>{Object.values(POOL).forEach(s=>s.clear());renderCats();};
+(function(){const sp={n:3,sz:1,c:1};
+  const upd=()=>{$("#oN").textContent=sp.n;$("#oI").textContent=sp.sz;$("#oC").textContent=sp.c;$("#qVal").textContent="Rare valuable "+sp.n+"×T1";$("#qIdol").textContent="Idol size "+sp.sz;};
+  $("#sN").oninput=e=>{sp.n=+e.target.value;upd();};$("#sI").oninput=e=>{sp.sz=+e.target.value;upd();};$("#sC").oninput=e=>{sp.c=+e.target.value;upd();};
+  $("#qs").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(b)addDrops(sp.c,{cls:b.dataset.q,n:sp.n,size:sp.sz});});
+})();
 $("#roll1").onclick=()=>addDrops(1);$("#roll25").onclick=()=>addDrops(25);$("#clear").onclick=()=>{S.items=[];renderDrops();};
 $("#auto").onclick=()=>{const b=$("#auto");if(timer){clearInterval(timer);timer=null;b.textContent="Auto-drop: off";b.setAttribute("aria-pressed","false");}else{timer=setInterval(()=>addDrops(1),1100);b.textContent="Auto-drop: on";b.setAttribute("aria-pressed","true");}};
 $("#preset").innerHTML=`<option value="" disabled selected>Game presets…</option>`+PRESETS.map((p,i)=>`<option value="${i}">${p.label}</option>`).join("");
