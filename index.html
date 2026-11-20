@@ -126,6 +126,19 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 #rows{display:flex;flex-direction:column;gap:6px;margin-top:12px}
 .rc{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 10px;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;transition:background-color .15s,border-color .15s}
 .rc:hover{background:var(--bg-card-hover);border-color:var(--border-strong)}
+#rtip{position:fixed;left:0;top:0;z-index:40;width:max-content;max-width:min(380px,calc(100vw - 16px));pointer-events:none;visibility:hidden;background:var(--bg-panel);border:1px solid var(--border-strong);border-radius:8px;padding:10px 12px;box-shadow:0 10px 26px rgba(0,0,0,.55);font-size:.8125rem;line-height:1.35;color:var(--text-main)}
+#rtip.on{visibility:visible}
+#rtip .tt{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;margin-bottom:6px}
+#rtip .tt b{font-family:var(--font-display);color:var(--accent-gold)}
+#rtip .tt .tact{color:var(--text-muted)}
+#rtip .tg{margin-top:7px}
+#rtip .th{font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
+#rtip .th .tn{text-transform:none;letter-spacing:0;color:var(--accent-gold);margin-left:4px}
+#rtip ul{margin:3px 0 0;padding:0 0 0 16px}
+#rtip li{overflow-wrap:anywhere}
+#rtip .tm{margin-top:3px;color:var(--text-muted);overflow-wrap:anywhere}
+#rtip .tc{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+#rtip .tc span{padding:1px 7px;border-radius:5px;background:var(--bg-subtle);border:1px solid var(--border);font-size:.76rem}
 .rc{position:relative;min-height:66px}
 .xb{position:absolute;left:10px;bottom:8px;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;padding:0;border:1px solid rgba(248,113,113,.4);border-radius:5px;background:transparent;color:var(--hide-fg);cursor:pointer}
 .xb:hover,.xb:focus-visible{background:var(--hide-bg);border-color:var(--hide-fg)}
@@ -1316,7 +1329,7 @@ const curRule=()=>F.rules.find(r=>r.id===S.cur)||null;
 
 const LVSTEPS=[10,20,30,40,50,60,68,70,75,80,84,90];
 const rngText=(lo,hi,w)=>lo&&hi?w+" "+lo+"–"+hi:lo?w+" "+lo+"+":hi?w+" up to "+hi:"";
-function moreParts(r){
+function moreParts(r,noLists){
   const o=[],t=+mval(r,"t")||0,n=+mval(r,"n")||0,s=+mval(r,"s")||0,g=+mval(r,"g")||0,gx=+mval(r,"gx")||0,rd=+mval(r,"r")||0,u=+mval(r,"u")||0,rt=+mval(r,"rt")||0;
   if(rt)o.push("Runes up to T"+rt);
   if(t||n)o.push((n?n+"+ lines":"A line")+(t?" "+(t===1?"at T1":"at T"+t+" or better"):""));
@@ -1326,7 +1339,7 @@ function moreParts(r){
   if(g)o.push(g>=90?"Truesworn":"grade "+g+"+");if(gx)o.push("grade under "+gx);
   if(rd)o.push(["","Reds only","Chase reds"][rd]||"red "+rd);
   if(u)o.push(["","Not unsworn","Unsworn only"][u]||"unsworn "+u);
-  const nm=(k,N,w)=>{const l=mlist(r,k);if(l.length)o.push(l.length===1?(N[l[0]]||l[0]):(k==="a"?(mval(r,"all")==="1"?"all of ":"any of "):"")+l.length+" "+w);};
+  const nm=(k,N,w)=>{const l=mlist(r,k);if(l.length&&!noLists)o.push(l.length===1?(N[l[0]]||l[0]):(k==="a"?(mval(r,"all")==="1"?"all of ":"any of "):"")+l.length+" "+w);};
   nm("b",BASEN,"bases");nm("a",LINEN,"named lines");nm("rn",REDN,"named reds");
   return o;
 }
@@ -1397,7 +1410,7 @@ function badges(r){
   moreParts(r).forEach(x=>b.push(["more",x]));
   if(!b.length)b.push(["any","All items"]);
   if((r.extra&&r.extra.length)||hasRaw(r))b.push(["more","Unknown fields · ignored in test"]);
-  return b.map(x=>`<span class="b ${x[0]}" title="${x[1].startsWith("Unknown fields")?"This rule has fields this page does not know. They stay in the export as they are, but the drop test ignores them.":esc(x[1])}">${esc(x[1])}</span>`).join("");
+  return b.map(x=>`<span class="b ${x[0]}">${esc(x[1])}</span>`).join("");
 }
 function sampleName(r){const t={31:"Hoarfrost Staff",32:"Ember Wand",18:"Gravewind Bow",10:"Serpent Ring",11:"Vow of Embers",4:"Rune Tablet",14:"Hollow Idol",20:"Ashen Dagger",23:"Cinder Greatsword",13:"Core-touched Relic"}[r.type];return t||(r.rarity===5?"Oathbound Relic":"Iron Visage");}
 function labelHTML(r){
@@ -1412,13 +1425,14 @@ function visibleRules(){const q=V.q.trim().toLowerCase();return F.rules.map((r,i
   if(q&&!(summary(r)+" "+actWord(r.action)+" "+(r.name||"")).toLowerCase().includes(q))return false;return true;});}
 function renderRows(){const rw=$("#rows"),rst=rw?rw.scrollTop:0;renderRowsRaw();if(rw)rw.scrollTop=rst;}
 function renderRowsRaw(){
+  if(window.hideRuleTip)window.hideRuleTip();
   {const o=$("#chkOut");if(o)o.innerHTML="";}
   const list=visibleRules(),free=V.filter==="all"&&!V.q.trim();$("#rows").classList.toggle("canmove",free&&F.rules.length>1);
   $("#rows").innerHTML=list.length?list.map(([r,i])=>{
     const sh=shadowOf(i),AC=["hide","show","highlight","beam","sell"][r.action]||"show",hex=colOf(r.colour)[2];
     return `<div class="rc ${r.id===S.cur?"sel":""} ${r.on?"":"off"}" data-rid="${r.id}">
      <button type="button" class="pickb" data-pick="${r.id}" aria-pressed="${r.id===S.cur}" aria-label="Edit rule ${i+1}${(r.name||"").trim()?" ("+esc(r.name.trim())+")":""}: ${esc(summary(r))}">
-      <span class="nb">${i+1}</span><span class="conds">${(r.name||"").trim()?`<span class="rname" title="${esc(r.name)}">${esc(r.name.trim())}</span>`:""}<span class="bd">${badges(r)}</span>${sh>=0?(()=>{const e=F.rules[sh],same=e.action===r.action&&(!isHl(r.action)||e.colour===r.colour);return `<span class="shadow ${same?"":"conf"}" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. ${same?"Both do the same, so this rule is redundant.":"The two rules do different things, so this one is probably not working as you intend."} Check the order.">${same?"Redundant: rule "+(sh+1)+" does the same":"Overridden by rule "+(sh+1)+" (different action)"}</span>`;})():""}</span></button>
+      <span class="nb">${i+1}</span><span class="conds">${(r.name||"").trim()?`<span class="rname">${esc(r.name.trim())}</span>`:""}<span class="bd">${badges(r)}</span>${sh>=0?(()=>{const e=F.rules[sh],same=e.action===r.action&&(!isHl(r.action)||e.colour===r.colour);return `<span class="shadow ${same?"":"conf"}" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. ${same?"Both do the same, so this rule is redundant.":"The two rules do different things, so this one is probably not working as you intend."} Check the order.">${same?"Redundant: rule "+(sh+1)+" does the same":"Overridden by rule "+(sh+1)+" (different action)"}</span>`;})():""}</span></button>
      <button type="button" class="xb" data-rm="${r.id}" aria-label="Remove rule ${i+1}" title="Remove rule ${i+1} (Ctrl+Z brings it back)"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></button>
      <div class="rr"><span class="act"><span class="action-badge action-badge--${r.on?AC:"off"}">${r.on?actWord(r.action):"Off"}</span>${r.action===3?`<span class="beam-ico" title="Light beam" style="--c:${hex}"></span>`:""}${isHl(r.action)?`<span class="color-dot" title="Highlight colour: ${colOf(r.colour)[1]}" style="background:${hex}"></span>`:""}${r.action>0&&r.sound!==0?`<span class="spk" title="Sound on">${SPKI(true)}</span>`:""}</span>
       <span class="ctl"><input class="sw sm" type="checkbox" data-on="${r.id}" ${r.on?"checked":""} aria-label="Rule ${i+1} active"></span></div></div>`;
@@ -1427,6 +1441,74 @@ function renderRowsRaw(){
   $("#rhint").textContent=free?"The numbers show the order the game checks the rules. The top matching rule decides.":"Filtered view. Clear the search and choose All to reorder rules.";
   $$("#rfilter button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rf===V.filter));
 }
+/* ---- rule hover preview: which named lines / mods / conditions one rule covers (fixed box, ignores the pointer, never moves the page) ---- */
+const TIPMAX=8;
+function tipList(r,k,N){const seen=new Set(),out=[];mlist(r,k).forEach(id=>{const t=String(N[id]||id);if(!seen.has(t)){seen.add(t);out.push(t);}});return out;}
+function condParts(r){
+  const p=[];
+  if(r.type)p.push(nameOf("type",r.type));
+  if(r.rarity)p.push(nameOf("rarity",r.rarity));
+  if(r.level)p.push("Level "+nameOf("level",r.level).toLowerCase());
+  if(r.line||r.quality||r.count){const n=r.count+1;p.push(n+"+ "+(r.line?nameOf("line",r.line)+" ":"")+"line"+(n>1?"s":"")+(r.quality?" · "+nameOf("quality",r.quality).toLowerCase():""));}
+  return p.concat(moreParts(r,true));
+}
+function ruleTipHTML(r,i){
+  const nm=(r.name||"").trim(),all=mval(r,"all")==="1";
+  const lst=(title,items,note)=>{const shown=items.slice(0,TIPMAX),more=items.length-shown.length;
+    return `<div class="tg"><div class="th">${title}${note?`<span class="tn">${note}</span>`:""}</div><ul>${shown.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>${more>0?`<div class="tm">+ ${more} more. Open the rule to see all.</div>`:""}</div>`;};
+  const na=tipList(r,"a",LINEN),nb=tipList(r,"b",BASEN),nr=tipList(r,"rn",REDN),sec=[];
+  if(na.length)sec.push(lst(na.length>1?"Named lines":"Named line",na,na.length>1?(all?"All of them":"Any of them"):""));
+  if(nb.length)sec.push(lst(nb.length>1?"Bases":"Base",nb));
+  if(nr.length)sec.push(lst(nr.length>1?"Named reds":"Named red",nr));
+  if(!na.length&&!nb.length&&!nr.length)sec.push(`<div class="tg"><div class="th">Specific mods</div><div class="tm">None picked. No named line, base or red is required.</div></div>`);
+  const c=condParts(r);
+  sec.push(`<div class="tg"><div class="th">Conditions</div>${c.length?`<div class="tc">${c.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:`<div class="tm">None. The rule applies to all items.</div>`}</div>`);
+  if((r.extra&&r.extra.length)||hasRaw(r))sec.push(`<div class="tm">This rule also has fields this page does not know. They stay in the export; the drop test ignores them.</div>`);
+  return `<div class="tt"><b>Rule ${i+1}</b>${nm?`<span>${esc(nm)}</span>`:""}<span class="tact">${r.on?actWord(r.action):"Off"}</span></div>`+sec.join("");
+}
+(function(){
+  let tip=null,card=null,timer=0,quiet=false,kb=null,hx=0,hy=0,desc=null;
+  const el=()=>tip||(tip=Object.assign(document.createElement("div"),{id:"rtip"}),tip.setAttribute("role","tooltip"),document.body.appendChild(tip),tip);
+  function place(c){
+    const t=el(),R=c.getBoundingClientRect(),vw=document.documentElement.clientWidth,vh=window.innerHeight,w=t.offsetWidth,h=t.offsetHeight,cl=(v,a,b)=>Math.max(a,Math.min(v,b));
+    let x,y;
+    if(R.right+10+w<=vw-8){x=R.right+10;y=cl(R.top,8,vh-h-8);}
+    else{x=cl(R.left,8,vw-w-8);y=R.bottom+6+h<=vh-8?R.bottom+6:Math.max(8,R.top-h-6);}
+    t.style.transform="translate("+Math.round(x)+"px,"+Math.round(y)+"px)";
+  }
+  function show(c){
+    if(!c.isConnected)return;const i=F.rules.findIndex(r=>r.id===c.dataset.rid);if(i<0)return;
+    const t=el();t.innerHTML=ruleTipHTML(F.rules[i],i);t.classList.add("on");place(c);
+    const b=c.querySelector(".pickb");if(b){b.setAttribute("aria-describedby","rtip");desc=b;}
+  }
+  function hide(){clearTimeout(timer);timer=0;card=null;if(tip)tip.classList.remove("on");if(desc){desc.removeAttribute("aria-describedby");desc=null;}}
+  window.hideRuleTip=hide;
+  const cardOf=e=>e.target&&e.target.closest?e.target.closest("#rows .rc"):null;
+  function over(e){
+    if(e.pointerType==="touch"||quiet||document.querySelector("#rows .rc.drag"))return;
+    const c=cardOf(e);if(!c||c===card)return;
+    hide();card=c;timer=setTimeout(()=>show(c),350);
+  }
+  document.addEventListener("pointerover",over);
+  document.addEventListener("pointermove",e=>{
+    if(!quiet||e.buttons||Math.abs(e.clientX-hx)+Math.abs(e.clientY-hy)<4)return;
+    quiet=false;over(e);
+  });
+  document.addEventListener("pointerout",e=>{const c=cardOf(e);if(c&&!c.contains(e.relatedTarget))hide();});
+  const calm=e=>{if(e&&e.clientX!==undefined){hx=e.clientX;hy=e.clientY;}hide();quiet=true;};
+  document.addEventListener("pointerdown",calm,true);
+  document.addEventListener("wheel",()=>{if(card||(tip&&tip.classList.contains("on")))calm();},{passive:true,capture:true});
+  document.addEventListener("scroll",()=>{if(kb&&tip&&tip.classList.contains("on"))place(kb);else if(card||(tip&&tip.classList.contains("on")))calm();},true);
+  document.addEventListener("keydown",e=>{if(!kb&&(card||(tip&&tip.classList.contains("on"))))calm();});
+  document.addEventListener("focusin",e=>{
+    const c=e.target.closest?e.target.closest("#rows .rc"):null;
+    let fv=true;try{fv=e.target.matches(":focus-visible");}catch(_){}
+    if(!c||!fv)return;
+    hide();kb=c;timer=setTimeout(()=>show(c),120);
+  });
+  document.addEventListener("focusout",e=>{if(kb){kb=null;hide();}});
+  window.addEventListener("blur",hide);window.addEventListener("resize",hide);
+})();
 /* order check: runs sample drops (random ones plus every quick-spawn class) through the rules and reports rules that never decide anything */
 function checkOrder(){
   const items=[];for(let k=0;k<1500;k++)items.push(genItem());
