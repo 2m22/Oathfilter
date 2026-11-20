@@ -1892,6 +1892,13 @@ async function shPost(pl){
   if(typeof id!=="string"||!SH_ID.test(id))throw new Error("no id");
   return id;}
 let shLast={code:"",url:"",busy:false};
+/* same filter + same rule names = same link: remembered in this browser (newest 30), so repeated clicks do not create new entries on the service */
+const shCache={key:"oathfilter-share-cache",
+  all(){try{const o=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(o)?o.filter(x=>x&&typeof x.k==="string"&&typeof x.u==="string"):[];}catch(e){return [];}},
+  get(k,base){const x=this.all().find(y=>y.k===k&&y.u.indexOf(base+"#f=")===0);return x?x.u:"";},
+  put(k,u){try{localStorage.setItem(this.key,JSON.stringify([{k,u}].concat(this.all().filter(y=>y.k!==k)).slice(0,30)));}catch(e){}}};
+async function shKey(pl){const t=JSON.stringify([pl.bofilter,pl.ruleNames]);
+  try{const h=new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)));return Array.from(h,b=>b.toString(16).padStart(2,"0")).join("");}catch(e){let x=5381;for(let i=0;i<t.length;i++)x=((x<<5)+x+t.charCodeAt(i))|0;return "d"+(x>>>0).toString(16)+"-"+t.length;}}
 const shMsg=(m,bad)=>{const e=$("#shMsg");e.textContent=m;e.style.color=bad?"var(--hide-fg)":"";};
 async function shCopyText(txt,ok){
   try{await navigator.clipboard.writeText(txt);shMsg(ok);return;}catch(e){}
@@ -1903,12 +1910,13 @@ $("#shMake").onclick=async()=>{
   if(!F.rules.length){shMsg("Add at least one rule first.",true);return;}
   const pl=shPayload(),btn=$("#shMake");
   shLast.busy=true;btn.disabled=true;$("#shRes").hidden=true;shMsg("Creating link…");
-  let url="",offline=false;
-  try{url=shBase()+"#f="+await shPost(pl);}
+  let url="",offline=false,reused=false;const key=await shKey(pl),old=shCache.get(key,shBase());
+  if(old){url=old;reused=true;}
+  else try{url=shBase()+"#f="+await shPost(pl);shCache.put(key,url);}
   catch(e){try{url=shBase()+"#s="+await shPack(pl);offline=true;}catch(e2){shLast.busy=false;btn.disabled=false;shMsg("The link could not be created. Copy the game code instead.",true);return;}}
   shLast={code:pl.bofilter,url,busy:false};btn.disabled=false;
   $("#shUrl").value=url;$("#shRes").hidden=false;
-  shMsg(offline?"The share service could not be reached, so this is an offline link. It works without the service"+(url.length>1800?", but it is long and Discord may cut it.":"."):"Link created.",offline&&url.length>1800);};
+  shMsg(reused?"This exact filter was shared before. Here is the same link, nothing new was stored.":offline?"The share service could not be reached, so this is an offline link. It works without the service"+(url.length>1800?", but it is long and Discord may cut it.":"."):"Link created.",offline&&url.length>1800);};
 $("#shCopy").onclick=()=>shCopyText($("#shUrl").value,"Link copied.");
 $("#shDisc").onclick=()=>shCopyText("[Oathfilter filter]("+$("#shUrl").value+")","Discord link copied.");
 $("#shUrl").addEventListener("focus",e=>e.target.select());
