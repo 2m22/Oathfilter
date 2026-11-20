@@ -32,6 +32,7 @@ All notable changes for players. Newest first.
 - The "Readable" export view. The export area now shows the game code only.
 
 ### Fixed
+- Attack Speed is now one Named Line, as in the game. It used to show twice ("Attack Speed" and "Attack Attack Speed").
 - The Named Lines list no longer stops after 80 entries, so every line can be found.
 - Searching in the rule list now filters while you type.
 - Copy fixes: stray empty brackets, doubled spaces, and the lone dot before "Source on GitHub".
