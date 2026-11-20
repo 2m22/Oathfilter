@@ -65,7 +65,7 @@ main{padding:10px 16px 6px}
 .coltitle{display:flex;align-items:center;gap:12px;margin:0 0 14px;font-weight:700;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .lab{display:block;margin:0 0 6px;font-size:.8125rem;font-weight:600;color:var(--text-muted)}
 .hint{font-size:.8125rem;color:var(--text-muted)}
-#actCount,#totalSel{font-variant-numeric:tabular-nums}
+#actCount{font-variant-numeric:tabular-nums}
 .divider{height:1px;margin:18px 0;background:var(--border)}
 .plate.r .divider{margin:11px 0}
 .sub{margin:0 0 12px;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
@@ -272,12 +272,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 </div></div>
 
 <div class="panel" id="p-test" role="tabpanel" aria-labelledby="t-test" hidden><div class="cols">
-  <section class="plate" style="flex:0 1 330px;min-width:290px" aria-labelledby="h-pool"><h2 id="h-pool" class="coltitle">What can drop</h2>
-    <p class="hint" style="margin:-6px 0 14px">Nothing chosen means anything can drop.</p>
-    <label class="lab" for="q">Search categories</label><input id="q" class="field" type="search" placeholder="Staff, rare, cold…">
-    <div id="cats" style="display:flex;flex-direction:column;gap:14px;margin-top:18px"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px"><span class="hint" id="totalSel"></span><button type="button" class="btn" id="clearSel">Clear all</button></div></section>
-  <section class="plate dropwrap" style="flex:1 1 640px;min-width:320px" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Drop test</h2>
+  <section class="plate dropwrap" style="flex:1 1 100%;min-width:320px" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Drop test</h2>
     <p class="note">Test drops use real item bases, affixes and uniques from the Broken Oath public API, but how they are rolled and how the game reads a rule is a best guess. It has not been checked in the game. <b>SHOW*</b> marks items the game never hides: uniques, runes, idols, gems, currency, gold and flasks.</p>
     <div class="qs" id="qs"><h3>Quick spawn</h3><div class="qsb">
       <button type="button" class="btn" data-q="white">White</button><button type="button" class="btn" data-q="magicgood">Magic good</button><button type="button" class="btn" data-q="magicbad">Magic bad</button>
@@ -286,7 +281,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
       <div class="qsr"><label for="sN">Lines at T1<input id="sN" type="range" min="1" max="6" value="3"><output id="oN">3</output></label>
       <label for="sI">Idol size<input id="sI" type="range" min="1" max="4" value="1"><output id="oI">1</output></label>
       <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC">1</output></label></div>
-      <p class="hint" style="margin:8px 0 0">Quick spawns ignore the “What can drop” choices and go through the same rules, counters and log as Drop 1.</p></div>
+      <p class="hint" style="margin:8px 0 0">Quick spawns go through the same rules, counters and log as Drop 1.</p></div>
     <div style="display:flex;flex-wrap:wrap;gap:10px"><button type="button" class="btn gold" id="roll1">Drop 1</button><button type="button" class="btn" id="roll25">Drop 25</button><button type="button" class="btn" id="auto" aria-pressed="false">Auto-drop: off</button><button type="button" class="btn danger" id="clear">Reset</button></div>
     <div class="stats" style="margin-top:18px"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div>
@@ -1102,23 +1097,7 @@ function genItem(f){
   return{id:uid(),name:nm+" "+b.name,baseId:b.id,kind:b.kind,sub:b.sub,rar,lvl:il,mods,core:b.variant==="ct"||Math.random()<.04,cls:cl?(cl.rar==='I'?'Idol size '+f.size:cl.label+(cl.top==='n'?' '+f.n+'×T1':'')):'',sock,sockets4Plus:sock>=4,truesworn:tw,grade:tw?90+rnd(11):1+rnd(89),req:Math.max(1,Math.round(il*.8)),unsworn:rar==="R"&&Math.random()<.12,runebase:rar==="N"&&Math.random()<.2,label:""};
 }
 
-/* left column: which sample drops may appear */
-const CATS=[
- {id:"weapon",title:"Weapon type",items:[["staff","Staff","2H"],["wand","Wand","1H"],["bow","Bow","2H"],["sword2h","Two-handed sword","2H"],["dagger","Dagger","1H"],["claw","Claw","1H"],["axe2h","Two-handed axe","2H"],["scythe","Scythe","2H"]]},
- {id:"rarity",title:"Rarity",items:[["N","Normal","","#c9c4b8"],["M","Magic","","#7f98ff"],["R","Rare","","#ffd36b"],["U","Unique","","#ff7a4d"]]},
- {id:"affix",title:"Affixes",items:[[1,"Life","line"],[2,"Resistance","line"],[7,"Critical","line"],[9,"Cast speed","line"],[12,"Cold damage","line"],[11,"Fire damage","line"],[14,"Physical damage","line"],[3,"Minion","line"]]}
-];
-const POOL={weapon:new Set(),rarity:new Set(),affix:new Set()};
-function poolOk(it){
-  const any=POOL.weapon.size||POOL.rarity.size||POOL.affix.size;
-  if(!any)return true;
-  if(it.kind==="misc")return false;
-  if(POOL.weapon.size&&!POOL.weapon.has(it.sub))return false;
-  if(POOL.rarity.size&&!POOL.rarity.has(it.rar))return false;
-  if(POOL.affix.size&&!it.mods.some(m=>m.lines.some(l=>POOL.affix.has(l))))return false;
-  return true;
-}
-function genFiltered(){let it;for(let k=0;k<400;k++){it=genItem();if(poolOk(it))return it;}return it;}
+function genFiltered(){return genItem();}
 
 /* presets */
 const USER_CODE="BOFILTER:1,4|1,13,0,0,0,3,0,0,0,255|1,4,1,0,0,1,0,0,0,255|1,16,3,6,0,2,0,0,0,255|1,0,4,7,0,3,0,2,1,255|1,0,4,0,5,3,0,0,0,255|1,0,4,6,0,2,1,1,2,255|1,0,4,4,0,0,0,0,0,255|1,0,3,0,0,0,0,0,0,255";
@@ -1134,7 +1113,7 @@ const PRESETS=GAME_PRESETS.map(p=>({label:p[0],build:()=>decode(p[1]).filter}));
 
 /* state */
 let F={preset:"-1",rules:[]};
-const S={hlOnly:false,cur:null,openCat:{weapon:true,rarity:true,affix:false},q:"",items:[],tab:"code"};
+const S={hlOnly:false,cur:null,items:[],tab:"code"};
 let timer=null;
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -1173,7 +1152,7 @@ const WAVE='<path d="M16.5 8.5a5 5 0 0 1 0 7"/>';
 /* ---- view ---- */
 const V={filter:"all",q:"",view:"edit"};
 function setView(v){V.view=v;$$(".panel").forEach(p=>p.hidden=p.id!=="p-"+v);$$("#nav button").forEach(b=>{const on=b.dataset.view===v;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1;});
-  if(v==="test"){renderCats();renderDrops();}if(v==="io")renderOut();}
+  if(v==="test"){renderDrops();}if(v==="io")renderOut();}
 /* does an earlier active rule catch at least everything this rule catches? (same reading as the drop test) */
 const TYPE_KIDS={1:[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],2:[5,6,7,8],3:[10,11,12]};
 function covers(a,b){
@@ -1307,18 +1286,6 @@ function syncEditor(){
 }
 
 /* ---- test ---- */
-function renderCats(){
-  const q=S.q.trim().toLowerCase();let total=0;Object.values(POOL).forEach(s=>total+=s.size);
-  let ch=CATS.map(c=>{
-    const items=c.items.filter(i=>!q||i[1].toLowerCase().includes(q));if(q&&!items.length)return"";
-    const n=POOL[c.id].size,open=S.openCat[c.id]||(q&&items.length);
-    return `<div><button type="button" class="catbtn" data-cat="${c.id}" aria-expanded="${!!open}"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="transform:rotate(${open?90:0}deg)"><path d="M4 1l7 6-7 6z"/></svg><span>${c.title}</span><span class="badge ${n?"":"zero"}">${n} chosen</span></button>
-     ${open?`<div class="opts">${items.map(i=>`<label class="opt"><input class="cb" type="checkbox" data-pool="${c.id}" data-v="${i[0]}" ${POOL[c.id].has(i[0])?"checked":""}>${i[3]?`<span class="pip" style="background:${i[3]};color:${i[3]}"></span>`:""}<span>${i[1]}</span><span class="mt">${i[2]==="line"?"line group":i[2]}</span></label>`).join("")}</div>`:""}</div>`;
-  }).join("");
-  if(!ch.trim()&&q)ch=`<p class="hint" style="margin:0">No category matches this search.</p><div><button type="button" class="btn" data-clearq="1">Clear search</button></div>`;
-  $("#cats").innerHTML=ch;
-  $("#totalSel").textContent=total+" filters chosen";
-}
 function dropHTML(it,e,anim){
   const hc=colOf(e.col)[2];
   const mods=it.label?it.label:it.mods.length?it.mods.map(m=>`${m.group} T${m.tier}`).join(" · "):it.rar==="U"?"fixed mods":"no mods";
@@ -1334,7 +1301,7 @@ function renderDrops(animId){
   $("#drops").innerHTML=S.items.map((it,k)=>dropHTML(it,ev[k],it.id===animId)).join("");
   const dps=S.items.slice(0,18).map((it,k)=>({it,e:ev[k]})).filter(o=>o.e.v!==0&&(!S.hlOnly||o.e.v>=2)).reverse().map(({it,e})=>{const c=colOf(e.col)[2],col=e.v>=2;
     return `<div class="dp" style="left:${it.x}%;bottom:${it.y}px">${e.v===3?`<span class="beam" style="--c:${c}"></span>`:""}<span class="lbl" style="--c:${col?c:"#d9d2c0"}">${esc(it.name)}</span></div>`;}).join("");
-  $("#scene").innerHTML=dps||`<p class="empty">${S.items.length?"No highlights or beams in the latest drops.":"Press “Drop 1” or “Drop 25”."}</p>`;
+  $("#scene").innerHTML=dps||`<p class="empty">${S.items.length?"No highlights or beams in the latest drops.":"Press “Drop 1”, “Drop 25” or a Quick spawn button."}</p>`;
   $$("#sceneMode button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.sm==="hl")===S.hlOnly));
   const n=t.all||1;
   $("#nAll").textContent=t.all;$("#nHl").textContent=t.hl;$("#nShow").textContent=t.show;$("#nHide").textContent=t.hide;
@@ -1388,10 +1355,8 @@ document.addEventListener("click",e=>{
   if(d.view){setView(d.view);return;}
   if(t.id==="undo"){undo();return;}
   if(d.clearf){V.q="";V.filter="all";$("#rq").value="";renderRows();return;}
-  if(d.clearq){S.q="";$("#q").value="";renderCats();return;}
   if(d.sm){S.hlOnly=d.sm==="hl";renderDrops();return;}
   if(t.id==="stripRoll"){addDrops(25);return;}
-  if(d.cat){S.openCat[d.cat]=!S.openCat[d.cat];renderCats();return;}
   if(d.rf){V.filter=d.rf;renderRows();return;}
   if(d.moretoggle){S.moreOpen=!S.moreOpen;renderEditor();return;}
   if(d.pick){S.cur=d.pick;renderRows();renderEditor();return;}
@@ -1419,7 +1384,6 @@ document.addEventListener("keydown",e=>{
 });
 document.addEventListener("change",e=>{
   const t=e.target;
-  if(t.dataset.pool){const s=POOL[t.dataset.pool],v=isNaN(+t.dataset.v)?t.dataset.v:+t.dataset.v;t.checked?s.add(v):s.delete(v);renderCats();return;}
   if(t.dataset.on){const r=F.rules.find(x=>x.id===t.dataset.on);if(r){r.on=t.checked?1:0;if(r.id===S.cur&&$("#f-on"))$("#f-on").checked=!!r.on;touch();}return;}
   if(t.id==="f-on"){const r=curRule();if(r){r.on=t.checked?1:0;touch();}return;}
   if(t.id==="preset"){const p=PRESETS[+t.value];if(p){setFilter(p.build());toast("Loaded preset: "+p.label+".");}t.value="";return;}
@@ -1436,12 +1400,10 @@ document.addEventListener("change",e=>{
 document.addEventListener("input",e=>{
   const t=e.target;
   if(t.id==="rq"){V.q=t.value;clearTimeout(input.t);input.t=setTimeout(renderRows,100);return;}
-  if(t.id==="q"){S.q=t.value;renderCats();}
   if(t.dataset.pk){S.pk[t.dataset.pk]=t.value;renderPickList(t.dataset.pk);}
 });
 $("#copyTop").onclick=copyCode;$("#copy").onclick=copyCode;
 $("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").value);setFilter(g.filter);m.className="toast";m.textContent="Loaded "+g.filter.rules.length+" rules. "+g.notes.join(" ");}catch(err){m.className="toast bad";m.textContent=err.message;}};
-$("#clearSel").onclick=()=>{Object.values(POOL).forEach(s=>s.clear());renderCats();};
 (function(){const sp={n:3,sz:1,c:1};
   const upd=()=>{$("#oN").textContent=sp.n;$("#oI").textContent=sp.sz;$("#oC").textContent=sp.c;$("#qVal").textContent="Rare valuable "+sp.n+"×T1";$("#qIdol").textContent="Idol size "+sp.sz;};
   $("#sN").oninput=e=>{sp.n=+e.target.value;upd();};$("#sI").oninput=e=>{sp.sz=+e.target.value;upd();};$("#sC").oninput=e=>{sp.c=+e.target.value;upd();};
