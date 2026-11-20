@@ -117,6 +117,8 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .conds{display:flex;flex-direction:column;gap:6px;min-width:0}
 .bd{display:flex;flex-wrap:wrap;gap:6px}
 .b{padding:2px 8px;font-size:.78rem;border-radius:5px;background:var(--bg-subtle);border:1px solid var(--border);color:var(--text-main)}
+.b.more{border-color:var(--hl-fg);color:var(--hl-fg);background:var(--hl-bg)}
+.hits{font-size:.72rem;color:var(--text-dim);font-variant-numeric:tabular-nums}
 .b.any{background:transparent;border-style:dashed;color:var(--text-dim)}
 .shadow{font-size:.76rem;color:var(--warn-fg);cursor:help}
 .rr{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none}
@@ -227,7 +229,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
   <section class="plate l" aria-labelledby="h-rules">
     <label class="lab" for="preset">Start from a game preset</label><div class="selwrap" style="margin-bottom:18px"><select id="preset"></select></div>
     <h2 id="h-rules" class="coltitle">Rules</h2>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:150px">+ New Rule</button>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
     <div class="seg" role="group" aria-label="Show rules" id="rfilter" style="margin-top:12px"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button></div>
     <p class="hint" id="rhint" style="margin:12px 0 0"></p>
@@ -297,6 +299,12 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
      <li><b>No tracking.</b> No cookies, no analytics, no accounts.</li>
      <li><b>Fonts and hosting.</b> The fonts (Cinzel and Barlow, SIL Open Font License) are built into the page, so nothing is loaded from Google or any other font service. The page is hosted on GitHub Pages, which may log visits as part of its normal operation.</li>
      <li><b>Credits.</b> Thanks to <b>Lilshrimper</b>, creator of the <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. The five game presets, the colour and sound names and the idea of testing a filter with sample drops come from his tool. Format details are from the developer file loot_filter.md (Crater Studios).</li></ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-rg"><h2 id="h-rg" class="coltitle">What is real and what is guessed</h2>
+    <ul class="pl">
+     <li><b>Real:</b> the BOFILTER 1 code (rule fields and their value lists), the rule order (the top matching rule wins), the limit of 40 rules (tested in the game) and the five game presets.</li>
+     <li><b>Guessed:</b> the sample drops (items, rarities, item levels, affix pools), which affixes belong to which line group, what counts as a good or top roll, and how a rule with item type Gems reads. The drop test is only a rough preview.</li>
+     <li><b>Kept but not simulated:</b> options from the game's MORE window. They stay in the export, the drop test ignores them.</li>
+     <li><b>Not checked:</b> whether the game's code format changed in newer builds. The developer file this page follows is older than the game (it names 12 rules, the game takes 40). If an export from the game does not load, please report it on GitHub.</li></ul></section>
 </div></div>
 </main>
 <footer class="site-footer">
@@ -338,6 +346,9 @@ function decode(text){
     FIELDS.forEach((k,i)=>{if(v[i]!==undefined&&v[i]!==""){const n=Number(v[i]);r[k]=Number.isFinite(n)?n:r[k];}});
     r.extra=v.slice(FIELDS.length);f.rules.push(r);
   });
+  const known=(k,v)=>k==="colour"?COLOURS.some(c=>c[0]===v):T[k].some(o=>o[0]===v);
+  const odd=f.rules.filter(r=>["type","rarity","level","line","action","colour","quality","count","sound"].some(k=>!known(k,r[k]))).length;
+  if(odd)notes.push(odd+" rule"+(odd>1?"s use":" uses")+" values this page does not know. They are kept as they are, but the drop test may read them wrongly.");
   if(f.rules.length>MAX_RULES)notes.push("The code has "+f.rules.length+" rules. The game takes "+MAX_RULES+".");
   if(f.rules.some(r=>r.extra.length))notes.push("Some rules carry extra fields from the game's MORE window. They are kept as they are.");
   return{filter:f,notes};
@@ -359,7 +370,7 @@ function typeMatch(t,it){
     case 1:return it.kind==="weapon";
     case 2:return["helm","chest","gloves","boots"].includes(it.kind);
     case 3:return["ring","amulet","belt"].includes(it.kind);
-    case 4:return it.runebase;case 13:return it.core;case 15:return it.s4;case 16:return it.truesworn;
+    case 4:return it.runebase;case 13:return it.core;case 15:return it.sockets4Plus;case 16:return it.truesworn;
     case 5:return it.kind==="helm";case 6:return it.kind==="chest";case 7:return it.kind==="gloves";case 8:return it.kind==="boots";
     case 9:return it.kind==="shield"||it.kind==="tome";case 10:return it.kind==="ring";case 11:return it.kind==="amulet";case 12:return it.kind==="belt";case 14:return it.kind==="idol";
     case 17:return false;
@@ -368,6 +379,7 @@ function typeMatch(t,it){
 }
 function rollOk(q,m){if(!q)return true;const n=m.tiers;return q===1?m.tier<=Math.ceil(n*0.5):m.tier<=Math.max(1,Math.ceil(n*0.25));}
 function matches(r,it){
+  if(it.gem)return r.type===17&&r.rarity===0&&r.level===0&&!r.line&&!r.quality&&!r.count; /* assumption: a Gems rule has no other conditions */
   if(!RAR[r.rarity]||!RAR[r.rarity].includes(it.rar))return false;
   if(!typeMatch(r.type,it))return false;
   const lv=LEVEL[r.level]||LEVEL[0];
@@ -392,7 +404,7 @@ function evaluate(it){
 
 /* sample drops */
 const ITEMS=[["Bow","weapon","bow"],["Claw","weapon","claw"],["Dagger","weapon","dagger"],["Dual Blades","weapon","dual"],["Fist Weapon","weapon","fist"],["Two-Handed Sword","weapon","sword2h"],["Two-Handed Axe","weapon","axe2h"],["Two-Handed Mace","weapon","mace2h"],["Mace and Shield","weapon","macesh"],["One-Handed Axe","weapon","axe1h"],["One-Handed Mace","weapon","mace1h"],["One-Handed Sword","weapon","sword1h"],["Scythe","weapon","scythe"],["Staff","weapon","staff"],["Wand","weapon","wand"],["Shield","shield"],["Tome","tome"],["Quiver","quiver"],["Helm","helm"],["Body Armour","chest"],["Gloves","gloves"],["Boots","boots"],["Ring","ring"],["Amulet","amulet"],["Belt","belt"],["Idol","idol"]];
-const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem"];
+const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem","Skill Gem"];
 const AFF=[["Life",7,"Helm|Gloves|Boots|Ring|Amulet|Quiver|Shield|Tome|Chest|Belt"],["Mana",7,"Ring|Amulet|Helm|Gloves|Caster|Chest|Boots"],["EnergyShieldGlobal",7,"Ring|Amulet|Belt|Chest|Boots|Gloves"],
 ["DefenceFlat",8,"Armour"],["DefenceInc",8,"Defences|Shield"],["PhysInc",8,"Melee|Bow"],["PhysAdded",8,"Melee|Bow"],["FireAdded",8,"Melee|Bow"],["ColdAdded",8,"Melee|Bow"],["LightningAdded",8,"Melee|Bow"],
 ["FireSpellAdded",8,"Caster|Staff"],["ColdSpellAdded",8,"Caster|Staff"],["LightningSpellAdded",8,"Caster|Staff"],["PoisonSpellAdded",8,"Caster|Staff"],
@@ -407,7 +419,7 @@ const TAGS={staff:"Staff,Weapon",wand:"Caster,Wand,Weapon",bow:"Bow,Weapon",scyt
 const rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
 function genItem(){
   const x=Math.random()*100;
-  if(x<10)return{id:uid(),name:pick(MISC),kind:"misc",rar:"X",lvl:1,mods:[],sub:"",core:false,s4:false,truesworn:false,runebase:false,label:"never hidden"};
+  if(x<10){const mn=pick(MISC);return{id:uid(),name:mn,gem:mn==="Skill Gem",kind:"misc",rar:"X",lvl:1,mods:[],sub:"",core:false,sockets4Plus:false,truesworn:false,runebase:false,label:"never hidden"};}
   const rar=x<44?"N":x<72?"M":x<94?"R":"U";
   const base=pick(ITEMS);const kind=base[1],sub=base[2]||"";
   const lvl=1+rnd(82);
@@ -424,7 +436,7 @@ function genItem(){
     }
   }
   const nm={N:"Normal",M:"Magic",R:"Rare",U:"Red"}[rar];
-  return{id:uid(),name:(rar==="U"?"Red ":nm+" ")+base[0],kind,sub,rar,lvl,mods,core:Math.random()<.04,s4:Math.random()<.06,truesworn:Math.random()<.05,runebase:rar==="N"&&Math.random()<.2,label:""};
+  return{id:uid(),name:(rar==="U"?"Red ":nm+" ")+base[0],kind,sub,rar,lvl,mods,core:Math.random()<.04,sockets4Plus:Math.random()<.06,truesworn:Math.random()<.05,runebase:rar==="N"&&Math.random()<.2,label:""};
 }
 
 /* left column: which sample drops may appear */
@@ -496,7 +508,8 @@ function badges(r){
   const b=[];if(r.type)b.push(["cls",nameOf("type",r.type)]);if(r.rarity)b.push(["rar",nameOf("rarity",r.rarity)]);if(r.level)b.push(["lvl","Level "+nameOf("level",r.level).toLowerCase()]);
   if(r.line||r.quality||r.count){const n=r.count+1;b.push(["afx",n+"+ "+(r.line?nameOf("line",r.line)+" ":"")+"line"+(n>1?"s":"")+(r.quality?" · "+nameOf("quality",r.quality).toLowerCase():"")]);}
   if(!b.length)b.push(["any","All items"]);
-  return b.map(x=>`<span class="b ${x[0]}">${esc(x[1])}</span>`).join("");
+  if(r.extra&&r.extra.length)b.push(["more","MORE options"]);
+  return b.map(x=>`<span class="b ${x[0]}"${x[0]==="more"?' title="This rule carries extra options from the game\'s MORE window. They stay in the export. The drop test ignores them."':""}>${esc(x[1])}</span>`).join("");
 }
 function sampleName(r){const t={31:"Hoarfrost Staff",32:"Ember Wand",18:"Gravewind Bow",10:"Serpent Ring",11:"Vow of Embers",4:"Rune Tablet",14:"Hollow Idol",20:"Ashen Dagger",23:"Cinder Greatsword",13:"Core-touched Relic"}[r.type];return t||(r.rarity===5?"Oathbound Relic":"Iron Visage");}
 function labelHTML(r){
@@ -514,12 +527,13 @@ function renderRows(){
     const sh=shadowOf(i),AC=["hide","show","highlight","beam"][r.action]||"show",hex=colOf(r.colour)[2];
     return `<div class="rc ${r.id===S.cur?"sel":""} ${r.on?"":"off"}" data-rid="${r.id}">
      <button type="button" class="pickb" data-pick="${r.id}" aria-pressed="${r.id===S.cur}" aria-label="Edit rule ${i+1}: ${esc(summary(r))}">
-      <span class="nb">${i+1}</span><span class="conds"><span class="bd">${badges(r)}</span>${sh>=0?`<span class="shadow" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. Check the order.">May be caught by rule ${sh+1}</span>`:""}</span></button>
+      <span class="nb">${i+1}</span><span class="conds"><span class="bd">${badges(r)}</span><span class="hits" data-hid="${r.id}"></span>${sh>=0?`<span class="shadow" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. Check the order.">May be caught by rule ${sh+1}</span>`:""}</span></button>
      <div class="rr"><span class="act"><span class="action-badge action-badge--${r.on?AC:"off"}">${r.on?actWord(r.action):"Off"}</span>${r.action===3?`<span class="beam-ico" title="Light beam" style="--c:${hex}"></span>`:""}${r.action>=2?`<span class="color-dot" title="Highlight colour: ${colOf(r.colour)[1]}" style="background:${hex}"></span>`:""}${r.action>0&&r.sound!==0?`<span class="spk" title="Sound on">${SPKI(true)}</span>`:""}</span>
       <span class="ctl"><input class="sw sm" type="checkbox" data-on="${r.id}" ${r.on?"checked":""} aria-label="Rule ${i+1} active">
        <button type="button" class="icb" data-mv="-1" data-id2="${r.id}" ${i===0||!free?"disabled":""} aria-label="Move rule ${i+1} up"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 3l6 8H1z"/></svg></button>
        <button type="button" class="icb" data-mv="1" data-id2="${r.id}" ${i===F.rules.length-1||!free?"disabled":""} aria-label="Move rule ${i+1} down"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 11L1 3h12z"/></svg></button></span></div></div>`;
-  }).join(""):`<div class="hint" style="padding:18px;text-align:center">${F.rules.length?"No rules match.":"No rules. The game shows everything."}</div>`;
+  }).join(""):`<div class="hint" style="padding:18px;text-align:center">${F.rules.length?'No rules match. <div style="margin-top:12px"><button type="button" class="btn" data-clearf="1">Clear search and filters</button></div>':"No rules. The game shows everything."}</div>`;
+  updateHits();
   $("#actCount").textContent=F.rules.filter(r=>r.on).length+" of "+F.rules.length+" rules active";
   $("#rhint").textContent=free?"The numbers show the order the game checks the rules. The top matching rule decides.":"Filtered view. Clear the search and choose All to reorder rules.";
   $$("#rfilter button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rf===V.filter));
@@ -547,7 +561,7 @@ function renderEditor(){
    <div id="lookBox"><span class="lab">Highlight colour</span><div class="swatches">${COLOURS.map(c=>`<button type="button" class="swc" style="--c:${c[2]}" data-col="${c[0]}" aria-pressed="${r.colour===c[0]}" aria-label="${c[1]}" title="${c[1]}"></button>`).join("")}</div></div>
    <div style="margin-top:18px;max-width:320px"><label class="lab" for="f-sound">Sound</label>${sel("sound",r)}</div>
    <div style="margin-top:20px"><span class="lab">Ground preview</span><div class="ground" id="ground"></div></div>
-   ${r.extra&&r.extra.length?`<div class="flag">This rule has ${r.extra.length} extra field${r.extra.length>1?"s":""} from the game's MORE window. They stay in the export.</div>`:""}
+   ${r.extra&&r.extra.length?`<div class="flag">This rule has ${r.extra.length} extra field${r.extra.length>1?"s":""} from the game's MORE window. They stay in the export. The drop test ignores them.</div>`:""}
    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:24px"><button type="button" class="btn gold" id="addRule">Add new rule</button><button type="button" class="btn" id="dupRule">Duplicate</button><button type="button" class="btn danger" id="delRule" style="margin-left:auto">Remove rule</button></div>`;
   syncEditor();
 }
@@ -565,18 +579,20 @@ function syncEditor(){
 /* ---- test ---- */
 function renderCats(){
   const q=S.q.trim().toLowerCase();let total=0;Object.values(POOL).forEach(s=>total+=s.size);
-  $("#cats").innerHTML=CATS.map(c=>{
+  let ch=CATS.map(c=>{
     const items=c.items.filter(i=>!q||i[1].toLowerCase().includes(q));if(q&&!items.length)return"";
     const n=POOL[c.id].size,open=S.openCat[c.id]||(q&&items.length);
     return `<div><button type="button" class="catbtn" data-cat="${c.id}" aria-expanded="${!!open}"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="transform:rotate(${open?90:0}deg)"><path d="M4 1l7 6-7 6z"/></svg><span>${c.title}</span><span class="badge ${n?"":"zero"}">${n} chosen</span></button>
      ${open?`<div class="opts">${items.map(i=>`<label class="opt"><input class="cb" type="checkbox" data-pool="${c.id}" data-v="${i[0]}" ${POOL[c.id].has(i[0])?"checked":""}>${i[3]?`<span class="pip" style="background:${i[3]};color:${i[3]}"></span>`:""}<span>${i[1]}</span><span class="mt">${i[2]==="line"?"line group":i[2]}</span></label>`).join("")}</div>`:""}</div>`;
   }).join("");
+  if(!ch.trim()&&q)ch=`<p class="hint" style="margin:0">No category matches this search.</p><div><button type="button" class="btn" data-clearq="1">Clear search</button></div>`;
+  $("#cats").innerHTML=ch;
   $("#totalSel").textContent=total+" filters chosen";
 }
 function dropHTML(it,e,anim){
   const hc=colOf(e.col)[2];
   const mods=it.label?it.label:it.mods.length?it.mods.map(m=>`${m.group} T${m.tier}`).join(" · "):it.rar==="U"?"fixed mods":"no mods";
-  const fl=(it.core?" · core-touched":"")+(it.s4?" · 4+ sockets":"")+(it.truesworn?" · truesworn":"")+(it.runebase?" · rune base":"");
+  const fl=(it.core?" · core-touched":"")+(it.sockets4Plus?" · 4+ sockets":"")+(it.truesworn?" · truesworn":"")+(it.runebase?" · rune base":"");
   const rule=e.i>=0?`<span class="rn">Rule ${e.i+1} · ${esc(summary(F.rules[e.i]))}</span>`:`<span class="rn">No rule matched</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
    <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
@@ -595,7 +611,11 @@ function renderDrops(animId){
   renderStrip();
   $("#bHl").style.width=t.hl/n*100+"%";$("#bShow").style.width=t.show/n*100+"%";$("#bHide").style.width=t.hide/n*100+"%";
 }
-function renderStrip(){
+function updateHits(){
+  const h=F.rules.map(()=>0),N=S.items.length;S.items.forEach(it=>{const e=evaluate(it);if(e.i>=0)h[e.i]++;});
+  $$(".hits").forEach(el=>{const i=F.rules.findIndex(r=>r.id===el.dataset.hid),r=F.rules[i];el.textContent=!r||!r.on||!N?"":h[i]?h[i]+" of "+N+" test drops":"No hit in "+N+" test drops";});
+}
+function renderStrip(){updateHits();
   const t={hl:0,show:0,hide:0};S.items.forEach(it=>{const e=evaluate(it);if(e.v===0)t.hide++;else if(e.v>=2)t.hl++;else t.show++;});
   const n=S.items.length;
   $("#strip").innerHTML=n?`<span>Total<b>${n}</b></span><span>Shown<b class="c-show">${t.show}</b></span><span>Highlighted<b class="c-hl">${t.hl}</b></span><span>Hidden<b class="c-hide">${t.hide}</b></span><button type="button" class="btn" id="stripRoll">Roll 25 more</button>`:`<span>No test drops yet. See what this filter does.</span><button type="button" class="btn" id="stripRoll">Roll 25 test drops</button>`;
@@ -604,7 +624,7 @@ function addDrops(n){let last=null;for(let k=0;k<n;k++){last=genFiltered();last.
 
 /* ---- export ---- */
 function readable(){
-  const L=[`BROKEN OATH LOOT FILTER · format 1 · preset ${F.preset}`,"Up to 40 rules. The top matching rule decides. No match means shown.",""];
+  const L=[`BROKEN OATH LOOT FILTER · format 1 · ${F.preset==="-1"?"custom filter":"game preset "+((PRESETS[+F.preset]||{}).label||F.preset)}`,"Up to 40 rules. The top matching rule decides. No match means shown.",""];
   F.rules.forEach((r,i)=>{const col=r.action>=2?` (${colOf(r.colour)[1].toLowerCase()}${r.sound!==255?", "+nameOf("sound",r.sound).toLowerCase():""})`:"";L.push(`${i+1}.  ${r.on?"":"(off) "}${actWord(r.action)}${col}: ${summary(r)}`);});
   if(F.rules.length>MAX_RULES)L.push("",`Too many rules: the game takes ${MAX_RULES}.`);
   return L.join("\n");
@@ -617,7 +637,14 @@ async function copyCode(){
   try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();if(ok){toast("Copied.");return;}}catch(e){}
   S.tab="code";setView("io");const rg=document.createRange();rg.selectNodeContents($("#out"));const s=getSelection();s.removeAllRanges();s.addRange(rg);toast("Copy is blocked here. The code is selected: press Ctrl+C.",true);
 }
-function save(){try{localStorage.setItem("oathfilter4",encode(F));}catch(e){}}
+const H=[];
+function snap(){const c=encode(F);if(H[H.length-1]!==c){H.push(c);if(H.length>60)H.shift();}$("#undo").disabled=H.length<2;}
+function undo(){
+  if(H.length<2)return;H.pop();const at=Math.max(0,F.rules.findIndex(r=>r.id===S.cur));
+  F=decode(H[H.length-1]).filter;F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];});
+  S.cur=F.rules.length?F.rules[Math.min(at,F.rules.length-1)].id:null;fullRender();toast("Undone.");
+}
+function save(){snap();try{localStorage.setItem("oathfilter4",encode(F));}catch(e){}}
 
 /* ---- orchestration ---- */
 function setFilter(f){F=f;F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];});S.cur=F.rules[0]?F.rules[0].id:null;fullRender();}
@@ -629,6 +656,9 @@ document.addEventListener("click",e=>{
   const rc=e.target.closest(".rc");if(rc&&!e.target.closest("button,input,label")){S.cur=rc.dataset.rid;renderRows();renderEditor();return;}
   const t=e.target.closest("button");if(!t)return;const d=t.dataset;
   if(d.view){setView(d.view);return;}
+  if(t.id==="undo"){undo();return;}
+  if(d.clearf){V.q="";V.filter="all";$("#rq").value="";renderRows();return;}
+  if(d.clearq){S.q="";$("#q").value="";renderCats();return;}
   if(d.sm){S.hlOnly=d.sm==="hl";renderDrops();return;}
   if(t.id==="stripRoll"){addDrops(25);return;}
   if(d.cat){S.openCat[d.cat]=!S.openCat[d.cat];renderCats();return;}
@@ -645,6 +675,7 @@ document.addEventListener("click",e=>{
   if(d.col){r.colour=+d.col;touch();return;}
 });
 document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&!e.target.matches("textarea,input[type=search],input[type=text]")){e.preventDefault();undo();return;}
   if(!e.target.matches("#nav button")||!/^Arrow(Left|Right)$/.test(e.key))return;
   const bs=$$("#nav button"),i=bs.indexOf(e.target),n=bs[(i+(e.key==="ArrowRight"?1:bs.length-1))%bs.length];setView(n.dataset.view);n.focus();e.preventDefault();
 });
@@ -659,7 +690,7 @@ document.addEventListener("change",e=>{
 document.addEventListener("input",e=>{
   const t=e.target;
   if(t.id==="rq"){V.q=t.value;renderRows();return;}
-  if(t.id==="q"){S.q=t.value;renderCats();$("#q").focus();}
+  if(t.id==="q"){S.q=t.value;renderCats();}
 });
 $("#copyTop").onclick=copyCode;$("#copy").onclick=copyCode;
 $("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").value);setFilter(g.filter);m.className="toast";m.textContent="Loaded "+g.filter.rules.length+" rules. "+g.notes.join(" ");}catch(err){m.className="toast bad";m.textContent=err.message;}};
