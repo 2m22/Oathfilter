@@ -245,6 +245,9 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .upd .btn{min-height:34px;padding:0 12px;font-size:.8125rem}.upd div.bt{display:flex;gap:8px;flex-wrap:wrap}
 .chk{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .chkb{display:block;width:100%;padding:8px 10px;border:1px solid var(--border);border-left:3px solid var(--warn-fg);border-radius:8px;background:var(--bg-card);text-align:left;font-size:.8125rem;line-height:1.4;color:var(--text-muted);cursor:pointer}.chkb b{color:var(--text-main)}.chkb:hover{background:var(--bg-card-hover)}
+.cols.ab>.plate{flex:1 1 calc(50% - 6px);min-width:320px}
+ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bottom:1px solid var(--border);font-size:.875rem;line-height:1.5;color:var(--text-muted)}ul.bl li:last-child{border:0}ul.bl li b{color:var(--text-main)}ul.bl a,ul.bl a:visited{color:var(--accent-gold)}
+.plate .subtitle:not(:first-child){margin-top:12px}
 </style>
 </head>
 <body>
@@ -410,31 +413,39 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
      <li><b>Left / Right arrow</b> move between the tabs when a tab is focused.</li>
     </ul></section>
 </div></div>
-<div class="panel" id="p-about" role="tabpanel" aria-labelledby="t-about" hidden><div class="cols">
-  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-ab"><h2 id="h-ab" class="coltitle">About Oathfilter</h2>
-    <ul class="pl">
-     <li><b>Fan project.</b> Oathfilter is an unofficial, free fan tool for the game Broken Oath. It is not made, endorsed or supported by Crater Studios, and it is not affiliated with them.</li>
-     <li><b>Trademarks.</b> Broken Oath and all related names, item names and game content belong to their owners. They are used here only to describe what the tool works with.</li>
-     <li><b>Game data.</b> Item names, affixes and values come from the Broken Oath public API (“Data: Broken Oath public API”) and belong to Crater Studios. The GPL-3.0 covers the code of Oathfilter, not this game content.</li>
-     <li><b>No guarantee.</b> The tool is provided as it is, without warranty. Always check a filter in the game before you rely on it.</li>
-     <li><b>Free and open source.</b> No ads, no account, no payment. The source code is under the GPL-3.0 license: <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">github.com/2m22/Oathfilter</a>.</li>
-     <li><b>Feedback.</b> Found an error or want a change? Open an issue on GitHub.</li></ul></section>
-  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-pv"><h2 id="h-pv" class="coltitle">Privacy and credits</h2>
-    <ul class="pl">
-     <li><b>Your filter stays with you.</b> Everything runs in your browser. The page sends no filter data anywhere. Your current filter is saved in your browser (local storage) so it is still there next time. Clear your site data to remove it.</li>
-     <li><b>No tracking.</b> No cookies, no analytics, no accounts.</li>
-     <li><b>Fonts.</b> The fonts (Cinzel and Barlow, SIL Open Font License) are built into the page, so nothing is loaded from Google or any other font service.</li>
-     <li><b>Hosting.</b> The page is hosted on GitHub Pages (GitHub, Inc., USA). When you open it, GitHub receives your IP address and the usual request data (browser, time, page) and may log it for security and operation. The operator of this page has no access to these logs. See the GitHub Privacy Statement for details.</li>
-     <li><b>Update check.</b> About every 5 minutes the page asks the server for a small file (version.json) to see whether a new version exists. No filter data is sent.</li>
-     <li><b>Browser storage.</b> Your filter and your saved pick lists are kept in local storage only to bring them back next time. They never leave your device.</li>
-     <li><b>Links.</b> Links to GitHub and other sites lead to services with their own privacy rules.</li>
-     <li><b>Credits.</b> Thanks to <b>Lilshrimper</b>, creator of the <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. The five game presets, the colour and sound names and the idea of testing a filter with sample drops come from his tool. Format details are from the developer file loot_filter.md (Crater Studios). Item bases, affixes and uniques for the drop test come from the Broken Oath public API (build 85). This is a fan project and not official data.</li></ul></section>
-  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-rg"><h2 id="h-rg" class="coltitle">What is real and what is guessed</h2>
-    <ul class="pl">
-     <li><b>Real:</b> the BOFILTER 1 code (rule fields and their value lists), the rule order (the top matching rule wins), the limit of 40 rules (tested in the game) and the five game presets. Also real, from the public API: item bases with their levels and tags, affix groups with their tier counts and item levels, and unique names with their bases.</li>
-     <li><b>Guessed:</b> how often each base and rarity drops, how many mods an item gets, which tier is rolled, which affix group belongs to which line group, what counts as a good or top roll, whether the mods of a unique count for a line rule (the page ignores them), and how a rule with item type Gems reads. Core-touched, 4+ sockets, truesworn and rune base are random flags here. Bases that never drop at random in the API (core-touched, ashen, gnome-made) and uniques with drop weight 0 are left out. The drop test is only a rough preview.</li>
-     <li><b>From the game itself:</b> the MORE options and their keys (read from filter codes exported in the game), and the lists of bases, named reds and named lines (from the game files). Guessed in the drop test: grade, required level, sockets, unsworn and chase red of a sample item, and which sample runes drop. A named line matches when the item has an affix of that line.</li>
-     <li><b>Not checked:</b> whether the game's code format changed in newer builds. The developer file this page follows is older than the game (it names 12 rules, the game takes 40). If an export from the game does not load, please report it on GitHub.</li></ul></section>
+<div class="panel" id="p-about" role="tabpanel" aria-labelledby="t-about" hidden><div class="cols ab">
+  <section class="plate" aria-labelledby="h-ab"><h2 id="h-ab" class="coltitle">About Oathfilter</h2>
+    <ul class="bl">
+     <li>Free, unofficial fan tool for Broken Oath.</li>
+     <li>No connection to Crater Studios.</li>
+     <li>Names and game data belong to their owners.</li>
+     <li>Open source. The code is under the GPL-3.0, on <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">GitHub</a>. Game content is not covered by it.</li>
+     <li>Feedback: open an issue on <a href="https://github.com/2m22/Oathfilter/issues" target="_blank" rel="noopener noreferrer">GitHub</a>.</li>
+     <li>No warranty, provided as it is. Check every filter in the game.</li></ul></section>
+  <section class="plate" aria-labelledby="h-pv"><h2 id="h-pv" class="coltitle">Privacy &amp; technical</h2>
+    <ul class="bl">
+     <li>Runs entirely in your browser.</li>
+     <li>Your filter is saved only in local storage.</li>
+     <li>No cookies, no tracking, no accounts.</li>
+     <li>The fonts (Cinzel, Barlow) are built into the page.</li>
+     <li>Hosted on GitHub Pages. GitHub may log visits, for example your IP address. The operator cannot see these logs.</li>
+     <li>Every 5 minutes the page checks a small file (<code>version.json</code>) for a new version. No filter data is sent.</li></ul></section>
+  <section class="plate" aria-labelledby="h-cr"><h2 id="h-cr" class="coltitle">Credits &amp; sources</h2>
+    <ul class="bl">
+     <li><b>Lilshrimper:</b> <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. Game presets, colour and sound names, the idea of testing with sample drops.</li>
+     <li><b>Crater Studios:</b> the developer file <code>loot_filter.md</code> (code format).</li>
+     <li><b>Data: Broken Oath public API</b> (build 85): item bases, affixes, uniques.</li>
+     <li><b>Game files:</b> lists of bases, named reds and named lines.</li>
+     <li>Fan project. Not official data.</li></ul></section>
+  <section class="plate" aria-labelledby="h-rg"><h2 id="h-rg" class="coltitle">Real vs. guessed</h2>
+    <h3 class="subtitle">Real</h3>
+    <ul class="bl"><li>BOFILTER 1 code format.</li><li>Rule order: the first match wins.</li><li>Limit of 40 rules (tested in the game).</li><li>The five game presets.</li><li>Bases, levels and tags; affix groups; unique names and bases (public API).</li></ul>
+    <h3 class="subtitle">From game files</h3>
+    <ul class="bl"><li>MORE options and their keys (read from exported codes).</li><li>Lists of bases, named reds and named lines.</li><li>Item level of each affix tier.</li></ul>
+    <h3 class="subtitle">Guessed</h3>
+    <ul class="bl"><li>Drop rates of bases and rarities; mods per item; which tier rolls.</li><li>Which affix belongs to which line group; what counts as a good or top roll.</li><li>Uniques: their mods are ignored by line rules.</li><li>How a Gems rule reads.</li><li>Random sample flags: core-touched, 4+ sockets, truesworn, rune base, grade, required level, unsworn, chase red, sample runes.</li><li>Left out: bases that never drop at random (core-touched, ashen, gnome-made) and uniques with drop weight 0.</li></ul>
+    <h3 class="subtitle">Not checked</h3>
+    <ul class="bl"><li>Whether newer builds changed the code format. The developer file is older than the game (12 rules, the game takes 40).</li><li>If a game export does not load, please report it on GitHub.</li></ul></section>
 </div></div>
 </main>
 <footer class="site-footer">
