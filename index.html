@@ -123,6 +123,9 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 #rows{display:flex;flex-direction:column;gap:6px;margin-top:12px}
 .rc{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 10px;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;transition:background-color .15s,border-color .15s}
 .rc:hover{background:var(--bg-card-hover);border-color:var(--border-strong)}
+.rc{position:relative;min-height:66px}
+.xb{position:absolute;left:10px;bottom:8px;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;padding:0;border:1px solid rgba(248,113,113,.4);border-radius:5px;background:transparent;color:var(--hide-fg);cursor:pointer}
+.xb:hover,.xb:focus-visible{background:var(--hide-bg);border-color:var(--hide-fg)}
 .rc.sel{border-color:var(--accent-gold);background:var(--bg-card-hover)}
 .rc.off .pickb{opacity:.5}
 .pickb{flex:1;min-width:0;display:flex;align-items:flex-start;gap:10px;padding:0;border:0;background:none;text-align:left}
@@ -1314,6 +1317,7 @@ function renderRows(){
     return `<div class="rc ${r.id===S.cur?"sel":""} ${r.on?"":"off"}" data-rid="${r.id}">
      <button type="button" class="pickb" data-pick="${r.id}" aria-pressed="${r.id===S.cur}" aria-label="Edit rule ${i+1}: ${esc(summary(r))}">
       <span class="nb">${i+1}</span><span class="conds"><span class="bd">${badges(r)}</span><span class="hits" data-hid="${r.id}"></span>${sh>=0?(()=>{const e=F.rules[sh],same=e.action===r.action&&(r.action<2||e.colour===r.colour);return `<span class="shadow ${same?"":"conf"}" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. ${same?"Both do the same, so this rule is redundant.":"The two rules do different things, so this one is probably not working as you intend."} Check the order.">${same?"Redundant: rule "+(sh+1)+" does the same":"Overridden by rule "+(sh+1)+" (different action)"}</span>`;})():""}</span></button>
+     <button type="button" class="xb" data-rm="${r.id}" aria-label="Remove rule ${i+1}" title="Remove rule ${i+1} (Ctrl+Z brings it back)"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></button>
      <div class="rr"><span class="act"><span class="action-badge action-badge--${r.on?AC:"off"}">${r.on?actWord(r.action):"Off"}</span>${r.action===3?`<span class="beam-ico" title="Light beam" style="--c:${hex}"></span>`:""}${r.action>=2?`<span class="color-dot" title="Highlight colour: ${colOf(r.colour)[1]}" style="background:${hex}"></span>`:""}${r.action>0&&r.sound!==0?`<span class="spk" title="Sound on">${SPKI(true)}</span>`:""}</span>
       <span class="ctl"><input class="sw sm" type="checkbox" data-on="${r.id}" ${r.on?"checked":""} aria-label="Rule ${i+1} active">
        <button type="button" class="icb" data-mv="-1" data-id2="${r.id}" ${i===0||!free?"disabled":""} aria-label="Move rule ${i+1} up"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 3l6 8H1z"/></svg></button>
@@ -1511,6 +1515,7 @@ document.addEventListener("click",e=>{
   if(d.rf){V.filter=d.rf;renderRows();return;}
   if(d.moretoggle){S.moreOpen=!S.moreOpen;renderEditor();return;}
   if(d.pick){S.cur=d.pick;renderRows();renderEditor();return;}
+  if(d.rm){const i=F.rules.findIndex(x=>x.id===d.rm);if(i>=0){F.preset="-1";F.rules.splice(i,1);if(S.cur===d.rm){const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;}fullRender();toast("Rule removed. Ctrl+Z brings it back.");}return;}
   if(d.mv){const i=F.rules.findIndex(x=>x.id===d.id2),j=i+ +d.mv;if(i>=0&&j>=0&&j<F.rules.length){const[r]=F.rules.splice(i,1);F.rules.splice(j,0,r);touch();}return;}
   if(d.tab){S.tab=d.tab;renderOut();return;}
   if(t.id==="newRule"||t.id==="addRule"){if(F.rules.length<MAX_RULES){F.preset="-1";const r=newRule();r.id=uid();F.rules.push(r);S.cur=r.id;V.filter="all";V.q="";$("#rq").value="";V.view==="edit"||setView("edit");fullRender();}else toast("The game takes "+MAX_RULES+" rules.",true);return;}
