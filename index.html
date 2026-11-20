@@ -81,9 +81,6 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .selwrap select:hover{border-color:var(--border-strong)}
 .selwrap::after{content:"";position:absolute;right:14px;top:17px;border:5px solid transparent;border-top:6px solid var(--text-muted);pointer-events:none}
 .selwrap select option{background:var(--bg-card);color:var(--text-main)}
-.cb{appearance:none;-webkit-appearance:none;position:relative;flex:none;width:20px;height:20px;margin:0;border:1px solid var(--border-strong);border-radius:5px;background:var(--bg-subtle);cursor:pointer}
-.cb:checked{background:var(--accent-gold);border-color:var(--accent-gold)}
-.cb:checked::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #1a1208;border-width:0 2px 2px 0;transform:rotate(40deg)}
 .sw{appearance:none;-webkit-appearance:none;position:relative;flex:none;width:42px;height:24px;margin:0;border:1px solid var(--border-strong);border-radius:999px;background:var(--bg-subtle);cursor:pointer;transition:background-color .15s}
 .sw::before{content:"";position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:var(--text-dim);transition:transform .15s,background-color .15s}
 .sw:checked{background:var(--accent-gold-soft);border-color:var(--accent-gold)}
@@ -148,25 +145,12 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin:0 0 14px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-size:.8125rem;color:var(--text-muted)}
 .strip b{margin-left:5px;font-size:1rem;font-variant-numeric:tabular-nums}
 .strip .btn{min-height:30px;padding:0 10px;margin-left:auto;font-size:.8125rem}
-.note{margin:0 0 14px;padding:10px 12px;border:1px solid var(--border);border-left:3px solid var(--accent-gold);border-radius:8px;background:var(--bg-subtle);font-size:.8125rem;line-height:1.5;color:var(--text-muted)}
-.note b{color:var(--text-main)}
 .flag{margin-top:14px;padding:8px 12px;border-left:3px solid var(--accent-gold);background:var(--accent-gold-soft);border-radius:0 8px 8px 0;font-size:.8125rem;color:var(--text-main)}
 .ground{position:relative;min-height:100px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:radial-gradient(ellipse at 50% 120%,#2a303b,#161b22 60%)}
 .lbl{padding:3px 12px;border:1px solid rgba(0,0,0,.7);border-radius:3px;background:rgba(8,10,14,.86);color:var(--c);box-shadow:0 0 0 1px var(--c);font-weight:600;font-size:1.25rem;line-height:1.2;text-shadow:0 1px 0 #000}
 .beam{width:3px;height:70px;background:linear-gradient(180deg,rgba(255,255,255,0),var(--c));box-shadow:0 0 12px var(--c)}
 
 /* drop test */
-.catbtn{display:flex;align-items:center;gap:10px;width:100%;min-height:42px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);text-align:left;font-weight:600}
-.catbtn:hover{background:var(--bg-card-hover)}
-.catbtn svg{transition:transform .15s;fill:var(--text-muted)}
-.badge{margin-left:auto;padding:2px 8px;border-radius:999px;background:var(--accent-gold-soft);color:var(--accent-gold);font-size:.75rem;font-weight:600}
-.badge.zero{background:var(--bg-subtle);color:var(--text-dim)}
-.opts{border:1px solid var(--border);border-top:0;border-radius:0 0 8px 8px;background:var(--bg-subtle)}
-.opt{display:flex;align-items:center;gap:12px;min-height:40px;padding:0 12px;cursor:pointer;border-bottom:1px solid var(--border)}
-.opt:last-child{border-bottom:0}
-.opt:hover{background:var(--bg-card)}
-.opt .mt{margin-left:auto;font-size:.75rem;color:var(--text-dim)}
-.pip{width:10px;height:10px;border-radius:50%;box-shadow:0 0 6px currentColor}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 12px}
 .stat{padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
 .stat b{display:block;font-size:1.375rem;font-weight:700;font-variant-numeric:tabular-nums}
@@ -194,7 +178,7 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .drop .meta{white-space:normal}
 .drop.in{animation:landin .5s ease-out}
 @keyframes landin{0%{transform:translateX(18px);opacity:0}100%{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){.drop.in{animation:none}.sw,.sw::before,.catbtn svg,.bar i,.rc{transition:none}}
+@media (prefers-reduced-motion:reduce){.drop.in{animation:none}.sw,.sw::before,.bar i,.rc{transition:none}}
 
 /* import / export, info */
 pre.out{margin:0;max-height:260px;overflow:auto;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-family:ui-monospace,Consolas,monospace;font-size:12.5px;white-space:pre-wrap;word-break:break-all}
@@ -1137,7 +1121,6 @@ function wpick(a,wf){let t=0;a.forEach(x=>t+=wf(x));let r=Math.random()*t;for(co
 /* categories a drop can fall into, one pick per category before the base is chosen */
 const CATKEYS=[];BASES.forEach(b=>{const k=b.kind+":"+b.sub;if(!CATKEYS.includes(k))CATKEYS.push(k);});
 const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem","Skill Gem"];
-const NAMES_KIND={weapon:"",shield:"",tome:"",quiver:"",helm:"",chest:"",gloves:"",boots:"",ring:"",amulet:"",belt:"",idol:""};
 /* an affix tier needs an item level (the real levels per tier come from the game files) */
 function tierLvl(a,k){if(a.lv&&a.lv[k-1]!==undefined)return a.lv[k-1];return a.n===1?a.hi:Math.round(a.hi+(a.lo-a.hi)*(k-1)/(a.n-1));} /* real item levels from the game files; the even spread is only a fallback */
 /* tier choice for one affix; mode: any (lower tiers likelier, a guess), t1, t2 (T1-T2), bad (the two lowest tiers) */
@@ -1552,7 +1535,6 @@ document.addEventListener("change",e=>{
   if(t.dataset.mr&&t.tagName==="SELECT"){const r=curRule(),k=t.dataset.mr.split(",")[0];if(r){msetRng(r,k,+$("#m-"+k+"0").value||0,+$("#m-"+k+"1").value||0);touch();}return;}
   if(t.dataset.f&&t.tagName==="SELECT"){const r=curRule();if(r){r[t.dataset.f]=+t.value;touch();}return;}
 });
-function input(){}
 document.addEventListener("change",e=>{
   const t=e.target,k=t.dataset&&t.dataset.pls;if(!k||t.value==="")return;
   const r=curRule(),l=(PL.load()[k]||[])[+t.value];if(!r||!l)return;
