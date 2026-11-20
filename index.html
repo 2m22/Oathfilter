@@ -931,6 +931,8 @@ const nOpts=(any,f)=>[["",any]].concat([1,2,3,4,5,6].map(n=>[n,f(n)]));
 const lvOpts=(any,f)=>[["0",any]].concat(LVSTEPS.map(v=>[v,f(v)]));
 const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,ph:"Type a line, like life or fire"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,ph:"Type a red name"}};
 S.pk={b:"",a:"",rn:""};S.moreOpen=true;
+/* what the sample drops can produce: other bases and reds still go into the code, but the drop test never shows them */
+const SAMPLE={b:new Set(BASES.map(b=>b.id)),rn:new Set(UNIQUES.map(u=>RED_BY_NAME[u.name.replace(/ \(Primal\)$/,"")]))};
 function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k);
   return `<div class="pk" data-pkbox="${k}"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>
@@ -943,7 +945,7 @@ function renderPickList(k){
   const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=4;
   const lineSel=new Set(ids.map(i=>P.name[i]));
   const res=P.list().filter(x=>!q||String(x[1]).toLowerCase().includes(q)||String(x[0]).toLowerCase().includes(q)).slice(0,80);
-  box.innerHTML=res.length?res.map(x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" ${on||full?"disabled":""}><span>${esc(x[1])}</span>${on?"<small>picked</small>":""}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
+  box.innerHTML=res.length?res.map(x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" ${on||full?"disabled":""}><span>${esc(x[1])}</span>${on?"<small>picked</small>":SAMPLE[k]&&!SAMPLE[k].has(x[0])?"<small>no test drop</small>":""}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
 }
 function moreHTML(r){
   const [il,ih]=mrng(r,"i"),[ql,qh]=mrng(r,"q"),rt=mval(r,"rt");
