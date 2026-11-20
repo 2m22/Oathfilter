@@ -261,10 +261,10 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
     </div>
   </div>
   <nav class="nav header-nav" role="tablist" aria-label="Views" id="nav">
-  <button type="button" role="tab" id="t-edit" aria-controls="p-edit" aria-selected="true" data-view="edit">Filter Editor</button>
+  <button type="button" role="tab" id="t-edit" aria-controls="p-edit" aria-selected="true" data-view="edit">Editor</button>
   <button type="button" role="tab" id="t-test" aria-controls="p-test" aria-selected="false" data-view="test" tabindex="-1">Drop Test</button>
   <button type="button" role="tab" id="t-io" aria-controls="p-io" aria-selected="false" data-view="io" tabindex="-1">Import / Export</button>
-  <button type="button" role="tab" id="t-info" aria-controls="p-info" aria-selected="false" data-view="info" tabindex="-1">What the game can do</button>
+  <button type="button" role="tab" id="t-info" aria-controls="p-info" aria-selected="false" data-view="info" tabindex="-1">Guide</button>
   <button type="button" role="tab" id="t-about" aria-controls="p-about" aria-selected="false" data-view="about" tabindex="-1">About</button>
   </nav>
 </header>
@@ -296,7 +296,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
   </aside>
   <div class="stack dropwrap">
   <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
-    <p class="hint" style="margin:0 0 10px">Sample drops are a best guess (see “What the game can do”). <b>SHOW*</b> = never hidden by the game.</p>
+    <p class="hint" style="margin:0 0 10px">Sample drops are a best guess (see the Guide). <b>SHOW*</b> = never hidden by the game.</p>
     <div class="stats"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div></section>
   <section class="plate" aria-labelledby="h-gv"><h2 id="h-gv" class="coltitle">Ground view</h2>
@@ -320,22 +320,86 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 </div></div>
 
 <div class="panel" id="p-info" role="tabpanel" aria-labelledby="t-info" hidden><div class="cols">
-  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-can"><h2 id="h-can" class="coltitle">What the game filter can do</h2>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g1"><h2 id="h-g1" class="coltitle">Quick start</h2>
     <ul class="pl">
-     <li><b>Rules:</b> up to 40. The top matching rule wins. If no rule matches, the item is shown.</li>
-     <li><b>Each rule checks:</b> one item type, one rarity group, one of eight item level steps, one line group, a roll quality (any, good, top) and how many matching lines (1, 2+, 3+).</li>
-     <li><b>More conditions (the MORE button):</b> tier and how many lines of that tier or better, sockets, item level and required level as a from–to range, base grade (50+, 70+, Truesworn) and top grade, reds only or chase reds, Unsworn or not, runes up to a tier, and up to four named bases, lines or reds.</li>
-     <li><b>Actions:</b> hide, show, highlight, highlight with light beam.</li>
-     <li><b>Look:</b> eight highlight colours and a sound (silent, auto or one of four).</li>
-     <li><b>Never hidden:</b> uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks.</li>
-     <li><b>Game presets:</b> All loot, Tidy, Strict, Very strict and End Game. Choose one above the rule list in the Filter Editor, then change it as you like.</li></ul></section>
-  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-unk"><h2 id="h-unk" class="coltitle">Good to know</h2>
+     <li><b>1. Pick a start.</b> In the Editor choose a game preset (All loot, Tidy, Strict, Very strict, End Game). It is only a starting point; change anything.</li>
+     <li><b>2. Edit the rules.</b> Select a rule in the list and set what it checks and what it does. Add, duplicate or remove rules, and move them up or down.</li>
+     <li><b>3. Test it.</b> Open Drop Test and press Drop 25 or a Quick spawn button. Every sample item shows the rule that caught it.</li>
+     <li><b>4. Export.</b> Open Import / Export (or use “Copy filter code” at the top), then paste the code into the game’s loot filter window.</li>
+    </ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g2"><h2 id="h-g2" class="coltitle">How rules work</h2>
+    <p class="hint" style="margin:0 0 10px">The order is the most important part of a filter.</p>
     <ul class="pl">
-     <li>A rule uses one line group. For two groups, use two rules.</li>
-     <li><b>Shortcuts:</b> Ctrl+Z undo, Ctrl+D duplicate the rule, Alt+Up / Alt+Down pick the previous or next rule, Esc clears the rule search.</li>
-     <li>The limit of 40 rules comes from a test in the game. The sound and colour names come from the community Broken Oath Builder.</li>
-     <li>The code is the game's BOFILTER 1 code. MORE options follow the ten numbers of a rule as <code>,3:key=value;key=value</code>. The keys were read from exports of the game itself. Fields this page does not know are kept as they are.</li></ul>
-</section>
+     <li><b>Up to 40 rules.</b> The game takes 40 rules at most. The counter at the top shows how many you use.</li>
+     <li><b>Top to bottom.</b> The game checks the rules in list order. The first matching rule wins, and the rules below it are not looked at for that item.</li>
+     <li><b>No match.</b> If no rule matches, the item is shown as normal.</li>
+     <li><b>Never hidden.</b> Uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks always stay visible, even when a hide rule matches. The Drop Test marks them <b>SHOW*</b>.</li>
+     <li><b>Rule on or off.</b> The switch on a rule turns it off without deleting it. A rule that is off is skipped.</li>
+     <li><b>One line group per rule.</b> To look for two line groups, use two rules.</li>
+    </ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g3"><h2 id="h-g3" class="coltitle">What a rule can check</h2>
+    <p class="hint" style="margin:0 0 10px">Everything you set on one rule must fit at the same time.</p>
+    <ul class="pl">
+     <li><b>Rarity.</b> Any, normal, magic, normal and magic, rare, rare and unique, and so on.</li>
+     <li><b>Item type.</b> One type: any gear, weapons or a single weapon kind, armour slots, rings, amulets, belts, idols, gems, rune bases, core-touched, 4+ sockets or Truesworn.</li>
+     <li><b>Item level.</b> One step: below 20, 40, 60 or 75, or 60, 75 or 82 and up. The MORE options also take a from–to range.</li>
+     <li><b>Line group.</b> One group of affix lines, such as life, resistance, critical, minion or fire damage.</li>
+     <li><b>Roll quality.</b> Any roll, good roll or top roll.</li>
+     <li><b>Lines needed.</b> How many matching lines the item needs: 1+, 2+ or 3+.</li>
+    </ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g4"><h2 id="h-g4" class="coltitle">More conditions (the MORE button)</h2>
+    <p class="hint" style="margin:0 0 10px">All MORE options must fit together with the options above.</p>
+    <ul class="pl">
+     <li><b>Tier.</b> A tier and how many lines of that tier or better the item needs.</li>
+     <li><b>Sockets and levels.</b> Sockets, item level and required level, as from–to ranges.</li>
+     <li><b>Grade.</b> Base grade (50+, 70+, Truesworn) and top grade.</li>
+     <li><b>Reds.</b> Reds only, or chase reds only. Unsworn or not.</li>
+     <li><b>Runes.</b> Runes up to a chosen tier.</li>
+     <li><b>Named entries.</b> Up to four named bases, lines or reds in one rule. A named line matches when the item has an affix of that line.</li>
+    </ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g5"><h2 id="h-g5" class="coltitle">Actions, colours and sounds</h2>
+    <ul class="pl">
+     <li><b>Hide.</b> The item is not shown. Never works on the items listed under “Never hidden”.</li>
+     <li><b>Show.</b> The item is shown as normal.</li>
+     <li><b>Highlight.</b> The item name is drawn in the chosen colour.</li>
+     <li><b>Highlight + beam.</b> Colour plus a light beam on the ground.</li>
+     <li><b>Colours.</b> Ember, Jade, Frost, Bone, Gold, Blood, Ash and White.</li>
+     <li><b>Sounds.</b> Auto (game default), Silent, Chime, Soft, Jewel and Wind.</li>
+    </ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g6"><h2 id="h-g6" class="coltitle">Building a good filter</h2>
+    <ul class="pl">
+     <li><b>Valuable first.</b> Put the most precious rules (high rolls, top tiers, named reds) at the top, with Highlight + beam and their own colour and sound.</li>
+     <li><b>Then wider Highlights.</b> Next come rules for items that are good but common, with a plain highlight or no sound.</li>
+     <li><b>Hide last.</b> Rules that hide junk (low item level, normal or bad magic items) go near the bottom, so they cannot catch something above them.</li>
+     <li><b>Start from a preset.</b> Load Tidy or Strict and change only what you need.</li>
+     <li><b>Check the order.</b> A broad rule above a narrow one means the narrow one never fires. The rule list shows hits per rule; “No hit” on a rule you expected to fire usually means something above it catches the item first.</li>
+     <li><b>Test before you trust.</b> Always confirm the finished filter in the game.</li>
+    </ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g7"><h2 id="h-g7" class="coltitle">Using the Drop Test</h2>
+    <ul class="pl">
+     <li><b>Drop 1 / Drop 25 / Auto-drop.</b> Random sample items. Reset clears the log and the counters.</li>
+     <li><b>Quick spawn.</b> Targeted items: White, Magic good or bad, Rare valuable, decent, bad or mid, Unique / Red and Idol. Use these to test a rule that random drops rarely hit.</li>
+     <li><b>Sliders.</b> “Lines at T1” sets how many T1 lines Rare valuable has (1–6), “Idol size” the idol size (1–4) and “Per click” how many items one press creates.</li>
+     <li><b>Result.</b> The counters and the bar show how many drops are shown, highlighted or hidden. Hidden drops stay visible in the log with a dashed border.</li>
+     <li><b>Ground view and log.</b> The ground view shows what you would see in the game. Each log entry names the rule that caught it, or says that no rule matched.</li>
+     <li><b>A best guess.</b> Sample drops use real bases, affixes and uniques from the public API. How they are rolled has not been checked in the game.</li>
+    </ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g8"><h2 id="h-g8" class="coltitle">Import and export</h2>
+    <ul class="pl">
+     <li><b>The code.</b> The game’s BOFILTER 1 code, for example <code>BOFILTER:1,…</code>. Copy it in the game’s loot filter window and paste it in Import / Export.</li>
+     <li><b>MORE options.</b> They follow the ten numbers of a rule as <code>,3:key=value;key=value</code>. The page reads them and you can change them in the Editor.</li>
+     <li><b>Unknown fields.</b> Fields this page does not know are kept as they are.</li>
+     <li><b>Export.</b> “Game code” is what you paste into the game. “Readable” is a plain list of your rules.</li>
+     <li><b>Saved in your browser.</b> Your current filter is kept automatically, so it is still there next time.</li>
+    </ul></section>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g9"><h2 id="h-g9" class="coltitle">Keyboard shortcuts</h2>
+    <ul class="pl">
+     <li><b>Ctrl+Z</b> undo the last change.</li>
+     <li><b>Ctrl+D</b> duplicate the selected rule (Editor).</li>
+     <li><b>Alt+Up / Alt+Down</b> select the previous or next rule (Editor).</li>
+     <li><b>Esc</b> clear the rule search.</li>
+     <li><b>Left / Right arrow</b> move between the tabs when a tab is focused.</li>
+    </ul></section>
 </div></div>
 <div class="panel" id="p-about" role="tabpanel" aria-labelledby="t-about" hidden><div class="cols">
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-ab"><h2 id="h-ab" class="coltitle">About Oathfilter</h2>
