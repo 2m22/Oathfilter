@@ -175,7 +175,7 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .dp{position:absolute;display:flex;flex-direction:column;align-items:center;transform:translateX(-50%)}
 .dp .beam{height:140px}.dp .lbl{font-size:.95rem;padding:2px 10px;white-space:nowrap}
 .empty{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:var(--text-muted)}
-.drops{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;margin-top:14px}
+.drops{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px;margin-top:14px}
 @media (max-width:520px){.drops{grid-template-columns:1fr}}
 .drop{display:grid;grid-template-columns:4px 1fr auto;gap:10px;align-items:center;padding:10px 12px 10px 0;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
 .drop .rar{align-self:stretch;background:var(--rc)}
@@ -187,8 +187,6 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .drop[data-v="1"] .vd{background:var(--show-bg);color:var(--show-fg)}
 .drop[data-v="2"] .vd{background:var(--hl-bg);color:var(--hl-fg)}
 .drop[data-v="3"] .vd{background:var(--beam-bg);color:var(--beam-fg)}
-.drop[data-v="0"]{opacity:.5}
-.drop[data-v="0"] .nm{text-decoration:line-through}
 .drop[data-v="2"],.drop[data-v="3"]{border-color:var(--hc)}
 .drop .rn{display:inline-block;margin-top:4px;padding:1px 8px;border:1px solid var(--border);border-radius:5px;background:var(--bg-subtle);font-size:.75rem;font-weight:600;color:var(--text-muted)}
 .drop .meta{white-space:normal}
@@ -220,12 +218,22 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .pklist button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:0 12px;border:0;border-bottom:1px solid var(--border);background:none;text-align:left;font-weight:600;color:var(--text-main);cursor:pointer}
 .pklist button:hover:not(:disabled){background:var(--bg-card)}.pklist button:disabled{opacity:.45;cursor:not-allowed}
 .pklist small{color:var(--text-muted);font-weight:500;white-space:nowrap}
-/* quick spawn */
-.qs{margin:0 0 14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
+/* drop test: controls column left, main area right */
+.dctl{flex:0 0 280px;min-width:260px;position:sticky;top:8px;padding:12px}
+.dctlb{display:grid;grid-template-columns:1fr 1fr;gap:6px}.dctlb .btn{min-height:34px;padding:0 8px;font-size:.8125rem}
+.qs{margin:12px 0 0;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
 .qs h3{margin:0 0 8px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
-.qsb{display:flex;flex-wrap:wrap;gap:6px}.qsb .btn{min-height:34px;padding:0 12px;font-size:.8125rem}
-.qsr{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px 18px;margin-top:10px}
-.qsr label{display:flex;align-items:center;gap:8px;font-size:.8125rem;color:var(--text-muted)}.qsr input[type=range]{flex:1;min-width:80px;accent-color:var(--accent-gold)}.qsr output{min-width:1.6em;text-align:right;font-weight:700;color:var(--text-main);font-variant-numeric:tabular-nums}
+.qsb{display:flex;flex-wrap:wrap;gap:5px}.qsb .btn{min-height:30px;padding:0 9px;font-size:.78rem}
+.qsr{display:grid;gap:2px;margin-top:10px}
+.qsr label{display:grid;grid-template-columns:78px 1fr 2.2em;align-items:center;gap:8px;min-height:26px;font-size:.78rem;color:var(--text-muted)}
+.qsr input[type=range]{width:100%;min-width:0;height:18px;margin:0;accent-color:var(--accent-gold)}
+.qsr output{text-align:center;font-weight:700;color:var(--accent-gold);background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:0 4px;font-variant-numeric:tabular-nums}
+@media (max-width:900px){.dctl{flex:1 1 100%;position:static}}
+/* compact ground view, hidden drops set apart but readable */
+.scene{height:200px!important}
+.dropwrap .stats{margin:10px 0 8px!important}.dropwrap .drops{margin-top:10px}
+.drop[data-v="0"]{opacity:.78;border-style:dashed;background:var(--bg-subtle)}
+.drop[data-v="0"] .nm{text-decoration:none;color:var(--text-muted)}
 </style>
 </head>
 <body>
@@ -272,8 +280,8 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 </div></div>
 
 <div class="panel" id="p-test" role="tabpanel" aria-labelledby="t-test" hidden><div class="cols">
-  <section class="plate dropwrap" style="flex:1 1 100%;min-width:320px" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Drop test</h2>
-    <p class="note">Test drops use real item bases, affixes and uniques from the Broken Oath public API, but how they are rolled and how the game reads a rule is a best guess. It has not been checked in the game. <b>SHOW*</b> marks items the game never hides: uniques, runes, idols, gems, currency, gold and flasks.</p>
+  <aside class="plate dctl" aria-label="Drop controls"><h2 class="coltitle">Drop controls</h2>
+    <div class="dctlb"><button type="button" class="btn gold" id="roll1">Drop 1</button><button type="button" class="btn" id="roll25">Drop 25</button><button type="button" class="btn" id="auto" aria-pressed="false">Auto-drop: off</button><button type="button" class="btn danger" id="clear">Reset</button></div>
     <div class="qs" id="qs"><h3>Quick spawn</h3><div class="qsb">
       <button type="button" class="btn" data-q="white">White</button><button type="button" class="btn" data-q="magicgood">Magic good</button><button type="button" class="btn" data-q="magicbad">Magic bad</button>
       <button type="button" class="btn gold" data-q="rarevaluable" id="qVal">Rare valuable 3×T1</button><button type="button" class="btn" data-q="raredecent">Rare decent</button><button type="button" class="btn" data-q="rarebad">Rare bad</button><button type="button" class="btn" data-q="raremid">Rare mid</button>
@@ -282,7 +290,9 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
       <label for="sI">Idol size<input id="sI" type="range" min="1" max="4" value="1"><output id="oI">1</output></label>
       <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC">1</output></label></div>
       <p class="hint" style="margin:8px 0 0">Quick spawns go through the same rules, counters and log as Drop 1.</p></div>
-    <div style="display:flex;flex-wrap:wrap;gap:10px"><button type="button" class="btn gold" id="roll1">Drop 1</button><button type="button" class="btn" id="roll25">Drop 25</button><button type="button" class="btn" id="auto" aria-pressed="false">Auto-drop: off</button><button type="button" class="btn danger" id="clear">Reset</button></div>
+  </aside>
+  <section class="plate dropwrap" style="flex:1 1 560px;min-width:320px" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Drop test</h2>
+    <p class="note">Test drops use real item bases, affixes and uniques from the Broken Oath public API, but how they are rolled and how the game reads a rule is a best guess. It has not been checked in the game. <b>SHOW*</b> marks items the game never hides: uniques, runes, idols, gems, currency, gold and flasks.</p>
     <div class="stats" style="margin-top:18px"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div>
     <div class="seg" role="group" aria-label="Ground view" id="sceneMode" style="max-width:360px;margin-bottom:10px"><button type="button" data-sm="all" aria-pressed="true">All visible items</button><button type="button" data-sm="hl" aria-pressed="false">Highlights and beams only</button></div>
