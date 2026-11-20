@@ -13,7 +13,7 @@ Open `index.html` in a browser. No build, no install.
 - **Filter Editor**: rule cards with action, rarity, item type, level, line, quality, count, colour and sound. Search and filter the rule list.
 - **Drop Test**: roll random drops against your filter and see which rule catches each item.
 - **Import / Export**: paste a `BOFILTER:1,...` code or export one for the game, plus a readable text version.
-- Game presets: one click loads the five in-game filters (All loot, Tidy, Strict, Very strict, End Game) in the Import tab or from the menu at the top.
+- Game presets: the menu above the rule list loads the five in-game filters (All loot, Tidy, Strict, Very strict, End Game).
 
 ## Format
 

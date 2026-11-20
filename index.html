@@ -180,7 +180,6 @@ ul.pl b{color:#e4c06c}ul.pl a{color:#e4c06c}
     <div style="font-family:Cinzel,Georgia,serif;font-weight:600;font-size:14px;letter-spacing:.3em;color:#b6ab95;margin-top:4px">OATHFILTER · LOOT FILTER BUILDER</div></div>
   </div>
   <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-left:auto">
-    <div style="width:240px"><label class="sr" for="preset">Start from</label><div class="selwrap"><select id="preset"></select></div></div>
     <div id="cap" style="padding:0 16px;min-height:44px;display:flex;align-items:center;gap:8px;border:1px solid #4a3d29;border-radius:2px;background:#0d0c0a;box-shadow:inset 0 2px 5px #000"></div>
     <button type="button" class="btn gold" id="copyTop">Copy filter code</button>
   </div>
@@ -194,7 +193,9 @@ ul.pl b{color:#e4c06c}ul.pl a{color:#e4c06c}
 </nav>
 <main>
 <div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit"><div class="cols">
-  <section class="plate l" aria-labelledby="h-rules"><h2 id="h-rules" class="coltitle">Rules</h2>
+  <section class="plate l" aria-labelledby="h-rules">
+    <label class="lab" for="preset">Start from a game preset</label><div class="selwrap" style="margin-bottom:18px"><select id="preset"></select></div>
+    <h2 id="h-rules" class="coltitle">Rules</h2>
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:150px">+ New Rule</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
     <div class="seg" role="group" aria-label="Show rules" id="rfilter" style="margin-top:12px"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="hide" aria-pressed="false">Hide rules</button></div>
@@ -221,9 +222,6 @@ ul.pl b{color:#e4c06c}ul.pl a{color:#e4c06c}
 
 <div class="panel" id="p-io" role="tabpanel" aria-labelledby="t-io" hidden><div class="cols">
   <section class="plate" style="flex:1 1 420px" aria-labelledby="h-imp"><h2 id="h-imp" class="coltitle">Import</h2>
-    <div class="lab" id="gpl">Game presets</div>
-    <div id="gp" role="group" aria-labelledby="gpl" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
-    <p class="hint" style="margin:-6px 0 16px">Loads the preset as a new filter and replaces the one in the editor. Export your own first if you want to keep it.</p>
     <label class="lab" for="codeIn">Paste a BOFILTER code</label><textarea id="codeIn" class="field" placeholder="BOFILTER:1,..." style="min-height:200px"></textarea>
     <div style="margin-top:12px"><button type="button" class="btn gold" id="load">Load filter</button></div><div class="toast" id="loadMsg" role="status"></div>
     <p class="hint" style="margin:6px 0 0">Copy the filter in the game's loot filter window and paste it here. Extra fields from the game's MORE window are kept as they are.</p></section>
@@ -242,7 +240,7 @@ ul.pl b{color:#e4c06c}ul.pl a{color:#e4c06c}
      <li><b>Actions:</b> hide, show, highlight, highlight with light beam.</li>
      <li><b>Look:</b> eight highlight colours and a sound (silent, auto or one of four).</li>
      <li><b>Never hidden:</b> uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks.</li>
-     <li><b>Game presets:</b> All loot, Tidy, Strict, Very strict and End Game. Choose one at the top, then change it as you like.</li></ul></section>
+     <li><b>Game presets:</b> All loot, Tidy, Strict, Very strict and End Game. Choose one above the rule list in the Filter Editor, then change it as you like.</li></ul></section>
   <section class="plate" style="flex:1 1 420px" aria-labelledby="h-unk"><h2 id="h-unk" class="coltitle">Good to know</h2>
     <ul class="pl">
      <li>A rule uses one line group. For two groups, use two rules.</li>
@@ -580,7 +578,6 @@ function touch(){F.preset="-1";renderHead();renderRows();syncEditor();if(V.view=
 document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;const d=t.dataset;
   if(d.view){setView(d.view);return;}
-  if(d.gp){const p=PRESETS[+d.gp];if(p){setFilter(p.build());toast("Loaded preset: "+p.label+".");}return;}
   if(d.cat){S.openCat[d.cat]=!S.openCat[d.cat];renderCats();return;}
   if(d.rf){V.filter=d.rf;renderRows();return;}
   if(d.pick){S.cur=d.pick;renderRows();renderEditor();return;}
@@ -603,7 +600,7 @@ document.addEventListener("change",e=>{
   if(t.dataset.pool){const s=POOL[t.dataset.pool],v=isNaN(+t.dataset.v)?t.dataset.v:+t.dataset.v;t.checked?s.add(v):s.delete(v);renderCats();return;}
   if(t.dataset.on){const r=F.rules.find(x=>x.id===t.dataset.on);if(r){r.on=t.checked?1:0;if(r.id===S.cur&&$("#f-on"))$("#f-on").checked=!!r.on;touch();}return;}
   if(t.id==="f-on"){const r=curRule();if(r){r.on=t.checked?1:0;touch();}return;}
-  if(t.id==="preset"){const p=PRESETS[+t.value];if(p)setFilter(p.build());return;}
+  if(t.id==="preset"){const p=PRESETS[+t.value];if(p){setFilter(p.build());toast("Loaded preset: "+p.label+".");}t.value="";return;}
   if(t.dataset.f&&t.tagName==="SELECT"){const r=curRule();if(r){r[t.dataset.f]=+t.value;touch();}return;}
 });
 document.addEventListener("input",e=>{
@@ -616,7 +613,6 @@ $("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").va
 $("#clearSel").onclick=()=>{Object.values(POOL).forEach(s=>s.clear());renderCats();};
 $("#roll1").onclick=()=>addDrops(1);$("#roll25").onclick=()=>addDrops(25);$("#clear").onclick=()=>{S.items=[];renderDrops();};
 $("#auto").onclick=()=>{const b=$("#auto");if(timer){clearInterval(timer);timer=null;b.textContent="Auto-drop: off";b.setAttribute("aria-pressed","false");}else{timer=setInterval(()=>addDrops(1),1100);b.textContent="Auto-drop: on";b.setAttribute("aria-pressed","true");}};
-$("#gp").innerHTML=PRESETS.map((p,i)=>`<button type="button" class="btn" data-gp="${i}">${p.label}</button>`).join("");
 $("#preset").innerHTML=`<option value="" disabled selected>Game presets…</option>`+PRESETS.map((p,i)=>`<option value="${i}">${p.label}</option>`).join("");
 (function init(){
   let start=null;
