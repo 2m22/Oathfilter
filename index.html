@@ -238,6 +238,8 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .upd{position:fixed;right:16px;bottom:16px;z-index:50;display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;max-width:min(440px,calc(100vw - 32px));padding:12px 14px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-panel);box-shadow:0 8px 28px rgba(0,0,0,.5);font-size:.875rem;color:var(--text-main)}
 .upd b{display:block;color:var(--accent-gold)}.upd span{color:var(--text-muted);font-size:.8125rem}
 .upd .btn{min-height:34px;padding:0 12px;font-size:.8125rem}.upd div.bt{display:flex;gap:8px;flex-wrap:wrap}
+.chk{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.chkb{display:block;width:100%;padding:8px 10px;border:1px solid var(--border);border-left:3px solid var(--warn-fg);border-radius:8px;background:var(--bg-card);text-align:left;font-size:.8125rem;line-height:1.4;color:var(--text-muted);cursor:pointer}.chkb b{color:var(--text-main)}.chkb:hover{background:var(--bg-card-hover)}
 </style>
 </head>
 <body>
@@ -276,6 +278,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
     <div class="sub" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
     <div class="seg" role="group" aria-label="Show rules" id="rfilter" style="margin-top:12px"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button></div>
+    <div class="sub" style="margin-top:12px"><button type="button" class="btn" id="chkOrder" style="width:100%">Check rule order</button><div id="chkOut" role="status" aria-live="polite"></div></div>
     <p class="hint" id="rhint" style="margin:12px 0 0"></p>
     <div id="rows"></div>
     <div class="hint" id="actCount" style="margin-top:20px"></div></section>
@@ -372,7 +375,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
      <li><b>Then wider Highlights.</b> Next come rules for items that are good but common, with a plain highlight or no sound.</li>
      <li><b>Hide last.</b> Rules that hide junk (low item level, normal or bad magic items) go near the bottom, so they cannot catch something above them.</li>
      <li><b>Start from a preset.</b> Load Tidy or Strict and change only what you need.</li>
-     <li><b>Check the order.</b> A broad rule above a narrow one means the narrow one never fires. The rule list shows hits per rule; “No hit” on a rule you expected to fire usually means something above it catches the item first.</li>
+     <li><b>Check the order.</b> A broad rule above a narrow one means the narrow one never fires. The rule list warns “May be caught by rule N” when it is sure. “Check rule order” in the Editor also runs sample items through your filter and lists rules that never decide anything.</li>
      <li><b>Test before you trust.</b> Always confirm the finished filter in the game.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g7"><h2 id="h-g7" class="coltitle">Using the Drop Test</h2>
@@ -1263,6 +1266,7 @@ function visibleRules(){const q=V.q.trim().toLowerCase();return F.rules.map((r,i
   if(V.filter==="hide"&&r.action!==0)return false;if(V.filter==="show"&&r.action!==1)return false;if(V.filter==="mark"&&r.action<2)return false;
   if(q&&!(summary(r)+" "+actWord(r.action)).toLowerCase().includes(q))return false;return true;});}
 function renderRows(){
+  {const o=$("#chkOut");if(o)o.innerHTML="";}
   const list=visibleRules(),free=V.filter==="all"&&!V.q.trim();
   $("#rows").innerHTML=list.length?list.map(([r,i])=>{
     const sh=shadowOf(i),AC=["hide","show","highlight","beam"][r.action]||"show",hex=colOf(r.colour)[2];
@@ -1278,6 +1282,20 @@ function renderRows(){
   $("#actCount").textContent=F.rules.filter(r=>r.on).length+" of "+F.rules.length+" rules active";
   $("#rhint").textContent=free?"The numbers show the order the game checks the rules. The top matching rule decides.":"Filtered view. Clear the search and choose All to reorder rules.";
   $$("#rfilter button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rf===V.filter));
+}
+/* order check: runs sample drops (random ones plus every quick-spawn class) through the rules and reports rules that never decide anything */
+function checkOrder(){
+  const items=[];for(let k=0;k<1500;k++)items.push(genItem());
+  Object.keys(CLASSES).forEach(c=>{for(let k=0;k<60;k++)items.push(genItem({cls:c,n:1+k%6,size:1+k%4}));});
+  const R=F.rules,N=items.length,m=R.map(()=>0),w=R.map(()=>0),by=R.map(()=>({}));
+  items.forEach(it=>{let win=-1;R.forEach((r,i)=>{if(!r.on||!matches(r,it))return;m[i]++;if(win<0)win=i;else by[i][win]=(by[i][win]||0)+1;});if(win>=0)w[win]++;});
+  const out=[];
+  R.forEach((r,i)=>{if(!r.on)return;
+    if(!m[i])out.push([i,"matches none of "+N+" sample items"]);
+    else if(!w[i]){const k=Object.keys(by[i]).sort((a,b)=>by[i][b]-by[i][a])[0];out.push([i,"never decides: its "+m[i]+" matching items are caught by rule "+(+k+1)+" first"]);}
+  });
+  const o=$("#chkOut");
+  o.innerHTML=out.length?`<div class="chk">${out.map(([i,t])=>`<button type="button" class="chkb" data-pick="${R[i].id}"><b>Rule ${i+1}</b> ${esc(t)}</button>`).join("")}</div><p class="hint" style="margin:8px 0 0">Based on ${N} sample items. A rare item can be missed. Click a rule to open it.</p>`:`<p class="hint" style="margin:8px 0 0">Every active rule decides at least one of ${N} sample items.</p>`;
 }
 function renderHead(){$("#cap").innerHTML=`<span class="hint">Rules</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
 
@@ -1489,6 +1507,7 @@ $("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").va
   $("#sN").oninput=e=>{sp.n=+e.target.value;upd();};$("#sI").oninput=e=>{sp.sz=+e.target.value;upd();};$("#sC").oninput=e=>{sp.c=+e.target.value;upd();};
   $("#qs").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(b)addDrops(sp.c,{cls:b.dataset.q,n:sp.n,size:sp.sz});});
 })();
+$("#chkOrder").onclick=checkOrder;
 $("#roll1").onclick=()=>addDrops(1);$("#roll25").onclick=()=>addDrops(25);$("#clear").onclick=()=>{S.items=[];renderDrops();};
 $("#auto").onclick=()=>{const b=$("#auto");if(timer){clearInterval(timer);timer=null;b.textContent="Auto-drop: off";b.setAttribute("aria-pressed","false");}else{timer=setInterval(()=>addDrops(1),1100);b.textContent="Auto-drop: on";b.setAttribute("aria-pressed","true");}};
 $("#preset").innerHTML=`<option value="" disabled selected>Game presets…</option>`+PRESETS.map((p,i)=>`<option value="${i}">${p.label}</option>`).join("");
