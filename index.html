@@ -924,7 +924,7 @@ const msel=(id,key,val,opts)=>{const has=opts.some(o=>String(o[0])===String(val)
 const nOpts=(any,f)=>[["",any]].concat([1,2,3,4,5,6].map(n=>[n,f(n)]));
 const lvOpts=(any,f)=>[["0",any]].concat(LVSTEPS.map(v=>[v,f(v)]));
 const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,ph:"Type a line, like life or fire"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,ph:"Type a red name"}};
-S.pk={b:"",a:"",rn:""};
+S.pk={b:"",a:"",rn:""};S.moreOpen=true;
 function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k);
   return `<div class="pk" data-pkbox="${k}"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>
@@ -937,12 +937,14 @@ function renderPickList(k){
   const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=4;
   const lineSel=new Set(ids.map(i=>P.name[i]));
   const res=P.list().filter(x=>!q||String(x[1]).toLowerCase().includes(q)||String(x[0]).toLowerCase().includes(q)).slice(0,80);
-  box.innerHTML=res.length?res.map(x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" ${on||full?"disabled":""}><span>${esc(x[1])}</span><small>${on?"picked":esc(x[0])}</small></button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
+  box.innerHTML=res.length?res.map(x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" ${on||full?"disabled":""}><span>${esc(x[1])}</span>${on?"<small>picked</small>":""}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
 }
 function moreHTML(r){
   const [il,ih]=mrng(r,"i"),[ql,qh]=mrng(r,"q"),rt=mval(r,"rt");
-  return `<h3 class="sub">More conditions (the game's MORE window)</h3>
-   <p class="hint" style="margin:0 0 14px">All of them must fit, together with the options above.${rt?" Runes up to a tier turns this rule into a rune rule.":""}</p>
+  const open=S.moreOpen,act=moreParts(r);
+  const head=`<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:${open?8:0}px"><h3 class="sub" style="margin:0">More conditions (the game's MORE window)</h3><button type="button" class="btn" data-moretoggle="1" aria-expanded="${open}">${open?"Close":"Open"}</button></div>`;
+  if(!open)return head+`<p class="hint" style="margin:8px 0 0">${act.length?esc(act.join(" · ")):"No more conditions set."}</p>`;
+  return head+`<p class="hint" style="margin:0 0 14px">All of them must fit, together with the options above.${rt?" Runes up to a tier turns this rule into a rune rule.":""}</p>
    <div class="mgrid">
     <div><label class="lab" for="m-t">Tier</label>${msel("m-t","data-m=\"t\"",mval(r,"t"),[["","Any tier"],[1,"T1 lines"]].concat([2,3,4,5,6,7,8].map(n=>[n,"T"+n+" or better"])))}</div>
     <div><label class="lab" for="m-n">Lines of that tier</label>${msel("m-n","data-m=\"n\"",mval(r,"n"),nOpts("Any lines",n=>n+"+ lines"))}</div>
@@ -1081,6 +1083,7 @@ document.addEventListener("click",e=>{
   if(t.id==="stripRoll"){addDrops(25);return;}
   if(d.cat){S.openCat[d.cat]=!S.openCat[d.cat];renderCats();return;}
   if(d.rf){V.filter=d.rf;renderRows();return;}
+  if(d.moretoggle){S.moreOpen=!S.moreOpen;renderEditor();return;}
   if(d.pick){S.cur=d.pick;renderRows();renderEditor();return;}
   if(d.mv){const i=F.rules.findIndex(x=>x.id===d.id2),j=i+ +d.mv;if(i>=0&&j>=0&&j<F.rules.length){const[r]=F.rules.splice(i,1);F.rules.splice(j,0,r);touch();}return;}
   if(d.tab){S.tab=d.tab;renderOut();return;}
