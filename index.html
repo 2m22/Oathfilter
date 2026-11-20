@@ -292,7 +292,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   </aside>
   <div class="stack dropwrap">
   <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
-    <p class="hint" style="margin:0 0 10px">Estimates, not game data: <button type="button" class="linkbtn" data-view="info">see the Guide</button>. <b>HIDE FILTER*</b> = a Hide rule matched, but the game never hides this item.</p>
+    <p class="hint" style="margin:0 0 10px">Estimates, not game data: <button type="button" class="linkbtn" data-view="info">see the Guide</button>. <b>SHOW*</b> = never hidden by the game.</p>
     <div class="stats"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div></section>
   <section class="plate" aria-labelledby="h-gv"><h2 id="h-gv" class="coltitle">Ground view</h2>
@@ -329,7 +329,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
      <li><b>Up to 40 rules.</b> The game takes 40 rules at most. The counter at the top shows how many you use.</li>
      <li><b>Top to bottom.</b> The game checks the rules in list order. The first matching rule wins, and the rules below it are not looked at for that item.</li>
      <li><b>No match.</b> If no rule matches, the item is shown as normal.</li>
-     <li><b>Never hidden.</b> Uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks always stay visible, even when a hide rule matches. The Drop Test marks them <b>HIDE FILTER*</b> when a Hide rule matched.</li>
+     <li><b>Never hidden.</b> Uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks always stay visible, even when a hide rule matches. The Drop Test marks them <b>SHOW*</b>.</li>
      <li><b>Rule on or off.</b> The switch on a rule turns it off without deleting it. A rule that is off is skipped.</li>
      <li><b>One line group per rule.</b> To look for two line groups, use two rules.</li>
     </ul></section>
@@ -1437,7 +1437,7 @@ function dropHTML(it,e,anim){
   const rule=e.i>=0?`<span class="rn">Rule ${e.i+1} · ${esc(summary(F.rules[e.i]))}</span>`:`<span class="rn">No rule matched</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
    <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
-   <span class="vd" title="${e.guard?"A Hide rule matched. The game never hides this item, so it stays visible.":""}">${e.guard?"HIDE FILTER*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM"][e.v]}</span></li>`;
+   <span class="vd" title="${e.guard?"never hidden":""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM"][e.v]}</span></li>`;
 }
 function renderDrops(animId){
   const t={all:S.items.length,hl:0,show:0,hide:0},ev=S.items.map(it=>evalC(it));
