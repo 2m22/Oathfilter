@@ -365,9 +365,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn gold" id="copy">Copy filter code</button><button type="button" class="btn" id="dl">Download .txt</button></div>
     <p class="hint" style="margin:8px 0 0">Paste the game code into the game's loot filter window.</p>
     <div id="shareBox" style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)"><h3 style="margin:0 0 10px;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Share</h3>
-      <div class="grid2"><div><label class="lab" for="shName">Filter name (optional)</label><input id="shName" class="field" type="text" maxlength="40" placeholder="e.g. Mapping v2" autocomplete="off"></div>
-        <div><label class="lab" for="shBy">Created by (optional)</label><input id="shBy" class="field" type="text" maxlength="30" placeholder="Your name" autocomplete="off"></div></div>
-      <p class="hint" style="margin:8px 0 10px">A share link stores the game code, these two names and your rule names on the Oathfilter share service, so anyone with the link can open it. Your game export is not changed.</p>
+      <p class="hint" style="margin:0 0 10px">A share link stores the game code and your rule names on the Oathfilter share service, so anyone with the link can open it. Your game export is not changed.</p>
       <button type="button" class="btn gold" id="shMake">Create share link</button>
       <div class="shres" id="shRes" hidden><label class="lab" for="shUrl">Share link</label><input id="shUrl" class="field" type="text" readonly>
         <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="shCopy">Copy link</button><button type="button" class="btn" id="shDisc">Copy for Discord</button></div></div>
@@ -478,7 +476,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <h3 class="subtitle">Export</h3>
     <ul class="pl">
      <li><b>Game code.</b> The Export box shows the code you paste into the game.</li>
-     <li><b>Share.</b> “Create share link” makes a short link to your filter with its name, your name and your rule names. Whoever opens it sees a preview first and can load it or save it to their local filters.</li>
+     <li><b>Share.</b> “Create share link” makes a short link to your filter with its rule names. Whoever opens it sees a preview first and can load it or save it to their local filters.</li>
      <li><b>Saved in your browser.</b> Your current filter is kept automatically, so it is still there next time.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g9"><h2 id="h-g9" class="coltitle">Keyboard shortcuts</h2>
@@ -1870,14 +1868,13 @@ const BUILD="__BUILD__";
 /* ---- share links: short link through the Oathfilter share worker (POST /s, GET /s/<id>); offline fallback #s=... ---- */
 const SHARE_URL="https://oathfilter-share.mathiesjng.workers.dev",SH_NAME_MAX=40,SH_BY_MAX=30,SH_ID=/^[A-Za-z0-9_-]{3,40}$/;
 const shBase=()=>location.href.split("#")[0];
-const shMeta={key:"oathfilter-share-meta",load(){try{const o=JSON.parse(localStorage.getItem(this.key)||"{}");return o&&typeof o==="object"?o:{};}catch(e){return {};}},save(o){try{localStorage.setItem(this.key,JSON.stringify(o));}catch(e){}}};
 const shClean=(v,n)=>String(v==null?"":v).replace(/[\u0000-\u001f]/g," ").trim().slice(0,n);
 async function shFetch(url,opt){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),8000);try{return await fetch(url,Object.assign({signal:ac.signal},opt||{}));}finally{clearTimeout(t);}}
 function b64uEnc(u8){let s="";for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
 function b64uDec(t){const b=atob(t.replace(/-/g,"+").replace(/_/g,"/")+"===".slice((t.length+3)%4));const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
 /* offline link: JSON, deflate-raw when the browser can, base64url; first character says which (z = packed, p = plain) */
 async function shPack(pl){
-  const j=JSON.stringify({v:1,c:pl.bofilter,f:pl.filterName,a:pl.authorName,n:pl.ruleNames});let u=new TextEncoder().encode(j),m="p";
+  const j=JSON.stringify({v:1,c:pl.bofilter,n:pl.ruleNames});let u=new TextEncoder().encode(j),m="p";
   try{if(typeof CompressionStream==="function"){const z=new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());if(z.length<u.length){u=z;m="z";}}}catch(e){u=new TextEncoder().encode(j);m="p";}
   return m+b64uEnc(u);}
 async function shUnpack(str){
@@ -1885,7 +1882,7 @@ async function shUnpack(str){
   if(m==="z")t=new TextDecoder().decode(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
   else if(m==="p")t=new TextDecoder().decode(u);else throw new Error("format");
   const o=JSON.parse(t);return{bofilter:o.c,filterName:o.f,authorName:o.a,ruleNames:o.n};}
-function shPayload(){return{bofilter:encode(F),filterName:shClean($("#shName").value,SH_NAME_MAX),authorName:shClean($("#shBy").value,SH_BY_MAX),ruleNames:F.rules.map(r=>String(r.name||"").slice(0,NAME_MAX))};}
+function shPayload(){return{bofilter:encode(F),ruleNames:F.rules.map(r=>String(r.name||"").slice(0,NAME_MAX))};}
 async function shPost(pl){
   const body=JSON.stringify(pl);let r;
   try{r=await shFetch(SHARE_URL+"/s",{method:"POST",headers:{"Content-Type":"application/json"},body});}
@@ -1894,8 +1891,7 @@ async function shPost(pl){
   const j=await r.json(),id=j&&(j.id||(j.data&&j.data.id));
   if(typeof id!=="string"||!SH_ID.test(id))throw new Error("no id");
   return id;}
-const shLabel=pl=>{const n=pl.filterName||"Oathfilter filter";return (pl.authorName?n+" by "+pl.authorName:n).replace(/[\[\]]/g,"");};
-let shLast={code:"",url:"",label:"",busy:false};
+let shLast={code:"",url:"",busy:false};
 const shMsg=(m,bad)=>{const e=$("#shMsg");e.textContent=m;e.style.color=bad?"var(--hide-fg)":"";};
 async function shCopyText(txt,ok){
   try{await navigator.clipboard.writeText(txt);shMsg(ok);return;}catch(e){}
@@ -1905,18 +1901,17 @@ window.shSync=()=>{const r=$("#shRes");if(r&&!r.hidden&&shLast.code!==encode(F))
 $("#shMake").onclick=async()=>{
   if(shLast.busy)return;
   if(!F.rules.length){shMsg("Add at least one rule first.",true);return;}
-  const pl=shPayload(),btn=$("#shMake");shMeta.save({f:pl.filterName,a:pl.authorName});
+  const pl=shPayload(),btn=$("#shMake");
   shLast.busy=true;btn.disabled=true;$("#shRes").hidden=true;shMsg("Creating link…");
   let url="",offline=false;
   try{url=shBase()+"#f="+await shPost(pl);}
   catch(e){try{url=shBase()+"#s="+await shPack(pl);offline=true;}catch(e2){shLast.busy=false;btn.disabled=false;shMsg("The link could not be created. Copy the game code instead.",true);return;}}
-  shLast={code:pl.bofilter,url,label:shLabel(pl),busy:false};btn.disabled=false;
+  shLast={code:pl.bofilter,url,busy:false};btn.disabled=false;
   $("#shUrl").value=url;$("#shRes").hidden=false;
   shMsg(offline?"The share service could not be reached, so this is an offline link. It works without the service"+(url.length>1800?", but it is long and Discord may cut it.":"."):"Link created.",offline&&url.length>1800);};
 $("#shCopy").onclick=()=>shCopyText($("#shUrl").value,"Link copied.");
-$("#shDisc").onclick=()=>shCopyText("["+shLast.label+"]("+$("#shUrl").value+")","Discord link copied.");
+$("#shDisc").onclick=()=>shCopyText("[Oathfilter filter]("+$("#shUrl").value+")","Discord link copied.");
 $("#shUrl").addEventListener("focus",e=>e.target.select());
-{const m=shMeta.load();$("#shName").value=shClean(m.f,SH_NAME_MAX);$("#shBy").value=shClean(m.a,SH_BY_MAX);}
 
 /* opening a share link: preview first, nothing changes until the person says so */
 let shTok=0,shPrev=null;
@@ -1956,7 +1951,7 @@ function shLfSave(b){
   renderLF();return {name:n};}
 function shPreview(b,views){
   const named=b.f.rules.map(r=>r.name).filter(Boolean),cur=F.rules.length;
-  const rows=[["Filter",b.filterName||"(no name)"],["Created by",b.authorName||"(not given)"],["Rules",String(b.f.rules.length)]];
+  const rows=[];if(b.filterName)rows.push(["Filter",b.filterName]);if(b.authorName)rows.push(["Created by",b.authorName]);rows.push(["Rules",String(b.f.rules.length)]);
   if(views!=null)rows.push(["Opened",views+(views===1?" time":" times")]);
   const lst=named.slice(0,8).map(n=>"<li>"+esc(n)+"</li>").join("")+(named.length>8?"<li>+ "+(named.length-8)+" more</li>":"");
   const body=`<dl class="shl">${rows.map(r=>`<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("")}<dt>Rule names</dt><dd>${named.length?named.length+" included":"none"}</dd></dl>${named.length?`<ul class="shn">${lst}</ul>`:""}`
