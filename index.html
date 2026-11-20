@@ -212,6 +212,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .pk .chosen{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .pk .chosen .b{display:inline-flex;align-items:center;gap:6px}
 .pk .chosen button{min-width:32px;min-height:32px;border:0;background:none;color:inherit;font-weight:700;cursor:pointer}
+.plrow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.plrow select{flex:1 1 140px;min-height:36px;min-width:0}.plrow .btn{min-height:36px;padding:0 10px}
 .pklist{max-height:230px;overflow:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);margin-top:6px}
 .pklist button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:0 12px;border:0;border-bottom:1px solid var(--border);background:none;text-align:left;font-weight:600;color:var(--text-main);cursor:pointer}
 .pklist button:hover:not(:disabled){background:var(--bg-card)}.pklist button:disabled{opacity:.45;cursor:not-allowed}
@@ -1176,9 +1177,12 @@ const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,ph:"Type a base name"},
 S.pk={b:"",a:"",rn:""};S.moreOpen=true;
 /* what the sample drops can produce: other bases and reds still go into the code, but the drop test never shows them */
 const SAMPLE={b:new Set(BASES.map(b=>b.id).concat(VAR_IDS,SPECIAL.map(b=>b.id),["dwarven_rune"])),rn:new Set(UNIQUES.map(u=>u.id||redIdOf(u.name)))};
+/* saved pick lists: only in this browser, not part of the filter code; applying one copies its ids into the rule (max 4) */
+const PL={load(){try{return JSON.parse(localStorage.getItem("oathfilter-lists")||"{}");}catch(e){return {};}},save(o){try{localStorage.setItem("oathfilter-lists",JSON.stringify(o));}catch(e){}}};
 function pickHTML(r,k){
-  const P=PK[k],ids=mlist(r,k);
+  const P=PK[k],ids=mlist(r,k),lists=(PL.load()[k]||[]);
   return `<div class="pk" data-pkbox="${k}"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>
+   <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>`<option value="${i}">${esc(l.n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>Delete list</button></div>
    <div class="chosen">${ids.map(id=>`<span class="b more">${esc(P.name[id]||id)}<button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">✕</button></span>`).join("")}</div>
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
    <div class="pklist" id="pl-${k}"></div></div>`;
@@ -1342,6 +1346,8 @@ document.addEventListener("click",e=>{
   if(t.id==="dupRule"&&r){if(F.rules.length<MAX_RULES){F.preset="-1";const c=JSON.parse(JSON.stringify(r));c.id=uid();F.rules.splice(F.rules.indexOf(r)+1,0,c);S.cur=c.id;fullRender();toast("Rule duplicated.");}return;}
   if(t.id==="delRule"&&r){F.preset="-1";const i=F.rules.indexOf(r);F.rules.splice(i,1);const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;fullRender();toast("Rule removed. Ctrl+Z brings it back.");return;}
   if(!r)return;
+  if(d.plsave){const k=d.plsave,ids=mlist(r,k);if(!ids.length)return;const n=(prompt("Name for this list",PK[k].title+" list")||"").trim();if(!n)return;const o=PL.load();(o[k]=o[k]||[]).push({n:n.slice(0,40),ids:ids.slice()});PL.save(o);renderEditor();toast("List saved in this browser.");return;}
+  if(d.pldel){const k=d.pldel,sel=$("#pls-"+k),o=PL.load();if(!sel||sel.value===""||!(o[k]||[])[+sel.value]){toast("Pick a saved list first.",true);return;}const n=o[k][+sel.value].n;o[k].splice(+sel.value,1);PL.save(o);renderEditor();toast("List \""+n+"\" deleted.");return;}
   if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<4&&!l.includes(id)){l.push(id);msetList(r,k,l);touch();renderEditor();}return;}
   if(d.prm){const[k,id]=d.prm.split(/,(.+)/);msetList(r,k,mlist(r,k).filter(x=>x!==id));touch();renderEditor();return;}
   if(d.set){const[k,v]=d.set.split(",");r[k]=+v;touch();return;}
@@ -1366,6 +1372,11 @@ document.addEventListener("change",e=>{
   if(t.dataset.f&&t.tagName==="SELECT"){const r=curRule();if(r){r[t.dataset.f]=+t.value;touch();}return;}
 });
 function input(){}
+document.addEventListener("change",e=>{
+  const t=e.target,k=t.dataset&&t.dataset.pls;if(!k||t.value==="")return;
+  const r=curRule(),l=(PL.load()[k]||[])[+t.value];if(!r||!l)return;
+  msetList(r,k,l.ids.slice(0,4));touch();renderEditor();toast("List applied: "+l.n);
+});
 document.addEventListener("input",e=>{
   const t=e.target;
   if(t.id==="rq"){V.q=t.value;clearTimeout(input.t);input.t=setTimeout(renderRows,100);return;}
