@@ -100,8 +100,8 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .cb2{min-height:34px;padding:0 12px;border:1px solid var(--border);border-radius:999px;background:var(--bg-card);color:var(--text-muted);font-weight:400}
 .cb2:hover{border-color:var(--border-strong);color:var(--text-main)}
 .cb2[aria-pressed="true"]{background:var(--accent-gold-soft);border-color:var(--accent-gold);color:var(--text-main)}
-.swatches{display:flex;gap:10px;flex-wrap:wrap}
-.swc{width:36px;height:36px;border-radius:50%;border:2px solid transparent;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swc{width:30px;height:30px;border-radius:50%;border:2px solid transparent;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.18)}
 .swc[aria-pressed="true"]{border-color:var(--bg-panel);box-shadow:0 0 0 2px var(--accent-gold)}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px 16px}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 16px}
@@ -146,7 +146,7 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .note{margin:0 0 14px;padding:10px 12px;border:1px solid var(--border);border-left:3px solid var(--accent-gold);border-radius:8px;background:var(--bg-subtle);font-size:.8125rem;line-height:1.5;color:var(--text-muted)}
 .note b{color:var(--text-main)}
 .flag{margin-top:14px;padding:8px 12px;border-left:3px solid var(--accent-gold);background:var(--accent-gold-soft);border-radius:0 8px 8px 0;font-size:.8125rem;color:var(--text-main)}
-.ground{position:relative;min-height:64px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:radial-gradient(ellipse at 50% 120%,#2a303b,#161b22 60%)}
+.ground{position:relative;min-height:100px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:radial-gradient(ellipse at 50% 120%,#2a303b,#161b22 60%)}
 .lbl{padding:3px 12px;border:1px solid rgba(0,0,0,.7);border-radius:3px;background:rgba(8,10,14,.86);color:var(--c);box-shadow:0 0 0 1px var(--c);font-weight:600;font-size:1.25rem;line-height:1.2;text-shadow:0 1px 0 #000}
 .beam{width:3px;height:70px;background:linear-gradient(180deg,rgba(255,255,255,0),var(--c));box-shadow:0 0 12px var(--c)}
 
@@ -967,7 +967,7 @@ function renderEditor(){
   $("#edTitle").textContent=r?"Rule editor · rule "+(i+1):"Rule editor";
   if(!r){ed.innerHTML=`<p class="hint">No rule selected. The game shows everything while there are no rules.</p><div style="margin-top:16px"><button type="button" class="btn gold" id="addRule">Add new rule</button></div>`;return;}
   ed.innerHTML=`
-   <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-bottom:12px"><label style="display:flex;align-items:center;gap:12px"><input id="f-on" class="sw" type="checkbox" ${r.on?"checked":""}> Rule is active</label><span class="hint" id="posInfo"></span></div>
+   <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-bottom:12px"><label style="display:flex;align-items:center;gap:12px"><input id="f-on" class="sw" type="checkbox" ${r.on?"checked":""}> Rule is active</label><span class="hint" id="posInfo"></span><span style="display:flex;flex-wrap:wrap;gap:8px;margin-left:auto"><button type="button" class="btn gold" id="addRule" style="min-height:34px">Add new rule</button><button type="button" class="btn" id="dupRule" style="min-height:34px">Duplicate</button><button type="button" class="btn danger" id="delRule" style="min-height:34px">Remove rule</button></span></div>
    <span class="lab">What happens</span><div class="seg" role="group" aria-label="Action">${T.action.map(o=>`<button type="button" data-set="action,${o[0]}" aria-pressed="${r.action===o[0]}">${o[1]}</button>`).join("")}</div>
    <div class="hint" id="actHint" style="margin-top:6px"></div>
    <div class="divider"></div>
@@ -978,11 +978,10 @@ function renderEditor(){
    ${moreHTML(r)}
    <div class="divider"></div>
    <h3 class="sub">Look and sound</h3>
-   <div id="lookBox"><span class="lab">Highlight colour</span><div class="swatches">${COLOURS.map(c=>`<button type="button" class="swc" style="--c:${c[2]}" data-col="${c[0]}" aria-pressed="${r.colour===c[0]}" aria-label="${c[1]}" title="${c[1]}"></button>`).join("")}</div></div>
-   <div style="margin-top:12px;max-width:320px"><label class="lab" for="f-sound">Sound</label>${sel("sound",r)}</div>
-   <div style="margin-top:12px"><span class="lab">Ground preview</span><div class="ground" id="ground"></div></div>
-   ${(r.extra&&r.extra.length)||hasRaw(r)?`<div class="flag">This rule has fields this page does not know. They stay in the export as they are.</div>`:""}
-   <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><button type="button" class="btn gold" id="addRule">Add new rule</button><button type="button" class="btn" id="dupRule">Duplicate</button><button type="button" class="btn danger" id="delRule" style="margin-left:auto">Remove rule</button></div>`;
+   <div class="grid2" style="align-items:start"><div><div id="lookBox"><span class="lab">Highlight colour</span><div class="swatches">${COLOURS.map(c=>`<button type="button" class="swc" style="--c:${c[2]}" data-col="${c[0]}" aria-pressed="${r.colour===c[0]}" aria-label="${c[1]}" title="${c[1]}"></button>`).join("")}</div></div>
+   <div style="margin-top:10px"><label class="lab" for="f-sound">Sound</label>${sel("sound",r)}</div></div>
+   <div><span class="lab">Ground preview</span><div class="ground" id="ground"></div></div></div>
+   ${(r.extra&&r.extra.length)||hasRaw(r)?`<div class="flag">This rule has fields this page does not know. They stay in the export as they are.</div>`:""}`;
   syncEditor();
   ["b","a","rn"].forEach(renderPickList);
 }
