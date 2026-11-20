@@ -12,13 +12,19 @@ All notable changes for players. Newest first.
 - Sell action for rules (marked as unconfirmed, since the game's exact behaviour is not known).
 - "Any of them / All of them" for the mods you pick on a rule.
 - Guide and About cards can be collapsed.
+- More Named Lines: Riven lines, Penetration lines (Fire / Cold / Lightning, Elemental on amulets) and "increased effect of your Vows". Lines that only exist while a game switch is on are tagged "switch-dependent".
+- Searching Named Lines now also finds raw game terms and ids, and several words must all match.
+- Pick lists keep their scroll position when you select or deselect entries.
 
 ### Changed
 - The Drop Test is now described as a rule test, not a drop-rate simulation. Guide and About are regrouped and easier to scan.
 - The "new version available" prompt is centered on screen with a light backdrop and works with the keyboard (Esc = remind me later).
 - The Sell counter only appears when a Sell rule exists or Sell samples were counted.
 - The Rule Editor no longer shows test-drop hit counts or the roll strip.
+- Named Lines, Bases and Reds are sorted alphabetically by their readable text.
+- Affix texts are shown in plain readable form (no template syntax like `#|plural(...)`). Long entries are shortened in the list, with the full text and game ids in the tooltip.
 
 ### Fixed
+- The Named Lines list no longer stops after 80 entries, so every line can be found.
 - Searching in the rule list now filters while you type.
 - Copy fixes: stray empty brackets, doubled spaces, and the lone dot before "Source on GitHub".
