@@ -942,7 +942,7 @@ function renderPickList(k){
 function moreHTML(r){
   const [il,ih]=mrng(r,"i"),[ql,qh]=mrng(r,"q"),rt=mval(r,"rt");
   const open=S.moreOpen,act=moreParts(r);
-  const head=`<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:${open?8:0}px"><h3 class="sub" style="margin:0">More conditions (the game's MORE window)</h3><button type="button" class="btn" data-moretoggle="1" aria-expanded="${open}">${open?"Close":"Open"}</button></div>`;
+  const head=`<button type="button" data-moretoggle="1" aria-expanded="${open}" style="display:flex;align-items:center;gap:10px;width:100%;padding:4px 0;margin-bottom:${open?8:0}px;border:0;background:none;color:inherit;cursor:pointer;text-align:left"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="transform:rotate(${open?90:0}deg);flex:none"><path d="M4 1l7 6-7 6z"/></svg><h3 class="sub" style="margin:0">More conditions (the game's MORE window)</h3></button>`;
   if(!open)return head+`<p class="hint" style="margin:8px 0 0">${act.length?esc(act.join(" · ")):"No more conditions set."}</p>`;
   return head+`<p class="hint" style="margin:0 0 14px">All of them must fit, together with the options above.${rt?" Runes up to a tier turns this rule into a rune rule.":""}</p>
    <div class="mgrid">
