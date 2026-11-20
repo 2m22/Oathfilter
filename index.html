@@ -1601,9 +1601,11 @@ const BUILD="__BUILD__";
 
 /* collapsible cards in Guide and About */
 (function(){
-  document.querySelectorAll("#p-info .plate,#p-about .plate").forEach(function(sec){
+  document.querySelectorAll("#p-info .plate,#p-about .plate").forEach(function(sec,n,all){
     const h=sec.querySelector(":scope>.coltitle");if(!h)return;
-    sec.classList.add("fold");h.setAttribute("role","button");h.tabIndex=0;h.setAttribute("aria-expanded","true");
+    const first=sec===sec.parentNode.querySelector(".plate");
+    sec.classList.add("fold");if(!first)sec.classList.add("shut");
+    h.setAttribute("role","button");h.tabIndex=0;h.setAttribute("aria-expanded",first?"true":"false");
     function tog(){const shut=sec.classList.toggle("shut");h.setAttribute("aria-expanded",shut?"false":"true");}
     h.addEventListener("click",tog);
     h.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}});
