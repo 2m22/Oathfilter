@@ -367,7 +367,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
      <li><b>Grade.</b> Base grade (50+, 70+, Truesworn) and top grade.</li>
      <li><b>Reds.</b> Reds only, or chase reds only. Unsworn or not.</li>
      <li><b>Runes.</b> Runes up to a chosen tier.</li>
-     <li><b>Named entries.</b> Up to four named bases, lines or reds in one rule. A named line matches when the item has an affix of that line.</li>
+     <li><b>Named entries.</b> Up to four named bases, lines or reds in one rule. A named line matches when the item has an affix of that line. With several named lines, “Any of them” (default) needs one of them, “All of them” needs every one.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g5"><h2 id="h-g5" class="coltitle">Actions, colours and sounds</h2>
     <ul class="pl">
@@ -482,7 +482,7 @@ const colOf=v=>(COLOURS.find(c=>c[0]===v)||COLOURS[0]);
 const uid=()=>Math.random().toString(36).slice(2,9);
 const newRule=o=>Object.assign({extra:[],m:[]},NEW_RULE,o||{});
 /* MORE options: the part after the ten fields, written as ,3:key=value;key=value (3 = filter version 3). Several entries in one field are joined with + */
-const MORE_ORDER=["t","n","s","i","q","g","gx","r","u","rt","b","a","rn"];
+const MORE_ORDER=["t","n","s","i","q","g","gx","r","u","rt","b","a","rn","all"];
 const parseMore=s=>s.split(";").filter(x=>x!=="").map(seg=>{const i=seg.indexOf("=");return i<0?[seg,null]:[seg.slice(0,i),seg.slice(i+1)];});
 const moreStr=r=>r.m&&r.m.length?",3:"+r.m.map(p=>p[1]===null?p[0]:p[0]+"="+p[1]).join(";"):"";
 const mval=(r,k)=>{const p=(r.m||[]).find(x=>x[0]===k);return p&&p[1]!==null?p[1]:"";};
@@ -560,7 +560,7 @@ function moreMatch(r,it){
   if(u===1&&it.unsworn)return false;if(u===2&&!it.unsworn)return false;
   const bs=mlist(r,"b");if(bs.length&&!bs.includes(it.baseId))return false;
   const rs=mlist(r,"rn");if(rs.length&&!rs.includes(it.redId))return false;
-  const as=mlist(r,"a");if(as.length&&!as.every(id=>it.mods.some(m=>m.lineLabel&&m.lineLabel===LINEN[id])))return false; /* every picked line must be on the item (guess: the game text says every id of a line matches) */
+  const as=mlist(r,"a");if(as.length){const has=id=>it.mods.some(m=>m.lineLabel&&m.lineLabel===LINEN[id]);if(!(mval(r,"all")==="1"?as.every(has):as.some(has)))return false;} /* named lines: "any of them" by default, "all of them" with all=1 (shown in the game) */
   return true;
 }
 function matches(r,it){
@@ -1242,7 +1242,7 @@ function moreParts(r){
   if(g)o.push(g>=90?"Truesworn":"grade "+g+"+");if(gx)o.push("grade under "+gx);
   if(rd)o.push(["","Reds only","Chase reds"][rd]||"red "+rd);
   if(u)o.push(["","Not unsworn","Unsworn only"][u]||"unsworn "+u);
-  const nm=(k,N,w)=>{const l=mlist(r,k);if(l.length)o.push(l.length===1?(N[l[0]]||l[0]):l.length+" "+w);};
+  const nm=(k,N,w)=>{const l=mlist(r,k);if(l.length)o.push(l.length===1?(N[l[0]]||l[0]):(k==="a"?(mval(r,"all")==="1"?"all of ":"any of "):"")+l.length+" "+w);};
   nm("b",BASEN,"bases");nm("a",LINEN,"named lines");nm("rn",REDN,"named reds");
   return o;
 }
@@ -1288,7 +1288,14 @@ function moreImplies(a,b){
   const ra=N(a,"r"),rb=N(b,"r");if(ra===1&&rb<1)return false;if(ra===2&&rb!==2)return false;
   const ua=N(a,"u");if(ua&&N(b,"u")!==ua)return false;
   for(const k of ["b","rn"]){const A=mlist(a,k),B=mlist(b,k);if(A.length&&!(B.length&&B.every(x=>A.includes(x))))return false;}
-  {const A=mlist(a,"a"),B=mlist(b,"a");if(A.length&&!A.every(x=>B.includes(x)))return false;}
+  {const A=mlist(a,"a"),B=mlist(b,"a");
+    if(A.length){
+      const allA=mval(a,"all")==="1"||A.length===1,allB=mval(b,"all")==="1"||B.length===1;
+      if(!B.length)return false;
+      if(allA){if(!(allB&&A.every(x=>B.includes(x))))return false;}                 /* a needs every line: b must need at least those */
+      else if(allB){if(!B.some(x=>A.includes(x)))return false;}                     /* a needs one of A: b needs all of B, one of them is in A */
+      else if(!B.every(x=>A.includes(x)))return false;                              /* both "any": every line b accepts must be accepted by a */
+    }}
   return true;
 }
 function covers(a,b){
@@ -1369,6 +1376,7 @@ function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k),lists=(PL.load()[k]||[]);
   return `<div class="pk" data-pkbox="${k}"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>
    <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>`<option value="${i}">${esc(l.n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>Delete list</button></div>
+   ${k==="a"?`<div class="seg" role="group" aria-label="Named lines: any or all" style="margin:0 0 8px"><button type="button" data-allm="" aria-pressed="${mval(r,"all")!=="1"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mval(r,"all")==="1"}">All of them</button></div>`:""}
    <div class="chosen">${ids.map(id=>`<span class="b more">${esc(P.name[id]||id)}<button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">✕</button></span>`).join("")}</div>
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
    <div class="pklist" id="pl-${k}"></div></div>`;
@@ -1532,6 +1540,7 @@ document.addEventListener("click",e=>{
   if(!r)return;
   if(d.plsave){const k=d.plsave,ids=mlist(r,k);if(!ids.length)return;const n=(prompt("Name for this list",PK[k].title+" list")||"").trim();if(!n)return;const o=PL.load();(o[k]=o[k]||[]).push({n:n.slice(0,40),ids:ids.slice()});PL.save(o);renderEditor();toast("List saved in this browser.");return;}
   if(d.pldel){const k=d.pldel,sel=$("#pls-"+k),o=PL.load();if(!sel||sel.value===""||!(o[k]||[])[+sel.value]){toast("Pick a saved list first.",true);return;}const n=o[k][+sel.value].n;o[k].splice(+sel.value,1);PL.save(o);renderEditor();toast("List \""+n+"\" deleted.");return;}
+  if(d.allm!==undefined){mset(r,"all",d.allm);touch();renderEditor();return;}
   if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<4&&!l.includes(id)){l.push(id);msetList(r,k,l);touch();renderEditor();}return;}
   if(d.prm){const[k,id]=d.prm.split(/,(.+)/);msetList(r,k,mlist(r,k).filter(x=>x!==id));touch();renderEditor();return;}
   if(d.set){const[k,v]=d.set.split(",");r[k]=+v;touch();return;}
