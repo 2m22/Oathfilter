@@ -168,9 +168,11 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 .beam{width:3px;height:70px;background:linear-gradient(180deg,rgba(255,255,255,0),var(--c));box-shadow:0 0 12px var(--c)}
 
 /* drop test */
-.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0 12px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0 12px}
 .stat.zero{opacity:.45}
-@media(max-width:560px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.stats.has-sell{grid-template-columns:repeat(5,minmax(0,1fr))}
+.stat[hidden]{display:none}
+@media(max-width:560px){.stats,.stats.has-sell{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .stat{padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
 .stat b{display:block;font-size:1.375rem;font-weight:700;font-variant-numeric:tabular-nums}
 .stat span{font-size:.75rem;color:var(--text-muted)}
@@ -312,8 +314,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   </aside>
   <div class="stack dropwrap">
   <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
-    <p class="hint" style="margin:0 0 10px">Sample items test which rules match and in what order. They are not real drop rates (<button type="button" class="linkbtn" data-view="info">how it works</button>). <b>SHOW*</b> = never hidden by the game.</p>
-    <div class="stats"><div class="stat"><b id="nAll">0</b><span>Total samples</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div><div class="stat zero" id="stSell" title="Sell: how the game handles it is not confirmed. The Drop Test treats it like Hide and counts it separately."><b id="nSell" style="color:var(--sell-fg)">0</b><span>Sell</span></div></div>
+    <div class="stats" id="stats"><div class="stat"><b id="nAll">0</b><span>Total samples</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div><div class="stat zero" id="stSell" hidden title="Sell: how the game handles it is not confirmed. The Drop Test treats it like Hide and counts it separately."><b id="nSell" style="color:var(--sell-fg)">0</b><span>Sell</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i><i id="bSell" style="width:0"></i></div></section>
   <section class="plate" aria-labelledby="h-gv"><h2 id="h-gv" class="coltitle">Ground view</h2>
     <div class="seg" role="group" aria-label="Ground view" id="sceneMode" style="max-width:360px;margin-bottom:10px"><button type="button" data-sm="all" aria-pressed="true">All visible items</button><button type="button" data-sm="hl" aria-pressed="false">Highlights and beams only</button></div>
@@ -487,7 +488,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 </main>
 <footer class="site-footer">
   <p style="margin:0">Oathfilter is an unofficial fan project and is not affiliated with Crater Studios. Thanks to <b>Lilshrimper</b> and his <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>.</p>
-  <p style="margin:4px 0 0"><button type="button" class="linkbtn" data-view="about">About, privacy and credits</button><span aria-hidden="true"> · </span><a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">Source on GitHub</a></p>
+  <p style="margin:4px 0 0"><button type="button" class="linkbtn" data-view="about">About, privacy and credits</button><br><a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">Source on GitHub</a></p>
 </footer>
 <div class="gt" id="gt" role="status" hidden></div>
 <div class="upd" id="upd" role="status" aria-live="polite" hidden><div><b>A new version is available</b><span>Your filter is saved in this browser and stays as it is.</span></div><div class="bt"><button type="button" class="btn gold" id="updNow">Reload now</button><button type="button" class="btn" id="updLater">Remind me in 5 minutes</button></div></div>
@@ -1497,11 +1498,13 @@ function dropHTML(it,e,anim){
   if(it.core&&uf.has("core"))fa.push("core-touched");if(it.sock&&uf.has("sock"))fa.push(it.sock+" sockets");if(it.kind!=="misc"&&it.grade&&uf.has("grade"))fa.push("grade "+it.grade);
   if(it.unsworn&&uf.has("unsworn"))fa.push("unsworn");if(it.chase&&uf.has("chase"))fa.push("chase red");if(it.truesworn&&uf.has("truesworn"))fa.push("truesworn");if(it.runebase&&uf.has("runebase"))fa.push("rune base");
   const fl=fa.length?` · <span class="tf" title="Random test flags. Real drops may differ.">test flags: ${fa.join(", ")}</span>`:"";
-  const rule=e.i>=0?`<span class="rn">Rule ${e.i+1} · ${esc(summary(F.rules[e.i]))}</span>`:`<span class="rn">No rule matched</span>`;
+  const WD=["hid it","showed it","highlighted it","highlighted it with a beam","sold it (unconfirmed)"];
+  const rule=e.i>=0?`<span class="rn"><b>Rule #${e.i+1}</b> ${e.guard?"matched, but the game never hides this item, so it is shown":WD[F.rules[e.i].action]} · ${esc(summary(F.rules[e.i]))}</span>`:`<span class="rn">No matching rule, so it is shown normally</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
    <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
    <span class="vd" title="${e.guard?"never hidden":e.v===4?"Sell: not confirmed in the game. The Drop Test treats it like Hide.":""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM","SELL"][e.v]}</span></li>`;
 }
+const sellRel=n=>n>0||F.rules.some(r=>r.on&&r.action===4);
 function renderDrops(animId){
   const t={all:S.items.length,hl:0,show:0,hide:0,sell:0},ev=S.items.map(it=>evalC(it));
   ev.forEach(e=>{if(e.v===0)t.hide++;else if(e.v===4)t.sell++;else if(isHl(e.v))t.hl++;else t.show++;});
@@ -1511,18 +1514,18 @@ function renderDrops(animId){
   $("#scene").innerHTML=dps||`<p class="empty">${S.items.length?"No highlights or beams in the latest drops.":"Press “Drop 1”, “Drop 25” or a Quick spawn button."}</p>`;
   $$("#sceneMode button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.sm==="hl")===S.hlOnly));
   const n=t.all||1;
-  $("#nAll").textContent=t.all;$("#nHl").textContent=t.hl;$("#nShow").textContent=t.show;$("#nHide").textContent=t.hide;$("#nSell").textContent=t.sell;$("#stSell").classList.toggle("zero",!t.sell);
+  $("#nAll").textContent=t.all;$("#nHl").textContent=t.hl;$("#nShow").textContent=t.show;$("#nHide").textContent=t.hide;$("#nSell").textContent=t.sell;$("#stSell").classList.toggle("zero",!t.sell);{const sr=sellRel(t.sell);$("#stSell").hidden=!sr;$("#stats").classList.toggle("has-sell",sr);}
   renderStrip();
   $("#bHl").style.width=t.hl/n*100+"%";$("#bShow").style.width=t.show/n*100+"%";$("#bHide").style.width=t.hide/n*100+"%";$("#bSell").style.width=t.sell/n*100+"%";
 }
 function updateHits(){
   const h=F.rules.map(()=>0),N=S.items.length;S.items.forEach(it=>{const e=evalC(it);if(e.i>=0)h[e.i]++;});
-  $$(".hits").forEach(el=>{const i=F.rules.findIndex(r=>r.id===el.dataset.hid),r=F.rules[i];el.textContent=!r||!r.on||!N?"":h[i]?h[i]+" of "+N+" test drops":"No hit in "+N+" test drops";});
+  $$(".hits").forEach(el=>{const i=F.rules.findIndex(r=>r.id===el.dataset.hid),r=F.rules[i];el.textContent=!r||!r.on||!N?"":h[i]?h[i]+" of "+N+" test drops":"";});
 }
 function renderStrip(){updateHits();
   const t={hl:0,show:0,hide:0,sell:0};S.items.forEach(it=>{const e=evalC(it);if(e.v===0)t.hide++;else if(e.v===4)t.sell++;else if(isHl(e.v))t.hl++;else t.show++;});
   const n=S.items.length;
-  $("#strip").innerHTML=n?`<span>Total<b>${n}</b></span><span>Shown<b class="c-show">${t.show}</b></span><span>Highlighted<b class="c-hl">${t.hl}</b></span><span>Hidden<b class="c-hide">${t.hide}</b></span><span title="Sell: not confirmed in the game, counted separately" style="${t.sell?"":"visibility:hidden"}">Sell<b style="color:var(--sell-fg)">${t.sell}</b></span><button type="button" class="btn" id="stripRoll">Roll 25 more</button>`:`<span>No test drops yet. See what this filter does.</span><button type="button" class="btn" id="stripRoll">Roll 25 test drops</button>`;
+  $("#strip").innerHTML=n?`<span>Total<b>${n}</b></span><span>Shown<b class="c-show">${t.show}</b></span><span>Highlighted<b class="c-hl">${t.hl}</b></span><span>Hidden<b class="c-hide">${t.hide}</b></span>${sellRel(t.sell)?`<span title="Sell: not confirmed in the game, counted separately">Sell<b style="color:var(--sell-fg)">${t.sell}</b></span>`:""}<button type="button" class="btn" id="stripRoll">Roll 25 more</button>`:`<span>No test drops yet. See what this filter does.</span><button type="button" class="btn" id="stripRoll">Roll 25 test drops</button>`;
 }
 function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genFiltered();const sl=(S.slot=(S.slot||0)+1)*7%15;last.x=10+(sl%5)*20+(Math.random()*6-3);last.y=6+Math.floor(sl/5)*30+(Math.random()*6-3);S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
 
