@@ -1,0 +1,38 @@
+# Deploys main to the site root and the test branch to /test/
+name: Deploy Pages
+on:
+  push:
+    branches: [main, test]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
+      - uses: actions/checkout@v4
+        with:
+          ref: test
+          path: site/test
+      - name: Clean up
+        run: rm -rf site/.git site/test/.git site/.github site/test/.github site/test/test
+      - name: Mark test page
+        run: sed -i 's#<title>#<title>[TEST] #' site/test/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
