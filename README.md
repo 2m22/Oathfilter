@@ -26,7 +26,7 @@ Open `index.html` in a browser. No build, no install.
 
 ## Privacy
 
-Everything runs in your browser. No filter data is sent anywhere, and there are no cookies or analytics. The current filter is kept in your browser's local storage. Fonts are loaded from Google Fonts, and the page is hosted on GitHub Pages.
+Everything runs in your browser. No filter data is sent anywhere, and there are no cookies or analytics. The current filter is kept in your browser's local storage. The fonts (Cinzel and Barlow, SIL Open Font License) are built into the page, so nothing is loaded from Google. The page is hosted on GitHub Pages.
 
 ## License
 
