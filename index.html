@@ -51,20 +51,20 @@ nav.nav button{min-height:46px;padding:0 16px;border:0;border-bottom:2px solid t
 nav.nav button:hover{color:var(--text-main)}
 nav.nav button[aria-selected="true"]{color:var(--accent-gold);border-bottom-color:var(--accent-gold)}
 main{padding:16px 20px 8px}
-.panel{max-width:1480px;margin:0 auto}
+.panel{max-width:1600px;margin:0 auto}
 .cols{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
-.cols>.l{flex:1 1 38%;min-width:320px}.cols>.r{flex:1 1 56%;min-width:340px}
+.cols>.l{flex:1 1 34%;min-width:320px;max-width:540px}.cols>.r{flex:1 1 60%;min-width:340px}
 @media (max-width:900px){main{padding:12px}nav.nav{padding:0 8px}}
 
 /* panels */
 .plate{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:18px}
-.plate.r{border-left:3px solid var(--accent-gold)}
+.plate.r{border-left:3px solid var(--accent-gold);padding:14px 16px}
 .coltitle{display:flex;align-items:center;gap:12px;margin:0 0 14px;font-weight:700;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .lab{display:block;margin:0 0 6px;font-size:.8125rem;font-weight:600;color:var(--text-muted)}
 .hint{font-size:.8125rem;color:var(--text-muted)}
 #actCount,#totalSel{font-variant-numeric:tabular-nums}
 .divider{height:1px;margin:18px 0;background:var(--border)}
-.plate.r .divider{margin:14px 0}
+.plate.r .divider{margin:11px 0}
 .sub{margin:0 0 12px;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
 
 /* form controls */
@@ -110,21 +110,22 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .tabs button[aria-selected="true"]{background:var(--accent-gold-soft);border-color:var(--accent-gold);color:var(--text-main)}
 
 /* rule list */
-#rows{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-.rc{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:10px 12px;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;transition:background-color .15s,border-color .15s}
+@media (min-width:1100px){#rows{max-height:calc(100vh - 300px);overflow-y:auto;padding-right:4px}}
+#rows{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.rc{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 10px;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;transition:background-color .15s,border-color .15s}
 .rc:hover{background:var(--bg-card-hover);border-color:var(--border-strong)}
 .rc.sel{border-color:var(--accent-gold);background:var(--bg-card-hover)}
 .rc.off .pickb{opacity:.5}
 .pickb{flex:1;min-width:0;display:flex;align-items:flex-start;gap:10px;padding:0;border:0;background:none;text-align:left}
 .nb{min-width:22px;padding-top:3px;font-size:.8rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--text-dim)}
-.conds{display:flex;flex-direction:column;gap:6px;min-width:0}
-.bd{display:flex;flex-wrap:wrap;gap:6px}
+.conds{display:flex;flex-direction:column;gap:4px;min-width:0}
+.bd{display:flex;flex-wrap:wrap;gap:4px}
 .b{padding:2px 8px;font-size:.78rem;border-radius:5px;background:var(--bg-subtle);border:1px solid var(--border);color:var(--text-main)}
 .b.more{border-color:var(--hl-fg);color:var(--hl-fg);background:var(--hl-bg)}
 .hits{font-size:.72rem;color:var(--text-dim);font-variant-numeric:tabular-nums}
 .b.any{background:transparent;border-style:dashed;color:var(--text-dim)}
 .shadow{font-size:.76rem;color:var(--warn-fg);cursor:help}
-.rr{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none}
+.rr{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
 .act{display:flex;align-items:center;gap:8px}
 .action-badge{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px;white-space:nowrap}
 .action-badge--beam{background:var(--beam-bg);color:var(--beam-fg)}
@@ -145,7 +146,7 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .note{margin:0 0 14px;padding:10px 12px;border:1px solid var(--border);border-left:3px solid var(--accent-gold);border-radius:8px;background:var(--bg-subtle);font-size:.8125rem;line-height:1.5;color:var(--text-muted)}
 .note b{color:var(--text-main)}
 .flag{margin-top:14px;padding:8px 12px;border-left:3px solid var(--accent-gold);background:var(--accent-gold-soft);border-radius:0 8px 8px 0;font-size:.8125rem;color:var(--text-main)}
-.ground{position:relative;min-height:110px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:radial-gradient(ellipse at 50% 120%,#2a303b,#161b22 60%)}
+.ground{position:relative;min-height:64px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:radial-gradient(ellipse at 50% 120%,#2a303b,#161b22 60%)}
 .lbl{padding:3px 12px;border:1px solid rgba(0,0,0,.7);border-radius:3px;background:rgba(8,10,14,.86);color:var(--c);box-shadow:0 0 0 1px var(--c);font-weight:600;font-size:1.25rem;line-height:1.2;text-shadow:0 1px 0 #000}
 .beam{width:3px;height:70px;background:linear-gradient(180deg,rgba(255,255,255,0),var(--c));box-shadow:0 0 12px var(--c)}
 
@@ -200,7 +201,7 @@ pre.out{margin:0;max-height:260px;overflow:auto;padding:12px;border:1px solid va
 .gt.bad{color:var(--hide-fg)}
 ul.pl{margin:0;padding:0;list-style:none}ul.pl li{padding:10px 0;border-bottom:1px solid var(--border)}ul.pl li:last-child{border:0}
 ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)}
-.site-footer{max-width:1480px;margin:8px auto 0;padding:16px 20px 28px;font-size:.8125rem;line-height:1.6;color:var(--text-muted)}
+.site-footer{max-width:1600px;margin:8px auto 0;padding:16px 20px 28px;font-size:.8125rem;line-height:1.6;color:var(--text-muted)}
 .site-footer b{color:var(--text-main)}
 .linkbtn{padding:0;border:0;background:none;color:var(--accent-gold);text-decoration:underline;font:inherit}
 #bHl{background:var(--beam-fg)}#bShow{background:var(--show-fg)}#bHide{background:var(--hide-fg)}
@@ -959,29 +960,29 @@ function moreHTML(r){
     <div><label class="lab" for="m-u">Unsworn</label>${msel("m-u","data-m=\"u\"",mval(r,"u")==="0"?"":mval(r,"u"),[["","Unsworn or not"],[1,"Not unsworn"],[2,"Unsworn only"]])}</div>
     <div><label class="lab" for="m-rt">Gear or runes</label>${msel("m-rt","data-m=\"rt\"",rt,[["","Gear row"]].concat([1,2,3,4,5,6].map(n=>[n,"Runes up to T"+n])))}</div>
    </div>
-   <div class="grid2" style="margin-top:18px">${pickHTML(r,"b")}${pickHTML(r,"a")}${pickHTML(r,"rn")}</div>`;
+   <div class="grid2" style="margin-top:12px">${pickHTML(r,"b")}${pickHTML(r,"a")}${pickHTML(r,"rn")}</div>`;
 }
 function renderEditor(){
   const r=curRule(),ed=$("#editor"),i=F.rules.indexOf(r);
   $("#edTitle").textContent=r?"Rule editor · rule "+(i+1):"Rule editor";
   if(!r){ed.innerHTML=`<p class="hint">No rule selected. The game shows everything while there are no rules.</p><div style="margin-top:16px"><button type="button" class="btn gold" id="addRule">Add new rule</button></div>`;return;}
   ed.innerHTML=`
-   <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-bottom:18px"><label style="display:flex;align-items:center;gap:12px"><input id="f-on" class="sw" type="checkbox" ${r.on?"checked":""}> Rule is active</label><span class="hint" id="posInfo"></span></div>
+   <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-bottom:12px"><label style="display:flex;align-items:center;gap:12px"><input id="f-on" class="sw" type="checkbox" ${r.on?"checked":""}> Rule is active</label><span class="hint" id="posInfo"></span></div>
    <span class="lab">What happens</span><div class="seg" role="group" aria-label="Action">${T.action.map(o=>`<button type="button" data-set="action,${o[0]}" aria-pressed="${r.action===o[0]}">${o[1]}</button>`).join("")}</div>
    <div class="hint" id="actHint" style="margin-top:6px"></div>
    <div class="divider"></div>
    <span class="lab">Rarity</span>${chipRow("rarity",r)}
-   <div class="grid3" style="margin-top:18px"><div><label class="lab" for="f-type">Item type</label>${sel("type",r)}</div><div><label class="lab" for="f-level">Item level</label>${sel("level",r)}</div><div><label class="lab" for="f-line">Line group</label>${sel("line",r)}</div></div>
-   <div class="grid2" style="margin-top:18px">${segRow("quality",r,"Roll quality")}${segRow("count",r,"Lines needed")}</div>
+   <div class="grid3" style="margin-top:12px"><div><label class="lab" for="f-type">Item type</label>${sel("type",r)}</div><div><label class="lab" for="f-level">Item level</label>${sel("level",r)}</div><div><label class="lab" for="f-line">Line group</label>${sel("line",r)}</div></div>
+   <div class="grid2" style="margin-top:12px">${segRow("quality",r,"Roll quality")}${segRow("count",r,"Lines needed")}</div>
    <div class="divider"></div>
    ${moreHTML(r)}
    <div class="divider"></div>
    <h3 class="sub">Look and sound</h3>
    <div id="lookBox"><span class="lab">Highlight colour</span><div class="swatches">${COLOURS.map(c=>`<button type="button" class="swc" style="--c:${c[2]}" data-col="${c[0]}" aria-pressed="${r.colour===c[0]}" aria-label="${c[1]}" title="${c[1]}"></button>`).join("")}</div></div>
-   <div style="margin-top:18px;max-width:320px"><label class="lab" for="f-sound">Sound</label>${sel("sound",r)}</div>
-   <div style="margin-top:20px"><span class="lab">Ground preview</span><div class="ground" id="ground"></div></div>
+   <div style="margin-top:12px;max-width:320px"><label class="lab" for="f-sound">Sound</label>${sel("sound",r)}</div>
+   <div style="margin-top:12px"><span class="lab">Ground preview</span><div class="ground" id="ground"></div></div>
    ${(r.extra&&r.extra.length)||hasRaw(r)?`<div class="flag">This rule has fields this page does not know. They stay in the export as they are.</div>`:""}
-   <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:24px"><button type="button" class="btn gold" id="addRule">Add new rule</button><button type="button" class="btn" id="dupRule">Duplicate</button><button type="button" class="btn danger" id="delRule" style="margin-left:auto">Remove rule</button></div>`;
+   <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><button type="button" class="btn gold" id="addRule">Add new rule</button><button type="button" class="btn" id="dupRule">Duplicate</button><button type="button" class="btn danger" id="delRule" style="margin-left:auto">Remove rule</button></div>`;
   syncEditor();
   ["b","a","rn"].forEach(renderPickList);
 }
