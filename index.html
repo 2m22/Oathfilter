@@ -126,10 +126,11 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .rc{position:relative;min-height:66px}
 .xb{position:absolute;left:10px;bottom:8px;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;padding:0;border:1px solid rgba(248,113,113,.4);border-radius:5px;background:transparent;color:var(--hide-fg);cursor:pointer}
 .xb:hover,.xb:focus-visible{background:var(--hide-bg);border-color:var(--hide-fg)}
-.grip{display:inline-flex;align-items:center;justify-content:center;width:22px;height:30px;color:var(--text-dim);cursor:grab;touch-action:none;user-select:none;border-radius:6px}
-.grip:hover{color:var(--text);background:var(--bg-subtle)}.grip.dis{opacity:.3;cursor:not-allowed}
-.rc.drag{opacity:.45;border-style:dashed}
-.rc.dropbefore{box-shadow:0 -3px 0 0 var(--accent-gold)}.rc.dropafter{box-shadow:0 3px 0 0 var(--accent-gold)}
+#rows.canmove .rc{cursor:grab}
+#rows.canmove .rc *{-webkit-user-select:none;user-select:none}
+#rows.canmove .rc .xb,#rows.canmove .rc .sw{cursor:pointer}
+.rc.drag{z-index:30;transition:none;pointer-events:none;border-color:var(--accent-gold);background:var(--bg-card-hover);box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 1px var(--accent-gold);opacity:.97}
+.rc.shift{transition:transform .16s ease;will-change:transform}
 body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 .rc.sel{border-color:var(--accent-gold);background:var(--bg-card-hover)}
 .rc.off .pickb{opacity:.5}
@@ -152,9 +153,6 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 .color-dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.25)}
 .spk{display:inline-flex;color:var(--text-muted)}
 .ctl{display:flex;align-items:center;gap:6px}
-.icb{display:inline-flex;align-items:center;justify-content:center;flex:none;width:30px;height:30px;border:1px solid var(--border);border-radius:6px;background:var(--bg-subtle);color:var(--text-muted)}
-.icb:hover{border-color:var(--border-strong);color:var(--text-main)}
-.icb:disabled{opacity:.3;cursor:not-allowed}
 
 /* editor */
 .strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin:0 0 14px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-size:.8125rem;color:var(--text-muted)}
@@ -334,7 +332,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g1"><h2 id="h-g1" class="coltitle">Quick start</h2>
     <ul class="pl">
      <li><b>1. Pick a start.</b> In the Editor choose a game preset (All loot, Tidy, Strict, Very strict, End Game). It is only a starting point; change anything.</li>
-     <li><b>2. Edit the rules.</b> Select a rule in the list and set what it checks and what it does. Add, duplicate or remove rules, and move them up or down.</li>
+     <li><b>2. Edit the rules.</b> Select a rule in the list and set what it checks and what it does. Add, duplicate or remove rules (red X), and drag a rule up or down to change its place.</li>
      <li><b>3. Test it.</b> Open Drop Test and press Drop 25 or a Quick spawn button. Every sample item shows the rule that caught it.</li>
      <li><b>4. Export.</b> Open Import / Export (or use “Copy filter code” at the top), then paste the code into the game’s loot filter window.</li>
     </ul></section>
@@ -408,6 +406,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
      <li><b>Ctrl+Z</b> undo the last change.</li>
      <li><b>Ctrl+D</b> duplicate the selected rule (Editor).</li>
      <li><b>Alt+Up / Alt+Down</b> select the previous or next rule (Editor).</li>
+     <li><b>Alt+Shift+Up / Alt+Shift+Down</b> move the focused rule up or down in the list.</li>
      <li><b>Esc</b> clear the rule search.</li>
      <li><b>Left / Right arrow</b> move between the tabs when a tab is focused.</li>
     </ul></section>
@@ -1316,7 +1315,7 @@ function visibleRules(){const q=V.q.trim().toLowerCase();return F.rules.map((r,i
   if(q&&!(summary(r)+" "+actWord(r.action)).toLowerCase().includes(q))return false;return true;});}
 function renderRows(){
   {const o=$("#chkOut");if(o)o.innerHTML="";}
-  const list=visibleRules(),free=V.filter==="all"&&!V.q.trim();
+  const list=visibleRules(),free=V.filter==="all"&&!V.q.trim();$("#rows").classList.toggle("canmove",free&&F.rules.length>1);
   $("#rows").innerHTML=list.length?list.map(([r,i])=>{
     const sh=shadowOf(i),AC=["hide","show","highlight","beam"][r.action]||"show",hex=colOf(r.colour)[2];
     return `<div class="rc ${r.id===S.cur?"sel":""} ${r.on?"":"off"}" data-rid="${r.id}">
@@ -1324,9 +1323,7 @@ function renderRows(){
       <span class="nb">${i+1}</span><span class="conds"><span class="bd">${badges(r)}</span><span class="hits" data-hid="${r.id}"></span>${sh>=0?(()=>{const e=F.rules[sh],same=e.action===r.action&&(r.action<2||e.colour===r.colour);return `<span class="shadow ${same?"":"conf"}" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. ${same?"Both do the same, so this rule is redundant.":"The two rules do different things, so this one is probably not working as you intend."} Check the order.">${same?"Redundant: rule "+(sh+1)+" does the same":"Overridden by rule "+(sh+1)+" (different action)"}</span>`;})():""}</span></button>
      <button type="button" class="xb" data-rm="${r.id}" aria-label="Remove rule ${i+1}" title="Remove rule ${i+1} (Ctrl+Z brings it back)"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></button>
      <div class="rr"><span class="act"><span class="action-badge action-badge--${r.on?AC:"off"}">${r.on?actWord(r.action):"Off"}</span>${r.action===3?`<span class="beam-ico" title="Light beam" style="--c:${hex}"></span>`:""}${r.action>=2?`<span class="color-dot" title="Highlight colour: ${colOf(r.colour)[1]}" style="background:${hex}"></span>`:""}${r.action>0&&r.sound!==0?`<span class="spk" title="Sound on">${SPKI(true)}</span>`:""}</span>
-      <span class="ctl"><span class="grip${free?"":" dis"}" data-grip="${r.id}" title="${free?"Drag to reorder":"Clear search and filters to reorder"}" aria-hidden="true"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor"><circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/><circle cx="3" cy="8" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="3" cy="13" r="1.5"/><circle cx="9" cy="13" r="1.5"/></svg></span><input class="sw sm" type="checkbox" data-on="${r.id}" ${r.on?"checked":""} aria-label="Rule ${i+1} active">
-       <button type="button" class="icb" data-mv="-1" data-id2="${r.id}" ${i===0||!free?"disabled":""} aria-label="Move rule ${i+1} up"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 3l6 8H1z"/></svg></button>
-       <button type="button" class="icb" data-mv="1" data-id2="${r.id}" ${i===F.rules.length-1||!free?"disabled":""} aria-label="Move rule ${i+1} down"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 11L1 3h12z"/></svg></button></span></div></div>`;
+      <span class="ctl"><input class="sw sm" type="checkbox" data-on="${r.id}" ${r.on?"checked":""} aria-label="Rule ${i+1} active"></span></div></div>`;
   }).join(""):`<div class="hint" style="padding:18px;text-align:center">${F.rules.length?'No rules match. <div style="margin-top:12px"><button type="button" class="btn" data-clearf="1">Clear search and filters</button></div>':"No rules. The game shows everything."}</div>`;
   updateHits();
   $("#actCount").textContent=F.rules.filter(r=>r.on).length+" of "+F.rules.length+" rules active";
@@ -1521,7 +1518,6 @@ document.addEventListener("click",e=>{
   if(d.moretoggle){S.moreOpen=!S.moreOpen;renderEditor();return;}
   if(d.pick){S.cur=d.pick;renderRows();renderEditor();return;}
   if(d.rm){const i=F.rules.findIndex(x=>x.id===d.rm);if(i>=0){F.preset="-1";F.rules.splice(i,1);if(S.cur===d.rm){const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;}fullRender();toast("Rule removed. Ctrl+Z brings it back.");}return;}
-  if(d.mv){const i=F.rules.findIndex(x=>x.id===d.id2),j=i+ +d.mv;if(i>=0&&j>=0&&j<F.rules.length){const[r]=F.rules.splice(i,1);F.rules.splice(j,0,r);touch();}return;}
   if(d.tab){S.tab=d.tab;renderOut();return;}
   if(t.id==="newRule"||t.id==="addRule"){if(F.rules.length<MAX_RULES){F.preset="-1";const r=newRule();r.id=uid();F.rules.push(r);S.cur=r.id;V.filter="all";V.q="";$("#rq").value="";V.view==="edit"||setView("edit");fullRender();}else toast("The game takes "+MAX_RULES+" rules.",true);return;}
   const r=curRule();
@@ -1537,7 +1533,7 @@ document.addEventListener("click",e=>{
 });
 document.addEventListener("keydown",e=>{
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="d"&&V.view==="edit"){e.preventDefault();const b=$("#dupRule");if(b&&!b.disabled)b.click();return;}
-  if(e.altKey&&/^Arrow(Up|Down)$/.test(e.key)&&V.view==="edit"&&F.rules.length){e.preventDefault();const i=Math.max(0,F.rules.findIndex(r=>r.id===S.cur)),j=Math.min(F.rules.length-1,Math.max(0,i+(e.key==="ArrowDown"?1:-1)));S.cur=F.rules[j].id;renderRows();renderEditor();return;}
+  if(e.altKey&&!e.shiftKey&&/^Arrow(Up|Down)$/.test(e.key)&&V.view==="edit"&&F.rules.length){e.preventDefault();const i=Math.max(0,F.rules.findIndex(r=>r.id===S.cur)),j=Math.min(F.rules.length-1,Math.max(0,i+(e.key==="ArrowDown"?1:-1)));S.cur=F.rules[j].id;renderRows();renderEditor();return;}
   if(e.key==="Escape"&&V.q){V.q="";$("#rq").value="";renderRows();return;}
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&!e.target.matches("textarea,input[type=search],input[type=text]")){e.preventDefault();undo();return;}
   if(!e.target.matches("#nav button")||!/^Arrow(Left|Right)$/.test(e.key))return;
@@ -1622,34 +1618,70 @@ const BUILD="__BUILD__";
   });
 })();
 
-/* drag and drop reordering of rules (pointer events: mouse, touch, pen) */
+/* drag and drop reordering: the whole rule row follows the pointer and the other rows make room (mouse, pen; touch needs a short press and hold). Alt+Shift+Up/Down moves the focused rule. */
 (function(){
-  const rows=document.getElementById("rows");let dr=null;
-  function clear(){rows.querySelectorAll(".dropbefore,.dropafter,.drag").forEach(e=>e.classList.remove("dropbefore","dropafter","drag"));document.body.classList.remove("dragging");}
-  function target(y){const els=[...rows.querySelectorAll(".rc")];let best=null;
-    for(const el of els){const b=el.getBoundingClientRect();if(y<b.top+b.height/2){best={el,after:false};break;}best={el,after:true};}return best;}
+  const rows=document.getElementById("rows");let dr=null,suppress=false;
+  const sy=()=>window.pageYOffset||0;
+  function reset(){rows.querySelectorAll(".rc").forEach(e=>{e.classList.remove("drag","shift");e.style.transform="";});document.body.classList.remove("dragging");}
+  function begin(){
+    if(!dr||dr.on)return;
+    const els=[...rows.querySelectorAll(".rc")];if(els.length<2){end(false);return;}
+    dr.rects=els.map(el=>{const b=el.getBoundingClientRect();return{el,id:el.dataset.rid,top:b.top+sy(),h:b.height};});
+    dr.from=dr.rects.findIndex(r=>r.id===dr.id);if(dr.from<0){end(false);return;}
+    const g=dr.rects.length>1?dr.rects[1].top-dr.rects[0].top-dr.rects[0].h:8;dr.step=dr.rects[dr.from].h+Math.max(0,g);
+    dr.s0=sy();dr.on=true;dr.to=dr.from;
+    document.body.classList.add("dragging");
+    dr.rects.forEach((r,i)=>{r.el.classList.add(i===dr.from?"drag":"shift");});
+    dr.scroll=setInterval(function(){if(!dr||!dr.on)return;const h=window.innerHeight,y=dr.lastY;if(y<70)window.scrollBy(0,-14);else if(y>h-70)window.scrollBy(0,14);place();},40);
+  }
+  function place(){
+    if(!dr||!dr.on)return;
+    const dy=(dr.lastY-dr.y0)+(sy()-dr.s0),f=dr.rects[dr.from];
+    f.el.style.transform="translateY("+dy+"px)";
+    const c=f.top+f.h/2+dy;let to=0;
+    dr.rects.forEach((r,i)=>{if(i!==dr.from&&r.top+r.h/2<c)to++;});
+    dr.to=to;
+    dr.rects.forEach((r,i)=>{if(i===dr.from)return;const o=i<dr.from?i:i-1;let m=0;
+      if(i<dr.from&&o>=to)m=dr.step;else if(i>dr.from&&o<to)m=-dr.step;
+      r.el.style.transform=m?"translateY("+m+"px)":"";});
+  }
+  function stop(){window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",up);window.removeEventListener("pointercancel",cancel);window.removeEventListener("keydown",key,true);window.removeEventListener("touchmove",tm);}
   function end(save){
-    if(!dr)return;const d=dr;dr=null;window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",up);window.removeEventListener("pointercancel",cancel);window.removeEventListener("keydown",key,true);
-    clearInterval(d.scroll);const t=d.t;clear();
-    if(!save||!t||!d.moved)return;
-    const from=F.rules.findIndex(r=>r.id===d.id),to0=F.rules.findIndex(r=>r.id===t.el.dataset.rid);if(from<0||to0<0)return;
-    let to=to0+(t.after?1:0);if(from<to)to--;if(to===from)return;
-    const[r]=F.rules.splice(from,1);F.rules.splice(to,0,r);touch();
+    if(!dr)return;const d=dr;dr=null;stop();clearTimeout(d.hold);clearInterval(d.scroll);
+    if(!d.on){reset();return;}
+    suppress=true;setTimeout(()=>{suppress=false;},0);
+    const from=F.rules.findIndex(r=>r.id===d.id);
+    if(!save||from<0||d.to===d.from||d.to>=F.rules.length){reset();return;}
+    reset();const[r]=F.rules.splice(from,1);F.rules.splice(d.to,0,r);touch();
   }
   function move(e){
-    if(!dr)return;if(!dr.moved&&Math.abs(e.clientY-dr.y0)<4)return;
-    dr.moved=true;dr.lastY=e.clientY;document.body.classList.add("dragging");
-    rows.querySelectorAll(".dropbefore,.dropafter").forEach(x=>x.classList.remove("dropbefore","dropafter"));
-    const t=target(e.clientY);dr.t=t;if(t)t.el.classList.add(t.after?"dropafter":"dropbefore");
+    if(!dr)return;dr.lastY=e.clientY;
+    if(!dr.on){const dy=Math.abs(e.clientY-dr.y0),dx=Math.abs(e.clientX-dr.x0);
+      if(dr.touch){if(dy>8||dx>8){end(false);}return;}   /* finger moved before the hold: it is a scroll */
+      if(dy<5)return;begin();}
+    place();
   }
+  function tm(e){if(dr&&dr.on)e.preventDefault();}
   function up(){end(true);}function cancel(){end(false);}
   function key(e){if(e.key==="Escape"){e.preventDefault();e.stopPropagation();end(false);}}
   rows.addEventListener("pointerdown",function(e){
-    const g=e.target.closest&&e.target.closest(".grip");if(!g||g.classList.contains("dis")||(e.button!==undefined&&e.button>0))return;
-    e.preventDefault();const row=g.closest(".rc");if(!row)return;
-    dr={id:g.dataset.grip,y0:e.clientY,moved:false,t:null,lastY:e.clientY};row.classList.add("drag");
+    if(!rows.classList.contains("canmove")||(e.button!==undefined&&e.button>0))return;
+    if(e.target.closest&&e.target.closest("input,.xb,.sw,label,a"))return;
+    const row=e.target.closest&&e.target.closest(".rc");if(!row)return;
+    dr={id:row.dataset.rid,x0:e.clientX,y0:e.clientY,lastY:e.clientY,on:false,touch:e.pointerType==="touch"};
     window.addEventListener("pointermove",move);window.addEventListener("pointerup",up);window.addEventListener("pointercancel",cancel);window.addEventListener("keydown",key,true);
-    dr.scroll=setInterval(function(){if(!dr||!dr.moved)return;const h=window.innerHeight,y=dr.lastY;if(y<70)window.scrollBy(0,-14);else if(y>h-70)window.scrollBy(0,14);const t=target(dr.lastY);if(t){dr.t=t;rows.querySelectorAll(".dropbefore,.dropafter").forEach(x=>x.classList.remove("dropbefore","dropafter"));t.el.classList.add(t.after?"dropafter":"dropbefore");}},40);
+    window.addEventListener("touchmove",tm,{passive:false});
+    if(dr.touch)dr.hold=setTimeout(function(){if(dr){begin();place();}},320);
+  });
+  /* a drag must not also select the rule */
+  rows.addEventListener("click",function(e){if(suppress){e.stopPropagation();e.preventDefault();}},true);
+  /* keyboard: Alt+Shift+Up / Alt+Shift+Down on a focused rule */
+  rows.addEventListener("keydown",function(e){
+    if(!e.altKey||!e.shiftKey||(e.key!=="ArrowUp"&&e.key!=="ArrowDown")||!rows.classList.contains("canmove"))return;
+    const row=e.target.closest&&e.target.closest(".rc");if(!row)return;
+    const i=F.rules.findIndex(r=>r.id===row.dataset.rid),j=i+(e.key==="ArrowUp"?-1:1);if(i<0||j<0||j>=F.rules.length)return;
+    e.preventDefault();const id=row.dataset.rid;const[r]=F.rules.splice(i,1);F.rules.splice(j,0,r);touch();
+    const b=rows.querySelector('.rc[data-rid="'+id+'"] .pickb');if(b)b.focus();
   });
   window.__dragEnd=end;
 })();
