@@ -65,6 +65,13 @@ main{padding:10px 16px 6px}
 .subtitle{margin:0 0 8px;font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .stack{display:flex;flex-direction:column;gap:12px;flex:1 1 560px;min-width:320px}
 .coltitle{display:flex;align-items:center;gap:12px;margin:0 0 10px;font-weight:700;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.fold .coltitle{cursor:pointer;user-select:none;margin-bottom:0;justify-content:space-between}
+.fold .coltitle::after{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin:-4px 4px 0 0;transition:transform .15s;flex:none}
+.fold .coltitle:hover{color:var(--text)}
+.fold .coltitle:focus-visible{outline:2px solid var(--gold,#c9a24b);outline-offset:3px;border-radius:4px}
+.fold:not(.shut)>.coltitle{margin-bottom:10px}
+.fold.shut>.coltitle::after{transform:rotate(-45deg);margin:0 6px 0 0}
+.fold.shut>:not(.coltitle){display:none}
 .lab{display:block;margin:0 0 6px;font-size:.8125rem;font-weight:600;color:var(--text-muted)}
 .hint{font-size:.8125rem;color:var(--text-muted)}
 #actCount{font-variant-numeric:tabular-nums}
@@ -1590,6 +1597,17 @@ const BUILD="__BUILD__";
   S.cur=F.rules[0]?F.rules[0].id:null;
   for(let k=0;k<14;k++){const it=genItem();it.x=8+Math.random()*84;it.y=12+Math.random()*230;S.items.push(it);}
   fullRender();setView("edit");
+})();
+
+/* collapsible cards in Guide and About */
+(function(){
+  document.querySelectorAll("#p-info .plate,#p-about .plate").forEach(function(sec){
+    const h=sec.querySelector(":scope>.coltitle");if(!h)return;
+    sec.classList.add("fold");h.setAttribute("role","button");h.tabIndex=0;h.setAttribute("aria-expanded","true");
+    function tog(){const shut=sec.classList.toggle("shut");h.setAttribute("aria-expanded",shut?"false":"true");}
+    h.addEventListener("click",tog);
+    h.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}});
+  });
 })();
 </script>
 </body>
