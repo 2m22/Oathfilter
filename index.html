@@ -60,9 +60,11 @@ main{padding:10px 16px 6px}
 @media (max-width:900px){main{padding:12px}nav.nav{padding:0 8px;gap:2px 12px}.header-top{grid-template-columns:1fr;justify-items:center;padding-bottom:10px}.brand-center,.header-right{grid-column:1;justify-self:center}.header-left{display:none}}
 
 /* panels */
-.plate{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:18px}
-.plate.r{border-left:3px solid var(--accent-gold);padding:14px 16px}
-.coltitle{display:flex;align-items:center;gap:12px;margin:0 0 14px;font-weight:700;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.plate{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.sub{margin:0 0 10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}.sub:last-child{margin-bottom:0}
+.subtitle{margin:0 0 8px;font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.stack{display:flex;flex-direction:column;gap:12px;flex:1 1 560px;min-width:320px}
+.coltitle{display:flex;align-items:center;gap:12px;margin:0 0 10px;font-weight:700;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .lab{display:block;margin:0 0 6px;font-size:.8125rem;font-weight:600;color:var(--text-muted)}
 .hint{font-size:.8125rem;color:var(--text-muted)}
 #actCount{font-variant-numeric:tabular-nums}
@@ -200,7 +202,7 @@ pre.out{margin:0;max-height:260px;overflow:auto;padding:12px;border:1px solid va
 .toast.bad{color:var(--hide-fg)}
 .gt{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:10px 16px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-card);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--show-fg);font-weight:600;z-index:9}
 .gt.bad{color:var(--hide-fg)}
-ul.pl{margin:0;padding:0;list-style:none}ul.pl li{padding:10px 0;border-bottom:1px solid var(--border)}ul.pl li:last-child{border:0}
+ul.pl{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}ul.pl li{margin:0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-size:.875rem;line-height:1.5;color:var(--text-muted)}ul.pl li b{color:var(--text-main)}
 ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)}
 .site-footer{max-width:1600px;margin:8px auto 0;padding:16px 20px 28px;font-size:.8125rem;line-height:1.6;color:var(--text-muted)}
 .site-footer b{color:var(--text-main)}
@@ -221,8 +223,6 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 /* drop test: controls column left, main area right */
 .dctl{flex:0 0 280px;min-width:260px;position:sticky;top:8px;padding:12px}
 .dctlb{display:grid;grid-template-columns:1fr 1fr;gap:6px}.dctlb .btn{min-height:34px;padding:0 8px;font-size:.8125rem}
-.qs{margin:12px 0 0;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
-.qs h3{margin:0 0 8px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
 .qsb{display:flex;flex-wrap:wrap;gap:5px}.qsb .btn{min-height:30px;padding:0 9px;font-size:.78rem}
 .qsr{display:grid;gap:2px;margin-top:10px}
 .qsr label{display:grid;grid-template-columns:78px 1fr 2.2em;align-items:center;gap:8px;min-height:26px;font-size:.78rem;color:var(--text-muted)}
@@ -231,7 +231,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 @media (max-width:900px){.dctl{flex:1 1 100%;position:static}}
 /* compact ground view, hidden drops set apart but readable */
 .scene{height:200px!important}
-.dropwrap .stats{margin:10px 0 8px!important}.dropwrap .drops{margin-top:10px}
+.dropwrap .stats{margin:0 0 10px!important}.dropwrap .drops{margin:0}
 .drop[data-v="0"]{opacity:.78;border-style:dashed;background:var(--bg-subtle)}
 .drop[data-v="0"] .nm{text-decoration:none;color:var(--text-muted)}
 /* update banner */
@@ -271,9 +271,9 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 <main>
 <div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit"><div class="cols">
   <section class="plate l" aria-labelledby="h-rules">
-    <label class="lab" for="preset">Start from a game preset</label><div class="selwrap" style="margin-bottom:18px"><select id="preset"></select></div>
     <h2 id="h-rules" class="coltitle">Rules</h2>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
+    <div class="sub"><label class="lab" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div>
+    <div class="sub" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
     <div class="seg" role="group" aria-label="Show rules" id="rfilter" style="margin-top:12px"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button></div>
     <p class="hint" id="rhint" style="margin:12px 0 0"></p>
@@ -284,41 +284,43 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 </div></div>
 
 <div class="panel" id="p-test" role="tabpanel" aria-labelledby="t-test" hidden><div class="cols">
-  <aside class="plate dctl" aria-label="Drop controls"><h2 class="coltitle">Drop controls</h2>
-    <div class="dctlb"><button type="button" class="btn gold" id="roll1">Drop 1</button><button type="button" class="btn" id="roll25">Drop 25</button><button type="button" class="btn" id="auto" aria-pressed="false">Auto-drop: off</button><button type="button" class="btn danger" id="clear">Reset</button></div>
-    <div class="qs" id="qs"><h3>Quick spawn</h3><div class="qsb">
+  <aside class="plate dctl" aria-labelledby="h-ctl"><h2 id="h-ctl" class="coltitle">Drops</h2>
+    <div class="sub"><div class="dctlb"><button type="button" class="btn gold" id="roll1">Drop 1</button><button type="button" class="btn" id="roll25">Drop 25</button><button type="button" class="btn" id="auto" aria-pressed="false">Auto-drop: off</button><button type="button" class="btn danger" id="clear">Reset</button></div></div>
+    <div class="sub qs" id="qs"><h3 class="subtitle">Quick spawn</h3><div class="qsb">
       <button type="button" class="btn" data-q="white">White</button><button type="button" class="btn" data-q="magicgood">Magic good</button><button type="button" class="btn" data-q="magicbad">Magic bad</button>
       <button type="button" class="btn gold" data-q="rarevaluable" id="qVal">Rare valuable 3×T1</button><button type="button" class="btn" data-q="raredecent">Rare decent</button><button type="button" class="btn" data-q="rarebad">Rare bad</button><button type="button" class="btn" data-q="raremid">Rare mid</button>
       <button type="button" class="btn" data-q="unique">Unique / Red</button><button type="button" class="btn" data-q="idol" id="qIdol">Idol size 1</button></div>
       <div class="qsr"><label for="sN">Lines at T1<input id="sN" type="range" min="1" max="6" value="3"><output id="oN">3</output></label>
       <label for="sI">Idol size<input id="sI" type="range" min="1" max="4" value="1"><output id="oI">1</output></label>
-      <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC">1</output></label></div>
-      <p class="hint" style="margin:8px 0 0">Quick spawns go through the same rules, counters and log as Drop 1.</p></div>
+      <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC">1</output></label></div></div>
   </aside>
-  <section class="plate dropwrap" style="flex:1 1 560px;min-width:320px" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Drop test</h2>
-    <p class="note">Test drops use real item bases, affixes and uniques from the Broken Oath public API, but how they are rolled and how the game reads a rule is a best guess. It has not been checked in the game. <b>SHOW*</b> marks items the game never hides: uniques, runes, idols, gems, currency, gold and flasks.</p>
-    <div class="stats" style="margin-top:18px"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
-    <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div>
+  <div class="stack dropwrap">
+  <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
+    <p class="hint" style="margin:0 0 10px">Sample drops are a best guess (see “What the game can do”). <b>SHOW*</b> = never hidden by the game.</p>
+    <div class="stats"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
+    <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div></section>
+  <section class="plate" aria-labelledby="h-gv"><h2 id="h-gv" class="coltitle">Ground view</h2>
     <div class="seg" role="group" aria-label="Ground view" id="sceneMode" style="max-width:360px;margin-bottom:10px"><button type="button" data-sm="all" aria-pressed="true">All visible items</button><button type="button" data-sm="hl" aria-pressed="false">Highlights and beams only</button></div>
-    <div class="scene" id="scene"></div>
-    <ul class="drops" id="drops"></ul>
-</section>
+    <div class="scene" id="scene"></div></section>
+  <section class="plate" aria-labelledby="h-log"><h2 id="h-log" class="coltitle">Drop log</h2>
+    <ul class="drops" id="drops"></ul></section>
+  </div>
 </div></div>
 
 <div class="panel" id="p-io" role="tabpanel" aria-labelledby="t-io" hidden><div class="cols">
   <section class="plate" style="flex:1 1 420px" aria-labelledby="h-imp"><h2 id="h-imp" class="coltitle">Import</h2>
     <label class="lab" for="codeIn">Paste a BOFILTER code</label><textarea id="codeIn" class="field" placeholder="BOFILTER:1,..." style="min-height:200px"></textarea>
     <div style="margin-top:12px"><button type="button" class="btn gold" id="load">Load filter</button></div><div class="toast" id="loadMsg" role="status"></div>
-    <p class="hint" style="margin:6px 0 0">Copy the filter in the game's loot filter window and paste it here. The options of the MORE button are read too, and you can change them in the editor.</p></section>
+    <p class="hint" style="margin:8px 0 0">Copy the code from the game's loot filter window.</p></section>
   <section class="plate" style="flex:1 1 520px" aria-labelledby="h-exp"><h2 id="h-exp" class="coltitle">Export</h2>
     <div class="tabs" role="tablist" aria-label="Export format"><button type="button" role="tab" id="tabCode" aria-selected="true" data-tab="code">Game code</button><button type="button" role="tab" id="tabText" aria-selected="false" data-tab="text">Readable</button></div>
     <pre class="out" id="out" tabindex="0" style="max-height:420px"></pre>
     <div style="margin-top:12px"><button type="button" class="btn gold" id="copy">Copy filter code</button></div>
-    <p class="hint" style="margin:6px 0 0">Open the loot filter window in the game and paste the game code there.</p></section>
+    <p class="hint" style="margin:8px 0 0">Paste the game code into the game's loot filter window.</p></section>
 </div></div>
 
 <div class="panel" id="p-info" role="tabpanel" aria-labelledby="t-info" hidden><div class="cols">
-  <section class="plate" style="flex:1 1 520px" aria-labelledby="h-can"><h2 id="h-can" class="coltitle">What the game filter can do</h2>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-can"><h2 id="h-can" class="coltitle">What the game filter can do</h2>
     <ul class="pl">
      <li><b>Rules:</b> up to 40. The top matching rule wins. If no rule matches, the item is shown.</li>
      <li><b>Each rule checks:</b> one item type, one rarity group, one of eight item level steps, one line group, a roll quality (any, good, top) and how many matching lines (1, 2+, 3+).</li>
@@ -327,24 +329,23 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
      <li><b>Look:</b> eight highlight colours and a sound (silent, auto or one of four).</li>
      <li><b>Never hidden:</b> uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks.</li>
      <li><b>Game presets:</b> All loot, Tidy, Strict, Very strict and End Game. Choose one above the rule list in the Filter Editor, then change it as you like.</li></ul></section>
-  <section class="plate" style="flex:1 1 420px" aria-labelledby="h-unk"><h2 id="h-unk" class="coltitle">Good to know</h2>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-unk"><h2 id="h-unk" class="coltitle">Good to know</h2>
     <ul class="pl">
      <li>A rule uses one line group. For two groups, use two rules.</li>
      <li><b>Shortcuts:</b> Ctrl+Z undo, Ctrl+D duplicate the rule, Alt+Up / Alt+Down pick the previous or next rule, Esc clears the rule search.</li>
-     <li>The drop test is a best guess: which affixes belong to which line group, and what counts as a good or top roll, has not been checked in the game.</li>
      <li>The limit of 40 rules comes from a test in the game. The sound and colour names come from the community Broken Oath Builder.</li>
      <li>The code is the game's BOFILTER 1 code. MORE options follow the ten numbers of a rule as <code>,3:key=value;key=value</code>. The keys were read from exports of the game itself. Fields this page does not know are kept as they are.</li></ul>
-    <p class="hint" style="margin:14px 0 0">Community fan tool, not official. Credits are at the bottom of the page.</p></section>
+</section>
 </div></div>
 <div class="panel" id="p-about" role="tabpanel" aria-labelledby="t-about" hidden><div class="cols">
-  <section class="plate" style="flex:1 1 520px" aria-labelledby="h-ab"><h2 id="h-ab" class="coltitle">About Oathfilter</h2>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-ab"><h2 id="h-ab" class="coltitle">About Oathfilter</h2>
     <ul class="pl">
      <li><b>Fan project.</b> Oathfilter is an unofficial, free fan tool for the game Broken Oath. It is not made, endorsed or supported by Crater Studios, and it is not affiliated with them.</li>
      <li><b>Trademarks.</b> Broken Oath and all related names, item names and game content belong to their owners. They are used here only to describe what the tool works with.</li>
-     <li><b>No guarantee.</b> The tool is provided as it is, without warranty. The drop test is a best guess and may differ from the game. Always check a filter in the game before you rely on it.</li>
+     <li><b>No guarantee.</b> The tool is provided as it is, without warranty. Always check a filter in the game before you rely on it.</li>
      <li><b>Free and open source.</b> No ads, no account, no payment. The source code is under the GPL-3.0 license: <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">github.com/2m22/Oathfilter</a>.</li>
      <li><b>Feedback.</b> Found an error or want a change? Open an issue on GitHub.</li></ul></section>
-  <section class="plate" style="flex:1 1 420px" aria-labelledby="h-pv"><h2 id="h-pv" class="coltitle">Privacy and credits</h2>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-pv"><h2 id="h-pv" class="coltitle">Privacy and credits</h2>
     <ul class="pl">
      <li><b>Your filter stays with you.</b> Everything runs in your browser. The page sends no filter data anywhere. Your current filter is saved in your browser (local storage) so it is still there next time. Clear your site data to remove it.</li>
      <li><b>No tracking.</b> No cookies, no analytics, no accounts.</li>
