@@ -293,6 +293,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
   <section class="plate" style="flex:1 1 420px" aria-labelledby="h-unk"><h2 id="h-unk" class="coltitle">Good to know</h2>
     <ul class="pl">
      <li>A rule uses one line group. For two groups, use two rules.</li>
+     <li><b>Shortcuts:</b> Ctrl+Z undo, Ctrl+D duplicate the rule, Alt+Up / Alt+Down pick the previous or next rule, Esc clears the rule search.</li>
      <li>The drop test is a best guess: which affixes belong to which line group, and what counts as a good or top roll, has not been checked in the game.</li>
      <li>The limit of 40 rules comes from a test in the game. The sound and colour names come from the community Broken Oath Builder.</li>
      <li>The code is the game's BOFILTER 1 code. MORE options follow the ten numbers of a rule as <code>,3:key=value;key=value</code>. The keys were read from exports of the game itself. Fields this page does not know are kept as they are.</li></ul>
@@ -453,6 +454,10 @@ function evaluate(it){
   }
   return{v:1,i:-1,col:0};
 }
+
+/* evaluation cache: results are reused until a rule changes (REV goes up) */
+let REV=0;
+const evalC=it=>{if(it._rv!==REV){it._e=evaluate(it);it._rv=REV;}return it._e;};
 
 /* sample drops: real names, levels, tags and affix groups from the Broken Oath public API (build 85, 20.11.2026).
    What is NOT from the API: how often each base drops, how tiers are rolled, how many mods an item gets,
@@ -1019,7 +1024,7 @@ function dropHTML(it,e,anim){
    <span class="vd" title="${e.guard?"never hidden":""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM"][e.v]}</span></li>`;
 }
 function renderDrops(animId){
-  const t={all:S.items.length,hl:0,show:0,hide:0},ev=S.items.map(it=>evaluate(it));
+  const t={all:S.items.length,hl:0,show:0,hide:0},ev=S.items.map(it=>evalC(it));
   ev.forEach(e=>{if(e.v===0)t.hide++;else if(e.v>=2)t.hl++;else t.show++;});
   $("#drops").innerHTML=S.items.map((it,k)=>dropHTML(it,ev[k],it.id===animId)).join("");
   const dps=S.items.slice(0,18).map((it,k)=>({it,e:ev[k]})).filter(o=>o.e.v!==0&&(!S.hlOnly||o.e.v>=2)).reverse().map(({it,e})=>{const c=colOf(e.col)[2],col=e.v>=2;
@@ -1032,11 +1037,11 @@ function renderDrops(animId){
   $("#bHl").style.width=t.hl/n*100+"%";$("#bShow").style.width=t.show/n*100+"%";$("#bHide").style.width=t.hide/n*100+"%";
 }
 function updateHits(){
-  const h=F.rules.map(()=>0),N=S.items.length;S.items.forEach(it=>{const e=evaluate(it);if(e.i>=0)h[e.i]++;});
+  const h=F.rules.map(()=>0),N=S.items.length;S.items.forEach(it=>{const e=evalC(it);if(e.i>=0)h[e.i]++;});
   $$(".hits").forEach(el=>{const i=F.rules.findIndex(r=>r.id===el.dataset.hid),r=F.rules[i];el.textContent=!r||!r.on||!N?"":h[i]?h[i]+" of "+N+" test drops":"No hit in "+N+" test drops";});
 }
 function renderStrip(){updateHits();
-  const t={hl:0,show:0,hide:0};S.items.forEach(it=>{const e=evaluate(it);if(e.v===0)t.hide++;else if(e.v>=2)t.hl++;else t.show++;});
+  const t={hl:0,show:0,hide:0};S.items.forEach(it=>{const e=evalC(it);if(e.v===0)t.hide++;else if(e.v>=2)t.hl++;else t.show++;});
   const n=S.items.length;
   $("#strip").innerHTML=n?`<span>Total<b>${n}</b></span><span>Shown<b class="c-show">${t.show}</b></span><span>Highlighted<b class="c-hl">${t.hl}</b></span><span>Hidden<b class="c-hide">${t.hide}</b></span><button type="button" class="btn" id="stripRoll">Roll 25 more</button>`:`<span>No test drops yet. See what this filter does.</span><button type="button" class="btn" id="stripRoll">Roll 25 test drops</button>`;
 }
@@ -1068,8 +1073,8 @@ function save(){snap();try{localStorage.setItem("oathfilter4",encode(F));}catch(
 
 /* ---- orchestration ---- */
 function setFilter(f){F=f;F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});S.cur=F.rules[0]?F.rules[0].id:null;fullRender();}
-function fullRender(){renderHead();renderRows();renderEditor();renderStrip();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();save();}
-function touch(){F.preset="-1";renderHead();renderRows();syncEditor();renderStrip();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();save();}
+function fullRender(){REV++;renderHead();renderRows();renderEditor();renderStrip();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();save();}
+function touch(){REV++;F.preset="-1";renderHead();renderRows();syncEditor();renderStrip();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();save();}
 
 /* ---- events ---- */
 document.addEventListener("click",e=>{
@@ -1089,8 +1094,8 @@ document.addEventListener("click",e=>{
   if(d.tab){S.tab=d.tab;renderOut();return;}
   if(t.id==="newRule"||t.id==="addRule"){if(F.rules.length<MAX_RULES){F.preset="-1";const r=newRule();r.id=uid();F.rules.push(r);S.cur=r.id;V.filter="all";V.q="";$("#rq").value="";V.view==="edit"||setView("edit");fullRender();}else toast("The game takes "+MAX_RULES+" rules.",true);return;}
   const r=curRule();
-  if(t.id==="dupRule"&&r){if(F.rules.length<MAX_RULES){F.preset="-1";const c=JSON.parse(JSON.stringify(r));c.id=uid();F.rules.splice(F.rules.indexOf(r)+1,0,c);S.cur=c.id;fullRender();}return;}
-  if(t.id==="delRule"&&r){F.preset="-1";const i=F.rules.indexOf(r);F.rules.splice(i,1);const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;fullRender();return;}
+  if(t.id==="dupRule"&&r){if(F.rules.length<MAX_RULES){F.preset="-1";const c=JSON.parse(JSON.stringify(r));c.id=uid();F.rules.splice(F.rules.indexOf(r)+1,0,c);S.cur=c.id;fullRender();toast("Rule duplicated.");}return;}
+  if(t.id==="delRule"&&r){F.preset="-1";const i=F.rules.indexOf(r);F.rules.splice(i,1);const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;fullRender();toast("Rule removed. Ctrl+Z brings it back.");return;}
   if(!r)return;
   if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<4&&!l.includes(id)){l.push(id);msetList(r,k,l);touch();renderEditor();}return;}
   if(d.prm){const[k,id]=d.prm.split(/,(.+)/);msetList(r,k,mlist(r,k).filter(x=>x!==id));touch();renderEditor();return;}
@@ -1098,6 +1103,9 @@ document.addEventListener("click",e=>{
   if(d.col){r.colour=+d.col;touch();return;}
 });
 document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="d"&&V.view==="edit"){e.preventDefault();const b=$("#dupRule");if(b&&!b.disabled)b.click();return;}
+  if(e.altKey&&/^Arrow(Up|Down)$/.test(e.key)&&V.view==="edit"&&F.rules.length){e.preventDefault();const i=Math.max(0,F.rules.findIndex(r=>r.id===S.cur)),j=Math.min(F.rules.length-1,Math.max(0,i+(e.key==="ArrowDown"?1:-1)));S.cur=F.rules[j].id;renderRows();renderEditor();return;}
+  if(e.key==="Escape"&&V.q){V.q="";$("#rq").value="";renderRows();return;}
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&!e.target.matches("textarea,input[type=search],input[type=text]")){e.preventDefault();undo();return;}
   if(!e.target.matches("#nav button")||!/^Arrow(Left|Right)$/.test(e.key))return;
   const bs=$$("#nav button"),i=bs.indexOf(e.target),n=bs[(i+(e.key==="ArrowRight"?1:bs.length-1))%bs.length];setView(n.dataset.view);n.focus();e.preventDefault();
@@ -1112,9 +1120,10 @@ document.addEventListener("change",e=>{
   if(t.dataset.mr&&t.tagName==="SELECT"){const r=curRule(),k=t.dataset.mr.split(",")[0];if(r){msetRng(r,k,+$("#m-"+k+"0").value||0,+$("#m-"+k+"1").value||0);touch();}return;}
   if(t.dataset.f&&t.tagName==="SELECT"){const r=curRule();if(r){r[t.dataset.f]=+t.value;touch();}return;}
 });
+function input(){}
 document.addEventListener("input",e=>{
   const t=e.target;
-  if(t.id==="rq"){V.q=t.value;renderRows();return;}
+  if(t.id==="rq"){V.q=t.value;clearTimeout(input.t);input.t=setTimeout(renderRows,100);return;}
   if(t.id==="q"){S.q=t.value;renderCats();}
   if(t.dataset.pk){S.pk[t.dataset.pk]=t.value;renderPickList(t.dataset.pk);}
 });
