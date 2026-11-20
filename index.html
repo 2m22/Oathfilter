@@ -249,7 +249,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
     <div id="cats" style="display:flex;flex-direction:column;gap:14px;margin-top:18px"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px"><span class="hint" id="totalSel"></span><button type="button" class="btn" id="clearSel">Clear all</button></div></section>
   <section class="plate dropwrap" style="flex:1 1 640px;min-width:320px" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Drop test</h2>
-    <p class="note">Test drops are made up and only a best guess of how the game reads a rule. It has not been checked in the game. <b>SHOW*</b> marks items the game never hides: uniques, runes, idols, gems, currency, gold and flasks.</p>
+    <p class="note">Test drops use real item bases, affixes and uniques from the Broken Oath public API, but how they are rolled and how the game reads a rule is a best guess. It has not been checked in the game. <b>SHOW*</b> marks items the game never hides: uniques, runes, idols, gems, currency, gold and flasks.</p>
     <div style="display:flex;flex-wrap:wrap;gap:10px"><button type="button" class="btn gold" id="roll1">Drop 1</button><button type="button" class="btn" id="roll25">Drop 25</button><button type="button" class="btn" id="auto" aria-pressed="false">Auto-drop: off</button><button type="button" class="btn danger" id="clear">Reset</button></div>
     <div class="stats" style="margin-top:18px"><div class="stat"><b id="nAll">0</b><span>Total drops</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i></div>
@@ -301,11 +301,11 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
      <li><b>Your filter stays with you.</b> Everything runs in your browser. The page sends no filter data anywhere. Your current filter is saved in your browser (local storage) so it is still there next time. Clear your site data to remove it.</li>
      <li><b>No tracking.</b> No cookies, no analytics, no accounts.</li>
      <li><b>Fonts and hosting.</b> The fonts (Cinzel and Barlow, SIL Open Font License) are built into the page, so nothing is loaded from Google or any other font service. The page is hosted on GitHub Pages, which may log visits as part of its normal operation.</li>
-     <li><b>Credits.</b> Thanks to <b>Lilshrimper</b>, creator of the <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. The five game presets, the colour and sound names and the idea of testing a filter with sample drops come from his tool. Format details are from the developer file loot_filter.md (Crater Studios).</li></ul></section>
+     <li><b>Credits.</b> Thanks to <b>Lilshrimper</b>, creator of the <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. The five game presets, the colour and sound names and the idea of testing a filter with sample drops come from his tool. Format details are from the developer file loot_filter.md (Crater Studios). Item bases, affixes and uniques for the drop test come from the Broken Oath public API (build 85). This is a fan project and not official data.</li></ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-rg"><h2 id="h-rg" class="coltitle">What is real and what is guessed</h2>
     <ul class="pl">
-     <li><b>Real:</b> the BOFILTER 1 code (rule fields and their value lists), the rule order (the top matching rule wins), the limit of 40 rules (tested in the game) and the five game presets.</li>
-     <li><b>Guessed:</b> the sample drops (items, rarities, item levels, affix pools), which affixes belong to which line group, what counts as a good or top roll, and how a rule with item type Gems reads. The drop test is only a rough preview.</li>
+     <li><b>Real:</b> the BOFILTER 1 code (rule fields and their value lists), the rule order (the top matching rule wins), the limit of 40 rules (tested in the game) and the five game presets. Also real, from the public API: item bases with their levels and tags, affix groups with their tier counts and item levels, and unique names with their bases.</li>
+     <li><b>Guessed:</b> how often each base and rarity drops, how many mods an item gets, which tier is rolled, the item levels between the first and last tier of an affix, which affix group belongs to which line group, what counts as a good or top roll, whether the mods of a unique count for a line rule (the page ignores them), and how a rule with item type Gems reads. Core-touched, 4+ sockets, truesworn and rune base are random flags here. Bases that never drop at random in the API (core-touched, ashen, gnome-made) and uniques with drop weight 0 are left out. The drop test is only a rough preview.</li>
      <li><b>Kept but not simulated:</b> options from the game's MORE window. They stay in the export, the drop test ignores them.</li>
      <li><b>Not checked:</b> whether the game's code format changed in newer builds. The developer file this page follows is older than the game (it names 12 rules, the game takes 40). If an export from the game does not load, please report it on GitHub.</li></ul></section>
 </div></div>
@@ -358,12 +358,12 @@ function decode(text){
 }
 
 /* how the page reads a rule: a best guess, not checked in the game */
-const LINEMAP={Life:[1],FireRes:[2,16],ColdRes:[2,17],LightningRes:[2,18],PoisonRes:[2,19],AllRes:[2,16,17,18,19],MaxFireRes:[2,16],MaxColdRes:[2,17],MaxLightningRes:[2,18],MaxPoisonRes:[2,19],
+const LINEMAP={Life:[1],FireRes:[2,16],ColdRes:[2,17],LightningRes:[2,18],PoisonRes:[2,19],AllRes:[2,16,17,18,19],MaxFireRes91:[2,16],MaxColdRes91:[2,17],MaxLightningRes91:[2,18],MaxPoisonRes91:[2,19],
  MinionDamage:[3],MinionLife:[3],MinionSpeed:[3],MinionCrit:[3,7],MinionCritMulti:[3,7],MoveSpeed:[4],SkillLevel:[5],SpellInc:[6],Crit:[7],CritMulti:[7],AttackSpeed:[8],CastSpeed:[9],Mana:[10],ManaRegen:[10],
  FireAdded:[11],FireSpellAdded:[11],FireInc:[11],ColdAdded:[12],ColdSpellAdded:[12],ColdInc:[12],LightningAdded:[13],LightningSpellAdded:[13],LightningInc:[13],AttackLightning:[13],
  PhysInc:[14],PhysAdded:[14],AttackAdded:[14],PhysAsElem:[14],PoisonSpellAdded:[15],PoisonInc:[15],PoisonDamage:[15],IgniteDamage:[15],IgniteChance:[15],
  Str:[20],Dex:[20],Int:[20],Attributes:[20],DefenceFlat:[21],DefenceFlatEvasion:[21],DefenceFlatEnergyShield:[21],DefenceInc:[21],EnergyShieldGlobal:[21],
- LifeLeech:[22],ManaLeech:[22],EnergyShieldLeech:[22],LifeRegen:[22],LifeOnKill:[22],ManaOnKill:[22],Area:[23],BleedChance:[24],BleedDamage:[24],DotMulti:[24],CurseEffect:[25],CurseLimit:[25],CooldownRecovery:[26]};
+ LifeLeech:[22],ManaLeech:[22],EnergyShieldLeech:[22],LifeRegen:[22],LifeOnKill:[22],ManaOnKill:[22],Area:[23],BleedChance:[24],BleedDamage:[24],DotMulti:[24],CurseEffect:[25],CurseLimit:[25],CooldownRecovery:[26],AttackSpeedRing:[8],CastSpeedRing:[9],CastSpeedGloves:[9],RingMove:[4]};
 const LEVEL={0:[0,1e9],1:[0,19],2:[0,39],3:[0,59],4:[0,74],5:[60,1e9],6:[75,1e9],7:[82,1e9]};
 const RAR={0:"NMRU",1:"N",2:"M",3:"NM",4:"R",5:"RU"};
 function typeMatch(t,it){
@@ -405,41 +405,345 @@ function evaluate(it){
   return{v:1,i:-1,col:0};
 }
 
-/* sample drops */
-const ITEMS=[["Bow","weapon","bow"],["Claw","weapon","claw"],["Dagger","weapon","dagger"],["Dual Blades","weapon","dual"],["Fist Weapon","weapon","fist"],["Two-Handed Sword","weapon","sword2h"],["Two-Handed Axe","weapon","axe2h"],["Two-Handed Mace","weapon","mace2h"],["Mace and Shield","weapon","macesh"],["One-Handed Axe","weapon","axe1h"],["One-Handed Mace","weapon","mace1h"],["One-Handed Sword","weapon","sword1h"],["Scythe","weapon","scythe"],["Staff","weapon","staff"],["Wand","weapon","wand"],["Shield","shield"],["Tome","tome"],["Quiver","quiver"],["Helm","helm"],["Body Armour","chest"],["Gloves","gloves"],["Boots","boots"],["Ring","ring"],["Amulet","amulet"],["Belt","belt"],["Idol","idol"]];
-const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem","Skill Gem"];
-const AFF=[["Life",7,"Helm|Gloves|Boots|Ring|Amulet|Quiver|Shield|Tome|Chest|Belt"],["Mana",7,"Ring|Amulet|Helm|Gloves|Caster|Chest|Boots"],["EnergyShieldGlobal",7,"Ring|Amulet|Belt|Chest|Boots|Gloves"],
-["DefenceFlat",8,"Armour"],["DefenceInc",8,"Defences|Shield"],["PhysInc",8,"Melee|Bow"],["PhysAdded",8,"Melee|Bow"],["FireAdded",8,"Melee|Bow"],["ColdAdded",8,"Melee|Bow"],["LightningAdded",8,"Melee|Bow"],
-["FireSpellAdded",8,"Caster|Staff"],["ColdSpellAdded",8,"Caster|Staff"],["LightningSpellAdded",8,"Caster|Staff"],["PoisonSpellAdded",8,"Caster|Staff"],
-["FireInc",8,"Caster|Amulet|Staff"],["ColdInc",8,"Caster|Amulet|Staff"],["LightningInc",8,"Caster|Amulet|Staff"],["PoisonInc",8,"Caster|Staff"],["SpellInc",8,"Caster|Staff"],
-["SkillLevel",2,"Amulet|Caster|Melee|Helm|Bow|Staff"],["AttackAdded",7,"Ring|Amulet|Gloves|Quiver|Chest"],
-["FireRes",8,"Helm|Chest|Gloves|Boots|Belt|Ring|Amulet|Quiver|Shield"],["ColdRes",8,"Helm|Chest|Gloves|Boots|Belt|Ring|Amulet|Quiver|Shield"],["LightningRes",8,"Helm|Chest|Gloves|Boots|Belt|Ring|Amulet|Quiver|Shield"],["PoisonRes",8,"Helm|Chest|Gloves|Boots|Belt|Ring|Amulet|Quiver|Shield"],["AllRes",6,"Ring|Amulet"],
-["Str",8,"Helm|Chest|Gloves|Boots|Belt|Ring|Amulet|Weapon|Shield"],["Dex",8,"Helm|Chest|Gloves|Boots|Belt|Ring|Amulet|Weapon|Quiver|Shield"],["Int",8,"Helm|Chest|Gloves|Boots|Belt|Ring|Amulet|Weapon|Shield"],["Attributes",7,"Amulet"],
-["AttackSpeed",8,"Melee|Wand|Staff|Gloves|Quiver"],["CastSpeed",8,"Caster|Staff"],["CooldownRecovery",3,"Amulet|Weapon"],["Crit",6,"Weapon|Amulet|Quiver"],["CritMulti",6,"Weapon|Amulet"],["MoveSpeed",6,"Boots"],
-["LifeRegen",8,"Helm|Chest|Belt|Ring|Amulet|Boots|Gloves|Shield"],["ManaRegen",7,"Ring|Amulet|Caster|Helm"],["LifeLeech",4,"Weapon|Gloves"],["Area",5,"Amulet|Helm"],["IgniteChance",4,"Weapon|Gloves|Quiver|Tome"],
-["BleedChance",4,"Weapon|Gloves|Quiver"],["DotMulti",4,"Weapon|Amulet|Quiver|Tome"],["MinionDamage",8,"Wand|Tome|Staff|Scythe"],["MinionLife",7,"Helm|Chest|Belt|Shield|Tome"],["MinionSpeed",4,"Gloves|Amulet|Boots"],["MinionCrit",6,"Wand|Tome|Staff|Scythe|Amulet"],["CurseEffect",4,"Amulet|Helm|Wand|Tome"]];
-const TAGS={staff:"Staff,Weapon",wand:"Caster,Wand,Weapon",bow:"Bow,Weapon",scythe:"Scythe,Weapon",dagger:"Melee,Weapon"};
+/* sample drops: real names, levels, tags and affix groups from the Broken Oath public API (build 85, 20.11.2026).
+   What is NOT from the API: how often each base drops, how tiers are rolled, how many mods an item gets,
+   which affix group belongs to which line group (LINEMAP) and whether unique mods count for line rules. */
+const ARM={
+ plate:{tag:"Armour",chest:"Plate Vest|Riveted Cuirass|Iron Hauberk|Steel Cuirass|Knight's Plate|Templar Plate|Warden Plate|Oathkeeper Plate|Titan Plate",helm:"Iron Cap|Riveted Helm|Barbute|Sallet|Knight's Helm|Templar Helm|Warden Helm|Oathkeeper Helm|Titan Greathelm",gloves:"Iron Gauntlets|Riveted Gauntlets|Plated Gauntlets|Steel Gauntlets|Knight's Gauntlets|Templar Gauntlets|Warden Gauntlets|Oathkeeper Gauntlets|Titan Gauntlets",boots:"Iron Greaves|Riveted Greaves|Plated Greaves|Steel Greaves|Knight's Greaves|Templar Greaves|Warden Greaves|Oathkeeper Greaves|Titan Greaves"},
+ leather:{tag:"Evasion",chest:"Shabby Jerkin|Woodsman's Jerkin|Hunter's Vest|Tracker's Vest|Ranger's Coat|Shadow Leathers|Wildwood Garb|Nightstalker Garb|Phantom Coat",helm:"Leather Band|Braided Band|Hunter's Band|Tracker's Band|Ranger's Circlet|Shadow Circlet|Wildwood Circlet|Nightstalker Circlet|Phantom Circlet",gloves:"Rawhide Gloves|Woodsman's Gloves|Hunter Gloves|Tracker Gloves|Ranger Gloves|Shadow Gloves|Wildwood Gloves|Nightstalker Gloves|Phantom Grips",boots:"Rawhide Boots|Woodsman's Boots|Hunter Boots|Tracker Boots|Ranger Boots|Shadow Boots|Wildwood Boots|Nightstalker Boots|Phantom Treads"},
+ silk:{tag:"EnergyShield",chest:"Simple Robe|Chapel Robe|Silken Vest|Embroidered Robe|Scholar's Robe|Runed Vestment|Sage's Robe|Archon Vestment|Astral Robe",helm:"Copper Circlet|Chapel Circlet|Silver Circlet|Moonsilver Circlet|Scholar's Circlet|Runed Circlet|Sage's Crown|Archon Crown|Astral Diadem",gloves:"Wool Gloves|Chapel Gloves|Silken Gloves|Embroidered Gloves|Scholar's Gloves|Runed Gloves|Sage's Gloves|Archon Gloves|Astral Gloves",boots:"Wool Shoes|Chapel Shoes|Silken Slippers|Embroidered Slippers|Scholar's Boots|Runed Boots|Sage's Boots|Archon Boots|Astral Slippers"},
+ brigandine:{tag:"Armour,Evasion",chest:"Scale Vest|Studded Vest|Brigandine|Sellsword's Coat|Field Lamellar|Wyrmscale Coat|Marshal's Brigandine|General's Brigandine|Dragonscale Coat",helm:"Scale Cap|Studded Cap|Brigand Helm|Sellsword's Helm|Lamellar Helm|Wyrmscale Helm|Marshal's Helm|General's Helm|Dragonscale Helm",gloves:"Scale Gloves|Studded Gloves|Brigand Gloves|Sellsword's Gloves|Lamellar Gloves|Wyrmscale Gloves|Marshal's Gloves|General's Gloves|Dragonscale Gloves",boots:"Scale Boots|Studded Boots|Brigand Boots|Sellsword's Boots|Lamellar Boots|Wyrmscale Boots|Marshal's Boots|General's Boots|Dragonscale Boots"},
+ chain:{tag:"Armour,EnergyShield",chest:"Chain Shirt|Patched Mail|Ringmail Coat|Chaplain's Mail|Chainmail Hauberk|Saint's Mail|Crusader Mail|Hallowed Mail|Seraph Mail",helm:"Chain Coif|Patched Coif|Ringmail Coif|Chaplain's Coif|Chainmail Helm|Saint's Coif|Crusader Helm|Hallowed Helm|Seraph Helm",gloves:"Chain Gloves|Patched Mitts|Ringmail Gloves|Chaplain's Gloves|Chainmail Gloves|Saint's Gloves|Crusader Gloves|Hallowed Gloves|Seraph Gloves",boots:"Chain Boots|Patched Boots|Ringmail Boots|Chaplain's Boots|Chainmail Boots|Saint's Boots|Crusader Boots|Hallowed Boots|Seraph Boots"},
+ ritual:{tag:"Evasion,EnergyShield",chest:"Padded Wrap|Bone Wrap|Mystic Wrap|Augur's Wrap|Ritual Garb|Occultist Wrap|Hexweave Garb|Witchweave Robe|Voidweave Garb",helm:"Twine Band|Bone Band|Mystic Band|Augur's Band|Ritual Diadem|Occultist Diadem|Hexweave Diadem|Witchweave Diadem|Voidweave Diadem",gloves:"Padded Wraps|Bone Wraps|Mystic Wraps|Augur's Wraps|Ritual Wraps|Occultist Wraps|Hexweave Wraps|Witchweave Wraps|Voidweave Wraps",boots:"Padded Boots|Bone Boots|Mystic Boots|Augur's Boots|Ritual Boots|Occultist Boots|Hexweave Boots|Witchweave Boots|Voidweave Boots"}
+};
+const ARM_N=[1,8,2,9,3,4,5,6,7],ARM_L=[1,4,10,18,28,40,54,68,82];
+/* id|name|level per line; kind,sub,tags in the header */
+const BASE_SRC=[
+ ["weapon","bow","Weapon,Ranged,TwoHand,Attack,Bow","bow_1|Hunter's Bow|1;bow_2|Ashwood Shortbow|4;bow_3|Sylvan Longbow|10;bow_4|Recurve Bow|18;bow_5|Thornwood Bow|28;bow_6|Elven Warbow|40;bow_7|Moonlit Bow|54;bow_8|Stormwing Bow|68;bow_9|Starfall Bow|82"],
+ ["weapon","dual","Weapon,Melee,Attack,DualBlades,Sword","blades_1|Ronin Blades (Old Pair)|1;blades_2|Twin Fangs (Old Pair)|6;blades_3|Moonlit Pair (Old Pair)|14;blades_4|Shadow Edges (Old Pair)|24;blades_5|Wanderer's Pair (Old Pair)|36;blades_6|Crescent Pair (Old Pair)|50;blades_7|Kensei Blades (Old Pair)|66;blades_8|Storm Pair (Old Pair)|80"],
+ ["weapon","sword2h","Weapon,Melee,TwoHand,Attack,Greatsword,Sword","greatsword_1|Rusted Greatsword|1;greatsword_8|Militia Greatsword|4;greatsword_10|Bastard Sword|7;greatsword_2|Iron Greatsword|10;greatsword_9|Steel Greatsword|18;greatsword_3|Knight's Greatsword|28;greatsword_11|Executioner's Blade|34;greatsword_4|Templar Greatsword|40;greatsword_5|Warden Blade|54;greatsword_12|Highland Claymore|61;greatsword_6|Oathkeeper Blade|68;greatsword_7|Titan Edge|82"],
+ ["weapon","axe2h","Weapon,Melee,TwoHand,Attack,Greatsword,Axe","greataxe_1|Woodcutter's Axe|2;greataxe_2|Bearded Axe|12;greataxe_3|Broad Axe|22;greataxe_4|War Axe|33;greataxe_5|Reaver Axe|46;greataxe_6|Splitting Axe|58;greataxe_7|Doom Axe|72"],
+ ["weapon","mace2h","Weapon,Melee,TwoHand,Attack,Greatsword,Mace","greatmace_1|Spiked Club|5;greatmace_2|Iron Maul|15;greatmace_3|Morning Star|26;greatmace_4|Warhammer|38;greatmace_5|Great Mace|50;greatmace_6|Dread Hammer|64;greatmace_7|Siege Maul|78"],
+ ["weapon","macesh","Weapon,Melee,Attack,MaceShield,Mace","maceshield_1|Squire's Mace (Old Pair)|1;maceshield_2|Oathkeeper Mace (Old Pair)|6;maceshield_3|Templar's Maul (Old Pair)|14;maceshield_4|Dawnbreaker (Old Pair)|24;maceshield_5|Bastion Hammer (Old Pair)|36;maceshield_6|Crusader's Star (Old Pair)|50;maceshield_7|Sunforged Mace (Old Pair)|66;maceshield_8|Heaven's Anvil (Old Pair)|80"],
+ ["weapon","scythe","Weapon,Melee,TwoHand,Attack,Scythe","scythe_1|Gravedigger's Scythe|1;scythe_2|Widowmaker|6;scythe_3|Crypt Scythe|14;scythe_4|Bone Reaper|26;scythe_5|Grim Scythe|40;scythe_6|Gloom Scythe|56;scythe_7|Deathless Reaper|74"],
+ ["weapon","staff","Weapon,Caster,TwoHand,Staff","staff_1|Driftwood Staff|1;staff_8|Birch Staff|4;staff_10|Thornwood Staff|7;staff_2|Gnarled Staff|10;staff_9|Ashwood Staff|18;staff_11|Bone Staff|23;staff_3|Quarterstaff|28;staff_12|Serpent Staff|34;staff_4|Runed Staff|40;staff_13|Ember Staff|47;staff_5|Moon Staff|54;staff_14|Storm Staff|61;staff_6|Eclipse Staff|68;staff_15|Void Staff|75;staff_7|Astral Staff|82"],
+ ["weapon","sword1h","Weapon,OneHand,Attack,OneHandSword,Melee,Sword","sword1h_1|Ronin Blade|1;sword1h_2|Arming Sword|6;sword1h_3|Moonlit Blade|14;sword1h_4|Shadow Edge|24;sword1h_5|Wanderer's Blade|36;sword1h_6|Elven Sabre|44;sword1h_7|Crescent Blade|50;sword1h_8|Kensei Blade|66;sword1h_9|Storm Edge|80"],
+ ["weapon","axe1h","Weapon,OneHand,Attack,OneHandAxe,Melee,Axe","axe1h_1|Hatchet|2;axe1h_2|Bearded Hatchet|10;axe1h_3|Raider's Axe|18;axe1h_4|Wolf Axe|28;axe1h_5|Runed Hatchet|40;axe1h_6|Elven Axe|52;axe1h_7|Jarl's Axe|64;axe1h_8|Doom Hatchet|78"],
+ ["weapon","mace1h","Weapon,OneHand,Attack,OneHandMace,Melee,Mace","mace1h_1|Squire's Mace|1;mace1h_2|Oathkeeper Mace|6;mace1h_3|Templar's Maul|14;mace1h_4|Dawnbreaker|24;mace1h_5|Bastion Hammer|36;mace1h_6|Crusader's Star|50;mace1h_7|Sunforged Mace|66;mace1h_8|Heaven's Anvil|80"],
+ ["weapon","dagger","Weapon,OneHand,Attack,Dagger,Melee","dagger_1|Skinning Knife|1;dagger_2|Stiletto|8;dagger_3|Elven Dirk|16;dagger_4|Moonfang|26;dagger_5|Kris|38;dagger_6|Ghost Knife|50;dagger_7|Nightfang|64;dagger_8|Vowcutter|78"],
+ ["weapon","dagger","Weapon,OneHand,Attack,Dagger,Melee,RuneDagger","rune_dagger_1|Runed Kris|38;rune_dagger_2|Glyph Athame|64;rune_dagger_3|Sigilfang|78"],
+ ["weapon","claw","Weapon,OneHand,Attack,Claw,Melee,Martial","claw_1|Iron Talons|2;claw_2|Tiger Claws|12;claw_3|Wolfhook|22;claw_4|Shadow Talons|34;claw_5|Wyrm Claws|48;claw_6|Gutting Claws|62;claw_7|Eclipse Talons|76"],
+ ["weapon","fist","Weapon,OneHand,Attack,Fist,Melee,Martial","fist_1|Iron Knuckles|3;fist_2|Spiked Gauntlets|18;fist_3|Brawler's Fists|30;fist_4|Jade Gauntlets|42;fist_5|Night Knuckles|56;fist_6|Voidfists|74"],
+ ["weapon","wand","Weapon,OneHand,Caster,Wand","wand_1|Birch Wand|2;wand_2|Bone Wand|10;wand_3|Crystal Wand|20;wand_4|Runed Wand|32;wand_5|Serpent Wand|46;wand_6|Moon Wand|60;wand_7|Void Wand|76"],
+ ["shield","","Shield,Defences","shield_1|Blackiron Shield|1|Armour;shield_2|Hide Buckler|3|Evasion;shield_3|Chapel Ward|5|EnergyShield;shield_4|Heater Shield|12|Armour;shield_5|Elven Buckler|16|Evasion;shield_6|Runed Ward|20|EnergyShield;shield_7|Kite Shield|28|Armour;shield_8|Spiked Buckler|34|Evasion;shield_9|Sanctified Ward|40|EnergyShield;shield_10|Pavise|46|Armour;shield_11|Wyrmscale Buckler|56|Evasion;shield_12|Archon Ward|62|EnergyShield;shield_13|Bastion Shield|70|Armour;shield_14|Phantom Buckler|76|Evasion;shield_15|Seraph Ward|80|EnergyShield"],
+ ["tome","","Tome,Caster,EnergyShield,Defences","tome_1|Primer|1;tome_2|Hymnal|12;tome_3|Grimoire|26;tome_4|Codex of Storms|44;tome_5|Astral Codex|66"],
+ ["quiver","","Quiver","hunters_quiver|Hunter's Quiver|1;fletchers_quiver|Fletcher's Quiver|8;broadhead_quiver|Broadhead Quiver|18;sylvan_quiver|Sylvan Quiver|30;stormfeather_quiver|Stormfeather Quiver|45;volley_quiver|Volley Quiver|60"],
+ ["ring","","Jewellery,Ring","iron_ring|Iron Ring|1;garnet_ring|Garnet Ring|2;ruby_ring|Ruby Ring|4;pearl_ring|Pearl Ring|6;copper_band|Copper Band|9;sapphire_ring|Sapphire Ring|12;topaz_ring|Topaz Ring|16;moonsilver_ring|Moonsilver Ring|20;stormglass_ring|Opaline Ring|24;amethyst_ring|Amethyst Ring|30;steel_signet|Steel Signet|34;twostone_ring|Two-Stone Ring|40;rune_ring|Rune Ring|44;diamond_ring|Diamond Ring|50;bloodstone_ring|Bloodstone Ring|58;prismatic_ring|Prismatic Ring|64;cinderstone_ring|Cinderstone Ring|72;heartblood_ring|Heartblood Ring|80"],
+ ["amulet","","Jewellery,Amulet","coral_amulet|Coral Amulet|1;amber_amulet|Amber Amulet|3;jade_amulet|Jade Amulet|3;lapis_amulet|Lapis Amulet|3;bone_talisman|Bone Talisman|6;moonstone_amulet|Moonstone Amulet|16;onyx_amulet|Onyx Amulet|24;seer_pendant|Mystic Pendant|28;agate_amulet|Agate Amulet|34;citrine_amulet|Citrine Amulet|44;turquoise_amulet|Turquoise Amulet|44;sunstone_amulet|Sunstone Amulet|52;duskstone_amulet|Duskstone Amulet|60;veilglass_amulet|Veilglass Amulet|68;emberglow_amulet|Emberglow Amulet|76"],
+ ["belt","","Belt","leather_belt|Leather Belt|1;rope_cord|Rope Cord|3;heavy_belt|Heavy Belt|10;studded_belt|Studded Belt|14;chain_belt|Chain Belt|20;rustic_sash|Rustic Sash|30;crystal_belt|Crystal Belt|40;bloodbound_girdle|Bloodbound Girdle|48;vanguard_belt|Vanguard Belt|56;veilsilk_cord|Veilsilk Cord|62;ironwarden_girdle|Ironwarden Girdle|66;wardweave_sash|Wardweave Sash|72;oathbound_girdle|Oathbound Girdle|78"],
+ ["idol","","Idol","idol_pebble|Pebble Idol|20|Idol1;idol_chisel|Chisel Idol|20|Idol2;idol_ingot|Ingot Idol|20|Idol2;idol_pick|Pick Idol|20|Idol3;idol_seam|Seam Idol|20|Idol3;idol_pillar|Pillar Idol|20|Idol4;idol_tunnel|Tunnel Idol|20|Idol4;idol_ancestor|Ancestor Idol|20|IdolGrand"]
+];
+const BASES=[],BASE_BY_ID={};
+function addBase(id,name,kind,sub,lvl,tags){const b={id,name,kind,sub,lvl,tags:tags.split(",").filter(Boolean)};BASES.push(b);BASE_BY_ID[id]=b;}
+BASE_SRC.forEach(([kind,sub,tags,rows])=>rows.split(";").forEach(r=>{const p=r.split("|");addBase(p[0],p[1],kind,sub,+p[2],tags+(p[3]?","+p[3]:""));}));
+Object.keys(ARM).forEach(f=>["chest","helm","gloves","boots"].forEach(s=>{const names=ARM[f][s].split("|");names.forEach((n,i)=>addBase(f+"_"+s+"_"+ARM_N[i],n,s,"",ARM_L[i],s[0].toUpperCase()+s.slice(1)+","+ARM[f].tag+",Defences"));}));
+/* gear affixes: id|P or S|group|BaseTags|ExcludeTags|weight|tiers|top ilvl|lowest ilvl */
+const AFF_SRC=`life_large|P|Life|Chest;Belt||120|8|84|1
+life|P|Life|Helm;Gloves;Boots;Ring;Amulet;Quiver;Shield;Tome||110|7|70|1
+mana|P|Mana|Ring;Amulet;Helm;Gloves;Caster;RuneDagger;Chest;Boots||80|7|70|1
+es_global|P|EnergyShieldGlobal|Ring;Amulet;Belt;Chest;Boots;Gloves||60|7|70|1
+armour_local|P|DefenceFlat|Armour|Helm;Gloves;Boots;Shield;Tome|100|8|84|1
+armour_local_small|P|DefenceFlat|Armour;Shield|Chest|100|8|84|1
+evasion_local|P|DefenceFlatEvasion|Evasion|Helm;Gloves;Boots;Shield;Tome|100|8|84|1
+evasion_local_small|P|DefenceFlatEvasion|Evasion;Shield|Chest|100|8|84|1
+es_local|P|DefenceFlatEnergyShield|EnergyShield|Helm;Gloves;Boots;Shield;Tome|100|8|84|1
+es_local_small|P|DefenceFlatEnergyShield|EnergyShield;Shield|Chest|100|8|84|1
+defence_inc|P|DefenceInc|Defences;Shield||100|8|84|1
+phys_inc_local|P|PhysInc|Melee;Bow||100|8|84|1
+phys_added_local|P|PhysAdded|Melee;Bow||90|8|84|1
+fire_added_local|P|FireAdded|Melee;Bow||70|8|84|1
+fire_spell_added|P|FireSpellAdded|Caster;RuneDagger|Staff|60|8|84|1
+fire_dmg_inc|P|FireInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1
+fire_spell_added_2h|P|FireSpellAdded|Staff||60|8|84|1
+fire_dmg_inc_2h|P|FireInc|Staff||70|8|84|1
+cold_added_local|P|ColdAdded|Melee;Bow||70|8|84|1
+cold_spell_added|P|ColdSpellAdded|Caster;RuneDagger|Staff|60|8|84|1
+cold_dmg_inc|P|ColdInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1
+cold_spell_added_2h|P|ColdSpellAdded|Staff||60|8|84|1
+cold_dmg_inc_2h|P|ColdInc|Staff||70|8|84|1
+lightning_added_local|P|LightningAdded|Melee;Bow||70|8|84|1
+lightning_spell_added|P|LightningSpellAdded|Caster;RuneDagger|Staff|60|8|84|1
+lightning_dmg_inc|P|LightningInc|Caster;Amulet;RuneDagger|Staff|70|8|84|1
+lightning_spell_added_2h|P|LightningSpellAdded|Staff||60|8|84|1
+lightning_dmg_inc_2h|P|LightningInc|Staff||70|8|84|1
+poison_spell_added|P|PoisonSpellAdded|Caster;RuneDagger|Staff|60|8|84|1
+poison_dmg_inc|P|PoisonInc|Caster;RuneDagger|Staff;Tome|70|8|84|1
+poison_spell_added_2h|P|PoisonSpellAdded|Staff||60|8|84|1
+poison_dmg_inc_2h|P|PoisonInc|Staff||70|8|84|1
+spell_inc|P|SpellInc|Caster;RuneDagger|Staff|100|8|84|1
+spell_inc_2h|P|SpellInc|Staff||100|8|84|1
+skill_level|P|SkillLevel|Amulet;Caster;Melee;Helm;RuneDagger|Staff|18|2|68|46
+skill_level_bow|P|SkillLevel|Bow||18|2|75|46
+skill_level_2h|P|SkillLevel|Staff||18|3|80|46
+attack_added_phys|P|AttackAdded|Ring;Amulet;Gloves;Quiver;Chest||50|7|70|1
+attack_added_lightning|P|AttackLightning|Gloves;Quiver;Ring;Amulet;Boots||40|7|70|1
+fire_res|S|FireRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1
+cold_res|S|ColdRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1
+lightning_res|S|LightningRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1
+poison_res|S|PoisonRes|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Quiver;Shield||110|8|84|1
+all_res|S|AllRes|Ring;Amulet||40|6|70|10
+phys_as_elem|S|PhysAsElem|Chest;Shield;Helm||35|4|84|44
+str_flat|S|Str|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Shield||90|8|84|1
+dex_flat|S|Dex|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Quiver;Shield||90|8|84|1
+int_flat|S|Int|Helm;Chest;Gloves;Boots;Belt;Ring;Amulet;Weapon;Shield||90|8|84|1
+all_attr|S|Attributes|Amulet||50|7|70|1
+attack_speed_local|S|AttackSpeed|Melee;Wand;Staff||90|8|84|1
+attack_speed|S|AttackSpeed|Gloves;Quiver||50|4|56|20
+cast_speed|S|CastSpeed|Caster;RuneDagger|Staff|90|8|84|1
+cast_speed_2h|S|CastSpeed|Staff||90|8|84|1
+cast_speed_jewel|S|CastSpeed|Amulet||50|4|56|20
+cooldown_recovery|S|CooldownRecovery|Amulet;Weapon||40|3|70|44
+crit_local|S|Crit|Weapon||70|6|84|20
+crit_global|S|Crit|Amulet;Quiver||50|6|84|20
+crit_multi|S|CritMulti|Weapon;Amulet||60|6|84|20
+move_speed|S|MoveSpeed|Boots||80|6|56|1
+life_regen|S|LifeRegen|Helm;Chest;Belt;Ring;Amulet;Boots;Gloves;Shield||60|8|84|1
+mana_regen|S|ManaRegen|Ring;Amulet;Caster;Helm;RuneDagger||70|7|70|1
+life_on_kill|S|LifeOnKill|Weapon;Gloves||50|6|56|1
+ring_life_on_kill|P|LifeOnKill|Ring||50|6|56|1
+mana_on_kill|S|ManaOnKill|Weapon||40|6|56|1
+ring_mana_on_kill|P|ManaOnKill|Ring||40|6|56|1
+mana_leech|S|ManaLeech|Gloves;Amulet||30|3|44|20
+ring_mana_leech|P|ManaLeech|Ring||30|3|44|20
+es_leech|S|EnergyShieldLeech|Gloves;Amulet;EnergyShield|Chest;Boots;Shield|30|4|56|20
+ring_es_leech|P|EnergyShieldLeech|Ring|Chest;Boots;Shield|30|4|56|20
+life_leech|S|LifeLeech|Weapon;Gloves||35|4|44|10
+ring_life_leech|P|LifeLeech|Ring||35|4|44|10
+area|S|Area|Amulet;Helm||40|5|84|32
+ignite_chance|S|IgniteChance|Weapon;Gloves;Quiver;Tome||40|4|56|20
+shock_chance|S|ShockChance|Weapon;Gloves;Quiver;Tome||40|4|56|20
+ignite_effect|P|IgniteDamage|Weapon;Amulet;Belt||40|4|56|20
+poison_effect|P|PoisonDamage|Weapon;Amulet;Belt||40|4|56|20
+shock_effect|P|ShockEffect|Weapon;Amulet;Belt||40|4|56|20
+freeze_duration|S|FreezeDuration|Weapon;Ring||40|4|56|20
+bleed_chance|S|BleedChance|Weapon;Gloves;Quiver||40|4|56|20
+bleed_effect|P|BleedDamage|Weapon;Amulet;Belt;Quiver||40|4|56|20
+dot_multi|P|DotMulti|Weapon;Amulet;Quiver;Tome||30|4|70|32
+chill_effect|S|ChillEffect|Weapon;Ring;Quiver;Tome||40|4|56|20
+minion_dmg|P|MinionDamage|Wand;Tome||50|8|84|1
+minion_dmg_2h|P|MinionDamage|Staff;Scythe||50|8|84|1
+minion_dmg_jewel|P|MinionDamage|Amulet;Helm||40|7|84|10
+minion_life|S|MinionLife|Helm;Chest;Belt;Shield;Tome||50|7|70|1
+minion_speed|S|MinionSpeed|Gloves;Amulet;Boots||40|4|56|20
+minion_crit|S|MinionCrit|Wand;Tome;Staff;Scythe;Amulet||40|6|84|20
+minion_crit_multi|S|MinionCritMulti|Wand;Tome;Amulet||30|5|70|20
+curse_effect|S|CurseEffect|Amulet;Helm;Wand;Tome||30|4|56|20
+curse_limit|P|CurseLimit|Amulet||8|1|44|44
+max_fire_res91|S|MaxFireRes91|Shield;Chest||12|2|84|70
+max_cold_res91|S|MaxColdRes91|Shield;Chest||12|2|84|70
+max_lightning_res91|S|MaxLightningRes91|Shield;Chest||12|2|84|70
+max_poison_res91|S|MaxPoisonRes91|Shield;Chest||12|2|84|70
+req_reduce|S|ReqReduce93|Weapon;Chest;Helm;Gloves;Boots;Shield;Tome||30|6|70|10
+ring_move_speed|S|RingMove|Ring||40|3|84|56
+gloves_cast_speed|S|CastSpeedGloves|Gloves||50|4|56|20
+ring_attack_speed|S|AttackSpeedRing|Ring||40|3|70|44
+ring_cast_speed|S|CastSpeedRing|Ring||40|3|70|44
+poison_pen85_2h|S|PoisonPen85|TwoHand||35|4|84|44
+poison_pen85_1h|S|PoisonPen85|OneHand||35|4|84|44`;
+const AFF=AFF_SRC.split("\n").map(l=>{const p=l.split("|");return{id:p[0],type:p[1],group:p[2],tags:p[3].split(";"),ex:p[4]?p[4].split(";"):[],w:+p[5],n:+p[6],hi:+p[7],lo:+p[8]};});
+/* idol affixes: group|P or S|sizes (s,m,l,x = Idol1-4)|tiers; "x" suffixes also fit grand idols */
+const IDOL_G="IdolLife|P|smlx|4;IdolMana|P|smlx|4;IdolEs|P|smlx|4;IdolArmour|P|smlx|4;IdolEvasion|P|smlx|4;IdolPhys|P|smlx|4;IdolElemental|P|smlx|4;IdolSpell|P|smlx|4;IdolMelee|P|smlx|4;IdolMinion|P|smlx|4;IdolFireRes|S|smlx|4;IdolColdRes|S|smlx|4;IdolLightningRes|S|smlx|4;IdolPoisonRes|S|smlx|4;IdolMove|S|smlx|3;IdolRegen|S|smlx|3;IdolAttackSpeed|S|smlx|3;IdolCastSpeed|S|smlx|3;IdolCrit|S|smlx|4;IdolCritMulti|S|smlx|4;IdolLifeKill|S|smlx|3;IdolManaRegen|S|smlx|4;IdolArea|S|smlx|3;IdolStr|S|smlx|4;IdolDex|S|smlx|4;IdolInt|S|smlx|4;IdolTotemSpeed|P|mlx|4;IdolTotemLife|S|mlx|4;IdolMinionLife|S|mlx|4;IdolMinionSpeed|S|mlx|4;IdolChannelArea|P|mlx|4;IdolChannelCost|S|mlx|4;IdolSlam|P|mlx|4;IdolSlamArea|S|mlx|4;IdolChain|P|mlx|4;IdolOrbit|P|mlx|4;IdolBowArea|S|mlx|4;IdolProjectile|P|mlx|4;IdolHoly|P|mlx|4;IdolPoison|P|mlx|4;IdolFire|P|mlx|4;IdolCold|P|mlx|4;IdolLightning|P|mlx|4;IdolMovement|P|mlx|4;IdolTrap|P|mlx|4;IdolShield|P|mlx|4;IdolBleed|P|mlx|4;IdolManaLeech|S|lx|4";
+IDOL_G.split(";").forEach(g=>{const p=g.split("|"),n=+p[3];p[2].split("").forEach(sz=>{
+  const tag="Idol"+({s:1,m:2,l:3,x:4})[sz];const tiers=(sz==="s"&&n===3)?3:n;
+  const tg=[tag];if(sz==="x"&&p[1]==="S"&&!/Total|Minion(Life|Speed)|Channel|Slam|Bow/.test(p[0]))tg.push("IdolGrand");
+  AFF.push({id:p[0]+"_"+sz,type:p[1],group:p[0],tags:tg,ex:[],w:100,n:tiers,hi:84,lo:tiers===3?56:20});});});
+/* fixed grand idol prefixes (group IdolGrand): name|weight|tiers|top ilvl|lowest ilvl */
+"chain_plus|4|1|84|84;ballista_plus|1|1|84|84;orbit_plus|4|1|84|84;skeleton_plus|4|1|84|84;slam_spike|4|1|84|84;bow_projectile|4|1|84|84;channel_ramp|60|2|70|56;phys_as_fire|60|2|70|56;phys_as_cold|60|2|70|56;phys_as_lightning|60|2|70|56;elemental_pen|60|2|70|56;life_inc|70|2|70|56;max_res|40|1|56|56;max_poison_res|40|1|56|56;melee_afterimage|4|1|84|84;skeleton_wizard_plus|4|1|84|84;eng_totem|30|2|84|70;eng_afterimage|30|2|84|70;eng_orbit|30|2|84|70;eng_trap|30|2|84|70;eng_minion|30|2|84|70;eng_brand|30|2|84|70;eng_slam|30|2|84|70;trap_plus|4|1|84|84;spark_plus|4|1|84|84".split(";").forEach(s=>{const p=s.split("|");AFF.push({id:"idol_grand_"+p[0],type:"P",group:"IdolGrand",tags:["IdolGrand"],ex:[],w:+p[1],n:+p[2],hi:+p[3],lo:+p[4]});});
+/* uniques with a drop weight above 0: name|base id|level|weight|flag (C chase, P primal, S signature)|first three stat keys */
+const UNIQUE_SRC=`Windwhisper|fletchers_quiver|12|80||Projectiles.Flat, CritChance.Inc, MoveSpeed.Inc
+Stormweaver's Coil|topaz_ring|16|80||Chains.Flat, Damage.Inc, Keystone.Flag
+Ashen Crown|silk_helm_2|18|70||Projectiles.Flat, CastSpeed.Inc, Damage.Inc
+Mountainheart|plate_chest_3|30|60||Keystone.Flag, Defences.Inc, Life.Flat
+Hearthfire|staff_2|10|100||AddedDamage.Flat, Damage.Inc, CastSpeed.Inc
+Glacierheart|sapphire_ring|20|80||Area.Inc, Damage.More, Mana.Flat
+Thornhide Wraps|leather_gloves_2|12|100||AddedDamage.Flat, LifeLeech.Flat, AttackSpeed.Inc
+Pilgrim's Stride|leather_boots_1|4|120||MoveSpeed.Inc, Life.Flat, Resist.Flat
+Vowkeeper Band|iron_ring|3|110||Life.Flat, Attributes.Flat, Resist.Flat
+Eye of the Tempest|lapis_amulet|36|40||SkillLevel.Flat, Penetration.Flat, CastSpeed.Inc
+Mouth of the Mire|jade_amulet|52|40||SkillLevel.Flat, Penetration.Flat, PoisonDamage.Inc
+The Glass Soul|silk_chest_3|32|50||Damage.More, Life.More, EnergyShield.Flat
+Warlord's Girdle|heavy_belt|16|90||Life.Inc, Damage.Inc, Armour.Inc
+Chainbreaker|chain_helm_2|22|60||Chains.Flat, Damage.Inc, Defences.Inc
+Emberheart|brigandine_chest_2|14|80||Damage.Inc, Resist.Flat, Life.Flat
+Squire's Promise|greatsword_1|3|100||Damage.Inc, AddedDamage.Flat, AttackSpeed.Inc
+Crook of the Vale|staff_1|3|100||AddedDamage.Flat, Damage.Inc, CastSpeed.Inc
+Wintercall Orb|moonstone_amulet|16|70||OrbCount.Flat, Damage.Inc, Int.Flat
+Soulreaper|scythe_3|16|70||Damage.Inc, Area.Inc, LifeOnKill.Flat
+Aegis of the Oath|plate_chest_3|30|70||Block.Flat, Life.Inc, Armour.Inc
+The Pilgrim's Pyre|plate_chest_4|44|40||Keystone.Flag, Life.Inc, Armour.Inc
+Engineer's Lodestone|chain_belt|24|70||TotemCount.Flat, TotemSpeed.Inc, TotemLife.Inc
+Twin Fangs of the Ronin|sword1h_3|16|70||Damage.Inc, CritChance.Inc, Cooldown.Inc
+Shadowsilk Wraps|leather_gloves_2|20|70||OrbitMax.Flat, OrbitMovingDamage.Flat, Evasion.Inc
+Cyclone's Eye|greatsword_9|18|70||Damage.Inc, Area.Inc, ChannelCostLess.Flat
+The Deephall Bulwark|shield_7|30|70||Block.Flat, Defences.Inc, Life.Flat
+Brokkr's Fang|dagger_4|26|60||Damage.Inc, AttackSpeed.Inc, CritChance.Inc
+Sindri's Edge|sword1h_4|26|60||Damage.Inc, Block.Flat, LifeOnKill.Flat
+Stonefist Wraps|leather_gloves_9|18|70||AddedDamage.Flat, AttackSpeed.Inc, Dex.Flat
+Stormfrost Band|garnet_ring|8|100||Convert.Flat, Chains.Flat, Penetration.Flat
+Frostfeather Quiver|hunters_quiver|6|110||DamageAsExtra.Flat, Area.Inc, MoveSpeed.Inc
+Ironroot Signet|copper_band|9|100||TotemCount.Flat, TotemLife.Inc, TotemSpeed.Inc
+Thousand-Petal Blade|sword1h_2|10|100||AttackSpeed.Inc, CritChance.Inc, AddedDamage.Flat
+Webspinner Gloves|leather_gloves_2|12|100||Chains.Flat, Damage.Inc, Trigger.Trigger
+Aftershock Greaves|plate_boots_2|14|90||MoveSpeed.Inc, Defences.Inc, Trigger.Trigger
+Wand of the Ash March|wand_2|14|90||MinionDamage.Inc, Convert.Flat, MinionSpeed.Inc
+Shatterglass Pendant|moonstone_amulet|16|90||DeathBurst.Flat, Damage.Inc, Resist.Flat
+Siphoning Lattice|ritual_gloves_9|18|90||ChannelRamp.Flat, LifeLeech.Flat, ManaLeech.Flat
+Thrice-Sworn Sash|chain_belt|20|90||Reservation.Inc, Mana.Flat, Life.Flat
+Galeheart Greataxe|greataxe_3|24|80||Damage.Inc, DamageAsExtra.Flat, Area.Inc
+Lightsworn Reliquary|tome_3|30|40||MinionCap.Flat, MinionLife.Inc, MinionDamage.Inc
+Thunderwake Maul|mace1h_4|32|40||OrbitCount.Flat, OrbitMovingDamage.Flat, DamageAsExtra.Flat
+Overload Coil|amethyst_ring|32|35||Keystone.Flag, CritChance.Inc, CritMulti.Flat
+Starcaller's Staff|staff_3|34|35||Damage.Inc, SkyfallRepeat.Flat, SkyfallDelay.Inc
+The Oath Unbroken|sunstone_amulet|72|6|P|Reservation.More, Keystone.Flag, Attributes.Flat
+Signet of the Lost Order|diamond_ring|68|6|P|Keystone.Flag, Life.Flat, Attributes.Flat
+Shroud of the Restless Gale|silk_chest_6|68|4|S|EnergyShield.Inc, Life.Flat, MinionLife.Inc
+Emberstride Treads|leather_boots_6|68|4|S|MoveSpeed.Inc, Evasion.Flat, Resist.Flat
+Diadem of the Storm Choir|silk_helm_6|68|4|S|MinionDamage.Inc, Mana.Flat, EnergyShield.Flat
+Hollowhorn|bow_7|56|4|S|AddedDamage.Flat, AttackSpeed.Inc, MinionDamage.Inc
+Frostbloom Signet|prismatic_ring|64|4|S|Damage.Inc, CritChance.Inc, Resist.Flat
+Thundercoil Gauntlets|plate_gloves_6|68|4|S|AttackSpeed.Inc, AddedDamage.Flat, Armour.Flat
+Oathfire Censer|sunstone_amulet|72|4|S|Damage.Inc, Life.Flat, Resist.Flat
+Bulwark of the Last Gate|shield_13|70|4|S|Block.Flat, Life.Flat, Armour.Inc
+Gravewalker's Girdle|vanguard_belt|66|4|S|Life.Flat, MinionLife.Inc, MinionSpeed.Inc
+Tidebreaker Maul|greatmace_6|74|4|S|AddedDamage.Flat, Damage.Inc, DamageAsExtra.Flat
+Wyrmblade of the Black Oath|greatsword_6|76|4|S|AddedDamage.Flat, CritChance.Inc, Damage.Inc
+Ring of Echoing Oaths|rune_ring|70|4|S|GrantSupport.Flag, ManaCost.Inc, Damage.Inc
+Gravecleaver|greataxe_7|72|4|S|AddedDamage.Flat, AttackSpeed.Inc, MinionLife.Inc
+Dawnforge Maul|greatmace_6|72|10|S|AddedDamage.Flat, Damage.Inc, Life.Flat
+Stormfang|sword1h_8|70|4|S|AddedDamage.Flat, CritChance.Inc, AttackSpeed.Inc
+Vowfire Cuirass|plate_chest_6|70|4|S|Armour.Inc, Life.Flat, Resist.Flat
+Rimeheart Wand|wand_5|54|10|S|Damage.Inc, Mana.Flat, Resist.Flat
+Gravesong|scythe_5|54|4|S|Damage.Inc, MinionLife.Inc, Trigger.Trigger
+Orrery of the Long Night|silk_helm_4|40|40||OrbCount.Flat, SkillDuration.Inc, Damage.More
+The Thousand Sparks|silk_gloves_4|40|40||BrandCount.Flat, SkillDuration.More, Damage.More
+The Unfallen Ancestor|agate_amulet|40|40||Keystone.Flag, TotemSpeed.Inc, Damage.Inc
+Quiver of the Last Watch|sylvan_quiver|40|40||TotemCount.Flat, SkillDuration.Inc, TotemSpeed.Inc
+Hexbinder's Censer|onyx_amulet|38|40||Keystone.Flag, CurseEffect.Inc, Mana.Inc
+The Red Hunger|leather_gloves_9|34|40||BloodlustOnKill.Flat, BloodlustMax.Flat, AttackSpeed.Inc
+Standard of the Last Legion|chain_belt|36|40||WarBanner.Flat, ValourMax.Flat, BannerEffect.Inc
+The Hunter's Promise|leather_boots_1|38|40||MarkOnHit.Flat, MarkMax.Flat, MoveSpeed.Inc
+The Ossuary Lantern|citrine_amulet|44|40||MinionCap.Flat, MinionDamage.Inc, Int.Flat
+The Charnel Bell|bone_talisman|44|40||MinionCap.Flat, MinionDeathBurst.Flat, MinionLife.More
+The Splitting Psalm|twostone_ring|48|60||Fork.Flat, Pierce.Flat, Damage.Inc
+Plaguewright's Grasp|leather_gloves_4|50|60||Convert.Flat, PoisonDamage.Inc, Trigger.Trigger
+Halo of the Restless Saint|brigandine_helm_4|52|60||OrbitCount.Flat, OrbitMax.Flat, Damage.More
+The Last Volley|volley_quiver|60|12||GrantSupport.Flag, Area.Inc, Damage.Inc
+Rimecrown|staff_6|68|6||SkillLevel.Flat, Damage.Inc, FreezeDuration.Inc
+The Blackbile Censer|turquoise_amulet|54|6||PoisonChance.Flat, PoisonDamage.Inc, AilmentDuration.Inc
+The Headsman's Grip|ritual_gloves_6|68|6||CritMulti.Flat, CritChance.Inc, AttackSpeed.Inc
+The Wolf's Due|vanguard_belt|56|6||BloodlustOnBossCrit.Flat, BloodlustMax.Flat, CritChance.Inc
+Kingbreaker|greatmace_7|78|6||Damage.Inc, AddedDamage.Flat, SkillLevel.Flat
+The Snarewright's Belt|bloodbound_girdle|50|6||GrantSupport.Flag, SkillDuration.Inc, Damage.Inc
+The Gate That Answers|shield_13|70|12||Block.Flat, Damage.Inc, Trigger.Trigger
+The Reckoner's Wraps|plate_gloves_5|58|6||FuryOnKill59.Flat, FurySpender59.Flat, AttackSpeed.Inc
+Reliquary of the Second Dawn|sunstone_amulet|76|4|S|Trigger.Trigger, Repeats.Flat, Damage.Inc
+The Eleventh Cut|leather_gloves_6|76|4|S|Trigger.Trigger, AttackSpeed.Inc, CritChance.Inc
+Girdle of the Turning Earth|vanguard_belt|76|4|S|Trigger.Trigger, Damage.Inc, Life.Flat
+Heart of the White Silence|staff_15|76|4|S|OrbCount.Flat, Trigger.Trigger, SkillLevel.Flat
+The Sexton's Last Candle|wand_7|76|4|S|Trigger.Trigger, SkillLevel.Flat, AddedDamage.Flat
+Crown of the Seventh Verdict|plate_helm_6|76|4|S|Trigger.Trigger, SkillLevel.Flat, Damage.Inc
+Quiver of the Ninth Storm|volley_quiver|76|4|S|Chains.Flat, SkillLevel.Flat, Trigger.Trigger
+Breastplate of the Long Verdict|plate_chest_6|76|4|S|Trigger.Trigger, Life.Flat, Armour.Inc
+The Siege-Wright's Vow|volley_quiver|76|4|S|TotemCount.Flat, Trigger.Trigger, TotemSpeed.Inc
+The Ossuary Chorus|wand_6|76|4|S|MinionCap.Flat, Trigger.Trigger, SkillLevel.Flat
+The Widow's Patience|ritual_gloves_6|76|4|S|TrapCount.Flat, TrapRearm.Inc, AttackSpeed.Inc
+Cinderwick|wand_7|76|6|S|SkillLevel.Flat, BrandCount.Flat, Damage.Inc
+Dawnwarden's Verdict|mace1h_6|74|6|S|SkillLevel.Flat, Damage.Inc, DamageAsExtra.Flat
+Veinwrit Grips|leather_gloves_4|40|25|S|BleedStacks.Flat, BleedChance.Flat, AttackSpeed.Inc
+The Red Harvest|brigandine_chest_3|30|25|S|BleedBurst.Flat, BleedChance.Flat, BleedDamage.Inc
+The Dawnward Bulwark|shield_9|40|25|S|Trigger.Trigger, Damage.Inc, Block.Flat
+Facebreaker|leather_gloves_4|40|25|S|Keystone.Flag, Damage.More, AttackSpeed.Inc
+Dreadcrown|silk_helm_4|40|25|S|CurseLimit.Flat, CurseEffect.Inc, Reservation.Inc
+The Unyielding Vow|plate_chest_6|68|25|S|ArmourMore.Flat, Defences.Inc, FortifyEffect.Inc
+The Patient Bastion|shield_13|70|25|S|BlockMore.Flat, Block.Flat, Defences.Inc
+The Heartwood Girdle|bloodbound_girdle|52|25|S|LifeMore.Flat, Life.Flat, Life.Inc
+Crown of the Quiet Ward|silk_helm_6|68|25|S|EnergyShieldMore.Flat, Defences.Inc, EnergyShield.Flat
+Windwrit Treads|leather_boots_6|68|25|S|EvasionMore.Flat, Defences.Inc, MoveSpeed.Inc
+The Oathkeeper's Stand|plate_gloves_6|68|25|S|FortifyDamage.Flat, FortifyMax.Flat, Defences.Inc
+Stormwake Treads|silk_boots_3|28|25|S|Trigger.Trigger, SkillDuration.Inc, MoveSpeed.Inc
+The Third Thunder|moonsilver_ring|40|25|S|BrandCount.Flat, SkillDuration.Inc, CastSpeed.Inc
+The Long Storm|lapis_amulet|36|25|S|SkillDuration.Inc, SparkRate.Inc, Damage.Inc
+Veilmother's Vestment|silk_chest_6|68|20|S|Defences.Inc, EnergyShield.Flat, EsRecharge.Inc
+Soulsip Wraps|silk_gloves_5|56|20|S|EnergyShieldLeech.Flat, Defences.Inc, EnergyShield.Flat
+Weeping Talons|claw_7|76|20||Damage.Inc, BleedChance.Flat, BleedDamage.Inc
+The Pale Rake|claw_6|62|20||Damage.Inc, CritChance.Inc, LifeLeech.Flat
+The Quiet Verdict|dagger_7|70|20||Damage.Inc, CritChance.Inc, PoisonChance.Flat
+Jarlsbane|axe1h_8|78|20||Damage.Inc, AttackSpeed.Inc, BleedChance.Flat
+The Fissure Edge|axe1h_7|66|20||Damage.Inc, AttackSpeed.Inc, CritChance.Inc
+Skyrend|bow_8|70|20||Damage.Inc, AddedDamage.Flat, CritMulti.Flat
+Twinscar|sword1h_9|80|20||Damage.Inc, BleedChance.Flat, BleedDamage.Inc
+The Last Petal|sword1h_8|68|20||Damage.Inc, CritChance.Inc, AttackSpeed.Inc
+Hoarfall|greatsword_6|72|20||Damage.Inc, AttackSpeed.Inc, DamageAsExtra.Flat
+Ravenmaw|greataxe_7|76|20||Damage.Inc, AttackSpeed.Inc, BleedChance.Flat
+Nightglass|dagger_8|78|20||Damage.Inc, AttackSpeed.Inc, CritMulti.Flat
+The Bellwarden|mace1h_8|80|20||Damage.Inc, AttackSpeed.Inc, Block.Flat
+The Unwritten Oath|tome_5|72|20||CritChance.Inc, CritMulti.Flat, EnergyShield.Flat
+Psalter of the Quiet Host|tome_5|66|20||SkillLevel.Flat, MinionDamage.Inc, MinionLife.Inc
+The Oathsplit Fang|rune_dagger_3|78|20||Damage.Inc, AttackSpeed.Inc, CastSpeed.Inc
+The Last Harvest|scythe_7|76|20||Damage.Inc, AttackSpeed.Inc, Area.Inc
+Gravetithe|scythe_6|62|20||Damage.Inc, CritChance.Inc, PoisonChance.Flat
+Thornwake|bow_8|70|20||Damage.Inc, BleedChance.Flat, BleedDamage.Inc
+Oathbleeder|fist_6|78|20||Damage.Inc, AttackSpeed.Inc, BleedChance.Flat
+Cinderknuckle|fist_5|68|20||Damage.Inc, AttackSpeed.Inc, DamageAsExtra.Flat
+Rimewrit|rune_dagger_2|66|20||Damage.Inc, CastSpeed.Inc, CritMulti.Flat
+Kingbreaker (Primal)|greatmace_7|78|1|P|Damage.Inc, AddedDamage.Flat, SkillLevel.Flat
+Gravesong (Primal)|scythe_5|68|1|P|Damage.Inc, MinionLife.Inc, Trigger.Trigger
+Gravecleaver (Primal)|greataxe_7|72|1|P|AddedDamage.Flat, AttackSpeed.Inc, MinionLife.Inc
+Tidebreaker Maul (Primal)|greatmace_6|74|1|P|AddedDamage.Flat, Damage.Inc, DamageAsExtra.Flat
+Stormfang (Primal)|sword1h_8|70|1|P|AddedDamage.Flat, CritChance.Inc, AttackSpeed.Inc
+Rimecrown (Primal)|staff_6|68|1|P|SkillLevel.Flat, Damage.Inc, FreezeDuration.Inc
+Cinderwick (Primal)|wand_7|76|1|P|SkillLevel.Flat, BrandCount.Flat, Damage.Inc`;
+const UNIQUES=UNIQUE_SRC.split("\n").map(l=>{const p=l.split("|");return{name:p[0],base:BASE_BY_ID[p[1]],lvl:+p[2],w:+p[3],flag:p[4],stats:p[5]};}).filter(u=>u.base);
 const rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
+function wpick(a,wf){let t=0;a.forEach(x=>t+=wf(x));let r=Math.random()*t;for(const x of a){r-=wf(x);if(r<=0)return x;}return a[a.length-1];}
+/* categories a drop can fall into, one pick per category before the base is chosen */
+const CATKEYS=[];BASES.forEach(b=>{const k=b.kind+":"+b.sub;if(!CATKEYS.includes(k))CATKEYS.push(k);});
+const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem","Skill Gem"];
+const NAMES_KIND={weapon:"",shield:"",tome:"",quiver:"",helm:"",chest:"",gloves:"",boots:"",ring:"",amulet:"",belt:"",idol:""};
+/* an affix tier needs an item level; only the top and lowest levels are known, the steps in between are spread evenly (a guess) */
+function tierLvl(a,k){return a.n===1?a.hi:Math.round(a.hi+(a.lo-a.hi)*(k-1)/(a.n-1));}
+function rollMods(tags,lvl,want,maxEach){
+  const pool=AFF.filter(a=>a.tags.some(t=>tags.includes(t))&&!a.ex.some(t=>tags.includes(t))&&a.lo<=lvl);
+  const mods=[],used=new Set();let p=0,s=0;
+  for(let k=0;k<want*6&&mods.length<want&&pool.length;k++){
+    const a=wpick(pool,x=>x.w);if(used.has(a.group))continue;
+    if(a.type==="P"?p>=maxEach:s>=maxEach)continue;
+    used.add(a.group);a.type==="P"?p++:s++;
+    const ok=[];for(let t=1;t<=a.n;t++)if(tierLvl(a,t)<=lvl)ok.push(t);
+    const tier=wpick(ok,t=>t); /* lower tiers are more common (a guess) */
+    mods.push({group:a.group,tier,tiers:a.n,lines:LINEMAP[a.group]||[]});
+  }
+  return mods;
+}
 function genItem(){
   const x=Math.random()*100;
   if(x<10){const mn=pick(MISC);return{id:uid(),name:mn,gem:mn==="Skill Gem",kind:"misc",rar:"X",lvl:1,mods:[],sub:"",core:false,sockets4Plus:false,truesworn:false,runebase:false,label:"never hidden"};}
   const rar=x<44?"N":x<72?"M":x<94?"R":"U";
-  const base=pick(ITEMS);const kind=base[1],sub=base[2]||"";
-  const lvl=1+rnd(82);
-  let tg=(sub&&TAGS[sub]?TAGS[sub]:{weapon:"Melee,Weapon",shield:"Shield",tome:"Tome",quiver:"Quiver",helm:"Helm",chest:"Chest",gloves:"Gloves",boots:"Boots",ring:"Ring",amulet:"Amulet",belt:"Belt",idol:""}[kind]).split(",").filter(Boolean);
-  if(["helm","chest","gloves","boots","shield"].includes(kind))tg=tg.concat(pick(["Armour","Evasion","EnergyShield"]),"Defences");
-  const pool=AFF.filter(a=>a[2].split("|").some(t=>tg.includes(t)));
-  const mods=[];
-  if((rar==="M"||rar==="R")&&pool.length){
-    const want=rar==="M"?1+rnd(2):3+rnd(3);const used=new Set();
-    for(let k=0;k<want*3&&mods.length<want;k++){
-      const a=pick(pool);if(used.has(a[0]))continue;used.add(a[0]);
-      const n=a[1];const tier=Math.max(1,Math.min(n,n-Math.floor(Math.pow(Math.random(),2.2)*n)));
-      mods.push({group:a[0],tier,tiers:n,lines:LINEMAP[a[0]]||[]});
-    }
+  if(rar==="U"){
+    const u=wpick(UNIQUES,q=>q.w),b=u.base;
+    return{id:uid(),name:u.name,kind:b.kind,sub:b.sub,rar:"U",lvl:u.lvl,mods:[],core:false,sockets4Plus:false,truesworn:false,runebase:false,label:b.name+" · "+u.stats+(u.flag==="P"?" · primal":u.flag==="S"?" · signature":"")};
   }
-  const nm={N:"Normal",M:"Magic",R:"Rare",U:"Red"}[rar];
-  return{id:uid(),name:(rar==="U"?"Red ":nm+" ")+base[0],kind,sub,rar,lvl,mods,core:Math.random()<.04,sockets4Plus:Math.random()<.06,truesworn:Math.random()<.05,runebase:rar==="N"&&Math.random()<.2,label:""};
+  const key=pick(CATKEYS);
+  const lvl=1+rnd(84);
+  let cand=BASES.filter(b=>b.kind+":"+b.sub===key&&b.lvl<=lvl&&b.lvl>=lvl-35);
+  if(!cand.length)cand=BASES.filter(b=>b.kind+":"+b.sub===key&&b.lvl<=lvl);
+  if(!cand.length)cand=BASES.filter(b=>b.kind+":"+b.sub===key).slice(0,1);
+  const b=key.startsWith("idol:")?wpick(BASES.filter(q=>q.kind==="idol"),q=>({idol_pebble:26,idol_chisel:15,idol_ingot:15,idol_pick:10,idol_seam:10,idol_pillar:7,idol_tunnel:7,idol_ancestor:10})[q.id]||10):pick(cand);
+  let mods=[];
+  if(rar==="M")mods=rollMods(b.tags,Math.max(lvl,b.lvl),1+rnd(2),1);
+  if(rar==="R")mods=rollMods(b.tags,Math.max(lvl,b.lvl),3+rnd(3),3);
+  const nm={N:"Normal",M:"Magic",R:"Rare"}[rar];
+  return{id:uid(),name:nm+" "+b.name,kind:b.kind,sub:b.sub,rar,lvl:Math.max(lvl,b.lvl),mods,core:Math.random()<.04,sockets4Plus:Math.random()<.06,truesworn:Math.random()<.05,runebase:rar==="N"&&Math.random()<.2,label:""};
 }
 
 /* left column: which sample drops may appear */
