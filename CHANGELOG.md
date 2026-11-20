@@ -15,6 +15,7 @@ All notable changes for players. Newest first.
 - More Named Lines: Riven lines, Penetration lines (Fire / Cold / Lightning, Elemental on amulets) and "increased effect of your Vows". Lines that only exist while a game switch is on are tagged "switch-dependent".
 - Searching Named Lines now also finds raw game terms and ids, and several words must all match.
 - Pick lists keep their scroll position when you select or deselect entries.
+- Rule preview: hover over a rule in the list to see its named lines, bases, reds and conditions. Shows "Any of them" or "All of them", shortens long lists and says so when no specific mods are picked.
 
 ### Changed
 - The Drop Test is now described as a rule test, not a drop-rate simulation. Guide and About are regrouped and easier to scan.
