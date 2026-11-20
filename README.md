@@ -17,7 +17,7 @@ Open `index.html` in a browser. No build, no install.
 
 ## Format
 
-`BOFILTER:1,<preset>` followed by rules `|on,type,rarity,level,line,action,colour,quality,count,sound` (10 integers per rule). The first matching rule wins; items that match no rule are shown. Maximum 40 rules (tested in game on 2026-11-20). Extra fields after the 10th are kept unchanged.
+`BOFILTER:1,<preset>` followed by rules `|on,type,rarity,level,line,action,colour,quality,count,sound` (10 integers per rule). The first matching rule wins; items that match no rule are shown. Maximum 40 rules (tested in game on 2026-11-20). The options of the game's MORE window follow the ten numbers as `,3:key=value;key=value` (`3` is the filter version): `t` tier, `n` lines, `s` sockets, `i` item level `from-to`, `q` required level `from-to`, `g` grade, `gx` top grade, `r` red (1 reds only, 2 chase reds), `u` unsworn (1 not, 2 only), `rt` runes up to tier, `b` base, `a` named line, `rn` named red (several entries joined with `+`, up to 4). The keys were read from filter codes exported in the game. Fields this page does not know are kept unchanged.
 
 ## Credits
 
