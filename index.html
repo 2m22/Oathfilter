@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Broken Oath: Loot Filter &amp; Itemizer</title>
+<title>Oathfilter: loot filter builder for Broken Oath</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -129,7 +129,7 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .b.more{border-color:var(--hl-fg);color:var(--hl-fg);background:var(--hl-bg)}
 .hits{font-size:.72rem;color:var(--text-dim);font-variant-numeric:tabular-nums}
 .b.any{background:transparent;border-style:dashed;color:var(--text-dim)}
-.shadow{font-size:.76rem;color:var(--warn-fg);cursor:help}
+.shadow{font-size:.76rem;color:var(--text-muted);cursor:help}.shadow.conf{color:var(--warn-fg);font-weight:600}
 .rr{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
 .act{display:flex;align-items:center;gap:8px}
 .action-badge{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px;white-space:nowrap}
@@ -231,6 +231,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 @media (max-width:900px){.dctl{flex:1 1 100%;position:static}}
 /* compact ground view, hidden drops set apart but readable */
 .scene{height:200px!important}
+@media (max-height:820px){.scene{height:150px!important}.stat{padding:6px 10px}}
 .dropwrap .stats{margin:0 0 10px!important}.dropwrap .drops{margin:0}
 .drop[data-v="0"]{opacity:.78;border-style:dashed;background:var(--bg-subtle)}
 .drop[data-v="0"] .nm{text-decoration:none;color:var(--text-muted)}
@@ -295,6 +296,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
       <button type="button" class="btn" data-q="unique">Unique / Red</button><button type="button" class="btn" data-q="idol" id="qIdol">Idol size 1</button></div>
       <div class="qsr"><label for="sN">Lines at T1<input id="sN" type="range" min="1" max="6" value="3"><output id="oN">3</output></label>
       <label for="sI">Idol size<input id="sI" type="range" min="1" max="4" value="1"><output id="oI">1</output></label>
+      <label for="sL">Item level<input id="sL" type="range" min="0" max="90" value="0"><output id="oL">auto</output></label>
       <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC">1</output></label></div></div>
   </aside>
   <div class="stack dropwrap">
@@ -409,6 +411,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
     <ul class="pl">
      <li><b>Fan project.</b> Oathfilter is an unofficial, free fan tool for the game Broken Oath. It is not made, endorsed or supported by Crater Studios, and it is not affiliated with them.</li>
      <li><b>Trademarks.</b> Broken Oath and all related names, item names and game content belong to their owners. They are used here only to describe what the tool works with.</li>
+     <li><b>Game data.</b> Item names, affixes and values come from the Broken Oath public API (“Data: Broken Oath public API”) and belong to Crater Studios. The GPL-3.0 covers the code of Oathfilter, not this game content.</li>
      <li><b>No guarantee.</b> The tool is provided as it is, without warranty. Always check a filter in the game before you rely on it.</li>
      <li><b>Free and open source.</b> No ads, no account, no payment. The source code is under the GPL-3.0 license: <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">github.com/2m22/Oathfilter</a>.</li>
      <li><b>Feedback.</b> Found an error or want a change? Open an issue on GitHub.</li></ul></section>
@@ -416,7 +419,11 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
     <ul class="pl">
      <li><b>Your filter stays with you.</b> Everything runs in your browser. The page sends no filter data anywhere. Your current filter is saved in your browser (local storage) so it is still there next time. Clear your site data to remove it.</li>
      <li><b>No tracking.</b> No cookies, no analytics, no accounts.</li>
-     <li><b>Fonts and hosting.</b> The fonts (Cinzel and Barlow, SIL Open Font License) are built into the page, so nothing is loaded from Google or any other font service. The page is hosted on GitHub Pages, which may log visits as part of its normal operation.</li>
+     <li><b>Fonts.</b> The fonts (Cinzel and Barlow, SIL Open Font License) are built into the page, so nothing is loaded from Google or any other font service.</li>
+     <li><b>Hosting.</b> The page is hosted on GitHub Pages (GitHub, Inc., USA). When you open it, GitHub receives your IP address and the usual request data (browser, time, page) and may log it for security and operation. The operator of this page has no access to these logs. See the GitHub Privacy Statement for details.</li>
+     <li><b>Update check.</b> About every 5 minutes the page asks the server for a small file (version.json) to see whether a new version exists. No filter data is sent.</li>
+     <li><b>Browser storage.</b> Your filter and your saved pick lists are kept in local storage only to bring them back next time. They never leave your device.</li>
+     <li><b>Links.</b> Links to GitHub and other sites lead to services with their own privacy rules.</li>
      <li><b>Credits.</b> Thanks to <b>Lilshrimper</b>, creator of the <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. The five game presets, the colour and sound names and the idea of testing a filter with sample drops come from his tool. Format details are from the developer file loot_filter.md (Crater Studios). Item bases, affixes and uniques for the drop test come from the Broken Oath public API (build 85). This is a fan project and not official data.</li></ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-rg"><h2 id="h-rg" class="coltitle">What is real and what is guessed</h2>
     <ul class="pl">
@@ -492,6 +499,8 @@ function decode(text){
     f.rules.push(r);
   });
   const known=(k,v)=>k==="colour"?COLOURS.some(c=>c[0]===v):T[k].some(o=>o[0]===v);
+  const bad=f.rules.filter((_,i)=>{const v=m[3].split("|").slice(1)[i].split(",");return FIELDS.some((k,j)=>v[j]===undefined||v[j]===""||!Number.isFinite(Number(v[j])));}).length;
+  if(bad)notes.push(bad+" rule"+(bad>1?"s have":" has")+" missing or unreadable fields. Default values were filled in, so the exported code can differ from the one you pasted.");
   const odd=f.rules.filter(r=>["type","rarity","level","line","action","colour","quality","count","sound"].some(k=>!known(k,r[k]))).length;
   if(odd)notes.push(odd+" rule"+(odd>1?"s use":" uses")+" values this page does not know. They are kept as they are, but the drop test may read them wrongly.");
   if(f.rules.length>MAX_RULES)notes.push("The code has "+f.rules.length+" rules. The game takes "+MAX_RULES+".");
@@ -1164,7 +1173,7 @@ function genItem(f){
     return{id:uid(),name:u.name,baseId:b.id,redId:u.id||redIdOf(u.name),kind:b.kind,sub:b.sub,rar:"U",lvl:u.lvl,mods:[],core:false,sock:sk,sockets4Plus:sk>=4,truesworn:false,runebase:false,grade:0,req:Math.max(1,Math.round(u.lvl*.8)),unsworn:Math.random()<.12,chase:CHASE.has(u.name),label:b.name+" · "+u.stats+(u.flag==="P"?" · primal":u.flag==="S"?" · signature":u.flag==="C"?" · chase":"")};
   }
   const key=cl?(cl.rar==="I"?"idol:":pick(CATKEYS.filter(k=>k!=="idol:"))):pick(CATKEYS);
-  let lvl=1+rnd(84);if(cl&&cl.hi)lvl=84; /* T1 and T2 of most affixes only roll at the top item level */
+  let lvl=1+rnd(84);if(cl&&cl.hi)lvl=84;if(cl&&f.lvl)lvl=f.lvl; /* T1 and T2 of most affixes only roll at the top item level */
   let cand=BASES.filter(b=>b.kind+":"+b.sub===key&&b.lvl<=lvl&&b.lvl>=lvl-35);
   if(!cand.length)cand=BASES.filter(b=>b.kind+":"+b.sub===key&&b.lvl<=lvl);
   if(!cand.length)cand=BASES.filter(b=>b.kind+":"+b.sub===key).slice(0,1);
@@ -1177,7 +1186,7 @@ function genItem(f){
   if(rar==="R")mods=rollMods(b.tags,Math.max(lvl,b.lvl),Math.min(6,Math.max(3+rnd(3),tp&&tp.top||0)),3,tp);
   const nm={N:"Normal",M:"Magic",R:"Rare"}[rar];
   const sock=Math.random()<.06?4+rnd(3):rnd(4),tw=Math.random()<.05,il=Math.max(lvl,b.lvl);
-  return{id:uid(),name:nm+" "+b.name,baseId:b.id,kind:b.kind,sub:b.sub,rar,lvl:il,mods,core:b.variant==="ct"||Math.random()<.04,cls:cl?(cl.rar==='I'?'Idol size '+f.size:cl.label+(cl.top==='n'?' '+f.n+'×T1':'')):'',sock,sockets4Plus:sock>=4,truesworn:tw,grade:tw?90+rnd(11):1+rnd(89),req:Math.max(1,Math.round(il*.8)),unsworn:rar==="R"&&Math.random()<.12,runebase:rar==="N"&&Math.random()<.2,label:""};
+  return{id:uid(),name:nm+" "+b.name,baseId:b.id,kind:b.kind,sub:b.sub,rar,lvl:il,mods,core:b.variant==="ct"||Math.random()<.04,cls:cl?(cl.rar==='I'?'Idol size '+f.size:cl.label+(cl.top==='n'?' '+mods.filter(m=>m.tier===1).length+'×T1'+(mods.filter(m=>m.tier===1).length<f.n?' (asked '+f.n+')':''):'')):'',sock,sockets4Plus:sock>=4,truesworn:tw,grade:tw?90+rnd(11):1+rnd(89),req:Math.max(1,Math.round(il*.8)),unsworn:rar==="R"&&Math.random()<.12,runebase:rar==="N"&&Math.random()<.2,label:""};
 }
 
 function genFiltered(){return genItem();}
@@ -1272,7 +1281,7 @@ function renderRows(){
     const sh=shadowOf(i),AC=["hide","show","highlight","beam"][r.action]||"show",hex=colOf(r.colour)[2];
     return `<div class="rc ${r.id===S.cur?"sel":""} ${r.on?"":"off"}" data-rid="${r.id}">
      <button type="button" class="pickb" data-pick="${r.id}" aria-pressed="${r.id===S.cur}" aria-label="Edit rule ${i+1}: ${esc(summary(r))}">
-      <span class="nb">${i+1}</span><span class="conds"><span class="bd">${badges(r)}</span><span class="hits" data-hid="${r.id}"></span>${sh>=0?`<span class="shadow" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. Check the order.">May be caught by rule ${sh+1}</span>`:""}</span></button>
+      <span class="nb">${i+1}</span><span class="conds"><span class="bd">${badges(r)}</span><span class="hits" data-hid="${r.id}"></span>${sh>=0?(()=>{const e=F.rules[sh],same=e.action===r.action&&(r.action<2||e.colour===r.colour);return `<span class="shadow ${same?"":"conf"}" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. ${same?"Both do the same, so this rule is redundant.":"The two rules do different things, so this one is probably not working as you intend."} Check the order.">${same?"Redundant: rule "+(sh+1)+" does the same":"Overridden by rule "+(sh+1)+" (different action)"}</span>`;})():""}</span></button>
      <div class="rr"><span class="act"><span class="action-badge action-badge--${r.on?AC:"off"}">${r.on?actWord(r.action):"Off"}</span>${r.action===3?`<span class="beam-ico" title="Light beam" style="--c:${hex}"></span>`:""}${r.action>=2?`<span class="color-dot" title="Highlight colour: ${colOf(r.colour)[1]}" style="background:${hex}"></span>`:""}${r.action>0&&r.sound!==0?`<span class="spk" title="Sound on">${SPKI(true)}</span>`:""}</span>
       <span class="ctl"><input class="sw sm" type="checkbox" data-on="${r.id}" ${r.on?"checked":""} aria-label="Rule ${i+1} active">
        <button type="button" class="icb" data-mv="-1" data-id2="${r.id}" ${i===0||!free?"disabled":""} aria-label="Move rule ${i+1} up"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M7 3l6 8H1z"/></svg></button>
@@ -1439,7 +1448,7 @@ function undo(){
   F=decode(H[H.length-1]).filter;F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});
   S.cur=F.rules.length?F.rules[Math.min(at,F.rules.length-1)].id:null;fullRender();toast("Undone.");
 }
-function save(){snap();try{localStorage.setItem("oathfilter4",encode(F));}catch(e){}}
+function save(){snap();try{localStorage.setItem("oathfilter4",encode(F));}catch(e){if(!save.warned){save.warned=1;toast("Your filter could not be saved in this browser (private mode or storage full). Copy the filter code to keep it.",true);}}}
 
 /* ---- orchestration ---- */
 function setFilter(f){F=f;F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});S.cur=F.rules[0]?F.rules[0].id:null;fullRender();}
@@ -1502,14 +1511,14 @@ document.addEventListener("input",e=>{
 });
 $("#copyTop").onclick=copyCode;$("#copy").onclick=copyCode;
 $("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").value);setFilter(g.filter);m.className="toast";m.textContent="Loaded "+g.filter.rules.length+" rules. "+g.notes.join(" ");}catch(err){m.className="toast bad";m.textContent=err.message;}};
-(function(){const sp={n:3,sz:1,c:1};
-  const upd=()=>{$("#oN").textContent=sp.n;$("#oI").textContent=sp.sz;$("#oC").textContent=sp.c;$("#qVal").textContent="Rare valuable "+sp.n+"×T1";$("#qIdol").textContent="Idol size "+sp.sz;};
-  $("#sN").oninput=e=>{sp.n=+e.target.value;upd();};$("#sI").oninput=e=>{sp.sz=+e.target.value;upd();};$("#sC").oninput=e=>{sp.c=+e.target.value;upd();};
-  $("#qs").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(b)addDrops(sp.c,{cls:b.dataset.q,n:sp.n,size:sp.sz});});
+(function(){const sp={n:3,sz:1,c:1,lv:0};
+  const upd=()=>{$("#oN").textContent=sp.n;$("#oI").textContent=sp.sz;$("#oC").textContent=sp.c;$("#oL").textContent=sp.lv||"auto";$("#qVal").textContent="Rare valuable "+sp.n+"×T1";$("#qIdol").textContent="Idol size "+sp.sz;};
+  $("#sN").oninput=e=>{sp.n=+e.target.value;upd();};$("#sI").oninput=e=>{sp.sz=+e.target.value;upd();};$("#sC").oninput=e=>{sp.c=+e.target.value;upd();};$("#sL").oninput=e=>{sp.lv=+e.target.value;upd();};
+  $("#qs").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(b)addDrops(sp.c,{cls:b.dataset.q,n:sp.n,size:sp.sz,lvl:sp.lv});});
 })();
 $("#chkOrder").onclick=checkOrder;
 $("#roll1").onclick=()=>addDrops(1);$("#roll25").onclick=()=>addDrops(25);$("#clear").onclick=()=>{S.items=[];renderDrops();};
-$("#auto").onclick=()=>{const b=$("#auto");if(timer){clearInterval(timer);timer=null;b.textContent="Auto-drop: off";b.setAttribute("aria-pressed","false");}else{timer=setInterval(()=>addDrops(1),1100);b.textContent="Auto-drop: on";b.setAttribute("aria-pressed","true");}};
+$("#auto").onclick=()=>{const b=$("#auto");if(timer){clearInterval(timer);timer=null;b.textContent="Auto-drop: off";b.setAttribute("aria-pressed","false");}else{timer=setInterval(()=>{if(!document.hidden&&V.view==="test")addDrops(1);},1100);b.textContent="Auto-drop: on";b.setAttribute("aria-pressed","true");}};
 $("#preset").innerHTML=`<option value="" disabled selected>Game presets…</option>`+PRESETS.map((p,i)=>`<option value="${i}">${p.label}</option>`).join("");
 /* update check: the build step writes the commit id into BUILD and into version.json next to this page */
 const BUILD="__BUILD__";
@@ -1524,7 +1533,7 @@ const BUILD="__BUILD__";
   }
   setInterval(check,MIN);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)check();});
-  $("#updNow").onclick=()=>{try{save();}catch(e){}location.reload();};
+  $("#updNow").onclick=()=>{try{save();}catch(e){}fetch(location.href,{cache:"reload"}).catch(()=>{}).then(()=>location.reload());}; /* refresh the cached page first, or the host cache may serve the old one again */
   $("#updLater").onclick=()=>{box.hidden=true;until=Date.now()+MIN;clearTimeout(tm);tm=setTimeout(show,MIN);};
   window.__updCheck=check;
 })();
