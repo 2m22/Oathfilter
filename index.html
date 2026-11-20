@@ -169,7 +169,7 @@ nav.nav button[aria-selected="true"]{color:#1a1208;border-color:#3b2a10;backgrou
 .gt{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:10px 18px;background:#14110d;border:1px solid #4d4130;border-radius:3px;box-shadow:0 8px 24px #000;color:#8fd9bd;font-weight:600;z-index:9}
 .gt.bad{color:#f0907f}
 ul.pl{margin:0;padding:0;list-style:none}ul.pl li{padding:12px 0;border-bottom:1px solid #2f2920}ul.pl li:last-child{border:0}
-ul.pl b{color:#e4c06c}
+ul.pl b{color:#e4c06c}ul.pl a{color:#e4c06c}
 </style>
 </head>
 <body>
@@ -190,6 +190,7 @@ ul.pl b{color:#e4c06c}
   <button type="button" role="tab" id="t-test" aria-controls="p-test" aria-selected="false" data-view="test" tabindex="-1">Drop Test</button>
   <button type="button" role="tab" id="t-io" aria-controls="p-io" aria-selected="false" data-view="io" tabindex="-1">Import / Export</button>
   <button type="button" role="tab" id="t-info" aria-controls="p-info" aria-selected="false" data-view="info" tabindex="-1">What the game can do</button>
+  <button type="button" role="tab" id="t-about" aria-controls="p-about" aria-selected="false" data-view="about" tabindex="-1">About</button>
 </nav>
 <main>
 <div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit"><div class="cols">
@@ -220,6 +221,9 @@ ul.pl b{color:#e4c06c}
 
 <div class="panel" id="p-io" role="tabpanel" aria-labelledby="t-io" hidden><div class="cols">
   <section class="plate" style="flex:1 1 420px" aria-labelledby="h-imp"><h2 id="h-imp" class="coltitle">Import</h2>
+    <div class="lab" id="gpl">Game presets</div>
+    <div id="gp" role="group" aria-labelledby="gpl" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
+    <p class="hint" style="margin:-6px 0 16px">Loads the preset as a new filter and replaces the one in the editor. Export your own first if you want to keep it.</p>
     <label class="lab" for="codeIn">Paste a BOFILTER code</label><textarea id="codeIn" class="field" placeholder="BOFILTER:1,..." style="min-height:200px"></textarea>
     <div style="margin-top:12px"><button type="button" class="btn gold" id="load">Load filter</button></div><div class="toast" id="loadMsg" role="status"></div>
     <p class="hint" style="margin:6px 0 0">Copy the filter in the game's loot filter window and paste it here. Extra fields from the game's MORE window are kept as they are.</p></section>
@@ -247,9 +251,24 @@ ul.pl b{color:#e4c06c}
      <li>This page writes the plain BOFILTER 1 code. Options set in the game's MORE window are kept as they are.</li></ul>
     <p class="hint" style="margin:14px 0 0">Community fan tool, not official. Credits are at the bottom of the page.</p></section>
 </div></div>
+<div class="panel" id="p-about" role="tabpanel" aria-labelledby="t-about" hidden><div class="cols">
+  <section class="plate" style="flex:1 1 520px" aria-labelledby="h-ab"><h2 id="h-ab" class="coltitle">About Oathfilter</h2>
+    <ul class="pl">
+     <li><b>Fan project.</b> Oathfilter is an unofficial, free fan tool for the game Broken Oath. It is not made, endorsed or supported by Crater Studios, and it is not affiliated with them.</li>
+     <li><b>Trademarks.</b> Broken Oath and all related names, item names and game content belong to their owners. They are used here only to describe what the tool works with.</li>
+     <li><b>No guarantee.</b> The tool is provided as it is, without warranty. The drop test is a best guess and may differ from the game. Always check a filter in the game before you rely on it.</li>
+     <li><b>Free and open source.</b> No ads, no account, no payment. The source code is under the GPL-3.0 license: <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">github.com/2m22/Oathfilter</a>.</li>
+     <li><b>Feedback.</b> Found an error or want a change? Open an issue on GitHub.</li></ul></section>
+  <section class="plate" style="flex:1 1 420px" aria-labelledby="h-pv"><h2 id="h-pv" class="coltitle">Privacy and credits</h2>
+    <ul class="pl">
+     <li><b>Your filter stays with you.</b> Everything runs in your browser. The page sends no filter data anywhere. Your current filter is saved in your browser (local storage) so it is still there next time. Clear your site data to remove it.</li>
+     <li><b>No tracking.</b> No cookies, no analytics, no accounts.</li>
+     <li><b>Fonts and hosting.</b> The fonts (Cinzel, Barlow) are loaded from Google Fonts, so your browser contacts Google servers when the page opens. The page is hosted on GitHub Pages, which may log visits as part of its normal operation.</li>
+     <li><b>Credits.</b> Thanks to <b>Lilshrimper</b>, creator of the <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer">Broken Oath Builder</a>. The five game presets, the colour and sound names and the idea of testing a filter with sample drops come from his tool. Format details are from the developer file loot_filter.md (Crater Studios).</li></ul></section>
+</div></div>
 </main>
 <footer style="max-width:1480px;margin:34px auto 0;padding:16px 18px;border:1px solid #3d3529;border-radius:3px;background:#17140f;color:#a89f8c;font-size:14px;line-height:1.6">
-  <b style="color:#e4c06c">Credits.</b> Thanks to <b style="color:#e8d6a6">Lilshrimper</b>, creator of the <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer" style="color:#e4c06c">Broken Oath Builder</a>. This page learned from his loot filter tool: the five game presets, the colour and sound names, and the idea of testing a filter with sample drops come from there. Format details are from the developer file loot_filter.md (Crater Studios). Oathfilter is a fan tool and not affiliated with the developers or with the Broken Oath Builder.
+  Oathfilter is an unofficial fan project and is not affiliated with Crater Studios. Thanks to <b style="color:#e8d6a6">Lilshrimper</b> and his <a href="https://builder.lilshrimper.dev/lootfilter/" target="_blank" rel="noopener noreferrer" style="color:#e4c06c">Broken Oath Builder</a>. <button type="button" data-view="about" style="background:none;border:0;padding:0;color:#e4c06c;text-decoration:underline;cursor:pointer;font:inherit">About, privacy and credits</button> · <a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer" style="color:#e4c06c">Source on GitHub</a>
 </footer>
 <div class="gt" id="gt" role="status" hidden></div>
 <script>
@@ -561,6 +580,7 @@ function touch(){F.preset="-1";renderHead();renderRows();syncEditor();if(V.view=
 document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;const d=t.dataset;
   if(d.view){setView(d.view);return;}
+  if(d.gp){const p=PRESETS[+d.gp];if(p){setFilter(p.build());toast("Loaded preset: "+p.label+".");}return;}
   if(d.cat){S.openCat[d.cat]=!S.openCat[d.cat];renderCats();return;}
   if(d.rf){V.filter=d.rf;renderRows();return;}
   if(d.pick){S.cur=d.pick;renderRows();renderEditor();return;}
@@ -596,6 +616,7 @@ $("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").va
 $("#clearSel").onclick=()=>{Object.values(POOL).forEach(s=>s.clear());renderCats();};
 $("#roll1").onclick=()=>addDrops(1);$("#roll25").onclick=()=>addDrops(25);$("#clear").onclick=()=>{S.items=[];renderDrops();};
 $("#auto").onclick=()=>{const b=$("#auto");if(timer){clearInterval(timer);timer=null;b.textContent="Auto-drop: off";b.setAttribute("aria-pressed","false");}else{timer=setInterval(()=>addDrops(1),1100);b.textContent="Auto-drop: on";b.setAttribute("aria-pressed","true");}};
+$("#gp").innerHTML=PRESETS.map((p,i)=>`<button type="button" class="btn" data-gp="${i}">${p.label}</button>`).join("");
 $("#preset").innerHTML=`<option value="" disabled selected>Game presets…</option>`+PRESETS.map((p,i)=>`<option value="${i}">${p.label}</option>`).join("");
 (function init(){
   let start=null;
