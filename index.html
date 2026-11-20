@@ -574,8 +574,12 @@ const T={
 const COLOURS=[[0,"Ember","#e8901c"],[1,"Jade","#4deb85"],[2,"Frost","#5cc7ff"],[3,"Bone","#fff2d6"],[4,"Gold","#ff990d"],[5,"Blood","#d4382f"],[6,"Ash","#9a9a9a"],[7,"White","#ffffff"]];
 const FIELDS=["on","type","rarity","level","line","action","colour","quality","count","sound"];
 const NEW_RULE={name:"",on:1,type:0,rarity:0,level:0,line:0,action:1,colour:0,quality:0,count:0,sound:255};
+/* name lists are alphabetical (numbers natural, a leading + ignored); "Any ..." stays first. Scales with a real order (rarity, levels, tiers, roll quality, lines, sockets, grades) keep it. */
+const ALPHA=(a,b)=>COLL.compare(String(a[1]).replace(/^[+\s]+/,""),String(b[1]).replace(/^[+\s]+/,""))||COLL.compare(String(a[1]),String(b[1]));
+const alphaKeep=a=>{const h=a.shift();a.sort(ALPHA);a.unshift(h);};
+alphaKeep(T.type);alphaKeep(T.line);T.sound.sort(ALPHA);COLOURS.sort(ALPHA);
 const nameOf=(k,v)=>{const x=T[k].find(o=>o[0]===v);return x?x[1]:"value "+v;};
-const colOf=v=>(COLOURS.find(c=>c[0]===v)||COLOURS[0]);
+const colOf=v=>(COLOURS.find(c=>c[0]===v)||COLOURS.find(c=>c[0]===0));
 const uid=()=>Math.random().toString(36).slice(2,9);
 const newRule=o=>Object.assign({extra:[],m:[]},NEW_RULE,o||{});
 /* MORE options: the part after the ten fields, written as ,3:key=value;key=value (3 = filter version 3). Several entries in one field are joined with + */
@@ -1443,7 +1447,7 @@ function renderRowsRaw(){
 }
 /* ---- rule hover preview: which named lines / mods / conditions one rule covers (fixed box, ignores the pointer, never moves the page) ---- */
 const TIPMAX=8;
-function tipList(r,k,N){const seen=new Set(),out=[];mlist(r,k).forEach(id=>{const t=String(N[id]||id);if(!seen.has(t)){seen.add(t);out.push(t);}});return out;}
+function tipList(r,k,N){const seen=new Set(),out=[];mlist(r,k).forEach(id=>{const t=String(N[id]||id);if(!seen.has(t)){seen.add(t);out.push(t);}});return out.sort((x,y)=>ALPHA([0,x],[0,y]));}
 function condParts(r){
   const p=[];
   if(r.type)p.push(nameOf("type",r.type));
@@ -1541,9 +1545,9 @@ const PL={load(){try{return JSON.parse(localStorage.getItem("oathfilter-lists")|
 function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k),lists=(PL.load()[k]||[]);
   return `<div class="pk" data-pkbox="${k}"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>
-   <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>`<option value="${i}">${esc(l.n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>Delete list</button></div>
+   <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>[i,l.n,l]).sort(ALPHA).map(([i,n,l])=>`<option value="${i}">${esc(n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>Delete list</button></div>
    ${k==="a"?`<div class="seg" role="group" aria-label="Named lines: any or all" style="margin:0 0 8px"><button type="button" data-allm="" aria-pressed="${mval(r,"all")!=="1"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mval(r,"all")==="1"}">All of them</button></div>`:""}
-   <div class="chosen">${ids.map(id=>`<span class="b more" title="${esc(P.name[id]||id)}"><span class="bt">${esc(P.name[id]||id)}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">✕</button></span>`).join("")}</div>
+   <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.name[x]||x],[0,P.name[y]||y])).map(id=>`<span class="b more" title="${esc(P.name[id]||id)}"><span class="bt">${esc(P.name[id]||id)}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">✕</button></span>`).join("")}</div>
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
    <div class="pklist" id="pl-${k}"></div></div>`;
 }
@@ -1771,7 +1775,7 @@ const LF={key:"oathfilter-saved",max:50,
 let lfMode={},lfBusy="";
 const lfMsg=(m,bad)=>{const e=$("#lfMsg");e.textContent=m;e.style.color=bad?"var(--hide-fg)":"";};
 function renderLF(){
-  const a=LF.all(),ul=$("#lfList");if(!ul)return;
+  const a=LF.all().sort((x,y)=>ALPHA([0,x.name],[0,y.name])),ul=$("#lfList");if(!ul)return;
   ul.innerHTML=a.length?a.map(x=>{
     const m=lfMode[x.id],n=(x.c.match(/\|/g)||[]).length,d=new Date(x.t||0),dt=x.t?d.toLocaleDateString()+" "+d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"";
     const info=`<div class="lfi"><b title="${esc(x.name)}">${esc(x.name)}</b><span class="hint">${n} rule${n===1?"":"s"}${dt?" · saved "+esc(dt):""}</span></div>`;
@@ -1830,7 +1834,7 @@ $("#codeIn").addEventListener("input",()=>{$("#loadConf").hidden=true;pendingImp
 $("#chkOrder").onclick=checkOrder;
 $("#roll1").onclick=()=>addDrops(1);$("#roll25").onclick=()=>addDrops(25);$("#clear").onclick=()=>{S.items=[];renderDrops();};
 $("#auto").onclick=()=>{const b=$("#auto");if(timer){clearInterval(timer);timer=null;b.textContent="Auto-drop: off";b.setAttribute("aria-pressed","false");}else{timer=setInterval(()=>{if(!document.hidden&&V.view==="test")addDrops(1);},1100);b.textContent="Auto-drop: on";b.setAttribute("aria-pressed","true");}};
-$("#preset").innerHTML=`<option value="" disabled selected>Game presets…</option>`+PRESETS.map((p,i)=>`<option value="${i}">${p.label}</option>`).join("");
+$("#preset").innerHTML=`<option value="" disabled selected>Game presets…</option>`+PRESETS.map((p,i)=>[i,p.label]).sort(ALPHA).map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
 /* update check: the build step writes the commit id into BUILD and into version.json next to this page */
 const BUILD="__BUILD__";
 (function(){
