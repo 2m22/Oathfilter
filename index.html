@@ -399,7 +399,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
      <li><b>One line group per rule.</b> To look for two line groups, use two rules.</li>
     </ul>
     <h3 class="subtitle">Never hidden</h3>
-    <p class="hint" style="margin:0">Uniques, runes, Dwarven Runes, idols, the Cube, gems, currency, gold and flasks always stay visible, even when a Hide rule matches. The Drop Test marks them <b>SHOW*</b>.</p></section>
+    <p class="hint" style="margin:0">Uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks always stay visible, even when a Hide rule matches. The Drop Test marks them <b>SHOW*</b>.</p></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g3"><h2 id="h-g3" class="coltitle">What a rule can check</h2>
     <p class="callout">Everything you set on one rule must fit at the same time.</p>
     <ul class="pl">
@@ -694,7 +694,7 @@ function matches(r,it){
   }
   return moreMatch(r,it);
 }
-const NEVER_HIDDEN=it=>it.rar==="U"||it.kind==="idol"||it.kind==="misc";
+const NEVER_HIDDEN=it=>it.rar==="U"||it.kind==="misc";
 function evaluate(it){
   for(let i=0;i<F.rules.length;i++){
     const r=F.rules[i];if(!r.on)continue;
@@ -1644,7 +1644,7 @@ function syncEditor(){
   $$("#editor [data-set]").forEach(b=>{const[k,v]=b.dataset.set.split(",");b.setAttribute("aria-pressed",r[k]===+v);});
   $$("#editor [data-col]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.col===r.colour));
   $("#lookBox").hidden=!isHl(r.action);
-  $("#actHint").textContent=["Matching items are hidden (never uniques, runes, idols, gems, currency, gold or flasks).","Matching items are shown as normal.","The item name is drawn in the chosen colour.","Colour plus a light beam on the ground.","Matching items are sold. The game\u2019s exact behaviour is not confirmed yet; the Drop Test treats it like Hide (never uniques, runes, idols, gems, currency, gold or flasks)."][r.action]||"";
+  $("#actHint").textContent=["Matching items are hidden (never uniques, runes, gems, currency, gold or flasks).","Matching items are shown as normal.","The item name is drawn in the chosen colour.","Colour plus a light beam on the ground.","Matching items are sold. The game\u2019s exact behaviour is not confirmed yet; the Drop Test treats it like Hide (never uniques, runes, idols, gems, currency, gold or flasks)."][r.action]||"";
   $("#addRule").disabled=F.rules.length>=MAX_RULES;$("#dupRule").disabled=F.rules.length>=MAX_RULES;
   $("#ground").innerHTML=`<div style="display:flex;align-items:center;gap:14px">${labelHTML(r)}</div>`;
 }
