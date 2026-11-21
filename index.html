@@ -333,7 +333,6 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     </div>
     <div class="header-right">
       <div id="cap" class="count"></div>
-      <button type="button" class="btn gold" id="copyTop">Copy filter code</button>
     </div>
   </div>
   <nav class="nav header-nav" role="tablist" aria-label="Views" id="nav">
@@ -1429,7 +1428,7 @@ const WAVE='<path d="M16.5 8.5a5 5 0 0 1 0 7"/>';
 /* ---- view ---- */
 const V={filter:"all",q:"",view:"edit"};
 function setView(v){V.view=v;$$(".panel").forEach(p=>p.hidden=p.id!=="p-"+v);$$("#nav button").forEach(b=>{const on=b.dataset.view===v;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1;});
-  if(v==="test"){renderDrops();}if(v==="io"){renderOut();renderLF();}if(v==="edit"&&EZ.m==="easy"){ezRefresh();}ezHeader();}
+  if(v==="test"){renderDrops();}if(v==="io"){renderOut();renderLF();}if(v==="edit"&&EZ.m==="easy"){ezRefresh();}}
 /* does an earlier active rule catch at least everything this rule catches? (same reading as the drop test) */
 const TYPE_KIDS={1:[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],2:[5,6,7,8],3:[10,11,12]};
 /* true when every item that passes rule b's MORE options also passes rule a's (so a's options cannot exclude anything b would take) */
@@ -1592,7 +1591,7 @@ function checkOrder(){
   const o=$("#chkOut");
   o.innerHTML=out.length?`<div class="chk">${out.map(([i,t])=>`<button type="button" class="chkb" data-pick="${R[i].id}"><b>Rule ${i+1}</b> ${esc(t)}</button>`).join("")}</div><p class="hint" style="margin:8px 0 0">Based on ${N} sample items. A rare item can be missed. Click a rule to open it.</p>`:`<p class="hint" style="margin:8px 0 0">Every active rule decides at least one of ${N} sample items.</p>`;
 }
-function renderHead(){$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;ezHeader();}
+function renderHead(){$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
 
 /* ---- editor ---- */
 const chipRow=(k,r)=>`<div class="chips">${T[k].map(o=>`<button type="button" class="cb2" data-set="${k},${o[0]}" aria-pressed="${r[k]===o[0]}">${esc(o[1])}</button>`).join("")}</div>`;
@@ -1828,7 +1827,7 @@ document.addEventListener("input",e=>{
 function downloadCode(){const d=new Date(),p=n=>String(n).padStart(2,"0"),name="oathfilter-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".txt";
   const a=document.createElement("a"),url=URL.createObjectURL(new Blob([encode(F)+"\n"],{type:"text/plain"}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Saved "+name+".");}
 $("#dl").onclick=downloadCode;
-$("#copyTop").onclick=copyCode;$("#copy").onclick=copyCode;
+$("#copy").onclick=copyCode;
 /* ---- local filters (localStorage only) ---- */
 const LF={key:"oathfilter-saved",max:50,
   all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},
@@ -2955,12 +2954,6 @@ function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="
 const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
 let ezT=null,ezAsk=false,ezCode="";
 function ezShowCode(t){ezCode=t;ezPreview();const x=$("#ez-code");if(x){x.focus();x.select();}}
-/* the top-right button copies the active filter; it is hidden while Easy Mode is open */
-function ezHeader(){
-  const b=$("#copyTop"),n=F.rules.length;
-  b.hidden=EZ.m==="easy"&&V.view==="edit"; /* Easy Mode has its own copy button in the Result panel; other tabs keep this one */
-  b.title="Copies the filter you have now ("+n+" rule"+(n===1?"":"s")+").";
-}
 function ezApply(){
   const g=easyGen(EZ.s);
   if(g.rules.length>MAX_RULES){ezAsk=false;ezPreview(g);toast("Not applied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);return false;}
@@ -2972,7 +2965,7 @@ function ezMode(m,quiet){
   $("#ezBox").hidden=EZ.m!=="easy";$("#edCols").hidden=EZ.m==="easy";
   $$("#ezMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ezm===EZ.m?"true":"false"));
   $("#ezBarHint").textContent=EZ.m==="easy"?"Easy: pick what you want to see and the page builds the whole filter.":"Advanced: edit every rule yourself.";
-  if(EZ.m==="easy"&&!quiet)ezRefresh();else if(!quiet)ezHeader();
+  if(EZ.m==="easy"&&!quiet)ezRefresh();
 }
 /* ---- controls ---- */
 const ezBtn=(d,label)=>`<button type="button" class="cb2" data-ez="${d}" aria-pressed="false">${esc(label)}</button>`;
@@ -3027,7 +3020,7 @@ function ezPreview(g){
     <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(actWord(r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol></div>
   ${w.length?`<div class="sub"><span class="lab">Warnings</span>${w.map(t=>`<p class="hint ezw" style="margin:4px 0 0">${esc(t)}</p>`).join("")}</div>`:""}
 `;
-  ezHeader();
+  
 }
 const ezRefresh=()=>{ezSync();ezPreview();};
 function ezTouched(){
