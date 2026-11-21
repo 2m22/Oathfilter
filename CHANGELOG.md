@@ -7,7 +7,6 @@ All notable changes for players. Newest first.
 ### Changed
 - Easy Mode uses affix tiers instead of an item level floor. Rupture Level (slider, Any to 90) tells the page which affix tiers can drop at that level. Every gear pick gets a tier limit per line (Keep tiers: best tier, best 2 or best 3), so gear with only low lines is hidden. Idol rules are not affected.
 - The update box shows "What's new" below its buttons. After a reload, the same box shows the changes once instead of a separate box.
-
 - Copy filter code and Share are now two buttons in the Easy / Advanced bar at the top of the Editor. In Easy Mode, Share first replaces your filter with the Easy Mode rules. The Import / Export tab is now just Import, and the top-right Copy button and Download .txt are gone.
 
 ### Fixed
