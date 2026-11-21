@@ -2050,7 +2050,7 @@ function dcParse(text){
   m=raw.match(/requires?\s*(?:hero\s*)?level\s*[:\-]?\s*(\d{1,3})/i);if(m)d.req=+m[1];
   m=raw.match(/^\W*sockets?\s*:\s*(.+)$/im);if(m){const t=m[1].split(/[\u00b7\-:|,]+/).map(x=>x.trim()).filter(x=>/[a-z]/i.test(x));if(t.length&&t.length<=6)d.sock=t.length;}else{m=raw.match(/(\d)\s*sockets?\b/i);if(m)d.sock=+m[1];}
   m=raw.match(/grade\s*[:\-]?\s*(\d{2,3})/i);if(m)d.grade=+m[1];
-  d.alt=/\balt\s*:/i.test(raw);
+  d.alt=/\balt\s*:/i.test(raw);d.runeBase=d.rar==="N"&&/oathword\s+base/i.test(raw);
   m=raw.match(/(?:loot\s*filter\s*)?\brule\s*(?:#|no\.?|number)?\s*(\d{1,2})\b\s*(?::\s*([^\n]+))?/i);
   if(m){d.ruleNo=+m[1];d.ruleName=(m[2]||"").trim();}
   /* base / unique names: longest name that appears in the text */
@@ -2107,9 +2107,9 @@ function dcRule(r,d){
   else if(t===15)need(d.sock===null?null:d.sock>=4,"Sockets not visible");
   else if(t===16)need(d.grade===null?(d.truesworn?true:null):d.grade>=90,"Grade not visible (Truesworn = grade 90+)");
   else if(t===17)need(false,"");
-  else if(t===4)need(d.kind==="idol"?false:null,"Rune base not detectable");
+  else if(t===4)need(d.runeBase?true:(d.rar&&d.kind?false:null),"Rune base not detectable");
   else if(d.kind===null)why.push("Item type not detected");
-  else need(typeMatch(t,{kind:d.kind,sub:d.sub,runebase:false,core:d.core,sockets4Plus:d.sock>=4,truesworn:d.truesworn}),"");
+  else need(typeMatch(t,{kind:d.kind,sub:d.sub,runebase:!!d.runeBase,core:d.core,sockets4Plus:d.sock>=4,truesworn:d.truesworn}),"");
   const lv=LEVEL[r.level]||LEVEL[0];
   if(r.level)need(d.ilvl===null?null:(d.ilvl>=lv[0]&&d.ilvl<=lv[1]),"Item Level not visible");
   const labelled=d.mods.filter(x=>x.label),unl=d.mods.filter(x=>!x.label).length;
@@ -2145,6 +2145,7 @@ function dcRule(r,d){
 const dcOut=(no,why,soft)=>({s:no?"no":(why.filter(Boolean).length?"maybe":"yes"),why:[...new Set(why.filter(Boolean))],soft});
 function dcCheck(d){
   const res={d,win:null,maybe:[],stated:null,notes:[],none:false};
+  if(d.rune||d.dwarven){res.notes.push("Runes are not checked here. Only gear, idols and rune bases (Normal items with an Oathword line) are.");return res;}
   F.rules.forEach((r,i)=>{if(!r.on)return;const c=dcRule(r,d);if(res.win)return;if(c.s==="yes"){res.win={i,c};}else if(c.s==="maybe")res.maybe.push({i,c});});
   const guard=i=>(F.rules[i].action===0||F.rules[i].action===4)&&(d.rar==="U"||d.dwarven);
   if(res.win){res.win.guard=guard(res.win.i);}
@@ -2188,7 +2189,7 @@ function dcRender(res){
     const w=res.win;h+=ruleLine(w.i,w.c,"First rule that fits, top to bottom."+(w.guard?" It would hide this item, but the game never hides it, so it is shown.":""));
   }else if(res.maybe.length){
     h+=`<p class="dcnote">No rule matches for sure. These could match if the missing details fit:</p>`;
-  }else h+=`<div class="dcrule"><b>No rule matches</b><div class="dcsum">The item is shown as normal (“Everything else: shown”).</div></div>`;
+  }else if(!(d.rune||d.dwarven))h+=`<div class="dcrule"><b>No rule matches</b><div class="dcsum">The item is shown as normal (“Everything else: shown”).</div></div>`;
   const mb=res.maybe.filter(x=>!res.win||x.i<res.win.i);
   if(mb.length)h+=`<div class="dcmay"><b>${res.win||res.stated?"Earlier rules that might also catch it":"Possible rules"}</b><ul>${mb.slice(0,8).map(x=>`<li><button type="button" class="linkbtn" data-dcshow="${esc(F.rules[x.i].id)}">Rule #${x.i+1}</button> (${esc(actWord(F.rules[x.i].action))}): ${esc(x.c.why.join("; "))}</li>`).join("")}${mb.length>8?`<li>…and ${mb.length-8} more</li>`:""}</ul></div>`;
   const soft=[...new Set([...(res.win?res.win.c.soft:[]),...(res.stated?res.stated.c.soft:[])])];
