@@ -2895,9 +2895,10 @@ function easyGen(s){
   /* a line that two picks share (crit, for example) is listed once, under the first pick that has it, so it never wastes an a= slot or a rule */
   const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
   const og=own(),oi=own();
-  /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines with the same limit share rules. */
-  const gearA=act.map(a=>{const by={};ezGearIds(a).filter(og).forEach(id=>{const t=ezThr(id,rl,s.tk);(by[t]=by[t]||[]).push(id);});
-    const parts=[];Object.keys(by).map(Number).sort((x,y)=>(x||99)-(y||99)).forEach(t=>ezChunks(by[t]).forEach(p=>parts.push({p,t})));return{a,parts};}).filter(x=>x.parts.length);
+  /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 4 per rule. */
+  const gearA=act.map(a=>{const ids=ezGearIds(a).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99})).sort((x,y)=>x.t-y.t);
+    const parts=[];for(let i=0;i<ids.length;i+=4){const c=ids.slice(i,i+4),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});} /* same rule count as without a tier limit: sorted by limit, 4 per rule, the loosest line of a rule sets its limit */
+    return{a,parts};}).filter(x=>x.parts.length);
   const idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a).filter(oi))})).filter(x=>x.parts.length);
   const rarHide=(s.hn||s.hm)?1:0;
   const white=gearA.length>0;
