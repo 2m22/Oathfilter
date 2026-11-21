@@ -2,6 +2,18 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (5)
+
+### Added
+- Small ? help buttons next to Easy Mode, Rupture Level, Tier strictness, What I want to see, Copy filter code, Share, the rule order, Hide, Sell, More conditions, the screenshot reader, the tier marker, the Sell counter and Local filters. They open on hover, keyboard focus or click/tap and close with Esc.
+- The Guide explains Easy Mode (Rupture Level, Tier strictness, picks, preview) and the Drop Test Easy preview.
+
+### Changed
+- Easy Mode texts for Rupture Level and Tier strictness are shorter and clearer. The result panel has a collapsible Details section and the controls are wider.
+- Messages that appear in several places now use the same wording (rule limit, Undo, Sell not confirmed, copy blocked, browser storage full). Too many rules in Easy Mode now reads "Too many rules: n / 40. Uncheck some options."
+- Local filters and Import now point to Copy filter code instead of the old Export.
+- The Guide says that Ctrl+D and Alt+Up / Down work in Advanced Mode only.
+
 ## 2026-11-21 (4)
 
 ### Changed
