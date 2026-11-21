@@ -2,6 +2,11 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (7)
+
+### Changed
+- Easy Mode: when Normal and Magic gear are both hidden, the last rule ("Everything else") now hides Rare gear only. Normal and Magic are already hidden by the rule above it, so the result is the same, but the filter code is cleaner.
+
 ## 2026-11-21 (6)
 
 ### Changed
