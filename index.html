@@ -113,6 +113,10 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .ezrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px}
 .ezw{color:var(--warn-fg)}.ezbanner{padding:10px 12px;border:1px solid var(--warn-fg);border-radius:8px;margin-bottom:12px}
 .ezol{margin:8px 0 0;padding-left:24px}.ezol li{margin:2px 0}
+.ezbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.eztick{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin:0 2px}
+.ezcount{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:4px}.ezcount b{font-size:17px}.ezcount.bad b{color:var(--hide-fg)}
+.ezerr{padding:12px 14px;border:2px solid var(--hide-fg);border-radius:8px;margin-bottom:12px;color:var(--hide-fg)}
 .cb2{min-height:34px;padding:0 12px;border:1px solid var(--border);border-radius:999px;background:var(--bg-card);color:var(--text-muted);font-weight:400}
 .cb2:hover{border-color:var(--border-strong);color:var(--text-main)}
 .cb2[aria-pressed="true"]{background:var(--accent-gold-soft);border-color:var(--accent-gold);color:var(--text-main)}
@@ -323,7 +327,6 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   </div>
   <nav class="nav header-nav" role="tablist" aria-label="Views" id="nav">
   <button type="button" role="tab" id="t-edit" aria-controls="p-edit" aria-selected="true" data-view="edit">Editor</button>
-  <button type="button" role="tab" id="t-easy" aria-controls="p-easy" aria-selected="false" data-view="easy" tabindex="-1">Easy Mode</button>
   <button type="button" role="tab" id="t-test" aria-controls="p-test" aria-selected="false" data-view="test" tabindex="-1">Drop Test</button>
   <button type="button" role="tab" id="t-io" aria-controls="p-io" aria-selected="false" data-view="io" tabindex="-1">Import / Export</button>
   <button type="button" role="tab" id="t-info" aria-controls="p-info" aria-selected="false" data-view="info" tabindex="-1">Guide</button>
@@ -331,7 +334,17 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   </nav>
 </header>
 <main>
-<div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit"><div class="cols">
+<div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit">
+<div class="ezbar"><div class="seg" role="group" aria-label="Editor mode" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><span class="hint" id="ezBarHint"></span></div>
+<div id="ezBox" hidden><div class="cols">
+  <section class="plate l" aria-labelledby="h-ezc">
+    <h2 id="h-ezc" class="coltitle">Easy Mode</h2>
+    <p class="hint" style="margin:0 0 12px">Build a whole filter from a few choices. The result is a normal game filter code. Easy Mode settings stay in this browser only.</p>
+    <div id="ezCtl"></div></section>
+  <section class="plate r" aria-labelledby="h-ezo"><h2 id="h-ezo" class="coltitle">Result</h2>
+    <div id="ezOut" role="status" aria-live="polite"></div></section>
+</div></div>
+<div class="cols" id="edCols">
   <section class="plate l" aria-labelledby="h-rules">
     <h2 id="h-rules" class="coltitle">Rules</h2>
     <div class="sub"><label class="lab" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div>
@@ -346,14 +359,6 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <div id="editor"></div></section>
 </div></div>
 
-<div class="panel" id="p-easy" role="tabpanel" aria-labelledby="t-easy" hidden><div class="cols">
-  <section class="plate l" aria-labelledby="h-ezc">
-    <h2 id="h-ezc" class="coltitle">Easy Mode</h2>
-    <p class="hint" style="margin:0 0 12px">Build a whole filter from a few choices. The result is a normal game filter code. Easy Mode settings stay in this browser only.</p>
-    <div id="ezCtl"></div></section>
-  <section class="plate r" aria-labelledby="h-ezo"><h2 id="h-ezo" class="coltitle">Result</h2>
-    <div id="ezOut" role="status" aria-live="polite"></div></section>
-</div></div>
 <div class="panel" id="p-test" role="tabpanel" aria-labelledby="t-test" hidden><div class="cols">
   <aside class="plate dctl" aria-labelledby="h-ctl"><h2 id="h-ctl" class="coltitle">Drops</h2>
     <div class="sub"><div class="dctlb"><button type="button" class="btn gold" id="roll1">Drop 1</button><button type="button" class="btn" id="roll25">Drop 25</button><button type="button" class="btn" id="auto" aria-pressed="false">Auto-drop: off</button><button type="button" class="btn danger" id="clear">Reset</button></div></div>
@@ -1413,7 +1418,7 @@ const WAVE='<path d="M16.5 8.5a5 5 0 0 1 0 7"/>';
 /* ---- view ---- */
 const V={filter:"all",q:"",view:"edit"};
 function setView(v){V.view=v;$$(".panel").forEach(p=>p.hidden=p.id!=="p-"+v);$$("#nav button").forEach(b=>{const on=b.dataset.view===v;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1;});
-  if(v==="test"){renderDrops();}if(v==="io"){renderOut();renderLF();}if(v==="easy"){ezRefresh();}}
+  if(v==="test"){renderDrops();}if(v==="io"){renderOut();renderLF();}if(v==="edit"&&EZ.m==="easy"){ezRefresh();}}
 /* does an earlier active rule catch at least everything this rule catches? (same reading as the drop test) */
 const TYPE_KIDS={1:[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],2:[5,6,7,8],3:[10,11,12]};
 /* true when every item that passes rule b's MORE options also passes rule a's (so a's options cannot exclude anything b would take) */
@@ -1576,7 +1581,7 @@ function checkOrder(){
   const o=$("#chkOut");
   o.innerHTML=out.length?`<div class="chk">${out.map(([i,t])=>`<button type="button" class="chkb" data-pick="${R[i].id}"><b>Rule ${i+1}</b> ${esc(t)}</button>`).join("")}</div><p class="hint" style="margin:8px 0 0">Based on ${N} sample items. A rare item can be missed. Click a rule to open it.</p>`:`<p class="hint" style="margin:8px 0 0">Every active rule decides at least one of ${N} sample items.</p>`;
 }
-function renderHead(){$("#cap").innerHTML=`<span class="hint">Rules</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
+function renderHead(){$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
 
 /* ---- editor ---- */
 const chipRow=(k,r)=>`<div class="chips">${T[k].map(o=>`<button type="button" class="cb2" data-set="${k},${o[0]}" aria-pressed="${r[k]===o[0]}">${esc(o[1])}</button>`).join("")}</div>`;
@@ -1749,8 +1754,8 @@ function save(){snap();try{const c=encode(F);localStorage.setItem("oathfilter4",
 
 /* ---- orchestration ---- */
 function setFilter(f){F=f;F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});S.cur=F.rules[0]?F.rules[0].id:null;fullRender();}
-function fullRender(){REV++;renderHead();renderRows();renderEditor();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();if(V.view==="easy")ezRefresh();save();}
-function touch(){REV++;F.preset="-1";renderHead();renderRows();syncEditor();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();if(V.view==="easy")ezRefresh();save();}
+function fullRender(){REV++;renderHead();renderRows();renderEditor();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();if(V.view==="edit"&&EZ.m==="easy")ezRefresh();save();}
+function touch(){REV++;F.preset="-1";renderHead();renderRows();syncEditor();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();if(V.view==="edit"&&EZ.m==="easy")ezRefresh();save();}
 
 /* ---- events ---- */
 document.addEventListener("click",e=>{
@@ -2695,7 +2700,7 @@ function dcRun(){
 function dcShowRule(id){
   if(!F.rules.some(r=>r.id===id))return;
   V.filter="all";V.q="";const q=$("#rq");if(q)q.value="";S.cur=id;
-  setView("edit");renderRows();renderEditor();
+  ezMode("adv");setView("edit");renderRows();renderEditor();
   requestAnimationFrame(()=>{const el=document.querySelector('.rc[data-rid="'+id+'"]');if(!el)return;
     el.scrollIntoView({block:"center",behavior:(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)?"auto":"smooth"});
     el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1800);});
@@ -2761,28 +2766,41 @@ async function dcFile(file){
 /* ---- Easy Mode v1 ----
    Builds a whole filter from a few controls. Only uses things confirmed in the game data or the game's own exports:
    named lines with a= (max 4 per rule), i= item level steps, type 14 for Idols (type 0 does not cover Idols).
+   Named lines match by their text, so a gear line such as spell_inc also catches the Idol line with the same text.
    No Gems, no roll quality, no line 1..26 guesses. The state lives in its own storage key; the filter code carries nothing of it. */
 const EZ_KEY="oathfilter-easy";
+/* g: gear lines (type 0). Idol rules use the gear lines whose text also exists on Idols, plus the Idol-only lines in "idol". */
 const EZ_ARCH=[
- {k:"minion",n:"Minions",col:1,ids:["minion_dmg","minion_life","minion_speed","minion_crit","minion_crit_multi"]},
- {k:"spell",n:"Spells",col:2,ids:["spell_inc","cast_speed","cold_spell_added","fire_spell_added","lightning_spell_added","poison_spell_added"]},
- {k:"dot",n:"Damage over time",col:5,ids:["bleed_chance","bleed_effect","ignite_chance","ignite_effect","poison_dmg_inc","poison_effect","dot_multi"]},
- {k:"speed",n:"Speed",col:4,ids:["attack_speed_local","cast_speed","move_speed"]},
- {k:"life",n:"Life",col:7,ids:["life_large"]},
- {k:"res",n:"Resists",col:0,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"]},
- {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"]}];
-const EZ_ORBIT=["idol_orbit_damage_m","idol_grand_orbit_plus","idol_grand_eng_orbit"];
-const EZ_CLASSES=[[1,"Weapons"],[5,"Helms"],[6,"Body armour"],[7,"Gloves"],[8,"Boots"],[9,"Shields and foci"],[10,"Rings"],[11,"Amulets"],[12,"Belts"]];
+ {k:"attack",n:"Attacks",col:6,ids:["attack_speed_local","phys_added_local","phys_inc_local","attack_added_phys","attack_added_lightning","crit_local","crit_multi"],idol:[]},
+ {k:"spell",n:"Spells",col:2,ids:["spell_inc","cast_speed","cold_spell_added","fire_spell_added","lightning_spell_added","poison_spell_added","crit_local","crit_multi"],idol:["idol_grand_eng_brand","idol_grand_spark_plus"]},
+ {k:"minion",n:"Minions",col:1,ids:["minion_dmg","minion_life","minion_speed","minion_crit","minion_crit_multi"],idol:["idol_grand_skeleton_plus","idol_grand_skeleton_wizard_plus"]},
+ {k:"dot",n:"Damage over time",col:5,ids:["dot_multi","bleed_chance","bleed_effect","ignite_chance","ignite_effect","poison_dmg_inc","poison_effect"],idol:[]},
+ {k:"life",n:"Life",col:7,ids:["life_large"],idol:["idol_grand_life_inc"]},
+ {k:"res",n:"Resists",col:0,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
+ {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]},
+ {k:"melee",n:"Melee",col:6,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"],io:1},
+ {k:"slam",n:"Slam",col:6,ids:[],idol:["idol_slam_damage_m","idol_grand_slam_spike"],io:1},
+ {k:"bow",n:"Bow / Projectile",col:6,ids:[],idol:["idol_projectile_damage_m","idol_grand_bow_projectile"],io:1},
+ {k:"chain",n:"Chain",col:6,ids:[],idol:["idol_chain_damage_m","idol_grand_chain_plus"],io:1},
+ {k:"trap",n:"Trap",col:6,ids:[],idol:["idol_trap_damage_m","idol_grand_trap_plus","idol_grand_eng_trap"],io:1},
+ {k:"totem",n:"Totem / Ballista",col:6,ids:[],idol:["idol_ballista_speed_m","idol_ballista_life_m","idol_grand_ballista_plus","idol_grand_eng_totem"],io:1},
+ {k:"channel",n:"Channelling",col:2,ids:[],idol:["idol_channel_cost_m","idol_grand_channel_ramp"],io:1},
+ {k:"orbit",n:"Orbiting",col:4,ids:[],idol:["idol_orbit_damage_m","idol_grand_orbit_plus","idol_grand_eng_orbit"],io:1}];
+const EZ_RL=[10,20,30,40,50,60,70,84];
 const EZ_FLOOR=["Off","Relaxed","Normal","Strict"],EZ_SLACK=[0,20,10,0];
-const ezDef=()=>({rl:60,off:0,floor:0,hl:1,idol:"all",hn:1,hm:0,hc:[],arch:{},keep:{core:1,runes:1,tsw:1}});
+const EZ_IDOL=[["match","Match my picks"],["all","Show all"],["none","Hide all"]];
+const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
+const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
+const ezDef=()=>({rl:60,off:0,floor:0,hl:1,idol:"match",hn:1,hm:0,arch:{},keep:{core:1,runes:1,tsw:1}});
+const ezSnapRl=v=>{v=+v;if(!Number.isFinite(v))return 60;return EZ_RL.reduce((b,x)=>Math.abs(x-v)<Math.abs(b-v)?x:b,EZ_RL[0]);};
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
-  const s={rl:n(o.rl,1,200,d.rl),off:n(o.off,-20,20,0),floor:n(o.floor,0,3,0),hl:on(o.hl,1),
-    idol:["all","orbit","none"].includes(o.idol)?o.idol:"all",hn:on(o.hn,1),hm:on(o.hm,0),hc:[],arch:{},keep:{}};
-  EZ_CLASSES.forEach(c=>{if(Array.isArray(o.hc)&&o.hc.includes(c[0]))s.hc.push(c[0]);});
+  const s={rl:o.rl===undefined?d.rl:ezSnapRl(o.rl),off:n(o.off,-20,20,0),floor:n(o.floor,0,3,0),hl:on(o.hl,1),
+    idol:EZ_IDOL.some(x=>x[0]===o.idol)?o.idol:"match",hn:on(o.hn,1),hm:on(o.hm,0),arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
+  if(o.idol==="orbit")s.arch.orbit=1; /* older saves had "only orbiting" as an Idol mode */
   ["core","runes","tsw"].forEach(k=>{s.keep[k]=on(o.keep&&o.keep[k],1);});
   return s;
 }
@@ -2792,103 +2810,126 @@ function ezFloor(s){
   if(s.floor>0)LVSTEPS.forEach(v=>{if(v<=il-EZ_SLACK[s.floor])lo=v;});
   return{il,lo};
 }
+/* lines the game data knows, one per distinct text (same text = same line) */
+function ezLines(ids,only){
+  const seen=new Set(),out=[];
+  ids.forEach(id=>{const t=LINEN[id];if(!t||!EZ_LINEIDS.has(id)||seen.has(t))return;if(only&&!only(id,t))return;seen.add(t);out.push(id);});
+  return out;
+}
+const ezGearIds=a=>ezLines(a.ids);
+const ezIdolIds=a=>ezLines(a.ids.concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
+const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=4)p.push(ids.slice(i,i+4));return p;};
 function easyGen(s){
   s=ezSane(s);
   const notes=[],R=[],{il,lo}=ezFloor(s);
   const mk=(o,name,fn)=>{const r=newRule(o);r.name=name.slice(0,NAME_MAX);if(fn)fn(r);R.push(r);return r;};
-  const known=ids=>ids.filter(id=>{if(LINEN[id])return true;notes.push("Line "+id+" is not in the game data of this page and was skipped.");return false;});
   const act=EZ_ARCH.filter(a=>s.arch[a.k]);
-  const hc=EZ_CLASSES.map(c=>c[0]).filter(t=>s.hc.includes(t));
-  const rarHide=(s.hn||s.hm)?1:0,idolHide=s.idol==="none"||s.idol==="orbit"?1:0;
-  const blHides=hc.length+rarHide+(s.idol==="none"?1:0);
-  let mode="black",why="Only a few things are hidden, so everything else stays shown.";
-  if(act.length||lo>0){mode="white";why=act.length?"Archetypes are on, so only matching items are kept and the rest is hidden.":"The level floor is on, so items below it are hidden.";}
-  else if(blHides>6){mode="keep";why="Hiding this much would take "+blHides+" rules, so the page keeps the other classes and hides the rest.";}
-  const anyHide=mode!=="black"||rarHide||hc.length>0;
+  act.forEach(a=>{[a.ids,a.idol].forEach(l=>l.forEach(id=>{if(!EZ_LINEIDS.has(id)||!LINEN[id])notes.push("Line "+id+" is not in the game data of this page and was skipped.");}));});
+  const gearA=act.map(a=>({a,parts:ezChunks(ezGearIds(a))})).filter(x=>x.parts.length);
+  const idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a))})).filter(x=>x.parts.length);
+  const rarHide=(s.hn||s.hm)?1:0;
+  const white=gearA.length>0||lo>0;
+  const idolWhite=s.idol==="match"&&idolA.length>0;
+  let why=white?(gearA.length?"Gear picks are on, so matching gear is kept and the rest of the gear is hidden.":"The level floor is on, so gear below it is hidden."):"Only a few things are hidden, so everything else stays shown.";
+  const idolWhy=s.idol==="none"?" All Idols are hidden.":idolWhite?" Idols without your picked lines are hidden.":s.idol==="all"?" All Idols stay shown.":" Idols are not touched.";
+  why+=idolWhy;
+  const anyHide=white||rarHide;
   /* 1 specials: the game's own End Game preset rules (kept above every hide so they are never caught) */
   if(s.keep.core)mk({type:13,action:3,colour:0},"Core-touched");
   if(s.keep.runes&&anyHide)mk({type:4,rarity:1,action:1},"Rune bases");
-  if(s.keep.tsw&&anyHide)mk({type:16,rarity:3,level:6,action:2,colour:0},"Truesworn normal and magic 75+");
-  /* 2 Idols: Type 0 does not cover Idols, so they need their own rules */
-  if(s.idol==="orbit"){const ids=known(EZ_ORBIT);if(ids.length)mk({type:14,action:s.hl?2:1,colour:4},"Idols: orbiting",r=>msetList(r,"a",ids));}
-  /* 3 hides on top: rarity, then classes */
-  if(rarHide)mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:0},s.hn&&s.hm?"Hide normal and magic":s.hn?"Hide normal":"Hide magic");
-  if(mode!=="keep")hc.forEach(t=>mk({type:t,action:0},"Hide "+EZ_CLASSES.find(c=>c[0]===t)[1].toLowerCase()));
-  if(idolHide)mk({type:14,action:0},s.idol==="orbit"?"Hide other idols":"Hide idols");
-  /* 4 what to keep */
-  if(mode==="white"){
-    act.forEach(a=>{
-      const ids=known(a.ids),parts=[];for(let i=0;i<ids.length;i+=4)parts.push(ids.slice(i,i+4));
-      parts.forEach((p,i)=>mk({type:0,action:s.hl?2:1,colour:a.col},a.n+(parts.length>1?" "+(i+1)+"/"+parts.length:""),r=>{if(lo)msetRng(r,"i",lo,0);msetList(r,"a",p);}));
-    });
-    if(!act.length&&lo>0)mk({type:0,action:1},"Level "+lo+"+",r=>msetRng(r,"i",lo,0));
+  if(s.keep.tsw&&anyHide)mk({type:16,rarity:3,level:6,action:2,colour:0},"Truesworn bases");
+  /* 2 Idols: Type 0 does not cover Idols, so they get their own rules. Picks come first, the hide of the other Idols after them. */
+  if(s.idol!=="none"&&(s.idol==="match"||s.hl))idolA.forEach(x=>x.parts.forEach((p,i)=>mk({type:14,action:s.hl?2:1,colour:x.a.col},"Idols: "+x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>msetList(r,"a",p))));
+  if(s.idol==="none"){mk({type:14,action:0},"Idols");if(act.some(a=>a.io))notes.push("Idol-only picks do nothing while all Idols are hidden.");}
+  else if(idolWhite)mk({type:14,action:0},"Other idols");
+  else if(s.idol==="all"&&!s.hl&&idolA.length)notes.push("Idols stay shown and Highlight is off, so Idol picks change nothing. Turn Highlight on or use Match my picks.");
+  else if(s.idol==="match"&&act.length&&!idolA.length)notes.push("None of your picks has Idol lines, so Idols are not touched.");
+  /* 3 hide normal / magic gear */
+  if(rarHide)mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:0},s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear");
+  /* 4 gear picks and the level floor */
+  if(white){
+    gearA.forEach(x=>x.parts.forEach((p,i)=>mk({type:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(lo)msetRng(r,"i",lo,0);msetList(r,"a",p);})));
+    if(!gearA.length&&lo>0)mk({type:0,action:1},"Item level "+lo+"+",r=>msetRng(r,"i",lo,0));
+    mk({type:0,action:0},"Everything else");
   }
-  if(mode==="keep")EZ_CLASSES.map(c=>c[0]).filter(t=>!hc.includes(t)).forEach(t=>mk({type:t,action:1},"Keep "+EZ_CLASSES.find(c=>c[0]===t)[1].toLowerCase()));
-  /* 5 the rest */
-  if(mode!=="black")mk({type:0,action:0},"Hide the rest");
-  if(mode==="keep"&&hc.length>=EZ_CLASSES.length)notes.push("Every class is hidden. Only the always-keep rules and Idols stay.");
-  return{rules:R,mode,why,il,lo,notes};
+  if(act.length&&!gearA.length&&!white&&act.every(a=>a.io))notes.push("Your picks are Idol-only, so gear is not touched.");
+  return{rules:R,mode:white?"white":"black",why,il,lo,notes};
 }
 /* ---- state, hash and storage ---- */
 function ezHash(str){let h=0x811c9dc5;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16);}
 const ezHashF=f=>ezHash(encode(f).replace(/^BOFILTER:1,[^|]*/,""));
 function ezLoad(){let o=null;try{o=JSON.parse(localStorage.getItem(EZ_KEY)||"null");}catch(e){}
-  return{s:ezSane(o&&o.s),h:o&&typeof o.h==="string"?o.h:""};}
+  return{s:ezSane(o&&o.s),h:o&&typeof o.h==="string"?o.h:"",m:o&&o.m==="easy"?"easy":"adv"};}
 var EZ=ezLoad();
-function ezSave(){try{localStorage.setItem(EZ_KEY,JSON.stringify({s:EZ.s,h:EZ.h}));}catch(e){}}
+function ezSave(){try{localStorage.setItem(EZ_KEY,JSON.stringify({s:EZ.s,h:EZ.h,m:EZ.m}));}catch(e){}}
 const ezSnap=()=>EZ?{s:EZ.s,h:EZ.h}:null;
 function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="string"?f.e.h:"";ezSave();}if(f)delete f.e;}
 const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
 let ezT=null,ezAsk=false;
 function ezApply(){
   const g=easyGen(EZ.s);
-  if(g.rules.length>MAX_RULES){toast("That would be "+g.rules.length+" rules. The game takes "+MAX_RULES+". Turn something off.",true);return false;}
+  if(g.rules.length>MAX_RULES){ezAsk=false;ezPreview(g);toast("Not applied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);return false;}
   F.preset="-1";F.rules=g.rules;F.rules.forEach(r=>{r.id=uid();});
   EZ.h=ezHashF(F);ezSave();S.cur=F.rules[0]?F.rules[0].id:null;ezAsk=false;fullRender();return true;
+}
+function ezMode(m,quiet){
+  EZ.m=m==="easy"?"easy":"adv";ezSave();
+  $("#ezBox").hidden=EZ.m!=="easy";$("#edCols").hidden=EZ.m==="easy";
+  $$("#ezMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ezm===EZ.m?"true":"false"));
+  $("#ezBarHint").textContent=EZ.m==="easy"?"Easy Mode builds the whole filter from a few choices.":"Advanced: edit every rule yourself.";
+  if(EZ.m==="easy"&&!quiet)ezRefresh();
 }
 /* ---- controls ---- */
 const ezBtn=(d,label)=>`<button type="button" class="cb2" data-ez="${d}" aria-pressed="false">${esc(label)}</button>`;
 const ezSeg=(k,list,lab)=>`<div class="seg" role="group" aria-label="${esc(lab)}">${list.map(([v,l])=>`<button type="button" data-ez="${k},${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</div>`;
 function ezBuild(){
-  const as=EZ_ARCH.slice().sort((a,b)=>a.n.localeCompare(b.n));
+  const gb=EZ_ARCH.filter(a=>!a.io),ib=EZ_ARCH.filter(a=>a.io);
   $("#ezCtl").innerHTML=`
   <div class="sub"><span class="lab">Rupture Level</span>
-    <input class="ezr" id="ez-rl" type="range" min="1" max="200" step="1" aria-label="Rupture Level">
+    <input class="ezr" id="ez-rl" type="range" min="0" max="${EZ_RL.length-1}" step="1" aria-label="Rupture Level">
+    <div class="eztick" aria-hidden="true">${EZ_RL.map(v=>`<span>${v===84?"84+":v}</span>`).join("")}</div>
     <div class="ezrow"><b id="ez-rlv"></b><label class="lab" for="ez-off" style="margin:0">Item level = RL +</label><input class="field ezn" id="ez-off" type="number" min="-20" max="20" step="1"></div>
     <span class="lab" style="margin-top:10px;display:block">Level floor</span>${ezSeg("floor",EZ_FLOOR.map((l,i)=>[i,l]),"Level floor")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
-  <div class="sub"><span class="lab">What I want to see</span><div class="chips">${as.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
+  <div class="sub"><span class="lab">What I want to see: gear and Idols</span><div class="chips">${gb.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
+    <span class="lab" style="margin-top:10px;display:block">What I want to see: Idols only</span><div class="chips">${ib.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
-  <div class="sub"><span class="lab">Idols</span>${ezSeg("idol",[["all","Show all"],["orbit","Only orbiting"],["none","Hide all"]],"Idols")}</div>
-  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div>
-    <span class="lab" style="margin-top:10px;display:block">Item classes to hide</span><div class="chips">${EZ_CLASSES.slice().sort((a,b)=>a[1].localeCompare(b[1])).map(c=>ezBtn("hc,"+c[0],c[1])).join("")}</div></div>
-  <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn normal and magic 75+"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>`;
+  <div class="sub"><span class="lab">Idols</span>${ezSeg("idol",EZ_IDOL,"Idols")}
+    <p class="hint" style="margin:6px 0 0">Match my picks keeps the Idols with your lines and hides the others. Without a pick that has Idol lines, Idols are not touched.</p></div>
+  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div></div>
+  <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>`;
 }
 function ezSync(){
   const s=EZ.s,f=ezFloor(s);
-  $("#ez-rl").value=s.rl;$("#ez-rlv").textContent="RL "+s.rl;if(document.activeElement!==$("#ez-off"))$("#ez-off").value=s.off;
+  $("#ez-rl").value=EZ_RL.indexOf(s.rl);$("#ez-rlv").textContent="RL "+(s.rl===84?"84+":s.rl);if(document.activeElement!==$("#ez-off"))$("#ez-off").value=s.off;
   $$("#ezCtl button[data-ez]").forEach(b=>{
     const[k,v]=b.dataset.ez.split(",");
-    const on=k==="arch"?s.arch[v]:k==="hc"?s.hc.includes(+v):k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="idol"?s.idol===v:String(s[k])===v;
+    const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="idol"?s.idol===v:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
-  $("#ez-ilv").textContent="Item level now: "+f.il+(s.floor?(f.lo?". Items below item level "+f.lo+" are not kept (i="+f.lo+"-0).":". The floor is below the first filter step, so it does nothing yet."):".")+" RL = item level from RL 10 is reported by players, not confirmed in the game files. Use the offset to change it.";
+  $("#ez-ilv").textContent="Assumed item level: "+f.il+(s.floor?(f.lo?". Gear below item level "+f.lo+" is not kept (i="+f.lo+"-0).":". The floor is below the first filter step, so it does nothing yet."):".")+" RL = item level from RL 10 is reported by players, not confirmed in the game files. Use the offset to change it.";
 }
-function ezPreview(){
-  const g=easyGen(EZ.s),n=g.rules.length,linked=ezLinked(),div=!!EZ.h&&!linked;
+function ezPreview(g){
+  g=g||easyGen(EZ.s);
+  const n=g.rules.length,over=n>MAX_RULES,linked=ezLinked(),div=!!EZ.h&&!linked,act=F.rules.length;
   const sh=[];g.rules.forEach((r,i)=>{for(let k=0;k<i;k++)if(covers(g.rules[k],r)){sh.push("Rule "+(i+1)+" ("+r.name+") is never reached: rule "+(k+1)+" already catches everything it would take.");break;}});
   let status="";
-  if(div)status=`<div class="ezbanner" role="alert"><b>Your filter was changed outside Easy Mode.</b><p class="hint" style="margin:6px 0 8px">Easy Mode stopped controlling it, so your work is safe. You can replace it with the Easy Mode rules (Ctrl+Z brings yours back) or keep it and carry on in the Editor.</p><div class="ezrow"><button type="button" class="btn danger" data-ezact="replace">Replace with Easy Mode rules</button><button type="button" class="btn" data-ezact="keep">Keep my filter, open the Editor</button></div></div>`;
-  else if(linked)status=`<p class="hint" style="margin:0 0 10px">Easy Mode controls your filter. Changes apply when you let go of a control.</p>`;
-  else if(ezAsk)status=`<div class="ezbanner" role="alert"><b>Replace your current ${F.rules.length} rule${F.rules.length===1?"":"s"}?</b><p class="hint" style="margin:6px 0 8px">Easy Mode builds the whole filter. Ctrl+Z brings your rules back.</p><div class="ezrow"><button type="button" class="btn gold" data-ezact="replace">Replace</button><button type="button" class="btn" data-ezact="cancel">Cancel</button></div></div>`;
-  else status=`<p class="hint" style="margin:0 0 10px">Easy Mode is not applied yet. Your filter stays as it is until you apply it.</p><div class="ezrow" style="margin:0 0 12px"><button type="button" class="btn gold" data-ezact="apply">Apply to my filter</button></div>`;
-  const mn={black:"Hide only",white:"Show and highlight, then hide the rest",keep:"Keep some classes, hide the rest"}[g.mode];
+  if(over)status=`<div class="ezerr" role="alert"><b>Error: Would generate ${n} / ${MAX_RULES} rules — uncheck one or more archetype/idol options</b><p class="hint" style="margin:6px 0 0">Nothing was applied. Your filter keeps its ${act} rule${act===1?"":"s"}.</p></div>`;
+  if(div)status+=`<div class="ezbanner" role="alert"><b>Your filter was changed outside Easy Mode.</b><p class="hint" style="margin:6px 0 8px">Easy Mode stopped controlling it, so your work is safe. You can replace it with the Easy Mode rules (Ctrl+Z brings yours back) or keep it and carry on in Advanced.</p><div class="ezrow"><button type="button" class="btn danger" data-ezact="replace"${over?" disabled":""}>Replace with Easy Mode rules</button><button type="button" class="btn" data-ezact="keep">Keep my filter, go to Advanced</button></div></div>`;
+  else if(linked)status+=`<p class="hint" style="margin:0 0 10px">Easy Mode controls your filter. Changes apply when you let go of a control.</p>`;
+  else if(ezAsk&&!over)status+=`<div class="ezbanner" role="alert"><b>Replace your current ${act} rule${act===1?"":"s"}?</b><p class="hint" style="margin:6px 0 8px">Easy Mode builds the whole filter. Ctrl+Z brings your rules back.</p><div class="ezrow"><button type="button" class="btn gold" data-ezact="replace">Replace</button><button type="button" class="btn" data-ezact="cancel">Cancel</button></div></div>`;
+  else status+=`<p class="hint" style="margin:0 0 10px">Easy Mode is not applied yet. Your filter stays as it is until you apply it.</p><div class="ezrow" style="margin:0 0 12px"><button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>Apply to my filter</button></div>`;
+  const mn={black:"Hide only",white:"Show and highlight first, then hide the rest"}[g.mode];
+  const w=g.notes.concat(sh);
   $("#ezOut").innerHTML=status+`
+  <div class="sub"><span class="lab">Rule count</span>
+    <div class="ezcount"><span>Active filter (badge, top right)</span><b>${act} / ${MAX_RULES}</b></div>
+    <div class="ezcount${over?" bad":""}"><span>Easy Mode ${linked?"rules (applied)":"preview (not applied)"}</span><b>${n} / ${MAX_RULES}</b></div></div>
   <div class="sub"><span class="lab">Strategy</span><b>${esc(mn)}</b><p class="hint" style="margin:4px 0 0">${esc(g.why)}</p></div>
-  <div class="sub"><span class="lab">Rules</span><b class="gold-t" style="font-size:17px;${n>MAX_RULES?"color:var(--hide-fg)":""}">${n} / ${MAX_RULES}</b>${n>MAX_RULES?`<p class="hint ezw" style="margin:4px 0 0">Too many rules. Turn something off.</p>`:""}
-    <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(nameOf("action",r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol></div>
-  ${g.notes.concat(sh).length?`<div class="sub"><span class="lab">Warnings</span>${g.notes.concat(sh).map(t=>`<p class="hint ezw" style="margin:4px 0 0">${esc(t)}</p>`).join("")}</div>`:""}
-  <div class="ezrow"><button type="button" class="btn" data-view="edit">Open in the Editor</button></div>`;
+  <div class="sub"><span class="lab">Rules in the preview</span>
+    <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(actWord(r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol></div>
+  ${w.length?`<div class="sub"><span class="lab">Warnings</span>${w.map(t=>`<p class="hint ezw" style="margin:4px 0 0">${esc(t)}</p>`).join("")}</div>`:""}
+  <div class="ezrow"><button type="button" class="btn" data-ezact="adv">Open in Advanced</button></div>`;
 }
 const ezRefresh=()=>{ezSync();ezPreview();};
 function ezTouched(){
@@ -2897,33 +2938,35 @@ function ezTouched(){
 }
 (function ezInit(){
   ezBuild();
-  const p=$("#p-easy");
-  p.addEventListener("input",e=>{if(e.target.id==="ez-rl"){$("#ez-rlv").textContent="RL "+e.target.value;}});
-  p.addEventListener("change",e=>{
+  const bx=$("#ezBox");
+  $("#ezMode").addEventListener("click",e=>{const b=e.target.closest("button[data-ezm]");if(b)ezMode(b.dataset.ezm);});
+  bx.addEventListener("input",e=>{if(e.target.id==="ez-rl"){const v=EZ_RL[+e.target.value];$("#ez-rlv").textContent="RL "+(v===84?"84+":v);}});
+  bx.addEventListener("change",e=>{
     const t=e.target;
-    if(t.id==="ez-rl"){EZ.s=ezSane(Object.assign({},EZ.s,{rl:t.value}));ezTouched();}
+    if(t.id==="ez-rl"){EZ.s=ezSane(Object.assign({},EZ.s,{rl:EZ_RL[+t.value]}));ezTouched();}
     else if(t.id==="ez-off"){EZ.s=ezSane(Object.assign({},EZ.s,{off:t.value}));ezTouched();}
   });
-  p.addEventListener("click",e=>{
-    const b=e.target.closest("button");if(!b)return;
+  bx.addEventListener("click",e=>{
+    const b=e.target.closest("button");if(!b||b.disabled)return;
     if(b.dataset.ezact){
       const a=b.dataset.ezact;
       if(a==="apply"){if(F.rules.length&&!ezLinked()){ezAsk=true;ezPreview();}else if(ezApply())toast("Easy Mode rules applied. Ctrl+Z undoes it.");}
       else if(a==="replace"){if(ezApply())toast("Easy Mode rules applied. Ctrl+Z undoes it.");}
       else if(a==="cancel"){ezAsk=false;ezPreview();}
-      else if(a==="keep"){EZ.h="";ezSave();ezAsk=false;setView("edit");}
+      else if(a==="keep"){EZ.h="";ezSave();ezAsk=false;ezMode("adv");}
+      else if(a==="adv")ezMode("adv");
       return;
     }
     if(!b.dataset.ez)return;
     const[k,v]=b.dataset.ez.split(","),s=EZ.s;
     if(k==="arch")s.arch[v]=s.arch[v]?0:1;
-    else if(k==="hc"){const t=+v;s.hc=s.hc.includes(t)?s.hc.filter(x=>x!==t):s.hc.concat(t);}
     else if(k==="keep")s.keep[v]=s.keep[v]?0:1;
     else if(k==="hn"||k==="hm")s[k]=s[k]?0:1;
     else if(k==="floor"||k==="hl")s[k]=+v;
     else if(k==="idol")s.idol=v;
     EZ.s=ezSane(s);ezTouched();
   });
+  ezMode(EZ.m,true);
 })();
 
 (function init(){
