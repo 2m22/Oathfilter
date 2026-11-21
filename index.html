@@ -357,7 +357,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 <div class="cols" id="edCols">
   <section class="plate l" aria-labelledby="h-rules">
     <h2 id="h-rules" class="coltitle">Rules</h2>
-    <div class="sub"><span class="lab">Export</span><div class="ezrow" style="margin-top:4px"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button><button type="button" class="btn" id="dl">Download .txt</button></div><p class="hint" id="copyAdvHint" style="margin:6px 0 0"></p><pre class="out" id="out" tabindex="0" hidden style="max-height:160px;margin-top:8px"></pre>
+    <div class="sub"><span class="lab">Export</span><div class="ezrow" style="margin-top:4px"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button></div><p class="hint" id="copyAdvHint" style="margin:6px 0 0"></p><pre class="out" id="out" tabindex="0" hidden style="max-height:160px;margin-top:8px"></pre>
     <div id="shareBox" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><h3 style="margin:0 0 10px;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Share</h3>
       <p class="hint" style="margin:0 0 10px">A share link stores the game code and your rule names on the Oathfilter share service, so anyone with the link can open it. Your game export is not changed.</p>
       <button type="button" class="btn gold" id="shMake">Create share link</button>
@@ -521,7 +521,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     </ul>
     <h3 class="subtitle">Export</h3>
     <ul class="pl">
-     <li><b>Game code.</b> “Copy filter code” in the Editor (Export block in Advanced, Result in Easy) copies the code you paste into the game. “Download .txt” saves it as a file.</li>
+     <li><b>Game code.</b> “Copy filter code” in the Editor (Export block in Advanced, Result in Easy) copies the code you paste into the game.</li>
      <li><b>Share.</b> “Create share link” in the Editor’s Export block makes a short link to your filter with its rule names. Whoever opens it sees a preview first and can load it or save it to their local filters.</li>
      <li><b>Saved in your browser.</b> Your current filter is kept automatically, so it is still there next time.</li>
     </ul></section>
@@ -1824,7 +1824,7 @@ document.addEventListener("input",e=>{
 });
 function downloadCode(){const d=new Date(),p=n=>String(n).padStart(2,"0"),name="oathfilter-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".txt";
   const a=document.createElement("a"),url=URL.createObjectURL(new Blob([encode(F)+"\n"],{type:"text/plain"}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Saved "+name+".");}
-$("#dl").onclick=downloadCode;
+
 $("#copyAdv").onclick=()=>copyCode();
 /* ---- local filters (localStorage only) ---- */
 const LF={key:"oathfilter-saved",max:50,

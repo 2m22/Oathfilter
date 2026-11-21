@@ -14,7 +14,7 @@ Open `index.html` in a browser. No build, no install.
 
 - **Editor**: rule cards with action, rarity, item type, level, line, quality, count, colour and sound. Search and filter the rule list. The **Easy | Advanced** switch at the top turns on Easy Mode, which builds a whole filter from a Rupture Level floor and a few clicks.
 - **Drop Test**: roll random drops against your filter and see which rule catches each item. You can also check a drop screenshot against your filter.
-- **Import**: paste a `BOFILTER:1,...` code, or load a saved or shared filter. Copy, download and share links are in the Editor (Export block).
+- **Import**: paste a `BOFILTER:1,...` code, or load a saved or shared filter. Copy and share links are in the Editor (Export block).
 - Game presets: the menu above the rule list loads the five in-game filters (All loot, Tidy, Strict, Very strict, End Game).
 
 ## Format
