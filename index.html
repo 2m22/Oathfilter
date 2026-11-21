@@ -357,6 +357,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 <div class="cols" id="edCols">
   <section class="plate l" aria-labelledby="h-rules">
     <h2 id="h-rules" class="coltitle">Rules</h2>
+    <div class="sub"><span class="lab">Export</span><div class="ezrow" style="margin-top:4px"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button></div><p class="hint" id="copyAdvHint" style="margin:6px 0 0"></p></div>
     <div class="sub"><label class="lab" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div>
     <div class="sub" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
@@ -1591,7 +1592,8 @@ function checkOrder(){
   const o=$("#chkOut");
   o.innerHTML=out.length?`<div class="chk">${out.map(([i,t])=>`<button type="button" class="chkb" data-pick="${R[i].id}"><b>Rule ${i+1}</b> ${esc(t)}</button>`).join("")}</div><p class="hint" style="margin:8px 0 0">Based on ${N} sample items. A rare item can be missed. Click a rule to open it.</p>`:`<p class="hint" style="margin:8px 0 0">Every active rule decides at least one of ${N} sample items.</p>`;
 }
-function renderHead(){$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
+function renderAdvExport(){const h=$("#copyAdvHint");if(h){const n=F.rules.length;h.textContent=n>MAX_RULES?"Copies your active filter: "+n+" rules, but the game takes "+MAX_RULES+".":"Copies your active filter ("+n+" rule"+(n===1?"":"s")+").";}}
+function renderHead(){renderAdvExport();$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
 
 /* ---- editor ---- */
 const chipRow=(k,r)=>`<div class="chips">${T[k].map(o=>`<button type="button" class="cb2" data-set="${k},${o[0]}" aria-pressed="${r[k]===o[0]}">${esc(o[1])}</button>`).join("")}</div>`;
@@ -1827,7 +1829,7 @@ document.addEventListener("input",e=>{
 function downloadCode(){const d=new Date(),p=n=>String(n).padStart(2,"0"),name="oathfilter-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".txt";
   const a=document.createElement("a"),url=URL.createObjectURL(new Blob([encode(F)+"\n"],{type:"text/plain"}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Saved "+name+".");}
 $("#dl").onclick=downloadCode;
-$("#copy").onclick=copyCode;
+$("#copy").onclick=copyCode;$("#copyAdv").onclick=()=>copyCode();
 /* ---- local filters (localStorage only) ---- */
 const LF={key:"oathfilter-saved",max:50,
   all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},
