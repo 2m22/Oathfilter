@@ -466,7 +466,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <ul class="pl">
      <li><b>Rupture Level.</b> The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit.</li>
      <li><b>Tier strictness.</b> For each line you pick, how many of the best droppable tiers still count as good: best tier only, best 2 or best 3. Weaker lines are hidden. Idols are not limited.</li>
-     <li><b>What I want to see.</b> Each pick keeps its gear lines and the matching Idols, and hides the other Idols. A line that two picks share is listed once. Choose at least one pick.</li>
+     <li><b>What I want to see.</b> Each pick keeps its gear lines and the matching Idols, and hides the other Idols. A damage type (Physical, Fire, Cold, Lightning, Poison) or ailment (Bleed, Ignite) narrows Attacks and Spells: with Spells + Cold, Fire and Lightning spell lines are not kept. An item that also has another picked line (for example Spell Damage) stays visible. A line that two picks share is listed once. Choose at least one pick.</li>
      <li><b>Preview.</b> Easy Mode shows the result first. Applying it replaces the rules in your Editor (Ctrl+Z brings them back).</li>
     </ul>
     <h3 class="subtitle">Never hidden</h3>
@@ -663,7 +663,7 @@ const COPY={
 };
 document.querySelectorAll("[data-copy]").forEach(e=>{e.textContent=COPY[e.dataset.copy]||"";});
 /* Help popovers: every ? button carries data-help=<key>. Opens on hover, focus and click/tap (click keeps it open). */
-const HELP={"ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A pick without gear lines only changes Idols. A line two picks share is listed once. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to four named bases, lines or reds per rule."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."], "local": ["Local filters", "Saved in this browser only (localStorage). Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."]};
+const HELP={"ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to four named bases, lines or reds per rule."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."], "local": ["Local filters", "Saved in this browser only (localStorage). Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."]};
 const hb=k=>`<button type="button" class="hlp" data-help="${k}" aria-label="Help: ${HELP[k][0]}" aria-expanded="false">?</button>`;
 (function(){
   const pop=document.createElement("div");pop.id="hlpPop";pop.setAttribute("role","tooltip");pop.hidden=true;document.body.appendChild(pop);
@@ -2934,11 +2934,16 @@ async function dcFile(file){
 const EZ_KEY="oathfilter-easy";
 /* g: gear lines (type 0). Idol rules use the gear lines whose text also exists on Idols, plus the Idol-only lines in "idol". */
 const EZ_ARCH=[
- {k:"attack",n:"Attacks",col:6,ids:["attack_speed_local","phys_added_local","phys_inc_local","attack_added_phys","attack_added_lightning","crit_local","crit_multi"],idol:[]},
- {k:"spell",n:"Spells",col:2,ids:["spell_inc","cast_speed","cold_spell_added","fire_spell_added","lightning_spell_added","poison_spell_added","skill_level","crit_local","crit_multi"],idol:["idol_grand_eng_brand","idol_grand_spark_plus"]},
+ {k:"attack",n:"Attacks",col:6,ids:["attack_speed_local","crit_local","crit_multi"],idol:[]},
+ {k:"spell",n:"Spells",col:2,ids:["spell_inc","cast_speed","skill_level","crit_local","crit_multi"],idol:["idol_grand_eng_brand","idol_grand_spark_plus"]},
  {k:"minion",n:"Minions",col:1,ids:["minion_dmg","minion_life","minion_speed","minion_crit","minion_crit_multi"],idol:["idol_grand_skeleton_plus","idol_grand_skeleton_wizard_plus"]},
- {k:"dot",n:"Damage over time",col:5,ids:["dot_multi","bleed_chance","bleed_effect","ignite_chance","ignite_effect","poison_dmg_inc","poison_effect"],idol:[]},
- {k:"elem",n:"Elemental",col:5,ids:["fire_dmg_inc","cold_dmg_inc","lightning_dmg_inc"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
+ {k:"phys",n:"Physical",el:1,col:6,ids:["phys_inc_local","phys_added_local","attack_added_phys"],idol:["idol_grand_phys_as_fire"]},
+ {k:"fire",n:"Fire",el:1,col:0,ids:["fire_dmg_inc","fire_pen95_2h","fire_spell_added","fire_added_local"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
+ {k:"cold",n:"Cold",el:1,col:2,ids:["cold_dmg_inc","cold_pen95_2h","chill_effect","freeze_duration","cold_spell_added","cold_added_local"],idol:[]},
+ {k:"light",n:"Lightning",el:1,col:4,ids:["lightning_dmg_inc","lightning_pen95_2h","shock_chance","shock_effect","lightning_spell_added","lightning_added_local","attack_added_lightning"],idol:[]},
+ {k:"pois",n:"Poison",el:1,col:1,ids:["poison_dmg_inc","poison_effect","poison_pen85_2h","dot_multi","poison_spell_added"],idol:[]},
+ {k:"bleed",n:"Bleed",el:1,col:5,ids:["bleed_chance","bleed_effect","dot_multi"],idol:[]},
+ {k:"ign",n:"Ignite",el:1,col:0,ids:["ignite_chance","ignite_effect","dot_multi"],idol:[]},
  {k:"curse",n:"Curse / Vow",col:6,ids:["curse_effect","curse_limit","vow_effect98"],idol:[]},
  {k:"move",n:"Move Speed",col:4,ids:["move_speed"],idol:["idol_movement_damage_m"]},
  {k:"melee",n:"Melee",col:6,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"]},
@@ -2952,6 +2957,11 @@ const EZ_ARCH=[
  {k:"life",n:"Life",col:7,ids:["life_large","life_regen","life_leech","mana","mana_regen","mana_leech"],idol:["idol_grand_life_inc"]},
  {k:"res",n:"Resists",col:0,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
  {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]}];
+/* Style-bound element lines. A line tagged "spell" or "attack" only stays when that style is picked (or no style is picked). Everything else of a picked element stays. */
+const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",
+ fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
+const EZ_ATK=["attack","melee","slam","bow"];
+const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois"]],["Ailments",["bleed","ign"]],["Other",["curse","move","life","res","def"]]];
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
@@ -2965,6 +2975,8 @@ function ezSane(o){
   const s={rl:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
     idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
+  if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
+  if(o.arch&&o.arch.dot){s.arch.pois=s.arch.bleed=s.arch.ign=1;} /* ... and one Damage over time pick */
   if(o.idol==="orbit")s.arch.orbit=1; /* older saves had "only orbiting" as an Idol mode */
   ["core","runes","tsw"].forEach(k=>{s.keep[k]=on(o.keep&&o.keep[k],d.keep[k]);});
   return s;
@@ -2975,8 +2987,15 @@ function ezLines(ids,only){
   ids.forEach(id=>{const t=LINEN[id];if(!t||!EZ_LINEIDS.has(id)||seen.has(t))return;if(only&&!only(id,t))return;seen.add(t);out.push(id);});
   return out;
 }
-const ezGearIds=a=>ezLines(a.ids);
-const ezIdolIds=a=>ezLines(a.ids.concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
+/* the gear lines one pick really contributes, given all picks: an element pick drops its style-bound lines of a style that was not picked; Attacks / Spells bring their style-bound element lines only while no element is picked */
+function ezEff(a,s){
+  const S=[];if(s.arch.spell)S.push("spell");if(EZ_ATK.some(k=>s.arch[k]))S.push("attack");
+  if(a.el)return a.ids.filter(id=>!EZ_ST[id]||!S.length||S.includes(EZ_ST[id]));
+  if((a.k==="attack"||a.k==="spell")&&!EZ_ARCH.some(x=>x.el&&s.arch[x.k]))return a.ids.concat(EZ_ARCH.filter(x=>x.el).flatMap(x=>x.ids.filter(id=>EZ_ST[id]===a.k)));
+  return a.ids;
+}
+const ezGearIds=(a,s)=>ezLines(ezEff(a,s));
+const ezIdolIds=(a,s)=>ezLines(ezEff(a,s).concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
 /* tier limit t for one gear line at Rupture Level rl: for each affix with this text, the best tier whose item level is <= rl, plus (keep-1) tiers; the loosest affix decides. 0 = no limit. */
 function ezTP(ids){const parts=[];for(let i=0;i<ids.length;i+=4){const c=ids.slice(i,i+4),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}return parts;}
 function ezThr(id,rl,keep){
@@ -2997,10 +3016,10 @@ function easyGen(s,pack){
   const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
   const og=own(),oi=own();
   /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 4 per rule. */
-  const gearA=act.map(a=>{const ids=ezGearIds(a).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99})).sort((x,y)=>x.t-y.t);
+  const gearA=act.map(a=>{const ids=ezGearIds(a,s).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99})).sort((x,y)=>x.t-y.t);
     const parts=pack?[]:ezTP(ids); /* same rule count as without a tier limit: sorted by limit, 4 per rule, the loosest line of a rule sets its limit */
     return{a,parts,ids};}).filter(x=>x.ids.length);
-  let idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a).filter(oi))})).filter(x=>x.parts.length);
+  let idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a,s).filter(oi))})).filter(x=>x.parts.length);
   let gearP=gearA;
   /* too many rules: one shared list for all picks (4 lines per rule across picks, one colour). The caller falls back to this only when the normal build is over the limit. */
   if(pack){
@@ -3080,7 +3099,7 @@ function ezBuild(){
     <div class="eztk" aria-hidden="true">${EZ_RL.map((x,i)=>`<span style="left:calc(8px + (100% - 16px) * ${i/(EZ_RL.length-1)})">${x[1]}</span>`).join("")}</div>
     <div class="hrow" style="margin-top:12px"><span class="lab">Tier strictness</span>${hb("ezKeep")}</div><p class="hint" style="margin:2px 0 6px">How many of the best droppable tiers count as good.</p>${ezSeg("tk",EZ_KEEP,"Tier strictness")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
-  <div class="sub"><div class="hrow" style="margin-bottom:6px"><span class="lab">What I want to see</span>${hb("ezWant")}</div><div class="chips">${EZ_ARCH.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
+  <div class="sub"><div class="hrow" style="margin-bottom:6px"><span class="lab">What I want to see</span>${hb("ezWant")}</div>${EZ_GRP.map(([t,ks])=>`<span class="lab" style="margin:10px 0 4px;font-size:.7rem">${t}</span><div class="chips">${ks.map(k=>EZ_ARCH.find(a=>a.k===k)).map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>`).join("")}
     <p class="hint" style="margin:6px 0 0">Picks also decide which Idols stay.</p>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
   <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div></div>
