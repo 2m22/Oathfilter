@@ -3054,7 +3054,7 @@ function easyGen(s,pack){
   if(white){
     gearP.forEach(x=>x.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);})));
     if(gearA.length)hideR();
-    mk({type:0,action:0},"Everything else");
+    mk({type:0,rarity:s.hn&&s.hm?4:0,action:0},"Everything else"); /* Normal and Magic are already hidden above, so only Rares are left to hide */
   }
   if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
   if(!pack&&R.length>MAX_RULES&&act.length){const g=easyGen(s,true);if(g.rules.length<R.length){g.notes.push("Too many rules for the 40 limit, so the picks share rules and one colour: "+R.length+" rules became "+g.rules.length+".");return g;}}
