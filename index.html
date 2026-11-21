@@ -77,6 +77,12 @@ main{padding:10px 16px 6px}
 .fold.shut>:not(.coltitle){display:none}
 .lab{display:block;margin:0 0 6px;font-size:.8125rem;font-weight:600;color:var(--text-muted)}
 .hint{font-size:.8125rem;color:var(--text-muted)}
+.hrow{display:flex;align-items:center;gap:6px}.hrow>.lab,.hrow>h2,.hrow>h3{margin:0}
+.hlp{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;padding:0;border:1px solid var(--border-strong);border-radius:50%;background:var(--bg-subtle);color:var(--text-muted);font-size:.75rem;font-weight:700;line-height:1;cursor:help;vertical-align:middle;text-transform:none;letter-spacing:0}
+.hlp:hover,.hlp[aria-expanded="true"]{color:var(--accent-gold);border-color:var(--accent-gold)}
+@media (pointer:coarse){.hlp{width:32px;height:32px;font-size:.9rem}}
+#hlpPop{position:fixed;pointer-events:none;z-index:70;max-width:min(320px,calc(100vw - 16px));padding:10px 12px;border:1px solid var(--accent-gold);border-radius:8px;background:var(--bg-card);color:var(--text-main);font-size:.8125rem;line-height:1.45;box-shadow:0 8px 28px rgba(0,0,0,.5);text-transform:none;letter-spacing:0;font-weight:400}
+#hlpPop b{display:block;margin-bottom:3px;color:var(--accent-gold)}
 #actCount{font-variant-numeric:tabular-nums}
 .divider{height:1px;margin:18px 0;background:var(--border)}
 .plate.r .divider{margin:11px 0}
@@ -360,22 +366,22 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 </header>
 <main>
 <div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit">
-<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><div class="ezact"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button><button type="button" class="btn gold" id="shMake">Share</button></div></div>
+<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><div class="ezact"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button><button type="button" class="hlp" data-help="copyAdv" aria-label="Help: Copy filter code" aria-expanded="false">?</button><button type="button" class="btn gold" id="shMake">Share</button><button type="button" class="hlp" data-help="share" aria-label="Help: Share" aria-expanded="false">?</button></div></div>
 <div class="plate" id="shPanel" hidden style="margin:0 0 16px"><div class="shres" id="shRes" hidden><label class="lab" for="shUrl">Share link</label><input id="shUrl" class="field" type="text" readonly>
   <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="shCopy">Copy link</button><button type="button" class="btn" id="shDisc">Copy for Discord</button><button type="button" class="btn" id="shClose">Close</button></div></div>
   <p class="hint" id="shMsg" role="status" aria-live="polite" style="margin:8px 0 0"></p>
   <pre class="out" id="out" tabindex="0" hidden style="max-height:160px;margin-top:8px"></pre></div>
 <div id="ezBox" hidden><div class="cols">
   <section class="plate l" aria-labelledby="h-ezc">
-    <h2 id="h-ezc" class="coltitle">Easy Mode</h2>
-    <p class="hint" style="margin:0 0 12px">Build a whole filter from a few choices. The result is a normal game filter code. Easy Mode settings stay in this browser only.</p>
+    <div class="hrow" style="margin-bottom:10px"><h2 id="h-ezc" class="coltitle" style="margin:0">Easy Mode</h2><button type="button" class="hlp" data-help="ezMode" aria-label="Help: Easy Mode" aria-expanded="false">?</button></div>
+    <p class="hint" style="margin:0 0 12px">Build a whole filter from a few choices. The result is a normal game filter code.</p>
     <div id="ezCtl"></div></section>
   <section class="plate r" aria-labelledby="h-ezo"><h2 id="h-ezo" class="coltitle">Result</h2>
     <div id="ezOut" role="status" aria-live="polite"></div><details id="ezDet" class="ezdet"><summary id="ezDetS">Details</summary><div id="ezOut2" role="status" aria-live="polite"></div></details></section>
 </div></div>
 <div class="cols" id="edCols">
   <section class="plate l" aria-labelledby="h-rules">
-    <h2 id="h-rules" class="coltitle">Rules</h2>
+    <div class="hrow" style="margin-bottom:10px"><h2 id="h-rules" class="coltitle" style="margin:0">Rules</h2><button type="button" class="hlp" data-help="order" aria-label="Help: Rule order" aria-expanded="false">?</button></div>
     <div class="sub"><label class="lab" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div>
     <div class="sub" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
@@ -403,17 +409,17 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   <div class="stack dropwrap">
   <section class="plate" aria-labelledby="h-dc"><h2 id="h-dc" class="coltitle">Check a drop screenshot</h2>
     <div class="dcz" id="dcZone" tabindex="0" role="button" aria-label="Drop a screenshot here, paste it with Ctrl+V, or press Enter to choose a file"><b>Paste (Ctrl+V), drop or choose a screenshot</b><span>Drop or tooltip screenshot, like an idol or a rare item</span><button type="button" class="btn" id="dcPick" tabindex="-1">Choose file</button><input type="file" id="dcFile" accept="image/*" hidden></div>
-    <p class="hint" id="dcHint" style="margin:8px 0 0">The text is read on your device. Your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN.</p>
+    <p class="hint hrow" id="dcHint" style="margin:8px 0 0"><span>Read on your device, never uploaded.</span><button type="button" class="hlp" data-help="dcOcr" aria-label="Help: Screenshot reader" aria-expanded="false">?</button></p>
     <progress id="dcPg" max="1" value="0" hidden style="width:100%;margin-top:8px"></progress>
     <p class="hint" id="dcSt" role="status" aria-live="polite" style="margin:6px 0 0"></p>
     <img id="dcPv" alt="Your screenshot" hidden style="max-width:100%;max-height:220px;margin-top:8px;border:1px solid var(--border);border-radius:8px">
-    <label class="lab" for="dcTxt" style="display:block;margin-top:10px">Text from the screenshot (you can edit it). “│” separates the text from its tier marker, like “… Life │ T2 [21-28]”.</label>
+    <div class="hrow" style="margin-top:10px"><label class="lab" for="dcTxt">Text from the screenshot (you can edit it)</label><button type="button" class="hlp" data-help="dcTier" aria-label="Help: Tier marker" aria-expanded="false">?</button></div>
     <textarea id="dcTxt" rows="7" spellcheck="false" placeholder="Or type or paste the tooltip text here, for example:&#10;Magic Idol 2x1&#10;Item Level 84&#10;T3 [7-8]&#10;Requires Level 20"></textarea>
     <div class="dctlb" style="margin-top:8px"><button type="button" class="btn gold" id="dcCheck">Check text</button><button type="button" class="btn" id="dcClear">Clear</button></div>
     <div id="dcRes" class="dcres" hidden aria-live="polite"></div></section>
   <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
     <p class="hint simnote" id="simNote" role="status" aria-live="polite"></p>
-    <div class="stats" id="stats"><div class="stat"><b id="nAll">0</b><span>Total samples</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div><div class="stat zero" id="stSell" hidden title="Sell: how the game handles it is not confirmed. The Drop Test treats it like Hide and counts it separately."><b id="nSell" style="color:var(--sell-fg)">0</b><span>Sell</span></div></div>
+    <div class="stats" id="stats"><div class="stat"><b id="nAll">0</b><span>Total samples</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div><div class="stat zero" id="stSell" hidden><b id="nSell" style="color:var(--sell-fg)">0</b><span>Sell</span><button type="button" class="hlp" data-help="dcSell" aria-label="Help: Sold samples" aria-expanded="false">?</button></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i><i id="bSell" style="width:0"></i></div></section>
   <section class="plate" aria-labelledby="h-gv"><h2 id="h-gv" class="coltitle">Ground view</h2>
     <div class="seg" role="group" aria-label="Ground view" id="sceneMode" style="max-width:360px;margin-bottom:10px"><button type="button" data-sm="all" aria-pressed="true">All visible items</button><button type="button" data-sm="hl" aria-pressed="false">Highlights and beams only</button></div>
@@ -428,8 +434,8 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <label class="lab" for="codeIn">Paste a BOFILTER code</label><textarea id="codeIn" class="field" placeholder="BOFILTER:1,..." style="min-height:200px"></textarea>
     <div style="margin-top:12px"><button type="button" class="btn gold" id="load">Load filter</button></div><div class="sub" id="loadConf" hidden style="margin-top:10px"><p class="hint" style="margin:0 0 8px" id="loadConfT"></p><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn danger" id="loadYes">Replace my filter</button><button type="button" class="btn" id="loadNo">Cancel</button></div></div><div class="toast" id="loadMsg" role="status"></div>
     <p class="hint" style="margin:8px 0 0">Copy the code from the game's loot filter window.</p></section>
-  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-loc"><h2 id="h-loc" class="coltitle">Local filters</h2>
-    <p class="hint" style="margin:0 0 14px">Saved in this browser only (localStorage). Saving here uploads nothing, and they are gone if you clear the site data. Use Copy filter code to keep a copy or to move a filter to another device. Your rule names are saved with them.</p>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-loc"><div class="hrow" style="margin-bottom:10px"><h2 id="h-loc" class="coltitle" style="margin:0">Local filters</h2><button type="button" class="hlp" data-help="local" aria-label="Help: Local filters" aria-expanded="false">?</button></div>
+    <p class="hint" style="margin:0 0 14px">Saved in this browser only, with your rule names. Use Copy filter code for a backup.</p>
     <div class="cols" style="gap:24px">
       <div style="flex:1 1 300px"><h3 style="margin:0 0 10px;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Save existing filters</h3>
         <label class="lab" for="lfName">Name for the current filter</label>
@@ -442,10 +448,10 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 <div class="panel" id="p-info" role="tabpanel" aria-labelledby="t-info" hidden><div class="cols">
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g1"><h2 id="h-g1" class="coltitle">Quick start</h2>
     <ul class="pl">
-     <li><b>1. Pick a start.</b> Choose a game preset in the Editor. It is only a starting point.</li>
-     <li><b>2. Edit the rules.</b> Select a rule and set what it checks and what it does. Add, duplicate or remove rules (red X) and drag them into order.</li>
-     <li><b>3. Test it.</b> Open Drop Test and press Drop 25 or a Quick spawn button. Each sample item shows which rule caught it.</li>
-     <li><b>4. Export.</b> Use “Copy filter code” in the bar at the top of the Editor, then paste the code into the game’s loot filter window.</li>
+     <li><b>1. Choose a mode.</b> Easy builds a whole filter from a few picks. Advanced starts from a game preset and lets you edit every rule.</li>
+     <li><b>2. Set it up.</b> Easy: set Rupture Level and Tier strictness, then pick what you want to see. Advanced: select a rule, set what it checks and does, and drag rules into order.</li>
+     <li><b>3. Test it.</b> Open Drop Test and press Drop 25 or a Quick spawn button. Each sample shows which rule caught it. In Easy Mode it tests the Easy preview.</li>
+     <li><b>4. Copy it.</b> Press “Copy filter code” in the bar at the top, then paste the code into the game’s loot filter window.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g2"><h2 id="h-g2" class="coltitle">How rules work</h2>
     <p class="callout"><b>Order is the most important part of a filter.</b> The game checks the rules from top to bottom. The first rule that matches an item decides, and the rules below it never see that item.</p>
@@ -456,8 +462,15 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
      <li><b>On or off.</b> The switch on a rule skips it without deleting it.</li>
      <li><b>One line group per rule.</b> To look for two line groups, use two rules.</li>
     </ul>
+    <h3 class="subtitle">Easy Mode</h3>
+    <ul class="pl">
+     <li><b>Rupture Level.</b> The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit.</li>
+     <li><b>Tier strictness.</b> For each line you pick, how many of the best droppable tiers still count as good: best tier only, best 2 or best 3. Weaker lines are hidden. Idols are not limited.</li>
+     <li><b>What I want to see.</b> Each pick keeps its gear lines and the matching Idols, and hides the other Idols. A line that two picks share is listed once. Choose at least one pick.</li>
+     <li><b>Preview.</b> Easy Mode shows the result first. Applying it replaces the rules in your Editor (Ctrl+Z brings them back).</li>
+    </ul>
     <h3 class="subtitle">Never hidden</h3>
-    <p class="hint" style="margin:0">Uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks always stay visible, even when a Hide rule matches. The Drop Test marks them <b>SHOW*</b>.</p></section>
+    <p class="hint" style="margin:0"><span data-copy="never"></span> The Drop Test marks them <b>SHOW*</b>.</p></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g3"><h2 id="h-g3" class="coltitle">What a rule can check</h2>
     <p class="callout">Everything you set on one rule must fit at the same time.</p>
     <ul class="pl">
@@ -486,11 +499,11 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g5"><h2 id="h-g5" class="coltitle">Actions, colours and sounds</h2>
     <h3 class="subtitle">Actions</h3>
     <ul class="pl">
-     <li><b>Hide.</b> The item is not shown. It never works on the items under “Never hidden”.</li>
+     <li><b>Hide.</b> The item is not shown, except the items under “Never hidden”.</li>
      <li><b>Show.</b> The item is shown as normal.</li>
      <li><b>Highlight.</b> The item name is drawn in the chosen colour.</li>
      <li><b>Highlight + beam.</b> Colour plus a light beam on the ground.</li>
-     <li><b>Sell.</b> The game has a Sell action. How it behaves exactly is <b>not confirmed yet</b>. The Drop Test treats it like Hide (nothing on the ground) and counts it as Sell.</li>
+     <li><b>Sell.</b> <span data-copy="sell"></span></li>
     </ul>
     <h3 class="subtitle">Look and sound</h3>
     <ul class="pl">
@@ -515,8 +528,9 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <h3 class="subtitle">Controls</h3>
     <ul class="pl">
      <li><b>Drop 1 / Drop 25 / Auto-drop.</b> Varied sample items. Reset clears the log and the counters.</li>
+     <li><b>Easy Mode.</b> While Easy Mode is active, the Drop Test runs the Easy preview (up to 40 rules). A note above the result says so.</li>
      <li><b>Quick spawn.</b> Targeted items: White, Magic good or bad, Rare valuable, decent, bad or mid, Unique / Red and Idol. Use them to test a rule that random samples rarely hit.</li>
-     <li><b>Check a drop screenshot.</b> Paste (Ctrl+V), drop or choose a screenshot of a drop or tooltip. The text is read on your device and you can fix it before checking. The first matching rule is found top to bottom, using what the screenshot shows: rarity, type, item level, tiers and lines. If the tooltip names a rule, that rule is shown and compared. Details the screenshot cannot show (for example an unexpanded Alt tooltip) are listed as open points.</li>
+     <li><b>Check a drop screenshot.</b> Paste (Ctrl+V), drop or choose a screenshot of a drop or tooltip. The text is read on your device and you can fix it before checking. The first matching rule is found top to bottom from what the screenshot shows: rarity, type, item level, tiers and lines. Details it cannot show (for example an unexpanded Alt tooltip) are listed as open points.</li>
      <li><b>Sliders.</b> “Lines at T1” sets how many T1 lines Rare valuable has (1–6), “Item level” the item level, “Idol size” the idol size (1–4) and “Per click” how many items one press creates.</li>
     </ul>
     <h3 class="subtitle">Reading the result</h3>
@@ -530,21 +544,22 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <ul class="pl">
      <li><b>The code.</b> The game’s BOFILTER 1 code, for example <code>BOFILTER:1,…</code>. Copy it in the game’s loot filter window and paste it in the Import tab.</li>
      <li><b>MORE options.</b> They follow the ten numbers of a rule as <code>,3:key=value;key=value</code>. The page reads them and you can change them in the Editor.</li>
-     <li><b>Unknown fields.</b> Fields this page does not know are kept as they are.</li>
+     <li><b>Unknown fields.</b> <span data-copy="unknown"></span></li>
     </ul>
     <h3 class="subtitle">Export</h3>
     <ul class="pl">
-     <li><b>Game code.</b> “Copy filter code” in the bar at the top of the Editor copies the code you paste into the game.</li>
-     <li><b>Share.</b> “Share” in the bar at the top of the Editor makes a short link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). Whoever opens it sees a preview first and can load it or save it to their local filters.</li>
-     <li><b>Saved in your browser.</b> Your current filter is kept automatically, so it is still there next time.</li>
+     <li><b>Game code.</b> “Copy filter code” in the bar at the top copies the code you paste into the game. In Easy Mode it copies the Easy preview, otherwise your active filter.</li>
+     <li><b>Share.</b> “Share” in the bar at the top makes a short link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). Whoever opens it sees a preview first and can load it or save it to their local filters.</li>
+     <li><b>Saved in your browser.</b> Your current filter is kept automatically. Local filters (Import tab) stay in this browser only. For a backup or another device, use Copy filter code.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g9"><h2 id="h-g9" class="coltitle">Keyboard shortcuts</h2>
     <ul class="pl">
      <li><b>Ctrl+Z</b> undo the last change.</li>
-     <li><b>Ctrl+D</b> duplicate the selected rule (Editor).</li>
-     <li><b>Alt+Up / Alt+Down</b> select the previous or next rule (Editor).</li>
-     <li><b>Alt+Shift+Up / Alt+Shift+Down</b> move the focused rule up or down in the list.</li>
-     <li><b>Esc</b> clear the rule search.</li>
+     <li><b>Ctrl+D</b> duplicate the selected rule (Advanced Mode, Editor tab).</li>
+     <li><b>Alt+Up / Alt+Down</b> select the previous or next rule (Advanced Mode, Editor tab).</li>
+     <li><b>Alt+Shift+Up / Alt+Shift+Down</b> move the focused rule up or down in the list (Advanced Mode).</li>
+     <li><b>Esc</b> close a help popover, or clear the rule search.</li>
+     <li><b>Tab to a ? button</b> to read its help. Hover, focus or click/tap opens it.</li>
      <li><b>Left / Right arrow</b> move between the tabs when a tab is focused.</li>
     </ul></section>
 </div></div>
@@ -635,6 +650,44 @@ const PRIMAL_IDS=new Set(["the_oath_unbroken", "signet_of_the_lost_order_chain_r
 const redIdOf=n=>{const base=n.replace(/ \(Primal\)$/,""),pr=base!==n,l=RED_IDS[base]||[];return l.find(i=>PRIMAL_IDS.has(i)===pr)||l[0]||"";};
 /* BOFILTER format: Broken Oath developer file loot_filter.md (build 73) and the community Broken Oath Builder. */
 const MAX_RULES=40;
+/* Shared copy: one wording for messages that appear in several places */
+const COPY={
+ sell:"Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell.",
+ never:"Uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks always stay visible, even when a Hide rule matches.",
+ undo:"Undo (Ctrl+Z) brings it back.",
+ limit:"The game takes "+MAX_RULES+" rules.",
+ blocked:"Copy is blocked here.",
+ storage:"Could not save in this browser (private mode or storage full).",
+ unknown:"Fields this page does not know are kept as they are.",
+ over:n=>"Too many rules: "+n+" / "+MAX_RULES+". Uncheck some options."
+};
+document.querySelectorAll("[data-copy]").forEach(e=>{e.textContent=COPY[e.dataset.copy]||"";});
+/* Help popovers: every ? button carries data-help=<key>. Opens on hover, focus and click/tap (click keeps it open). */
+const HELP={"ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A pick without gear lines only changes Idols. A line two picks share is listed once. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to four named bases, lines or reds per rule."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."], "local": ["Local filters", "Saved in this browser only (localStorage). Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."]};
+const hb=k=>`<button type="button" class="hlp" data-help="${k}" aria-label="Help: ${HELP[k][0]}" aria-expanded="false">?</button>`;
+(function(){
+  const pop=document.createElement("div");pop.id="hlpPop";pop.setAttribute("role","tooltip");pop.hidden=true;document.body.appendChild(pop);
+  let cur=null,sticky=false;
+  function place(){if(!cur)return;if(!cur.isConnected){hide();return;}
+    const r=cur.getBoundingClientRect(),w=pop.offsetWidth,h=pop.offsetHeight,vw=document.documentElement.clientWidth,vh=window.innerHeight;
+    const x=Math.min(Math.max(8,r.left+r.width/2-w/2),Math.max(8,vw-w-8));
+    let y=r.bottom+8;if(y+h>vh-8&&r.top-h-8>=8)y=r.top-h-8;y=Math.max(8,Math.min(y,vh-h-8));
+    pop.style.left=x+"px";pop.style.top=y+"px";}
+  function hide(){if(cur){cur.setAttribute("aria-expanded","false");cur.removeAttribute("aria-describedby");}cur=null;sticky=false;pop.hidden=true;}
+  function show(b,st){const d=HELP[b.dataset.help];if(!d)return;if(cur&&cur!==b)hide();cur=b;sticky=!!st;
+    pop.textContent="";const t=document.createElement("b");t.textContent=d[0];const p=document.createElement("span");p.textContent=d[1];pop.append(t,p);
+    pop.hidden=false;b.setAttribute("aria-expanded","true");b.setAttribute("aria-describedby","hlpPop");place();}
+  const hlp=t=>t&&t.closest?t.closest(".hlp"):null;
+  document.addEventListener("click",e=>{const b=hlp(e.target);if(!b)return;e.preventDefault();e.stopPropagation();if(cur===b&&sticky)hide();else show(b,true);},true);
+  document.addEventListener("mouseover",e=>{const b=hlp(e.target);if(b&&!sticky)show(b,false);});
+  document.addEventListener("mouseout",e=>{const b=hlp(e.target);if(b&&cur===b&&!sticky&&!b.contains(e.relatedTarget))hide();});
+  document.addEventListener("focusin",e=>{const b=hlp(e.target);if(b&&!sticky)show(b,false);});
+  document.addEventListener("focusout",e=>{const b=hlp(e.target);if(b&&cur===b&&!sticky)hide();});
+  document.addEventListener("pointerdown",e=>{if(cur&&sticky&&!hlp(e.target)&&!pop.contains(e.target))hide();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&cur){const b=cur;hide();b.focus({preventScroll:true});e.stopImmediatePropagation();}},true);
+  window.addEventListener("resize",place);window.addEventListener("scroll",place,true);
+  new MutationObserver(()=>{if(cur&&!cur.isConnected)hide();}).observe(document.body,{childList:true,subtree:true});
+})();
 const T={
  type:[[0,"Any gear"],[1,"Weapons"],[2,"Armour"],[3,"Jewellery"],[4,"Rune bases"],[5,"Helms"],[6,"Body armour"],[7,"Gloves"],[8,"Boots"],[9,"Shields and foci"],[10,"Rings"],[11,"Amulets"],[12,"Belts"],[13,"Core-touched"],[14,"Idols"],[15,"4+ sockets"],[16,"Truesworn"],[17,"Gems"],[18,"Bows"],[19,"Claws"],[20,"Daggers"],[21,"Dual blades"],[22,"Fist weapons"],[23,"2H swords"],[24,"2H axes"],[25,"2H maces"],[26,"Mace and shield"],[27,"1H axes"],[28,"1H maces"],[29,"1H swords"],[30,"Scythes"],[31,"Staves"],[32,"Wands"]],
  rarity:[[0,"Any rarity"],[1,"Normal"],[2,"Magic"],[3,"Normal and magic"],[4,"Rare"],[5,"Rare and unique"]],
@@ -695,11 +748,11 @@ function decode(text){
   if(bad)notes.push(bad+" rule"+(bad>1?"s have":" has")+" missing or unreadable fields. Default values were filled in, so the exported code can differ from the one you pasted.");
   const odd=f.rules.filter(r=>["type","rarity","level","line","action","colour","quality","count","sound"].some(k=>!known(k,r[k]))).length;
   if(odd)notes.push(odd+" rule"+(odd>1?"s use":" uses")+" values this page does not know. They are kept as they are, but the drop test may read them wrongly.");
-  if(f.rules.length>MAX_RULES)notes.push("The code has "+f.rules.length+" rules. The game takes "+MAX_RULES+".");
+  if(f.rules.length>MAX_RULES)notes.push("The code has "+f.rules.length+" rules. "+COPY.limit);
   const wide=[];f.rules.forEach((r,i)=>{const n=mlist(r,"a").length;if(n>4)wide.push((i+1)+" ("+n+")");});
   if(wide.length)notes.push("Rule "+wide.slice(0,6).join(", ")+(wide.length>6?" …":"")+" lists more than 4 named lines. The Editor allows 4 per rule, so check how the game reads the extra lines.");
   if(f.rules.some(r=>r.extra.length||hasRaw(r)))notes.push("Some rules carry fields this page does not know. They are kept as they are.");
-  const warn=[];if(f.rules.length>MAX_RULES)warn.push("Your saved filter has "+f.rules.length+" rules. The game takes "+MAX_RULES+".");
+  const warn=[];if(f.rules.length>MAX_RULES)warn.push("Your saved filter has "+f.rules.length+" rules. "+COPY.limit);
   if(wide.length)warn.push("A saved rule lists more than 4 named lines. The Editor allows 4 per rule.");if(bad)warn.push("A saved rule had unreadable fields and was filled with defaults.");
   return{filter:f,notes,warn};
 }
@@ -1500,7 +1553,7 @@ function badges(r){
   if(r.line||r.quality||r.count){const n=r.count+1;b.push(["afx",n+"+ "+(r.line?nameOf("line",r.line)+" ":"")+"line"+(n>1?"s":"")+(r.quality?" · "+nameOf("quality",r.quality).toLowerCase():"")]);}
   moreParts(r).forEach(x=>b.push(["more",x]));
   if(!b.length)b.push(["any","All items"]);
-  if((r.extra&&r.extra.length)||hasRaw(r))b.push(["more","Unknown fields · ignored in test"]);
+  if((r.extra&&r.extra.length)||hasRaw(r))b.push(["more","Unknown fields (ignored in Drop Test)"]);
   return b.map(x=>`<span class="b ${x[0]}">${esc(x[1])}</span>`).join("");
 }
 function sampleName(r){const t={31:"Hoarfrost Staff",32:"Ember Wand",18:"Gravewind Bow",10:"Serpent Ring",11:"Vow of Embers",4:"Rune Tablet",14:"Hollow Idol",20:"Ashen Dagger",23:"Cinder Greatsword",13:"Core-touched Relic"}[r.type];return t||(r.rarity===5?"Oathbound Relic":"Iron Visage");}
@@ -1661,7 +1714,7 @@ function renderPickList(k){
 function moreHTML(r){
   const [il,ih]=mrng(r,"i"),[ql,qh]=mrng(r,"q"),rt=mval(r,"rt");
   const open=S.moreOpen,act=moreParts(r);
-  const head=`<button type="button" data-moretoggle="1" aria-expanded="${open}" style="display:flex;align-items:center;gap:10px;width:100%;padding:4px 0;margin-bottom:${open?8:0}px;border:0;background:none;color:inherit;cursor:pointer;text-align:left"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="transform:rotate(${open?90:0}deg);flex:none"><path d="M4 1l7 6-7 6z"/></svg><h3 class="sub" style="margin:0">More conditions (the game's MORE window)</h3></button>`;
+  const head=`<div class="hrow"><button type="button" data-moretoggle="1" aria-expanded="${open}" style="display:flex;align-items:center;gap:10px;width:100%;padding:4px 0;margin-bottom:${open?8:0}px;border:0;background:none;color:inherit;cursor:pointer;text-align:left"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="transform:rotate(${open?90:0}deg);flex:none"><path d="M4 1l7 6-7 6z"/></svg><h3 class="sub" style="margin:0">More conditions (the game's MORE window)</h3></button>${hb("more")}</div>`;
   if(!open)return head+`<p class="hint" style="margin:8px 0 0">${act.length?esc(act.join(" · ")):"No more conditions set."}</p>`;
   return head+`<p class="hint" style="margin:0 0 14px">All of them must fit, together with the options above.${rt?" Runes up to a tier turns this rule into a rune rule.":""}</p>
    <div class="mgrid">
@@ -1699,7 +1752,7 @@ function renderEditorRaw(){
   ed.innerHTML=`
    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-bottom:12px"><label style="display:flex;align-items:center;gap:12px"><input id="f-on" class="sw" type="checkbox" ${r.on?"checked":""}> Rule is active</label><span class="hint" id="posInfo"></span><span style="display:flex;flex-wrap:wrap;gap:8px;margin-left:auto"><button type="button" class="btn gold" id="addRule" style="min-height:34px">Add new rule</button><button type="button" class="btn" id="dupRule" style="min-height:34px">Duplicate</button><button type="button" class="btn danger" id="delRule" style="min-height:34px">Remove rule</button></span></div>
    <div style="margin-bottom:12px"><label class="lab" for="f-name">Rule name (optional)</label><input id="f-name" class="field" type="text" maxlength="${NAME_MAX}" placeholder="e.g. Good rares" value="${esc(r.name||"")}" autocomplete="off"><div class="hint" style="margin-top:4px">Only for you. Names stay in this browser and in saved local filters. They are never part of the game code.</div></div>
-   <span class="lab">What happens</span><div class="seg" role="group" aria-label="Action">${T.action.map(o=>`<button type="button" data-set="action,${o[0]}" aria-pressed="${r.action===o[0]}">${o[1]}</button>`).join("")}</div>
+   <div class="hrow" style="margin-bottom:6px"><span class="lab">What happens</span>${hb("hide")}${hb("sell")}</div><div class="seg" role="group" aria-label="Action">${T.action.map(o=>`<button type="button" data-set="action,${o[0]}" aria-pressed="${r.action===o[0]}">${o[1]}</button>`).join("")}</div>
    <div class="hint" id="actHint" style="margin-top:6px"></div>
    <div class="divider"></div>
    <span class="lab">Rarity</span>${chipRow("rarity",r)}
@@ -1722,7 +1775,7 @@ function syncEditor(){
   $$("#editor [data-set]").forEach(b=>{const[k,v]=b.dataset.set.split(",");b.setAttribute("aria-pressed",r[k]===+v);});
   $$("#editor [data-col]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.col===r.colour));
   $("#lookBox").hidden=!isHl(r.action);
-  $("#actHint").textContent=["Matching items are hidden (never uniques, runes, gems, currency, gold or flasks).","Matching items are shown as normal.","The item name is drawn in the chosen colour.","Colour plus a light beam on the ground.","Matching items are sold. The game\u2019s exact behaviour is not confirmed yet; the Drop Test treats it like Hide (never uniques, runes, idols, gems, currency, gold or flasks)."][r.action]||"";
+  $("#actHint").textContent=["Matching items are hidden, except the always-visible items (see ?).","Matching items are shown as normal.","The item name is drawn in the chosen colour.","Colour plus a light beam on the ground.",COPY.sell][r.action]||"";
   $("#addRule").disabled=F.rules.length>=MAX_RULES;$("#dupRule").disabled=F.rules.length>=MAX_RULES;
   $("#ground").innerHTML=`<div style="display:flex;align-items:center;gap:14px">${labelHTML(r)}</div>`;
 }
@@ -1749,7 +1802,7 @@ function dropHTML(it,e,anim){
   const rule=e.i>=0?`<span class="rn"><b>Rule #${e.i+1}</b>${(DROPR[e.i].name||"").trim()?` “${esc(DROPR[e.i].name.trim())}”`:""} ${e.guard?"matched, but the game never hides this item, so it is shown":WD[DROPR[e.i].action]} · ${esc(summary(DROPR[e.i]))}</span>`:`<span class="rn">No matching rule, so it is shown normally</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
    <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
-   <span class="vd" title="${e.guard?"never hidden":e.v===4?"Sell: not confirmed in the game. The Drop Test treats it like Hide.":""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM","SELL"][e.v]}</span></li>`;
+   <span class="vd" title="${e.guard?"never hidden":e.v===4?COPY.sell:""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM","SELL"][e.v]}</span></li>`;
 }
 const sellRel=n=>n>0||DROPR.some(r=>r.on&&r.action===4);
 function renderSimNote(sr){
@@ -1780,11 +1833,11 @@ function renderOut(){$("#out").textContent=encode(F);if(window.shSync)window.shS
 function toast(m,bad){const e=$("#gt");e.hidden=false;e.textContent=m;e.className="gt"+(bad?" bad":"");clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,3600);}
 async function copyCode(arg){
   const own=typeof arg==="string",txt=own?arg:encode(F);
-  const done=()=>{if(!own&&F.rules.length>MAX_RULES)toast("Copied, but this filter has "+F.rules.length+" rules. The game takes "+MAX_RULES+".",true);else toast("Copied.");};
+  const done=()=>{if(!own&&F.rules.length>MAX_RULES)toast("Copied, but this filter has "+F.rules.length+" rules. "+COPY.limit,true);else toast("Copied.");};
   try{await navigator.clipboard.writeText(txt);done();return;}catch(e){}
   try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();if(ok){done();return;}}catch(e){}
-  if(own){ezShowCode(txt);toast("Copy is blocked here. The code is selected below: press Ctrl+C.",true);return;}
-  if(V.view!=="edit")setView("edit");$("#shPanel").hidden=false;const o=$("#out");o.hidden=false;o.textContent=encode(F);const rg=document.createRange();rg.selectNodeContents($("#out"));const s=getSelection();s.removeAllRanges();s.addRange(rg);toast("Copy is blocked here. The code is selected: press Ctrl+C.",true);
+  if(own){ezShowCode(txt);toast(COPY.blocked+" The code is selected below: press Ctrl+C.",true);return;}
+  if(V.view!=="edit")setView("edit");$("#shPanel").hidden=false;const o=$("#out");o.hidden=false;o.textContent=encode(F);const rg=document.createRange();rg.selectNodeContents($("#out"));const s=getSelection();s.removeAllRanges();s.addRange(rg);toast(COPY.blocked+" The code is selected below: press Ctrl+C.",true);
 }
 const H=[];
 const NAME_MAX=40;
@@ -1801,7 +1854,7 @@ function undo(){
   S.cur=F.rules.length?F.rules[Math.min(at,F.rules.length-1)].id:null;fullRender();toast("Undone.");
 }
 function save(){snap();try{const c=encode(F);localStorage.setItem("oathfilter4",c);
-    if(F.rules.some(r=>r.name))localStorage.setItem("oathfilter-names",JSON.stringify({c,n:F.rules.map(r=>r.name||"")}));else localStorage.removeItem("oathfilter-names");}catch(e){if(!save.warned){save.warned=1;toast("Your filter could not be saved in this browser (private mode or storage full). Copy the filter code to keep it.",true);}}}
+    if(F.rules.some(r=>r.name))localStorage.setItem("oathfilter-names",JSON.stringify({c,n:F.rules.map(r=>r.name||"")}));else localStorage.removeItem("oathfilter-names");}catch(e){if(!save.warned){save.warned=1;toast(COPY.storage+" Copy the filter code to keep it.",true);}}}
 
 /* ---- orchestration ---- */
 function setFilter(f){F=f;F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});S.cur=F.rules[0]?F.rules[0].id:null;fullRender();}
@@ -1819,11 +1872,11 @@ document.addEventListener("click",e=>{
   if(d.rf){V.filter=d.rf;renderRows();return;}
   if(d.moretoggle){S.moreOpen=!S.moreOpen;renderEditor();return;}
   if(d.pick){S.cur=d.pick;renderRows();renderEditor();return;}
-  if(d.rm){const i=F.rules.findIndex(x=>x.id===d.rm);if(i>=0){F.preset="-1";F.rules.splice(i,1);if(S.cur===d.rm){const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;}fullRender();toast("Rule removed. Ctrl+Z brings it back.");}return;}
-  if(t.id==="newRule"||t.id==="addRule"){if(F.rules.length<MAX_RULES){F.preset="-1";const r=newRule();r.id=uid();F.rules.push(r);S.cur=r.id;V.filter="all";V.q="";$("#rq").value="";V.view==="edit"||setView("edit");fullRender();}else toast("The game takes "+MAX_RULES+" rules.",true);return;}
+  if(d.rm){const i=F.rules.findIndex(x=>x.id===d.rm);if(i>=0){F.preset="-1";F.rules.splice(i,1);if(S.cur===d.rm){const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;}fullRender();toast("Rule removed. "+COPY.undo);}return;}
+  if(t.id==="newRule"||t.id==="addRule"){if(F.rules.length<MAX_RULES){F.preset="-1";const r=newRule();r.id=uid();F.rules.push(r);S.cur=r.id;V.filter="all";V.q="";$("#rq").value="";V.view==="edit"||setView("edit");fullRender();}else toast(COPY.limit,true);return;}
   const r=curRule();
   if(t.id==="dupRule"&&r){if(F.rules.length<MAX_RULES){F.preset="-1";const c=JSON.parse(JSON.stringify(r));c.id=uid();F.rules.splice(F.rules.indexOf(r)+1,0,c);S.cur=c.id;fullRender();toast("Rule duplicated.");}return;}
-  if(t.id==="delRule"&&r){F.preset="-1";const i=F.rules.indexOf(r);F.rules.splice(i,1);const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;fullRender();toast("Rule removed. Ctrl+Z brings it back.");return;}
+  if(t.id==="delRule"&&r){F.preset="-1";const i=F.rules.indexOf(r);F.rules.splice(i,1);const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;fullRender();toast("Rule removed. "+COPY.undo);return;}
   if(!r)return;
   if(d.plsave){const k=d.plsave,ids=mlist(r,k);if(!ids.length)return;const n=(prompt("Name for this list",PK[k].title+" list")||"").trim();if(!n)return;const o=PL.load();(o[k]=o[k]||[]).push({n:n.slice(0,40),ids:ids.slice()});PL.save(o);renderEditor();toast("List saved in this browser.");return;}
   if(d.pldel){const k=d.pldel,sel=$("#pls-"+k),o=PL.load();if(!sel||sel.value===""||!(o[k]||[])[+sel.value]){toast("Pick a saved list first.",true);return;}const n=o[k][+sel.value].n;o[k].splice(+sel.value,1);PL.save(o);renderEditor();toast("List \""+n+"\" deleted.");return;}
@@ -1891,7 +1944,7 @@ $("#lfSave").onclick=()=>{
   if(i<0&&a.length>=LF.max){lfMsg("You can keep up to "+LF.max+" local filters. Delete one first.",true);return;}
   const rec={id:i>=0?a[i].id:"f"+Date.now().toString(36)+uid().slice(0,3),name:i>=0?a[i].name:name,c:encode(F),n:F.rules.map(r=>r.name||""),t:Date.now()};
   if(i>=0)a[i]=rec;else a.unshift(rec);
-  if(!LF.put(a)){lfMsg("Could not save in this browser (private mode or storage full). Use Export instead.",true);return;}
+  if(!LF.put(a)){lfMsg(COPY.storage+" Use Copy filter code to keep it.",true);return;}
   lfOver="";lfMsg((i>=0?"Updated “":"Saved “")+rec.name+"” in this browser.");$("#lfName").value="";renderLF();};
 $("#lfName").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#lfSave").click();}});
 $("#lfList").addEventListener("click",e=>{
@@ -1917,7 +1970,7 @@ renderLF();
 let pendingImport=null;
 const doLoad=g=>{const m=$("#loadMsg");setFilter(g.filter);m.className="toast";m.textContent="Loaded "+g.filter.rules.length+" rules. "+g.notes.join(" ")+" Undo is in the Editor.";$("#loadConf").hidden=true;pendingImport=null;};
 $("#load").onclick=()=>{const m=$("#loadMsg");try{const g=decode($("#codeIn").value);
-  if(F.rules.length){pendingImport=g;$("#loadConfT").textContent="This replaces your current filter ("+F.rules.length+" rule"+(F.rules.length>1?"s":"")+") with "+g.filter.rules.length+" imported rule"+(g.filter.rules.length===1?"":"s")+". Export it first if you want to keep it.";$("#loadConf").hidden=false;m.textContent="";m.className="toast";}
+  if(F.rules.length){pendingImport=g;$("#loadConfT").textContent="This replaces your current filter ("+F.rules.length+" rule"+(F.rules.length>1?"s":"")+") with "+g.filter.rules.length+" imported rule"+(g.filter.rules.length===1?"":"s")+". Copy its filter code first if you want to keep it.";$("#loadConf").hidden=false;m.textContent="";m.className="toast";}
   else doLoad(g);}catch(err){$("#loadConf").hidden=true;m.className="toast bad";m.textContent=err.message;}};
 $("#loadYes").onclick=()=>{if(pendingImport)doLoad(pendingImport);};
 $("#loadNo").onclick=()=>{$("#loadConf").hidden=true;pendingImport=null;};
@@ -2050,7 +2103,7 @@ const shMsg=(m,bad)=>{const e=$("#shMsg");e.textContent=m;e.style.color=bad?"var
 async function shCopyText(txt,ok){
   try{await navigator.clipboard.writeText(txt);shMsg(ok);return;}catch(e){}
   try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const done=document.execCommand("copy");ta.remove();if(done){shMsg(ok);return;}}catch(e){}
-  const u=$("#shUrl");u.focus();u.select();shMsg("Copy is blocked here. The link is selected: press Ctrl+C.",true);}
+  const u=$("#shUrl");u.focus();u.select();shMsg(COPY.blocked+" The link is selected: press Ctrl+C.",true);}
 window.shSync=()=>{const r=$("#shRes");if(r&&!r.hidden&&shLast.code!==encode(F)){r.hidden=true;shMsg("The filter changed. Create a new link to share the latest version.");}};
 $("#shClose").onclick=()=>{$("#shPanel").hidden=true;};
 $("#shMake").onclick=()=>{ /* Easy Mode: the Easy filter replaces the active filter first, then it is shared */
@@ -2107,7 +2160,7 @@ function shLfSave(b){
   let name=b.filterName||("Shared filter"+(b.authorName?" by "+b.authorName:""));name=name.slice(0,36);
   let n=name,k=2;while(a.some(x=>x.name.toLowerCase()===n.toLowerCase()))n=name+" ("+k++ +")";
   a.unshift({id:"f"+Date.now().toString(36)+uid().slice(0,3),name:n,c:encode(b.f),n:b.f.rules.map(r=>r.name||""),t:Date.now()});
-  if(!LF.put(a))return {err:"Could not save in this browser (private mode or storage full)."};
+  if(!LF.put(a))return {err:COPY.storage};
   renderLF();return {name:n};}
 function shPreview(b,views){
   const named=b.f.rules.map(r=>r.name).filter(Boolean),cur=F.rules.length;
@@ -2116,7 +2169,7 @@ function shPreview(b,views){
   const lst=named.slice(0,8).map(n=>"<li>"+esc(n)+"</li>").join("")+(named.length>8?"<li>+ "+(named.length-8)+" more</li>":"");
   const body=`<dl class="shl">${rows.map(r=>`<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("")}<dt>Rule names</dt><dd>${named.length?named.length+" included":"none"}</dd></dl>${named.length?`<ul class="shn">${lst}</ul>`:""}`
     +(b.notes.length?`<p class="shw" style="margin-top:8px">${b.notes.map(esc).join(" ")}</p>`:"")
-    +`<p class="shw" id="shrNote" style="margin-top:8px" role="status">${cur?"Loading it replaces your current filter ("+cur+" rule"+(cur===1?"":"s")+"). Undo in the Editor brings it back.":"Your current filter is empty."}</p>`;
+    +`<p class="shw" id="shrNote" style="margin-top:8px" role="status">${cur?"Loading it replaces your current filter ("+cur+" rule"+(cur===1?"":"s")+"). "+COPY.undo+" (Editor)":"Your current filter is empty."}</p>`;
   shrShow({title:"Open this shared filter?",desc:"Nothing changes until you choose.",body,focus:"shrNo",buttons:[
     {id:"shrLoad",text:"Replace my filter",cls:"gold",fn:()=>{setFilter(b.f);setView("edit");shrClose();toast("Loaded shared filter"+(b.filterName?" “"+b.filterName+"”":"")+" ("+b.f.rules.length+" rules).");}},
     {id:"shrSave",text:"Save to local filters",fn:()=>{const r=shLfSave(b),n=$("#shrNote");if(r.err){n.textContent=r.err;n.style.color="var(--hide-fg)";return;}n.style.color="";n.textContent="Saved as “"+r.name+"” under Local filters. Your current filter is unchanged.";$("#shrSave").disabled=true;}},
@@ -3000,10 +3053,10 @@ function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="
 const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
 let ezT=null,ezAsk=false,ezCode="";
 function ezShowCode(t){ezCode=t;ezPreview();const x=$("#ez-code");if(x){x.focus();x.select();}}
-function ezCopy(){const g=easyGen(EZ.s);if(g.rules.length>MAX_RULES){toast("Not copied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);ezPreview(g);}else copyCode(encode({preset:"-1",rules:g.rules}));}
+function ezCopy(){const g=easyGen(EZ.s);if(g.rules.length>MAX_RULES){toast("Not copied. "+COPY.over(g.rules.length),true);ezPreview(g);}else copyCode(encode({preset:"-1",rules:g.rules}));}
 function ezApply(){
   const g=easyGen(EZ.s);
-  if(g.rules.length>MAX_RULES){ezAsk=false;ezPreview(g);toast("Not applied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);return false;}
+  if(g.rules.length>MAX_RULES){ezAsk=false;ezPreview(g);toast("Not applied. "+COPY.over(g.rules.length),true);return false;}
   F.preset="-1";F.rules=g.rules;F.rules.forEach(r=>{r.id=uid();});
   EZ.h=ezHashF(F);ezSave();S.cur=F.rules[0]?F.rules[0].id:null;ezAsk=false;fullRender();return true;
 }
@@ -3020,15 +3073,15 @@ const ezSeg=(k,list,lab)=>`<div class="seg" role="group" aria-label="${esc(lab)}
 function ezBuild(){
   
   $("#ezCtl").innerHTML=`
-  <div class="sub"><label class="lab" for="ez-rl">Rupture Level <output id="ez-rlo" aria-live="polite" style="color:var(--accent-gold);margin-left:6px"></output></label>
+  <div class="sub"><div class="hrow"><label class="lab" for="ez-rl">Rupture Level <output id="ez-rlo" aria-live="polite" style="color:var(--accent-gold);margin-left:6px"></output></label>${hb("ezRL")}</div>
     <p class="hint" style="margin:2px 0 4px">The monster level you farm at. It decides which affix tiers can drop.</p>
     <input id="ez-rl" class="ezsl" type="range" min="0" max="${EZ_RL.length-1}" step="1" value="0" list="ez-rlt" aria-valuetext="Any">
     <datalist id="ez-rlt">${EZ_RL.map((x,i)=>`<option value="${i}"></option>`).join("")}</datalist>
     <div class="eztk" aria-hidden="true">${EZ_RL.map((x,i)=>`<span style="left:calc(8px + (100% - 16px) * ${i/(EZ_RL.length-1)})">${x[1]}</span>`).join("")}</div>
-    <span class="lab" style="margin-top:12px;display:block">Tier strictness</span><p class="hint" style="margin:2px 0 6px">How many of the best tiers that can drop still count as good.</p>${ezSeg("tk",EZ_KEEP,"Tier strictness")}
+    <div class="hrow" style="margin-top:12px"><span class="lab">Tier strictness</span>${hb("ezKeep")}</div><p class="hint" style="margin:2px 0 6px">How many of the best droppable tiers count as good.</p>${ezSeg("tk",EZ_KEEP,"Tier strictness")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
-  <div class="sub"><span class="lab">What I want to see</span><div class="chips">${EZ_ARCH.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
-    <p class="hint" style="margin:6px 0 0">A pick also keeps the matching Idols and hides the other Idols. Picks without gear lines only change Idols. A line two picks share is listed once.</p>
+  <div class="sub"><div class="hrow" style="margin-bottom:6px"><span class="lab">What I want to see</span>${hb("ezWant")}</div><div class="chips">${EZ_ARCH.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
+    <p class="hint" style="margin:6px 0 0">Picks also decide which Idols stay.</p>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
   <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div></div>
   <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>`;
@@ -3041,15 +3094,15 @@ function ezSync(){
     const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="idol"?s.idol===v:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
-  $("#ez-ilv").textContent=s.rl?"At Rupture Level "+s.rl+" only tiers up to item level "+s.rl+" can drop. Gear is kept only if a picked line is among the "+(s.tk===1?"best tier":"best "+s.tk+" tiers")+" that can drop there. Weaker lines are hidden. Idols are not limited. Choose at least one pick below.":"Any: no tier limit. Set your Rupture Level to hide gear whose picked lines are too weak for what drops there.";
+  $("#ez-ilv").textContent=s.rl?"Rupture Level "+s.rl+": only tiers up to item level "+s.rl+" can drop. Gear needs a picked line within the "+(s.tk===1?"best tier":"best "+s.tk+" tiers")+" that can drop; weaker lines are hidden. Pick at least one.":"Any: no tier limit. Set your Rupture Level to hide gear whose picked lines are too weak for what drops there.";
 }
 function ezPreview(g){
   g=g||easyGen(EZ.s);
   const n=g.rules.length,over=n>MAX_RULES,linked=ezLinked(),div=!!EZ.h&&!linked,act=F.rules.length;
   const sh=[];g.rules.forEach((r,i)=>{for(let k=0;k<i;k++)if(covers(g.rules[k],r)){sh.push("Rule "+(i+1)+" ("+r.name+") is never reached: rule "+(k+1)+" already catches everything it would take.");break;}});
   let status="";
-  if(over)status=`<div class="ezerr" role="alert"><b>Error: Would generate ${n} / ${MAX_RULES} rules — uncheck one or more archetype/idol options</b><p class="hint" style="margin:6px 0 0">Nothing was applied. Your filter keeps its ${act} rule${act===1?"":"s"}.</p></div>`;
-  if(div)status+=`<div class="ezbanner" role="alert"><b>Your filter was changed outside Easy Mode.</b><p class="hint" style="margin:6px 0 8px">Easy Mode stopped controlling it, so your work is safe. You can replace it with the Easy Mode rules (Ctrl+Z brings yours back) or keep it and carry on in Advanced.</p><div class="ezrow"><button type="button" class="btn danger" data-ezact="replace"${over?" disabled":""}>Replace with Easy Mode rules</button><button type="button" class="btn" data-ezact="keep">Keep my filter, go to Advanced</button></div></div>`;
+  if(over)status=`<div class="ezerr" role="alert"><b>${COPY.over(n)}</b><p class="hint" style="margin:6px 0 0">Nothing was applied. Your filter keeps its ${act} rule${act===1?"":"s"}.</p></div>`;
+  if(div)status+=`<div class="ezbanner" role="alert"><b>Your filter was changed outside Easy Mode.</b><p class="hint" style="margin:6px 0 8px">Easy Mode stopped controlling it, so your work is safe. Replace it with the Easy Mode rules (Ctrl+Z brings yours back) or keep it and carry on in Advanced.</p><div class="ezrow"><button type="button" class="btn danger" data-ezact="replace"${over?" disabled":""}>Replace with Easy Mode rules</button><button type="button" class="btn" data-ezact="keep">Keep my filter, go to Advanced</button></div></div>`;
   else if(linked)status+=`<p class="hint" style="margin:0 0 10px">Easy Mode controls your filter. Changes apply when you let go of a control.</p>`;
   else if(ezAsk&&!over)status+=`<div class="ezbanner" role="alert"><b>Replace your current ${act} rule${act===1?"":"s"}?</b><p class="hint" style="margin:6px 0 8px">Easy Mode builds the whole filter. Ctrl+Z brings your rules back.</p><div class="ezrow"><button type="button" class="btn gold" data-ezact="replace">Replace</button><button type="button" class="btn" data-ezact="cancel">Cancel</button></div></div>`;
   else status+=`<p class="hint" style="margin:0 0 10px">Easy Mode is not applied yet. Your filter stays as it is until you apply it.</p><div class="ezrow" style="margin:0 0 12px"><button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>Apply to my filter</button></div>`;
