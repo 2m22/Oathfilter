@@ -522,7 +522,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <h3 class="subtitle">Tips</h3>
     <ul class="pl">
      <li><b>Start from a preset.</b> Load Tidy or Strict and change only what you need.</li>
-     <li><b>Reuse your work.</b> Save a few rules as a module in the Editor and insert them into other filters. Save your whole filter as a module to keep a base filter and press “Replace filter” to start from it.</li>
+     <li><b>Reuse your work.</b> Save a few rules as a module in the Editor and insert them into other filters. Save your whole filter as a module to keep a base filter and press “Replace filter” to start from it. “Share” on a module makes a link. Whoever opens it can insert the rules into their own filter.</li>
      <li><b>Check the order.</b> A broad rule above a narrow one means the narrow one never fires. The rule list warns “May be caught by rule N” when it is sure. “Check rule order” in the Editor also runs sample items through your filter and lists rules that never decide anything.</li>
      <li><b>Confirm in the game.</b> Always check the finished filter in the game.</li>
     </ul></section>
@@ -681,7 +681,7 @@ const COPY={
 };
 document.querySelectorAll("[data-copy]").forEach(e=>{e.textContent=COPY[e.dataset.copy]||"";});
 /* Help popovers: every ? button carries data-help=<key>. Opens on hover, focus and click/tap (click keeps it open). */
-const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. You can save one rule, several rules or your whole filter. Insert adds the rules at the chosen place and keeps their order. Replace filter starts a new filter from the module. If an insert would go over 40 rules, it is blocked. Ctrl+Z takes it back. Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to four named bases, lines or reds per rule."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."]};
+const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. You can save one rule, several rules or your whole filter. Insert adds the rules at the chosen place and keeps their order. Replace filter starts a new filter from the module. Share makes a link, and whoever opens it can insert the rules into their own filter. If an insert would go over 40 rules, it is blocked. Ctrl+Z takes it back. Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to four named bases, lines or reds per rule."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."]};
 const hb=k=>`<button type="button" class="hlp" data-help="${k}" aria-label="Help: ${HELP[k][0]}" aria-expanded="false">?</button>`;
 (function(){
   const pop=document.createElement("div");pop.id="hlpPop";pop.setAttribute("role","tooltip");pop.hidden=true;document.body.appendChild(pop);
@@ -1952,25 +1952,40 @@ function renderMD(){
     const info=`<div class="lfi"><b title="${esc(x.name)}">${esc(x.name)}</b><span class="hint">${n} rule${n===1?"":"s"}${acts?" · "+esc(acts):""}</span><span class="hint"${over?' style="color:var(--hide-fg)"':""}>${cur} + ${n} = ${tot} / ${MAX_RULES}</span></div>`;
     if(m==="ren")return `<li data-md="${x.id}"><input class="field" type="text" maxlength="40" value="${esc(x.name)}" aria-label="New name" data-mdin="${x.id}"><div class="lfb"><button type="button" class="btn gold" data-mda="rensave" data-id="${x.id}">Save</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Cancel</button></div></li>`;
     if(m==="del")return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn danger" data-mda="delyes" data-id="${x.id}">Delete</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Cancel</button></div></li>`;
+    if(m==="shr")return `<li data-md="${x.id}">${info}<input class="field" type="text" readonly value="${esc(mdShr[x.id]||"")}" aria-label="Share link" data-mdurl="1" style="flex:1 1 100%"><div class="lfb"><button type="button" class="btn" data-mda="cplink" data-id="${x.id}">Copy link</button><button type="button" class="btn" data-mda="cpdisc" data-id="${x.id}">Copy for Discord</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Close</button></div></li>`;
     if(m==="rep")return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn danger" data-mda="repyes" data-id="${x.id}">Replace current filter</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Cancel</button></div><p class="hint" style="margin:0;flex:1 1 100%">This replaces your ${cur} rule${cur===1?"":"s"} with these ${n}. Ctrl+Z brings them back.</p></li>`;
-    return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn" data-mda="ins" data-id="${x.id}"${over?' disabled title="Over the limit of '+MAX_RULES+' rules. Delete some rules first."':""}>Insert</button><button type="button" class="btn" data-mda="rep" data-id="${x.id}">Replace filter</button><button type="button" class="btn" data-mda="ren" data-id="${x.id}">Rename</button><button type="button" class="btn" data-mda="del" data-id="${x.id}">Delete</button></div>${over?`<p class="hint" style="margin:0;flex:1 1 100%;color:var(--hide-fg)">Too many rules for the game's limit. Delete ${tot-MAX_RULES} rule${tot-MAX_RULES===1?"":"s"} first.</p>`:""}</li>`;
+    return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn" data-mda="ins" data-id="${x.id}"${over?' disabled title="Over the limit of '+MAX_RULES+' rules. Delete some rules first."':""}>Insert</button><button type="button" class="btn" data-mda="rep" data-id="${x.id}">Replace filter</button><button type="button" class="btn" data-mda="shr" data-id="${x.id}">Share</button><button type="button" class="btn" data-mda="ren" data-id="${x.id}">Rename</button><button type="button" class="btn" data-mda="del" data-id="${x.id}">Delete</button></div>${over?`<p class="hint" style="margin:0;flex:1 1 100%;color:var(--hide-fg)">Too many rules for the game's limit. Delete ${tot-MAX_RULES} rule${tot-MAX_RULES===1?"":"s"} first.</p>`:""}</li>`;
   }).join(""):`<li class="hint" style="border-style:dashed">No modules yet. Save a few rules above.</li>`;
   const f=ul.querySelector("[data-mdin]");if(f){f.focus();f.select();}
 }
 function mdLoad(x){const rs=mdRules(x);if(!rs||!rs.length){mdMsg("This module could not be read.",true);mdMode={};renderMD();return;}
   mdMode={};setFilter({preset:"-1",rules:rs});mdMsg("");toast("Started from “"+x.name+"” ("+rs.length+" rule"+(rs.length===1?"":"s")+"). "+COPY.undo);}
-function mdInsert(x){
-  if(typeof EZ!=="undefined"&&EZ.m==="easy")return;
-  const rs=mdRules(x);if(!rs||!rs.length){mdMsg("This module could not be read.",true);return;}
+function mdInsert(x){const rs=mdRules(x);if(!rs||!rs.length){mdMsg("This module could not be read.",true);return;}mdPlace(rs,x.name);}
+function mdPlace(rs,name){
+  if(typeof EZ!=="undefined"&&EZ.m==="easy")return false;
   const n=rs.length,tot=F.rules.length+n;
-  if(tot>MAX_RULES){mdMsg(F.rules.length+" + "+n+" = "+tot+" / "+MAX_RULES+". Delete "+(tot-MAX_RULES)+" rule"+(tot-MAX_RULES===1?"":"s")+" first.",true);return;}
+  if(tot>MAX_RULES){mdMsg(F.rules.length+" + "+n+" = "+tot+" / "+MAX_RULES+". Delete "+(tot-MAX_RULES)+" rule"+(tot-MAX_RULES===1?"":"s")+" first.",true);return false;}
   const pos=$("#mdPos").value;let at=F.rules.length;
   if(pos==="top")at=0;else if(pos==="after"){const i=F.rules.findIndex(r=>r.id===S.cur);if(i>=0)at=i+1;}
   rs.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});
   F.preset="-1";F.rules.splice(at,0,...rs);S.cur=rs[0].id;V.filter="all";V.q="";$("#rq").value="";
-  fullRender();mdMsg("");toast("Inserted "+n+" rule"+(n===1?"":"s")+" from “"+x.name+"”. "+COPY.undo);
+  fullRender();mdMsg("");toast("Inserted "+n+" rule"+(n===1?"":"s")+(name?" from “"+name+"”":"")+". "+COPY.undo);
   const w=rs.filter(r=>mlist(r,"a").length>4).length;if(w)toast("Inserted. "+w+" rule"+(w>1?"s list":" lists")+" more than 4 named lines. The Editor allows 4 per rule.",true);
+  return true;
 }
+/* share a module: same link service and offline fallback as the filter share */
+let mdShr={},mdBusy=false;
+async function mdShare(x){
+  if(mdBusy)return;const pl={bofilter:x.c,ruleNames:(x.n||[]).map(v=>String(v||"").slice(0,NAME_MAX))};
+  mdBusy=true;mdMsg("Creating link…");let url="";
+  try{const key=await shKey(pl),old=shCache.get(key,shBase());
+    if(old)url=old;else{try{url=shBase()+"#f="+await shPost(pl);shCache.put(key,url);}catch(e){url=shBase()+"#s="+await shPack(pl);}}}
+  catch(e){mdBusy=false;mdMsg("The link could not be created.",true);return;}
+  mdBusy=false;mdShr={};mdShr[x.id]=url;mdMode={};mdMode[x.id]="shr";mdMsg(url.indexOf("#s=")>0?"Offline link created. It works without the service"+(url.length>1800?", but it is long and Discord may cut it.":"."):"Link created.",url.length>1800);renderMD();
+}
+async function mdCopy(txt,ok){
+  try{await navigator.clipboard.writeText(txt);mdMsg(ok);return;}catch(e){}
+  const u=$("#mdList [data-mdurl]");if(u){u.focus();u.select();}mdMsg(COPY.blocked+" The link is selected: press Ctrl+C.",true);}
 $("#mdSave").onclick=()=>{
   const name=$("#mdName").value.trim().slice(0,40),n=F.rules.length;
   if(!name){mdMsg("Give the module a name first.",true);$("#mdName").focus();return;}
@@ -1993,6 +2008,9 @@ $("#mdList").addEventListener("keydown",e=>{const i=e.target.closest("[data-mdin
 $("#mdList").addEventListener("click",e=>{
   const b=e.target.closest("[data-mda]");if(!b||b.disabled)return;const id=b.dataset.id,all=MD.all(),x=all.find(y=>y.id===id);if(!x)return;const act=b.dataset.mda;
   if(act==="ins"){mdInsert(x);return;}
+  if(act==="shr"){mdShare(x);return;}
+  if(act==="cplink"){mdCopy(mdShr[id]||"","Link copied.");return;}
+  if(act==="cpdisc"){mdCopy("[Oathfilter module]("+(mdShr[id]||"")+")","Discord link copied.");return;}
   if(act==="rep"){if(!F.rules.length){mdLoad(x);return;}mdMode={};mdMode[id]="rep";renderMD();const q=$("#mdList [data-mda=repyes]");if(q)q.focus();return;}
   if(act==="repyes"){mdLoad(x);return;}
   if(act==="ren"){mdMode={};mdMode[id]="ren";renderMD();return;}
@@ -2215,6 +2233,11 @@ function shPreview(b,views){
     +`<p class="shw" id="shrNote" style="margin-top:8px" role="status">${cur?"Loading it replaces your current filter ("+cur+" rule"+(cur===1?"":"s")+"). "+COPY.undo+" (Editor)":"Your current filter is empty."}</p>`;
   shrShow({title:"Open this shared filter?",desc:"Nothing changes until you choose.",body,focus:"shrNo",buttons:[
     {id:"shrLoad",text:"Replace my filter",cls:"gold",fn:()=>{setFilter(b.f);setView("edit");shrClose();toast("Loaded shared filter"+(b.filterName?" “"+b.filterName+"”":"")+" ("+b.f.rules.length+" rules).");}},
+    {id:"shrIns",text:"Insert into my filter",fn:()=>{const n=$("#shrNote");
+      if(EZ.m==="easy"){n.textContent="Switch to Advanced Mode first, then open the link again.";n.style.color="var(--hide-fg)";return;}
+      const rs=JSON.parse(JSON.stringify(b.f.rules));
+      if(F.rules.length+rs.length>MAX_RULES){n.textContent=F.rules.length+" + "+rs.length+" = "+(F.rules.length+rs.length)+" / "+MAX_RULES+". Delete "+(F.rules.length+rs.length-MAX_RULES)+" rule"+(F.rules.length+rs.length-MAX_RULES===1?"":"s")+" first, or use Replace my filter.";n.style.color="var(--hide-fg)";return;}
+      if(mdPlace(rs,b.filterName||"")){setView("edit");shrClose();}}},
     {id:"shrSave",text:"Save as module",fn:()=>{const r=shLfSave(b),n=$("#shrNote");if(r.err){n.textContent=r.err;n.style.color="var(--hide-fg)";return;}n.style.color="";n.textContent="Saved as “"+r.name+"” as a module. Your current filter is unchanged.";$("#shrSave").disabled=true;}},
     {id:"shrNo",text:"Cancel",fn:shrClose}]});}
 async function shOpenFromHash(){
