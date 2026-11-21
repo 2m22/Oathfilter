@@ -298,6 +298,16 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .upd .updh{display:block;margin:0 0 6px;font-weight:700;color:var(--text-main);font-size:.8125rem}
 .ezsl{width:100%;min-width:0;height:22px;margin:4px 0 0;accent-color:var(--accent-gold)}
 .eztk{position:relative;height:16px;font-size:.6875rem;color:var(--text-muted)}.eztk span{position:absolute;top:0;transform:translateX(-50%)}
+/* responsive / zoom safety */
+.ezbar .seg{min-width:min(260px,100%)}
+.ezbar .seg button{padding:0 clamp(12px,3vw,26px)}
+#copyAdv.over{box-shadow:0 0 0 2px var(--hide-fg)}
+.simnote{margin:0 0 10px;overflow-wrap:anywhere}.simnote.easysim{color:var(--accent-gold)}
+#shPanel{min-width:0;max-width:100%}#shPanel .shres input,#shPanel .field{min-width:0;max-width:100%;box-sizing:border-box}
+#shMsg{overflow-wrap:anywhere}#shPanel .out{white-space:pre-wrap;overflow-wrap:anywhere}
+.eztk span{white-space:nowrap}
+#rtip{max-height:calc(100vh - 16px);overflow:hidden}
+@media (max-width:560px){.ezbar{gap:10px}.ezbar .seg{flex:1 1 100%}.ezbar .ezact{margin-left:0;width:100%}.ezbar .ezact .btn{flex:1 1 130px}.eztk span:nth-child(even){display:none}}
 .updlog{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.8125rem;color:var(--text-main)}
 .updlog i{font-style:normal;font-weight:700;color:var(--accent-gold);margin-right:6px;font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em}
 #updAll{display:inline-block;margin-top:8px;font-size:.8125rem}
@@ -397,6 +407,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <div class="dctlb" style="margin-top:8px"><button type="button" class="btn gold" id="dcCheck">Check text</button><button type="button" class="btn" id="dcClear">Clear</button></div>
     <div id="dcRes" class="dcres" hidden aria-live="polite"></div></section>
   <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
+    <p class="hint simnote" id="simNote" role="status" aria-live="polite"></p>
     <div class="stats" id="stats"><div class="stat"><b id="nAll">0</b><span>Total samples</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div><div class="stat zero" id="stSell" hidden title="Sell: how the game handles it is not confirmed. The Drop Test treats it like Hide and counts it separately."><b id="nSell" style="color:var(--sell-fg)">0</b><span>Sell</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i><i id="bSell" style="width:0"></i></div></section>
   <section class="plate" aria-labelledby="h-gv"><h2 id="h-gv" class="coltitle">Ground view</h2>
@@ -680,8 +691,12 @@ function decode(text){
   const odd=f.rules.filter(r=>["type","rarity","level","line","action","colour","quality","count","sound"].some(k=>!known(k,r[k]))).length;
   if(odd)notes.push(odd+" rule"+(odd>1?"s use":" uses")+" values this page does not know. They are kept as they are, but the drop test may read them wrongly.");
   if(f.rules.length>MAX_RULES)notes.push("The code has "+f.rules.length+" rules. The game takes "+MAX_RULES+".");
+  const wide=[];f.rules.forEach((r,i)=>{const n=mlist(r,"a").length;if(n>4)wide.push((i+1)+" ("+n+")");});
+  if(wide.length)notes.push("Rule "+wide.slice(0,6).join(", ")+(wide.length>6?" …":"")+" lists more than 4 named lines. The Editor allows 4 per rule, so check how the game reads the extra lines.");
   if(f.rules.some(r=>r.extra.length||hasRaw(r)))notes.push("Some rules carry fields this page does not know. They are kept as they are.");
-  return{filter:f,notes};
+  const warn=[];if(f.rules.length>MAX_RULES)warn.push("Your saved filter has "+f.rules.length+" rules. The game takes "+MAX_RULES+".");
+  if(wide.length)warn.push("A saved rule lists more than 4 named lines. The Editor allows 4 per rule.");if(bad)warn.push("A saved rule had unreadable fields and was filled with defaults.");
+  return{filter:f,notes,warn};
 }
 
 /* how the page reads a rule: a best guess, not checked in the game */
@@ -738,9 +753,19 @@ function matches(r,it){
   return moreMatch(r,it);
 }
 const NEVER_HIDDEN=it=>it.rar==="U"||it.kind==="misc";
+/* Drop Test source: in Easy Mode the Easy preview rules (when they fit the 40 rule limit), otherwise the active filter F. Cached per REV. */
+const SIM={rev:-1,m:"",rules:null,easy:false,n:0};
+function simRules(){
+  const em=typeof EZ!=="undefined"&&!!EZ&&EZ.m==="easy",k=em?"e":"a";
+  if(SIM.rules&&SIM.rev===REV&&SIM.m===k)return SIM;
+  SIM.rev=REV;SIM.m=k;SIM.rules=F.rules;SIM.easy=false;SIM.n=0;
+  if(em){try{const g=easyGen(EZ.s);SIM.n=g.rules.length;if(g.rules.length<=MAX_RULES){SIM.rules=g.rules;SIM.easy=true;}}catch(e){}}
+  return SIM;
+}
 function evaluate(it){
-  for(let i=0;i<F.rules.length;i++){
-    const r=F.rules[i];if(!r.on)continue;
+  const RL=simRules().rules;
+  for(let i=0;i<RL.length;i++){
+    const r=RL[i];if(!r.on)continue;
     if(matches(r,it)){
       if((r.action===0||r.action===4)&&NEVER_HIDDEN(it))return{v:1,i,guard:true,col:r.colour};
       return{v:r.action,i,col:r.colour};
@@ -1366,7 +1391,6 @@ function genItem(f){
   return{id:uid(),name:nm+" "+b.name,baseId:b.id,kind:b.kind,sub:b.sub,rar,lvl:il,mods,core:b.variant==="ct"||Math.random()<.04,cls:cl?(cl.rar==='I'?'Idol size '+f.size:cl.label+(cl.top==='n'?' '+mods.filter(m=>m.tier===1).length+'×T1'+(mods.filter(m=>m.tier===1).length<f.n?' (asked '+f.n+')':''):'')):'',sock,sockets4Plus:sock>=4,truesworn:tw,grade:tw?90+rnd(11):1+rnd(89),req:Math.max(1,Math.round(il*.8)),unsworn:rar==="R"&&Math.random()<.12,runebase:rar==="N"&&Math.random()<.2,label:""};
 }
 
-function genFiltered(){return genItem();}
 
 /* presets */
 const USER_CODE="BOFILTER:1,4|1,13,0,0,0,3,0,0,0,255|1,4,1,0,0,1,0,0,0,255|1,16,3,6,0,2,0,0,0,255|1,0,4,7,0,3,0,2,1,255|1,0,4,0,5,3,0,0,0,255|1,0,4,6,0,2,1,1,2,255|1,0,4,4,0,0,0,0,0,255|1,0,3,0,0,0,0,0,0,255";
@@ -1585,7 +1609,12 @@ function checkOrder(){
   const o=$("#chkOut");
   o.innerHTML=out.length?`<div class="chk">${out.map(([i,t])=>`<button type="button" class="chkb" data-pick="${R[i].id}"><b>Rule ${i+1}</b> ${esc(t)}</button>`).join("")}</div><p class="hint" style="margin:8px 0 0">Based on ${N} sample items. A rare item can be missed. Click a rule to open it.</p>`:`<p class="hint" style="margin:8px 0 0">Every active rule decides at least one of ${N} sample items.</p>`;
 }
-function renderAdvExport(){const b=$("#copyAdv");if(b){const n=F.rules.length;b.title=n>MAX_RULES?"Copies your active filter: "+n+" rules, but the game takes "+MAX_RULES+".":"Copies your active filter ("+n+" rule"+(n===1?"":"s")+"). In Easy Mode it copies the Easy Mode preview.";}}
+function renderAdvExport(){
+  const b=$("#copyAdv");if(!b)return;
+  const em=typeof EZ!=="undefined"&&!!EZ&&EZ.m==="easy",n=em?(simRules().n||F.rules.length):F.rules.length,over=n>MAX_RULES;
+  b.textContent=over?"Copy filter code ("+n+" / "+MAX_RULES+")":"Copy filter code";b.classList.toggle("over",over);
+  b.title=over?(em?"The Easy Mode preview has ":"Your active filter has ")+n+" rules, but the game takes "+MAX_RULES+". It will not be copied from Easy Mode.":"Copies your active filter ("+n+" rule"+(n===1?"":"s")+"). In Easy Mode it copies the Easy Mode preview.";
+}
 function renderHead(){renderAdvExport();$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
 
 /* ---- editor ---- */
@@ -1703,6 +1732,7 @@ function usedFlags(){
     if(m("u"))u.add("unsworn");if(m("r"))u.add("chase");if(r.type===4)u.add("runebase");});
   _uf=u;_ufr=REV;return u;
 }
+let DROPR=[];
 function dropHTML(it,e,anim){
   const hc=colOf(e.col)[2];
   const mods=it.label?it.label:it.mods.length?it.mods.map(m=>`${m.group} T${m.tier}`).join(" · "):it.rar==="U"?"fixed mods":"no mods";
@@ -1711,13 +1741,22 @@ function dropHTML(it,e,anim){
   if(it.unsworn&&uf.has("unsworn"))fa.push("unsworn");if(it.chase&&uf.has("chase"))fa.push("chase red");if(it.truesworn&&uf.has("truesworn"))fa.push("truesworn");if(it.runebase&&uf.has("runebase"))fa.push("rune base");
   const fl=fa.length?` · <span class="tf" title="Random test flags. Real drops may differ.">test flags: ${fa.join(", ")}</span>`:"";
   const WD=["hid it","showed it","highlighted it","highlighted it with a beam","sold it (unconfirmed)"];
-  const rule=e.i>=0?`<span class="rn"><b>Rule #${e.i+1}</b>${(F.rules[e.i].name||"").trim()?` “${esc(F.rules[e.i].name.trim())}”`:""} ${e.guard?"matched, but the game never hides this item, so it is shown":WD[F.rules[e.i].action]} · ${esc(summary(F.rules[e.i]))}</span>`:`<span class="rn">No matching rule, so it is shown normally</span>`;
+  const rule=e.i>=0?`<span class="rn"><b>Rule #${e.i+1}</b>${(DROPR[e.i].name||"").trim()?` “${esc(DROPR[e.i].name.trim())}”`:""} ${e.guard?"matched, but the game never hides this item, so it is shown":WD[DROPR[e.i].action]} · ${esc(summary(DROPR[e.i]))}</span>`:`<span class="rn">No matching rule, so it is shown normally</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
    <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
    <span class="vd" title="${e.guard?"never hidden":e.v===4?"Sell: not confirmed in the game. The Drop Test treats it like Hide.":""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM","SELL"][e.v]}</span></li>`;
 }
-const sellRel=n=>n>0||F.rules.some(r=>r.on&&r.action===4);
+const sellRel=n=>n>0||DROPR.some(r=>r.on&&r.action===4);
+function renderSimNote(sr){
+  const el=$("#simNote");if(!el)return;
+  let m;
+  if(sr.easy)m=ezLinked()?"Simulating: your active filter, which Easy Mode controls ("+sr.rules.length+" rules).":"Simulating: the Easy Mode preview ("+sr.rules.length+" rules), not applied to your active filter yet.";
+  else if(sr.n>MAX_RULES)m="Simulating: your active filter ("+F.rules.length+" rules). The Easy Mode preview has "+sr.n+" rules, over the limit of "+MAX_RULES+", so it cannot be simulated.";
+  else m="Simulating: your active filter ("+F.rules.length+" rule"+(F.rules.length===1?"":"s")+").";
+  el.textContent=m;el.classList.toggle("easysim",!!sr.easy&&!ezLinked());
+}
 function renderDrops(animId){
+  const sr=simRules();DROPR=sr.rules;renderSimNote(sr);
   const t={all:S.items.length,hl:0,show:0,hide:0,sell:0},ev=S.items.map(it=>evalC(it));
   ev.forEach(e=>{if(e.v===0)t.hide++;else if(e.v===4)t.sell++;else if(isHl(e.v))t.hl++;else t.show++;});
   $("#drops").innerHTML=S.items.map((it,k)=>dropHTML(it,ev[k],it.id===animId)).join("");
@@ -1729,7 +1768,7 @@ function renderDrops(animId){
   $("#nAll").textContent=t.all;$("#nHl").textContent=t.hl;$("#nShow").textContent=t.show;$("#nHide").textContent=t.hide;$("#nSell").textContent=t.sell;$("#stSell").classList.toggle("zero",!t.sell);{const sr=sellRel(t.sell);$("#stSell").hidden=!sr;$("#stats").classList.toggle("has-sell",sr);}
   $("#bHl").style.width=t.hl/n*100+"%";$("#bShow").style.width=t.show/n*100+"%";$("#bHide").style.width=t.hide/n*100+"%";$("#bSell").style.width=t.sell/n*100+"%";
 }
-function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genFiltered();const sl=(S.slot=(S.slot||0)+1)*7%15;last.x=10+(sl%5)*20+(Math.random()*6-3);last.y=6+Math.floor(sl/5)*30+(Math.random()*6-3);S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
+function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genItem();const sl=(S.slot=(S.slot||0)+1)*7%15;last.x=10+(sl%5)*20+(Math.random()*6-3);last.y=6+Math.floor(sl/5)*30+(Math.random()*6-3);S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
 
 /* ---- export ---- */
 function renderOut(){$("#out").textContent=encode(F);if(window.shSync)window.shSync();}
@@ -1761,8 +1800,8 @@ function save(){snap();try{const c=encode(F);localStorage.setItem("oathfilter4",
 
 /* ---- orchestration ---- */
 function setFilter(f){F=f;F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});S.cur=F.rules[0]?F.rules[0].id:null;fullRender();}
-function fullRender(){REV++;renderHead();renderRows();renderEditor();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();if(V.view==="edit"&&EZ.m==="easy")ezRefresh();save();}
-function touch(){REV++;F.preset="-1";renderHead();renderRows();syncEditor();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();if(V.view==="edit"&&EZ.m==="easy")ezRefresh();save();}
+function fullRender(){REV++;renderHead();renderRows();renderEditor();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();if(V.view==="edit"&&EZ.m==="easy")ezRefresh();save();if(window.shSync)window.shSync();}
+function touch(){REV++;F.preset="-1";renderHead();renderRows();syncEditor();if(V.view==="test")renderDrops();if(V.view==="io")renderOut();if(V.view==="edit"&&EZ.m==="easy")ezRefresh();save();if(window.shSync)window.shSync();}
 
 /* ---- events ---- */
 document.addEventListener("click",e=>{
@@ -1790,10 +1829,10 @@ document.addEventListener("click",e=>{
   if(d.col){r.colour=+d.col;touch();return;}
 });
 document.addEventListener("keydown",e=>{
-  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="d"&&V.view==="edit"){e.preventDefault();const b=$("#dupRule");if(b&&!b.disabled)b.click();return;}
-  if(e.altKey&&!e.shiftKey&&/^Arrow(Up|Down)$/.test(e.key)&&V.view==="edit"&&F.rules.length){e.preventDefault();const i=Math.max(0,F.rules.findIndex(r=>r.id===S.cur)),j=Math.min(F.rules.length-1,Math.max(0,i+(e.key==="ArrowDown"?1:-1)));S.cur=F.rules[j].id;renderRows();renderEditor();return;}
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="d"&&V.view==="edit"&&EZ.m!=="easy"){e.preventDefault();const b=$("#dupRule");if(b&&!b.disabled)b.click();return;}
+  if(e.altKey&&!e.shiftKey&&/^Arrow(Up|Down)$/.test(e.key)&&V.view==="edit"&&EZ.m!=="easy"&&F.rules.length){e.preventDefault();const i=Math.max(0,F.rules.findIndex(r=>r.id===S.cur)),j=Math.min(F.rules.length-1,Math.max(0,i+(e.key==="ArrowDown"?1:-1)));S.cur=F.rules[j].id;renderRows();renderEditor();return;}
   if(e.key==="Escape"&&V.q){V.q="";$("#rq").value="";renderRows();return;}
-  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&!e.target.matches("textarea,input[type=search],input[type=text]")){e.preventDefault();undo();return;}
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&V.view==="edit"&&!e.target.matches("textarea,select,[contenteditable],input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=button])")){e.preventDefault();undo();return;}
   if(!e.target.matches("#nav button")||!/^Arrow(Left|Right)$/.test(e.key))return;
   const bs=$$("#nav button"),i=bs.indexOf(e.target),n=bs[(i+(e.key==="ArrowRight"?1:bs.length-1))%bs.length];setView(n.dataset.view);n.focus();e.preventDefault();
 });
@@ -1819,9 +1858,6 @@ document.addEventListener("input",e=>{
   if(t.id==="rq"){V.q=t.value;clearTimeout(rqT);rqT=setTimeout(renderRows,100);return;}
   if(t.dataset.pk){S.pk[t.dataset.pk]=t.value;renderPickList(t.dataset.pk);}
 });
-function downloadCode(){const d=new Date(),p=n=>String(n).padStart(2,"0"),name="oathfilter-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".txt";
-  const a=document.createElement("a"),url=URL.createObjectURL(new Blob([encode(F)+"\n"],{type:"text/plain"}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Saved "+name+".");}
-
 $("#copyAdv").onclick=()=>{if(EZ.m==="easy"&&V.view==="edit")ezCopy();else copyCode();};
 /* ---- local filters (localStorage only) ---- */
 const LF={key:"oathfilter-saved",max:50,
@@ -1977,10 +2013,15 @@ async function shPack(pl){
   const j=JSON.stringify({v:1,c:pl.bofilter,n:pl.ruleNames});let u=new TextEncoder().encode(j),m="p";
   try{if(typeof CompressionStream==="function"){const z=new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());if(z.length<u.length){u=z;m="z";}}}catch(e){u=new TextEncoder().encode(j);m="p";}
   return m+b64uEnc(u);}
+const SH_MAXZ=262144; /* decompressed cap in bytes: a 40 rule filter with names is a few KB */
 async function shUnpack(str){
+  if(str.length>400000)throw new Error("size");
   const m=str[0],u=b64uDec(str.slice(1));let t;
-  if(m==="z")t=new TextDecoder().decode(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
-  else if(m==="p")t=new TextDecoder().decode(u);else throw new Error("format");
+  if(m==="z"){
+    const rd=new Blob([u]).stream().pipeThrough(new DecompressionStream("deflate-raw")).getReader(),parts=[];let n=0;
+    for(;;){const r=await rd.read();if(r.done)break;n+=r.value.length;if(n>SH_MAXZ){try{await rd.cancel();}catch(e){}throw new Error("size");}parts.push(r.value);}
+    const all=new Uint8Array(n);let o=0;parts.forEach(x=>{all.set(x,o);o+=x.length;});t=new TextDecoder().decode(all);}
+  else if(m==="p"){if(u.length>SH_MAXZ)throw new Error("size");t=new TextDecoder().decode(u);}else throw new Error("format");
   const o=JSON.parse(t);return{bofilter:o.c,filterName:o.f,authorName:o.a,ruleNames:o.n};}
 function shPayload(){return{bofilter:encode(F),ruleNames:F.rules.map(r=>String(r.name||"").slice(0,NAME_MAX))};}
 async function shPost(pl){
@@ -2021,6 +2062,7 @@ const shRun=async()=>{
   catch(e){try{url=shBase()+"#s="+await shPack(pl);offline=true;}catch(e2){shLast.busy=false;btn.disabled=false;shMsg("The link could not be created. Copy the game code instead.",true);return;}}
   shLast={code:pl.bofilter,url,busy:false};btn.disabled=false;
   $("#shUrl").value=url;$("#shRes").hidden=false;
+  setTimeout(()=>{if(window.shSync)window.shSync();},0); /* the filter may have changed while the link was created */
   shMsg(reused?"This exact filter was shared before. Here is the same link, nothing new was stored.":offline?"The share service could not be reached, so this is an offline link. It works without the service"+(url.length>1800?", but it is long and Discord may cut it.":"."):"Link created.",offline&&url.length>1800);};
 $("#shCopy").onclick=()=>shCopyText($("#shUrl").value,"Link copied.");
 $("#shDisc").onclick=()=>shCopyText("[Oathfilter filter]("+$("#shUrl").value+")","Discord link copied.");
@@ -2862,11 +2904,11 @@ function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
-  const s={rl:LVSTEPS.includes(+o.rl)?+o.rl:0,tk:n(o.tk,1,3,2),hl:on(o.hl,1),
-    idol:"match",hn:on(o.hn,1),hm:on(o.hm,0),arch:{},keep:{}};
+  const s={rl:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
+    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.idol==="orbit")s.arch.orbit=1; /* older saves had "only orbiting" as an Idol mode */
-  ["core","runes","tsw"].forEach(k=>{s.keep[k]=on(o.keep&&o.keep[k],1);});
+  ["core","runes","tsw"].forEach(k=>{s.keep[k]=on(o.keep&&o.keep[k],d.keep[k]);});
   return s;
 }
 /* lines the game data knows, one per distinct text (same text = same line) */
@@ -2964,6 +3006,7 @@ function ezMode(m,quiet){
   EZ.m=m==="easy"?"easy":"adv";
   $("#ezBox").hidden=EZ.m!=="easy";$("#edCols").hidden=EZ.m==="easy";
   $$("#ezMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ezm===EZ.m?"true":"false"));
+  REV++;renderAdvExport();
   if(EZ.m==="easy"&&!quiet)ezRefresh();
 }
 /* ---- controls ---- */
@@ -3006,9 +3049,9 @@ function ezPreview(g){
   else status+=`<p class="hint" style="margin:0 0 10px">Easy Mode is not applied yet. Your filter stays as it is until you apply it.</p><div class="ezrow" style="margin:0 0 12px"><button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>Apply to my filter</button></div>`;
   const mn={black:"Hide only",white:"Show and highlight first, then hide the rest"}[g.mode];
   const w=g.notes.concat(sh);
-  const hh=status+`
-  ${ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:""}
-  <div class="sub"><span class="lab">Rule count</span>
+  const top=status+`
+  ${ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:""}`;
+  const bot=`<div class="sub"><span class="lab">Rule count</span>
     <div class="ezcount"><span>Active filter (badge, top right)</span><b>${act} / ${MAX_RULES}</b></div>
     <div class="ezcount${over?" bad":""}"><span>Easy Mode ${linked?"rules (applied)":"preview (not applied)"}</span><b>${n} / ${MAX_RULES}</b></div></div>
   <div class="sub"><span class="lab">Strategy</span><b>${esc(mn)}</b><p class="hint" style="margin:4px 0 0">${esc(g.why)}</p></div>
@@ -3016,12 +3059,11 @@ function ezPreview(g){
     <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(actWord(r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol></div>
   ${w.length?`<div class="sub"><span class="lab">Warnings</span>${w.map(t=>`<p class="hint ezw" style="margin:4px 0 0">${esc(t)}</p>`).join("")}</div>`:""}
 `;
-  const k=hh.indexOf('<div class="sub"><span class="lab">Rule count</span>');$("#ezOut").innerHTML=k<0?hh:hh.slice(0,k);$("#ezOut2").innerHTML=k<0?"":hh.slice(k);
-  
+  $("#ezOut").innerHTML=top;$("#ezOut2").innerHTML=bot;
 }
 const ezRefresh=()=>{ezSync();ezPreview();};
 function ezTouched(){
-  ezSave();ezCode="";ezSync();ezPreview();
+  REV++;ezSave();ezCode="";ezSync();ezPreview();renderAdvExport();if(!ezLinked())snap();if(V.view==="test")renderDrops();
   clearTimeout(ezT);ezT=setTimeout(()=>{if(ezLinked())ezApply();},250);
 }
 (function ezInit(){
@@ -3040,7 +3082,7 @@ function ezTouched(){
       else if(a==="cancel"){ezAsk=false;ezPreview();}
       else if(a==="keep"){EZ.h="";ezSave();ezAsk=false;ezMode("adv");}
       else if(a==="adv")ezMode("adv");
-      else if(a==="copy"){const g=easyGen(EZ.s);if(g.rules.length>MAX_RULES){toast("Not copied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);ezPreview(g);}else copyCode(encode({preset:"-1",rules:g.rules}));}
+      else if(a==="copy")ezCopy();
       return;
     }
     if(!b.dataset.ez)return;
@@ -3057,12 +3099,14 @@ function ezTouched(){
 
 (function init(){
   let start=null;
-  try{const c=localStorage.getItem("oathfilter4");if(c)start=decode(c).filter;}catch(e){}
+  let initWarn="";
+  try{const c=localStorage.getItem("oathfilter4");if(c){const d=decode(c);start=d.filter;initWarn=d.warn.join(" ");}}catch(e){initWarn="Your saved filter could not be read, so the default preset was loaded.";}
   F=start||PRESETS[4].build();F.rules.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});
   try{const nm=JSON.parse(localStorage.getItem("oathfilter-names")||"null");if(nm&&Array.isArray(nm.n)&&nm.c===localStorage.getItem("oathfilter4"))F.rules.forEach((r,i)=>{r.name=String(nm.n[i]||"").slice(0,NAME_MAX);});}catch(e){}
   S.cur=F.rules[0]?F.rules[0].id:null;
   for(let k=0;k<14;k++){const it=genItem();it.x=8+Math.random()*84;it.y=12+Math.random()*230;S.items.push(it);}
   fullRender();setView("edit");
+  if(initWarn)toast(initWarn,true);
   setTimeout(shOpenFromHash,0);
 })();
 
