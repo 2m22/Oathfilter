@@ -389,6 +389,14 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
     <div class="seg" role="group" aria-label="Show rules" id="rfilter" style="margin-top:12px"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button><button type="button" data-rf="sell" aria-pressed="false">Sell</button></div>
     <div class="sub" style="margin-top:12px"><button type="button" class="btn" id="chkOrder" style="width:100%">Check rule order</button><div id="chkOut" role="status" aria-live="polite"></div></div>
+    <details class="sub" id="mdBox"><summary class="lab" style="cursor:pointer">Modules</summary>
+      <div class="hrow" style="margin:8px 0"><p class="hint" style="margin:0">Save rules as a reusable module and insert them into any filter.</p><button type="button" class="hlp" data-help="modules" aria-label="Help: Modules" aria-expanded="false">?</button></div>
+      <label class="lab" for="mdName">Name for the new module</label>
+      <input id="mdName" class="field" type="text" maxlength="40" placeholder="e.g. Hide junk" autocomplete="off">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:8px"><div style="flex:1 1 90px"><label class="lab" for="mdFrom">From rule</label><input id="mdFrom" class="field" type="number" min="1" inputmode="numeric"></div><div style="flex:1 1 90px"><label class="lab" for="mdTo">To rule</label><input id="mdTo" class="field" type="number" min="1" inputmode="numeric"></div><button type="button" class="btn gold" id="mdSave">Save as module</button></div>
+      <p class="hint" id="mdMsg" role="status" aria-live="polite" style="margin:8px 0"></p>
+      <label class="lab" for="mdPos">Insert at</label><div class="selwrap"><select id="mdPos"><option value="after">After selected rule</option><option value="top">Top</option><option value="end">End</option></select></div>
+      <ul class="lfl" id="mdList" style="margin-top:10px"></ul></details>
     <p class="hint" id="rhint" style="margin:12px 0 0"></p>
     <div id="rows"></div>
     <div class="hint" id="actCount" style="margin-top:20px"></div></section>
@@ -436,14 +444,14 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <label class="lab" for="codeIn">Paste a BOFILTER code</label><textarea id="codeIn" class="field" placeholder="BOFILTER:1,..." style="min-height:200px"></textarea>
     <div style="margin-top:12px"><button type="button" class="btn gold" id="load">Load filter</button></div><div class="sub" id="loadConf" hidden style="margin-top:10px"><p class="hint" style="margin:0 0 8px" id="loadConfT"></p><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn danger" id="loadYes">Replace my filter</button><button type="button" class="btn" id="loadNo">Cancel</button></div></div><div class="toast" id="loadMsg" role="status"></div>
     <p class="hint" style="margin:8px 0 0">Copy the code from the game's loot filter window.</p></section>
-  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-loc"><div class="hrow" style="margin-bottom:10px"><h2 id="h-loc" class="coltitle" style="margin:0">Local filters</h2><button type="button" class="hlp" data-help="local" aria-label="Help: Local filters" aria-expanded="false">?</button></div>
+  <section class="plate" style="flex:1 1 100%" aria-labelledby="h-loc"><div class="hrow" style="margin-bottom:10px"><h2 id="h-loc" class="coltitle" style="margin:0">Local filters / base filters</h2><button type="button" class="hlp" data-help="local" aria-label="Help: Local filters" aria-expanded="false">?</button></div>
     <p class="hint" style="margin:0 0 14px">Saved in this browser only, with your rule names. Use Copy filter code for a backup.</p>
     <div class="cols" style="gap:24px">
       <div style="flex:1 1 300px"><h3 style="margin:0 0 10px;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Save existing filters</h3>
         <label class="lab" for="lfName">Name for the current filter</label>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><input id="lfName" class="field" type="text" maxlength="40" placeholder="e.g. Mapping v2" autocomplete="off" style="flex:1 1 180px;min-width:0"><button type="button" class="btn gold" id="lfSave">Save current filter</button></div>
         <p class="hint" id="lfMsg" role="status" aria-live="polite" style="margin:8px 0 0"></p></div>
-      <div style="flex:1 1 420px"><h3 style="margin:0 0 10px;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Load existing filters</h3><ul class="lfl" id="lfList"></ul></div>
+      <div style="flex:1 1 420px"><h3 style="margin:0 0 10px;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Start from a saved filter</h3><ul class="lfl" id="lfList"></ul></div>
     </div></section>
 </div></div>
 
@@ -522,6 +530,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <h3 class="subtitle">Tips</h3>
     <ul class="pl">
      <li><b>Start from a preset.</b> Load Tidy or Strict and change only what you need.</li>
+     <li><b>Reuse your work.</b> Save a few rules as a module in the Editor and insert them into other filters. For a whole filter, save it under Local filters (Import tab) and press “Start from this”.</li>
      <li><b>Check the order.</b> A broad rule above a narrow one means the narrow one never fires. The rule list warns “May be caught by rule N” when it is sure. “Check rule order” in the Editor also runs sample items through your filter and lists rules that never decide anything.</li>
      <li><b>Confirm in the game.</b> Always check the finished filter in the game.</li>
     </ul></section>
@@ -680,7 +689,7 @@ const COPY={
 };
 document.querySelectorAll("[data-copy]").forEach(e=>{e.textContent=COPY[e.dataset.copy]||"";});
 /* Help popovers: every ? button carries data-help=<key>. Opens on hover, focus and click/tap (click keeps it open). */
-const HELP={"ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to four named bases, lines or reds per rule."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."], "local": ["Local filters", "Saved in this browser only (localStorage). Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."]};
+const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. Inserting it adds the rules to your filter at the chosen place and keeps their order. It never replaces your filter. If the result would be over 40 rules, it cannot be inserted. Ctrl+Z takes it back."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to four named bases, lines or reds per rule."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."], "local": ["Local filters", "Saved in this browser only (localStorage). Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."]};
 const hb=k=>`<button type="button" class="hlp" data-help="${k}" aria-label="Help: ${HELP[k][0]}" aria-expanded="false">?</button>`;
 (function(){
   const pop=document.createElement("div");pop.id="hlpPop";pop.setAttribute("role","tooltip");pop.hidden=true;document.body.appendChild(pop);
@@ -1690,7 +1699,7 @@ function renderAdvExport(){
   b.textContent=over?"Copy filter code ("+n+" / "+MAX_RULES+")":"Copy filter code";b.classList.toggle("over",over);
   b.title=over?(em?"The Easy Mode preview has ":"Your active filter has ")+n+" rules, but the game takes "+MAX_RULES+". It will not be copied from Easy Mode.":"Copies your active filter ("+n+" rule"+(n===1?"":"s")+"). In Easy Mode it copies the Easy Mode preview.";
 }
-function renderHead(){renderAdvExport();$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
+function renderHead(){renderAdvExport();if(typeof renderMD==="function")renderMD();$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
 
 /* ---- editor ---- */
 const chipRow=(k,r)=>`<div class="chips">${T[k].map(o=>`<button type="button" class="cb2" data-set="${k},${o[0]}" aria-pressed="${r[k]===o[0]}">${esc(o[1])}</button>`).join("")}</div>`;
@@ -1935,6 +1944,69 @@ document.addEventListener("input",e=>{
   if(t.dataset.pk){S.pk[t.dataset.pk]=t.value;renderPickList(t.dataset.pk);}
 });
 $("#copyAdv").onclick=()=>{if(EZ.m==="easy"&&V.view==="edit")ezCopy();else copyCode();};
+/* ---- modules: reusable groups of rules (localStorage only, same code format as local filters) ---- */
+const MD={key:"oathfilter-modules",max:50,
+  all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},
+  put(a){try{localStorage.setItem(this.key,JSON.stringify(a));return true;}catch(e){return false;}}};
+let mdMode={},mdOver="";
+const mdMsg=(m,bad)=>{const e=$("#mdMsg");if(!e)return;e.textContent=m;e.style.color=bad?"var(--hide-fg)":"";};
+function mdRules(x){let f;try{f=unpackState(JSON.stringify({c:x.c,n:x.n}));}catch(e){return null;}return f.rules;}
+function renderMD(){
+  const ul=$("#mdList");if(!ul)return;const a=MD.all().sort((x,y)=>ALPHA([0,x.name],[0,y.name])),cur=F.rules.length;
+  if(ul.contains(document.activeElement)&&document.activeElement.matches("input"))return;
+  ul.innerHTML=a.length?a.map(x=>{
+    const rs=mdRules(x)||[],n=rs.length,tot=cur+n,over=tot>MAX_RULES,m=mdMode[x.id];
+    const acts=[...new Set(rs.map(r=>(T.action.find(o=>o[0]===r.action)||[0,"?"])[1]))].join(", ");
+    const info=`<div class="lfi"><b title="${esc(x.name)}">${esc(x.name)}</b><span class="hint">${n} rule${n===1?"":"s"}${acts?" · "+esc(acts):""}</span><span class="hint"${over?' style="color:var(--hide-fg)"':""}>${cur} + ${n} = ${tot} / ${MAX_RULES}</span></div>`;
+    if(m==="ren")return `<li data-md="${x.id}"><input class="field" type="text" maxlength="40" value="${esc(x.name)}" aria-label="New name" data-mdin="${x.id}"><div class="lfb"><button type="button" class="btn gold" data-mda="rensave" data-id="${x.id}">Save</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Cancel</button></div></li>`;
+    if(m==="del")return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn danger" data-mda="delyes" data-id="${x.id}">Delete</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Cancel</button></div></li>`;
+    return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn" data-mda="ins" data-id="${x.id}"${over?' disabled title="Over the limit of '+MAX_RULES+' rules. Delete some rules first."':""}>Insert</button><button type="button" class="btn" data-mda="ren" data-id="${x.id}">Rename</button><button type="button" class="btn" data-mda="del" data-id="${x.id}">Delete</button></div>${over?`<p class="hint" style="margin:0;flex:1 1 100%;color:var(--hide-fg)">Too many rules for the game's limit. Delete ${tot-MAX_RULES} rule${tot-MAX_RULES===1?"":"s"} first.</p>`:""}</li>`;
+  }).join(""):`<li class="hint" style="border-style:dashed">No modules yet. Save a few rules above.</li>`;
+  const f=ul.querySelector("[data-mdin]");if(f){f.focus();f.select();}
+}
+function mdInsert(x){
+  if(typeof EZ!=="undefined"&&EZ.m==="easy")return;
+  const rs=mdRules(x);if(!rs||!rs.length){mdMsg("This module could not be read.",true);return;}
+  const n=rs.length,tot=F.rules.length+n;
+  if(tot>MAX_RULES){mdMsg(F.rules.length+" + "+n+" = "+tot+" / "+MAX_RULES+". Delete "+(tot-MAX_RULES)+" rule"+(tot-MAX_RULES===1?"":"s")+" first.",true);return;}
+  const pos=$("#mdPos").value;let at=F.rules.length;
+  if(pos==="top")at=0;else if(pos==="after"){const i=F.rules.findIndex(r=>r.id===S.cur);if(i>=0)at=i+1;}
+  rs.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});
+  F.preset="-1";F.rules.splice(at,0,...rs);S.cur=rs[0].id;V.filter="all";V.q="";$("#rq").value="";
+  fullRender();mdMsg("");toast("Inserted "+n+" rule"+(n===1?"":"s")+" from “"+x.name+"”. "+COPY.undo);
+  const w=rs.filter(r=>mlist(r,"a").length>4).length;if(w)toast("Inserted. "+w+" rule"+(w>1?"s list":" lists")+" more than 4 named lines. The Editor allows 4 per rule.",true);
+}
+$("#mdSave").onclick=()=>{
+  const name=$("#mdName").value.trim().slice(0,40),n=F.rules.length;
+  if(!name){mdMsg("Give the module a name first.",true);$("#mdName").focus();return;}
+  if(!n){mdMsg("There are no rules to save.",true);return;}
+  const cur=F.rules.findIndex(r=>r.id===S.cur)+1;
+  let a=parseInt($("#mdFrom").value,10),b=parseInt($("#mdTo").value,10);
+  if(!a)a=cur;if(!b)b=a;
+  if(!(a>=1)||b<a||b>n){mdMsg("Choose rule numbers from 1 to "+n+", with “From” not above “To”.",true);return;}
+  const all=MD.all(),i=all.findIndex(x=>x.name.toLowerCase()===name.toLowerCase());
+  if(i>=0&&mdOver!==name.toLowerCase()){mdOver=name.toLowerCase();mdMsg("“"+all[i].name+"” already exists. Click Save again to overwrite it.");return;}
+  if(i<0&&all.length>=MD.max){mdMsg("You can keep up to "+MD.max+" modules. Delete one first.",true);return;}
+  const rules=F.rules.slice(a-1,b),rec={id:i>=0?all[i].id:"m"+Date.now().toString(36)+uid().slice(0,3),name:i>=0?all[i].name:name,c:encode({preset:"-1",rules}),n:rules.map(r=>r.name||""),t:Date.now()};
+  if(i>=0)all[i]=rec;else all.unshift(rec);
+  if(!MD.put(all)){mdMsg(COPY.storage,true);return;}
+  mdOver="";mdMsg((i>=0?"Updated “":"Saved “")+rec.name+"” ("+rules.length+" rule"+(rules.length===1?"":"s")+").");$("#mdName").value="";$("#mdFrom").value="";$("#mdTo").value="";renderMD();};
+$("#mdName").addEventListener("input",()=>{mdOver="";});
+$("#mdName").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#mdSave").click();}});
+$("#mdList").addEventListener("keydown",e=>{const i=e.target.closest("[data-mdin]");if(i&&e.key==="Enter"){e.preventDefault();const b=$("#mdList [data-mda=rensave]");if(b)b.click();}if(i&&e.key==="Escape"){mdMode={};renderMD();}});
+$("#mdList").addEventListener("click",e=>{
+  const b=e.target.closest("[data-mda]");if(!b||b.disabled)return;const id=b.dataset.id,all=MD.all(),x=all.find(y=>y.id===id);if(!x)return;const act=b.dataset.mda;
+  if(act==="ins"){mdInsert(x);return;}
+  if(act==="ren"){mdMode={};mdMode[id]="ren";renderMD();return;}
+  if(act==="del"){mdMode={};mdMode[id]="del";renderMD();const q=$("#mdList [data-mda=delyes]");if(q)q.focus();return;}
+  if(act==="cancel"){mdMode={};renderMD();return;}
+  if(act==="rensave"){const inp=$("#mdList [data-mdin]"),nn=(inp?inp.value:"").trim().slice(0,40);
+    if(!nn){mdMsg("Give the module a name.",true);return;}
+    if(all.some(y=>y.id!==id&&y.name.toLowerCase()===nn.toLowerCase())){mdMsg("Another module is already called “"+nn+"”.",true);return;}
+    x.name=nn;mdMode={};if(!MD.put(all))mdMsg(COPY.storage,true);else mdMsg("Renamed.");renderMD();return;}
+  if(act==="delyes"){const r=all.filter(y=>y.id!==id);mdMode={};if(MD.put(r))mdMsg("Deleted “"+x.name+"”.");else mdMsg("Could not delete (browser storage error).",true);renderMD();return;}
+});
+renderMD();
 /* ---- local filters (localStorage only) ---- */
 const LF={key:"oathfilter-saved",max:50,
   all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},
@@ -1949,7 +2021,7 @@ function renderLF(){
     if(m==="ren")return `<li data-lf="${x.id}">${info.replace(/<div class="lfi">.*<\/div>$/,"")}<input class="field" type="text" maxlength="40" value="${esc(x.name)}" aria-label="New name" data-lfin="${x.id}"><div class="lfb"><button type="button" class="btn gold" data-lfa="rensave" data-id="${x.id}">Save name</button><button type="button" class="btn" data-lfa="cancel" data-id="${x.id}">Cancel</button></div></li>`;
     if(m==="load")return `<li data-lf="${x.id}">${info}<div class="lfb"><button type="button" class="btn danger" data-lfa="loadyes" data-id="${x.id}">Replace current filter</button><button type="button" class="btn" data-lfa="cancel" data-id="${x.id}">Cancel</button></div><p class="hint lfq">This replaces your current filter (${F.rules.length} rule${F.rules.length===1?"":"s"}). Undo in the Editor brings it back.</p></li>`;
     if(m==="del")return `<li data-lf="${x.id}">${info}<div class="lfb"><button type="button" class="btn danger" data-lfa="delyes" data-id="${x.id}">Delete</button><button type="button" class="btn" data-lfa="cancel" data-id="${x.id}">Cancel</button></div><p class="hint lfq">Delete this saved filter from the browser? This cannot be undone.</p></li>`;
-    return `<li data-lf="${x.id}">${info}<div class="lfb"><button type="button" class="btn" data-lfa="load" data-id="${x.id}">Load</button><button type="button" class="btn" data-lfa="ren" data-id="${x.id}">Rename</button><button type="button" class="btn" data-lfa="del" data-id="${x.id}">Delete</button></div></li>`;
+    return `<li data-lf="${x.id}">${info}<div class="lfb"><button type="button" class="btn" data-lfa="load" data-id="${x.id}">Start from this</button><button type="button" class="btn" data-lfa="ren" data-id="${x.id}">Rename</button><button type="button" class="btn" data-lfa="del" data-id="${x.id}">Delete</button></div></li>`;
   }).join(""):`<li class="hint" style="border-style:dashed">No saved filters yet. Save the current filter on the left.</li>`;
   const f=ul.querySelector("[data-lfin]");if(f){f.focus();f.select();}
 }
