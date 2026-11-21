@@ -360,7 +360,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <progress id="dcPg" max="1" value="0" hidden style="width:100%;margin-top:8px"></progress>
     <p class="hint" id="dcSt" role="status" aria-live="polite" style="margin:6px 0 0"></p>
     <img id="dcPv" alt="Your screenshot" hidden style="max-width:100%;max-height:220px;margin-top:8px;border:1px solid var(--border);border-radius:8px">
-    <label class="lab" for="dcTxt" style="display:block;margin-top:10px">Text from the screenshot (you can edit it)</label>
+    <label class="lab" for="dcTxt" style="display:block;margin-top:10px">Text from the screenshot (you can edit it). “│” separates the text from its tier marker, like “… Life │ T2 [21-28]”.</label>
     <textarea id="dcTxt" rows="7" spellcheck="false" placeholder="Or type or paste the tooltip text here, for example:&#10;Magic Idol 2x1&#10;Item Level 84&#10;T3 [7-8]&#10;Requires Level 20"></textarea>
     <div class="dctlb" style="margin-top:8px"><button type="button" class="btn gold" id="dcCheck">Check text</button><button type="button" class="btn" id="dcClear">Clear</button></div>
     <div id="dcRes" class="dcres" hidden aria-live="polite"></div></section>
@@ -2495,7 +2495,7 @@ function dcLineRes(){
 const dcLblOf=a=>LINEN[a.id]||LINEN[a.id.replace(/^Idol(.+?)_/,(m,x)=>"idol_"+x.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase()+"_")]||"";
 const dcAff=label=>AFF.find(a=>dcLblOf(a)===label);
 function dcParse(text){
-  const raw=String(text||""),lines=raw.split(/\r?\n/).map(s=>s.replace(/[^\S\t]+/g," ").replace(/ ?\t ?/g,"\t").trim()).filter(Boolean),all=dcNorm(raw);
+  const raw=String(text||""),lines=raw.split(/\r?\n/).map(s=>s.replace(/\s*\u2502\s*/g,"\t").replace(/[^\S\t]+/g," ").replace(/ ?\t ?/g,"\t").trim()).filter(Boolean),all=dcNorm(raw);
   const d={rar:null,kind:null,sub:"",rune:false,rtier:null,gem:false,core:false,truesworn:false,unsworn:null,ilvl:null,req:null,sock:null,grade:null,mods:[],baseId:"",baseName:"",redId:"",redName:"",ruleNo:null,ruleName:"",alt:false,nameHit:[],seen:[]};
   let m;
   for(const ln of lines){ /* rarity + type line, e.g. "Magic Idol 2x1" */
@@ -2714,7 +2714,7 @@ async function dcFile(file){
     dcStatus("Preparing the image…");const blob=await dcPrep(file);
     const r=await Tesseract.recognize(blob,"eng",{logger:m=>{if(job!==DC.job)return;if(m.status==="recognizing text"){dcProg(m.progress);dcStatus("Reading the text… "+Math.round(m.progress*100)+"%");}else if(/loading|initializ/i.test(m.status||"")){dcStatus("Loading the text reader…");}}});
     if(job!==DC.job)return;
-    $("#dcTxt").value=dcTextOf(r.data).trim();dcProg(null);
+    $("#dcTxt").value=dcTextOf(r.data).replace(/[ \t]*\t[ \t]*/g," \u2502 ").trim(); /* show the column split as │ */dcProg(null);
     dcStatus($("#dcTxt").value?"Done. Fix the text below if a word was misread, then press Check text.":"No text found in this image. Try a sharper screenshot of the tooltip.",!$("#dcTxt").value);
     dcRun();
   }catch(e){
