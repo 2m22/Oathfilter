@@ -2772,23 +2772,24 @@ const EZ_KEY="oathfilter-easy";
 /* g: gear lines (type 0). Idol rules use the gear lines whose text also exists on Idols, plus the Idol-only lines in "idol". */
 const EZ_ARCH=[
  {k:"attack",n:"Attacks",col:6,ids:["attack_speed_local","phys_added_local","phys_inc_local","attack_added_phys","attack_added_lightning","crit_local","crit_multi"],idol:[]},
- {k:"spell",n:"Spells",col:2,ids:["spell_inc","cast_speed","cold_spell_added","fire_spell_added","lightning_spell_added","poison_spell_added","crit_local","crit_multi"],idol:["idol_grand_eng_brand","idol_grand_spark_plus"]},
+ {k:"spell",n:"Spells",col:2,ids:["spell_inc","cast_speed","cold_spell_added","fire_spell_added","lightning_spell_added","poison_spell_added","skill_level","crit_local","crit_multi"],idol:["idol_grand_eng_brand","idol_grand_spark_plus"]},
  {k:"minion",n:"Minions",col:1,ids:["minion_dmg","minion_life","minion_speed","minion_crit","minion_crit_multi"],idol:["idol_grand_skeleton_plus","idol_grand_skeleton_wizard_plus"]},
  {k:"dot",n:"Damage over time",col:5,ids:["dot_multi","bleed_chance","bleed_effect","ignite_chance","ignite_effect","poison_dmg_inc","poison_effect"],idol:[]},
- {k:"life",n:"Life",col:7,ids:["life_large"],idol:["idol_grand_life_inc"]},
+ {k:"elem",n:"Elemental",col:5,ids:["fire_dmg_inc","cold_dmg_inc","lightning_dmg_inc"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
+ {k:"move",n:"Move Speed",col:4,ids:["move_speed"],idol:["idol_movement_damage_m"]},
+ {k:"melee",n:"Melee",col:6,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"]},
+ {k:"slam",n:"Slam",col:6,ids:[],idol:["idol_slam_damage_m","idol_grand_slam_spike"]},
+ {k:"bow",n:"Bow / Projectile",col:6,ids:[],idol:["idol_projectile_damage_m","idol_grand_bow_projectile"]},
+ {k:"chain",n:"Chain",col:6,ids:[],idol:["idol_chain_damage_m","idol_grand_chain_plus"]},
+ {k:"trap",n:"Trap",col:6,ids:[],idol:["idol_trap_damage_m","idol_grand_trap_plus","idol_grand_eng_trap"]},
+ {k:"totem",n:"Totem / Ballista",col:6,ids:[],idol:["idol_ballista_speed_m","idol_ballista_life_m","idol_grand_ballista_plus","idol_grand_eng_totem"]},
+ {k:"channel",n:"Channelling",col:2,ids:[],idol:["idol_channel_cost_m","idol_grand_channel_ramp"]},
+ {k:"orbit",n:"Orbiting",col:4,ids:[],idol:["idol_orbit_damage_m","idol_grand_orbit_plus","idol_grand_eng_orbit"]},
+ {k:"life",n:"Life",col:7,ids:["life_large","life_regen","life_leech","mana","mana_regen","mana_leech"],idol:["idol_grand_life_inc"]},
  {k:"res",n:"Resists",col:0,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
- {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]},
- {k:"melee",n:"Melee",col:6,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"],io:1},
- {k:"slam",n:"Slam",col:6,ids:[],idol:["idol_slam_damage_m","idol_grand_slam_spike"],io:1},
- {k:"bow",n:"Bow / Projectile",col:6,ids:[],idol:["idol_projectile_damage_m","idol_grand_bow_projectile"],io:1},
- {k:"chain",n:"Chain",col:6,ids:[],idol:["idol_chain_damage_m","idol_grand_chain_plus"],io:1},
- {k:"trap",n:"Trap",col:6,ids:[],idol:["idol_trap_damage_m","idol_grand_trap_plus","idol_grand_eng_trap"],io:1},
- {k:"totem",n:"Totem / Ballista",col:6,ids:[],idol:["idol_ballista_speed_m","idol_ballista_life_m","idol_grand_ballista_plus","idol_grand_eng_totem"],io:1},
- {k:"channel",n:"Channelling",col:2,ids:[],idol:["idol_channel_cost_m","idol_grand_channel_ramp"],io:1},
- {k:"orbit",n:"Orbiting",col:4,ids:[],idol:["idol_orbit_damage_m","idol_grand_orbit_plus","idol_grand_eng_orbit"],io:1}];
+ {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]}];
 const EZ_RL=[10,20,30,40,50,60,70,84];
 const EZ_FLOOR=["Off","Relaxed","Normal","Strict"],EZ_SLACK=[0,20,10,0];
-const EZ_IDOL=[["match","Match my picks"],["all","Show all"],["none","Hide all"]];
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
 const ezDef=()=>({rl:60,off:0,floor:0,hl:1,idol:"match",hn:1,hm:0,arch:{},keep:{core:1,runes:1,tsw:1}});
@@ -2798,7 +2799,7 @@ function ezSane(o){
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
   const s={rl:o.rl===undefined?d.rl:ezSnapRl(o.rl),off:n(o.off,-20,20,0),floor:n(o.floor,0,3,0),hl:on(o.hl,1),
-    idol:EZ_IDOL.some(x=>x[0]===o.idol)?o.idol:"match",hn:on(o.hn,1),hm:on(o.hm,0),arch:{},keep:{}};
+    idol:"match",hn:on(o.hn,1),hm:on(o.hm,0),arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.idol==="orbit")s.arch.orbit=1; /* older saves had "only orbiting" as an Idol mode */
   ["core","runes","tsw"].forEach(k=>{s.keep[k]=on(o.keep&&o.keep[k],1);});
@@ -2840,7 +2841,7 @@ function easyGen(s){
   if(s.keep.tsw&&anyHide)mk({type:16,rarity:3,level:6,action:2,colour:0},"Truesworn bases");
   /* 2 Idols: Type 0 does not cover Idols, so they get their own rules. Picks come first, the hide of the other Idols after them. */
   if(s.idol!=="none"&&(s.idol==="match"||s.hl))idolA.forEach(x=>x.parts.forEach((p,i)=>mk({type:14,action:s.hl?2:1,colour:x.a.col},"Idols: "+x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>msetList(r,"a",p))));
-  if(s.idol==="none"){mk({type:14,action:0},"Idols");if(act.some(a=>a.io))notes.push("Idol-only picks do nothing while all Idols are hidden.");}
+  if(s.idol==="none"){mk({type:14,action:0},"Idols");if(act.some(a=>!a.ids.length))notes.push("Idol-only picks do nothing while all Idols are hidden.");}
   else if(idolWhite)mk({type:14,action:0},"Other idols");
   else if(s.idol==="all"&&!s.hl&&idolA.length)notes.push("Idols stay shown and Highlight is off, so Idol picks change nothing. Turn Highlight on or use Match my picks.");
   else if(s.idol==="match"&&act.length&&!idolA.length)notes.push("None of your picks has Idol lines, so Idols are not touched.");
@@ -2852,7 +2853,7 @@ function easyGen(s){
     if(!gearA.length&&lo>0)mk({type:0,action:1},"Item level "+lo+"+",r=>msetRng(r,"i",lo,0));
     mk({type:0,action:0},"Everything else");
   }
-  if(act.length&&!gearA.length&&!white&&act.every(a=>a.io))notes.push("Your picks are Idol-only, so gear is not touched.");
+  if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
   return{rules:R,mode:white?"white":"black",why,il,lo,notes};
 }
 /* ---- state, hash and storage ---- */
@@ -2883,7 +2884,7 @@ function ezMode(m,quiet){
 const ezBtn=(d,label)=>`<button type="button" class="cb2" data-ez="${d}" aria-pressed="false">${esc(label)}</button>`;
 const ezSeg=(k,list,lab)=>`<div class="seg" role="group" aria-label="${esc(lab)}">${list.map(([v,l])=>`<button type="button" data-ez="${k},${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</div>`;
 function ezBuild(){
-  const gb=EZ_ARCH.filter(a=>!a.io),ib=EZ_ARCH.filter(a=>a.io);
+  
   $("#ezCtl").innerHTML=`
   <div class="sub"><span class="lab">Rupture Level</span>
     <input class="ezr" id="ez-rl" type="range" min="0" max="${EZ_RL.length-1}" step="1" aria-label="Rupture Level">
@@ -2891,11 +2892,9 @@ function ezBuild(){
     <div class="ezrow"><b id="ez-rlv"></b><label class="lab" for="ez-off" style="margin:0">Item level = RL +</label><input class="field ezn" id="ez-off" type="number" min="-20" max="20" step="1"></div>
     <span class="lab" style="margin-top:10px;display:block">Level floor</span>${ezSeg("floor",EZ_FLOOR.map((l,i)=>[i,l]),"Level floor")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
-  <div class="sub"><span class="lab">What I want to see: gear and Idols</span><div class="chips">${gb.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
-    <span class="lab" style="margin-top:10px;display:block">What I want to see: Idols only</span><div class="chips">${ib.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
+  <div class="sub"><span class="lab">What I want to see</span><div class="chips">${EZ_ARCH.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
+    <p class="hint" style="margin:6px 0 0">A pick also keeps the matching Idols and hides the other Idols. Picks without gear lines only change Idols.</p>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
-  <div class="sub"><span class="lab">Idols</span>${ezSeg("idol",EZ_IDOL,"Idols")}
-    <p class="hint" style="margin:6px 0 0">Match my picks keeps the Idols with your lines and hides the others. Without a pick that has Idol lines, Idols are not touched.</p></div>
   <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div></div>
   <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>`;
 }
