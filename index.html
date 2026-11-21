@@ -411,7 +411,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   <div class="stack dropwrap">
   <section class="plate" aria-labelledby="h-dc"><h2 id="h-dc" class="coltitle">Check a drop screenshot</h2>
     <div class="dcz" id="dcZone" tabindex="0" role="button" aria-label="Drop a screenshot here, paste it with Ctrl+V, or press Enter to choose a file"><b>Paste (Ctrl+V), drop or choose a screenshot</b><span>Drop or tooltip screenshot, like an idol or a rare item</span><button type="button" class="btn" id="dcPick" tabindex="-1">Choose file</button><input type="file" id="dcFile" accept="image/*" hidden></div>
-    <p class="hint hrow" id="dcHint" style="margin:8px 0 0"><span>Read on your device, never uploaded. Reads English game text only; set the game to English for screenshots.</span><button type="button" class="hlp" data-help="dcOcr" aria-label="Help: Screenshot reader" aria-expanded="false">?</button></p>
+    <p class="hint hrow" id="dcHint" style="margin:8px 0 0"><span>Read on your device, never uploaded. Works best with the game in English. Other languages use the selected language (beta).</span><button type="button" class="hlp" data-help="dcOcr" aria-label="Help: Screenshot reader" aria-expanded="false">?</button></p>
     <progress id="dcPg" max="1" value="0" hidden style="width:100%;margin-top:8px"></progress>
     <p class="hint" id="dcSt" role="status" aria-live="polite" style="margin:6px 0 0"></p>
     <img id="dcPv" alt="Your screenshot" hidden style="max-width:100%;max-height:220px;margin-top:8px;border:1px solid var(--border);border-radius:8px">
@@ -649,7 +649,7 @@ const LINE_HAY={};DATA.lines.forEach(x=>{const ids=LINE_IDS[x[0]]||[x[1]];LINE_H
 const BASEN=Object.fromEntries(DATA.bases),REDN=Object.fromEntries(DATA.reds),LINEN=DATA.lid,RED_IDS={};DATA.reds.forEach(x=>(RED_IDS[x[1]]=RED_IDS[x[1]]||[]).push(x[0]));
 /* Display language (game texts only). Logic, export and share data keep the English names; the maps below only change what is shown. Files: lang/<code>.json, loaded when picked. */
 const LANGS=[["en","English"],["bg","Български"],["cs","Čeština"],["da","Dansk"],["de","Deutsch"],["el","Ελληνικά"],["es-ES","Español (España)"],["es-419","Español (Latinoamérica)"],["fi","Suomi"],["fr","Français"],["hu","Magyar"],["id","Indonesia"],["it","Italiano"],["ja","日本語"],["ko","한국어"],["ms","Melayu"],["nb","Norsk bokmål"],["nl","Nederlands"],["pl","Polski"],["pt-BR","Português (Brasil)"],["pt-PT","Português (Portugal)"],["ro","Română"],["ru","Русский"],["sv","Svenska"],["th","ไทย"],["tr","Türkçe"],["uk","Українська"],["vi","Tiếng Việt"],["zh-Hans","简体中文"],["zh-Hant","繁體中文"]];
-const LX={ui:{},lines:{},bases:{},reds:{}};let LANG="en";
+const LX={ui:{},ui2:{},raw:{},lines:{},bases:{},reds:{}};let DC_REV=null;let LANG="en";
 const dl=t=>LX.lines[t]||t;
 const BASED=new Proxy(BASEN,{get:(o,k)=>typeof k==="string"?(LX.bases[k]||o[k]):o[k]});
 const REDD=new Proxy(REDN,{get:(o,k)=>typeof k==="string"?(LX.reds[k]||o[k]):o[k]});
@@ -2694,7 +2694,47 @@ function dcLineRes(){
 }
 const dcLblOf=a=>LINEN[a.id]||LINEN[a.id.replace(/^Idol(.+?)_/,(m,x)=>"idol_"+x.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase()+"_")]||"";
 const dcAff=label=>AFF.find(a=>dcLblOf(a)===label);
+/* Screenshot reader in other game languages: the text is translated back to English (affix lines, base and unique names, tooltip words) and then read by the English parser below. */
+const DC_OCR={bg:"bul",cs:"ces",da:"dan",de:"deu",el:"ell","es-ES":"spa","es-419":"spa",fi:"fin",fr:"fra",hu:"hun",id:"ind",it:"ita",ja:"jpn",ko:"kor",ms:"msa",nb:"nor",nl:"nld",pl:"pol","pt-BR":"por","pt-PT":"por",ro:"ron",ru:"rus",sv:"swe",th:"tha",tr:"tur",uk:"ukr",vi:"vie","zh-Hans":"chi_sim","zh-Hant":"chi_tra"};
+const dcOcrLang=()=>DC_OCR[LANG]?DC_OCR[LANG]+"+eng":"eng";
+const dcEsc=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+const dcCjk=s=>/[぀-ヿ㐀-鿿가-힯฀-๿]/.test(s);
+function dcRev(){
+  if(DC_REV)return DC_REV;
+  const R={lines:[],names:[],terms:[],tier:null};
+  Object.keys(LX.raw).forEach(en=>{
+    const loc=LX.raw[en];if(!loc||loc===en)return;
+    const parts=String(loc).split("#");if(parts.length>4)return;
+    const src=parts.map(p=>dcEsc(p).replace(/\s+/g,"\\s*")).join("([+\\-]?[\\d.,]+)");
+    let re;try{re=new RegExp("^(\\W{0,3})"+src,"i");}catch(e){return;}
+    R.lines.push({re,en:en.replace(/#\|plural\(one=[^,]*,other=([^)]*)\)/g,"#$1"),len:String(loc).length});
+  });
+  R.lines.sort((a,b)=>b.len-a.len);
+  const add=(arr,loc,en)=>{loc=String(loc||"");if(!loc||(loc.length<2&&!dcCjk(loc)))return;if(loc.toLowerCase()===String(en).toLowerCase())return;arr.push({loc,en,len:loc.length});};
+  Object.keys(LX.bases).forEach(id=>add(R.names,LX.bases[id],BASEN[id]));
+  Object.keys(LX.reds).forEach(id=>add(R.names,LX.reds[id],REDN[id]));
+  Object.keys(LX.ui2).forEach(k=>{if(k==="tier")R.tier=LX.ui2[k];else add(R.terms,LX.ui2[k],k);});
+  [R.names,R.terms].forEach(a=>a.sort((x,y)=>y.len-x.len));
+  const wr=loc=>{const e=dcEsc(loc);return dcCjk(loc)?new RegExp(e,"giu"):new RegExp("(?<![\\p{L}\\d])"+e+"(?![\\p{L}])","giu");};
+  [R.names,R.terms].forEach(a=>a.forEach(x=>{try{x.re=wr(x.loc);}catch(e){}}));
+  return DC_REV=R;
+}
+function dcLocalize(text){
+  if(LANG==="en"||!LX.raw)return text;
+  const R=dcRev();let t=String(text||"");
+  if(R.tier&&R.tier!=="T")try{t=t.replace(new RegExp("(^|[^\\p{L}\\d])"+dcEsc(R.tier)+"(?=\\s?[0-9OoIl|]\\s*\\[)","gmu"),"$1T");}catch(e){}
+  t=t.split(/\r?\n/).map(ln=>{
+    for(const x of R.lines){const m=ln.match(x.re);if(!m)continue;const nums=m.slice(2);let k=0;
+      const eng=x.en.replace(/#/g,()=>nums.length?nums[Math.min(k++,nums.length-1)]:"0");
+      return m[1]+eng+ln.slice(m[0].length);}
+    return ln;
+  }).join("\n");
+  R.names.forEach(x=>{if(x.re)t=t.replace(x.re,x.en);});
+  R.terms.forEach(x=>{if(x.re)t=t.replace(x.re,x.en);});
+  return t;
+}
 function dcParse(text){
+  text=dcLocalize(text);
   const raw=String(text||""),lines=raw.split(/\r?\n/).map(s=>s.replace(/\s*\u2502\s*/g,"\t").replace(/[^\S\t]+/g," ").replace(/ ?\t ?/g,"\t").trim()).filter(Boolean),all=dcNorm(raw);
   const d={rar:null,kind:null,sub:"",rune:false,rtier:null,gem:false,core:false,truesworn:false,unsworn:null,ilvl:null,req:null,sock:null,grade:null,mods:[],baseId:"",baseName:"",redId:"",redName:"",ruleNo:null,ruleName:"",alt:false,nameHit:[],seen:[]};
   let m;
@@ -2912,7 +2952,7 @@ async function dcFile(file){
     await dcLoad();
     if(job!==DC.job)return;
     dcStatus("Preparing the image…");const blob=await dcPrep(file);
-    const r=await Tesseract.recognize(blob,"eng",{logger:m=>{if(job!==DC.job)return;if(m.status==="recognizing text"){dcProg(m.progress);dcStatus("Reading the text… "+Math.round(m.progress*100)+"%");}else if(/loading|initializ/i.test(m.status||"")){dcStatus("Loading the text reader…");}}});
+    const r=await Tesseract.recognize(blob,dcOcrLang(),{logger:m=>{if(job!==DC.job)return;if(m.status==="recognizing text"){dcProg(m.progress);dcStatus("Reading the text… "+Math.round(m.progress*100)+"%");}else if(/loading|initializ/i.test(m.status||"")){dcStatus("Loading the text reader…");}}});
     if(job!==DC.job)return;
     $("#dcTxt").value=dcTextOf(r.data).replace(/[ \t]*\t[ \t]*/g," \u2502 ").trim(); /* show the column split as │ */dcProg(null);
     dcStatus($("#dcTxt").value?"Done. Fix the text below if a word was misread, then press Check text.":"No text found in this image. Try a sharper screenshot of the tooltip.",!$("#dcTxt").value);
@@ -3200,7 +3240,7 @@ async function setLang(code,quiet){
   if(!LANGS.some(x=>x[0]===code))code="en";
   let d={lines:{},bases:{},reds:{}};
   if(code!=="en"){try{const r=await fetch("lang/"+code+".json");if(!r.ok)throw new Error(r.status);d=await r.json();}catch(e){if(!quiet)toast("Could not load that language. Showing English.",true);code="en";}}
-  LANG=code;LX.ui=d.ui||{};const ll=$("#langLbl");if(ll)ll.textContent=LX.ui.lang||"Language";LX.lines={};Object.keys(d.lines||{}).forEach(k=>{LX.lines[cleanLineText(k)]=cleanLineText(d.lines[k]);});LX.bases=d.bases||{};LX.reds=d.reds||{};
+  LANG=code;LX.ui=d.ui||{};LX.ui2=d.ui2||{};LX.raw=d.lines||{};DC_REV=null;const ll=$("#langLbl");if(ll)ll.textContent=LX.ui.lang||"Language";LX.lines={};Object.keys(d.lines||{}).forEach(k=>{LX.lines[cleanLineText(k)]=cleanLineText(d.lines[k]);});LX.bases=d.bases||{};LX.reds=d.reds||{};
   const sel=$("#langSel");if(sel)sel.value=code;
   try{localStorage.setItem("oathfilter-lang",code);}catch(e){}
   document.documentElement.setAttribute("data-gamelang",code);
