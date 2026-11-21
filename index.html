@@ -586,8 +586,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   <p style="margin:4px 0 0"><button type="button" class="linkbtn" data-view="about">About, privacy and credits</button><br><a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">Source on GitHub</a></p>
 </footer>
 <div class="gt" id="gt" role="status" hidden></div>
-<div class="upd" id="wn" hidden><div class="updbox" role="dialog" aria-modal="true" aria-labelledby="wnT"><div><b id="wnT">Oathfilter was updated</b><span>This is what changed since you were last here.</span></div><div><ul class="updlog" id="wnList"></ul><a href="https://github.com/2m22/Oathfilter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" id="wnAll" style="display:inline-block;margin-top:8px">Full changelog</a></div><div class="bt"><button type="button" class="btn gold" id="wnOk">Got it</button></div></div></div>
-<div class="upd" id="upd" hidden><div class="updbox" role="alertdialog" aria-modal="true" aria-labelledby="updT" aria-describedby="updD"><div><b id="updT">A new version is available</b><span id="updD">Your filter is saved in this browser and stays as it is.</span></div><div id="updLog" hidden><span class="updh">What's new</span><ul class="updlog" id="updList"></ul><a href="https://github.com/2m22/Oathfilter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" id="updAll">Full changelog</a></div><div class="bt"><button type="button" class="btn gold" id="updNow">Reload now</button><button type="button" class="btn" id="updLater">Remind me in 5 minutes</button></div></div></div>
+<div class="upd" id="upd" hidden><div class="updbox" role="alertdialog" aria-modal="true" aria-labelledby="updT" aria-describedby="updD"><div><b id="updT">A new version is available</b><span id="updD">Your filter is saved in this browser and stays as it is.</span></div><div class="bt"><button type="button" class="btn gold" id="updNow">Reload now</button><button type="button" class="btn" id="updLater">Remind me in 5 minutes</button><button type="button" class="btn gold" id="updOk" hidden>Got it</button></div><div id="updLog" hidden><span class="updh">What's new</span><ul class="updlog" id="updList"></ul><a href="https://github.com/2m22/Oathfilter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" id="updAll">Full changelog</a></div></div></div>
 <div class="upd" id="shr" hidden><div class="updbox shbox" role="alertdialog" aria-modal="true" aria-labelledby="shrT" aria-describedby="shrD"><div><b id="shrT"></b><span id="shrD"></span></div><div id="shrBody" style="width:100%"></div><div class="bt" id="shrBt"></div></div></div>
 <script>
 "use strict";
@@ -1957,14 +1956,17 @@ function fillLog(ul,all){
   try{seen=localStorage.getItem(K);}catch(e){}
   const mark=()=>{try{localStorage.setItem(K,REL);}catch(e){}};
   if(!seen||seen===REL){mark();return;}
-  const box=$("#wn");let prev=null;
-  const done=()=>{box.hidden=true;mark();if(prev&&prev.focus&&document.contains(prev))prev.focus();};
-  box.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();done();}else if(e.key==="Tab"){const b=[$("#wnOk"),$("#wnAll")],i=b.indexOf(document.activeElement);e.preventDefault();b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus();}});
-  $("#wnOk").onclick=done;
+  const box=$("#upd");let prev=null;const T0=$("#updT").textContent,D0=$("#updD").textContent;
+  const done=()=>{$("#updT").textContent=T0;$("#updD").textContent=D0;$("#updLog").hidden=true;box.hidden=true;box.classList.remove("done");["#updNow","#updLater"].forEach(q=>$(q).hidden=false);$("#updOk").hidden=true;mark();if(prev&&prev.focus&&document.contains(prev))prev.focus();};
+  box.addEventListener("keydown",e=>{if(!box.classList.contains("done"))return;e.stopImmediatePropagation();if(e.key==="Escape"){e.preventDefault();done();}else if(e.key==="Tab"){const b=[$("#updOk"),$("#updAll")],i=b.indexOf(document.activeElement);e.preventDefault();b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus();}},true);
+  $("#updOk").onclick=done;
   fetch("CHANGELOG.md?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(md=>{
     if(!md)return;
-    if(!fillLog($("#wnList"),newSince(md,seen))){mark();return;}
-    prev=document.activeElement;box.hidden=false;$("#wnOk").focus();
+    if(!box.hidden||!fillLog($("#updList"),newSince(md,seen))){mark();return;}
+    $("#updLog").hidden=false;box.classList.add("done");
+    $("#updT").textContent="Oathfilter was updated";$("#updD").textContent="This is what changed since you were last here.";
+    $("#updNow").hidden=true;$("#updLater").hidden=true;$("#updOk").hidden=false;
+    prev=document.activeElement;box.hidden=false;$("#updOk").focus();
   }).catch(()=>{});
 })();
 /* ---- share links: short link through the Oathfilter share worker (POST /s, GET /s/<id>); offline fallback #s=... ---- */
