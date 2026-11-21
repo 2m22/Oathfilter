@@ -2024,7 +2024,7 @@ function dcLineRes(){
   if(DC_LR)return DC_LR;
   DC_LR=Object.keys(LINE_IDS).map(label=>{
     const src=label.replace(/\(local\)/i,"").trim().replace(/[.*+?^${}()|[\]\\]/g,m=>m==="|"||m==="("||m===")"?m:"\\"+m);
-    let p=src.replace(/\bX\b/g,"#").replace(/#\|plural\\?\(one=([^,]+),other=([^)]+)\\?\)/g,"(?:$1|$2)").replace(/#/g,"[+\\-]?[\\d.,]+").replace(/\s+/g,"\\s+");
+    let p=src.replace(/\b[XY]\b/g,"#").replace(/#\|plural\\?\(one=([^,]+),other=([^)]+)\\?\)/g,"(?:$1|$2)").replace(/#/g,"[+\\-]?[\\d.,]+").replace(/\s+/g,"\\s*");
     try{return{label,re:new RegExp("^\\W{0,3}"+p,"i"),len:label.length};}catch(e){return null;}
   }).filter(Boolean).sort((a,b)=>b.len-a.len);
   return DC_LR;
@@ -2059,14 +2059,35 @@ function dcParse(text){
   let ub=null;UNIQUES.forEach(u=>{const n=dcNorm(u.name);if(n.length>=4&&all.includes(n)&&(!ub||n.length>dcNorm(ub.name).length))ub=u;});
   if(ub){d.redName=ub.name;d.redId=ub.id||(DATA.reds.find(x=>x[1]===ub.name)||[])[0]||"";d.rar="U";if(!d.baseId){d.baseId=ub.base.id;d.baseName=ub.base.name;}if(!d.kind){d.kind=ub.base.kind;d.sub=ub.base.sub||"";}}
   if(!d.kind&&!d.rune&&!d.gem)for(const k of DC_KW)if(k[0].test(raw)){d.kind=k[1];d.sub=k[2];break;}
-  /* lines and tiers: an affix line is followed by a "T3 [7-8]" marker line */
-  const LR=dcLineRes();let cur=null;
-  for(const ln of lines){
-    const tm=ln.match(/\bT\s*([1-6])\b\s*(?:\[|\(|·|\.|$)/);
-    let hit=null;for(const x of LR){if(x.re.test(ln)){hit=x;break;}}
-    if(hit&&!/^t\s*\d\b/i.test(ln)){cur={label:hit.label,tier:null};d.mods.push(cur);}
-    else if(tm){if(cur&&cur.tier===null)cur.tier=+tm[1];else{cur={label:"",tier:+tm[1]};d.mods.push(cur);}}
+  /* lines and tiers. The game puts "T3 [7-8]" right of the affix text or on the next line (uniques: only "[160-190]").
+     Long affixes wrap onto a second line. Lines before the first marker (and diamond lines) are implicits. */
+  const LR=dcLineRes(),nz=t=>t.replace(/\b(Physical|Fire|Cold|Lightning|Poison|Chaos|Elemental)\s+Damage\s+to\s+(Spells|Attacks)\b/gi,(m,e,k)=>e+(/^s/i.test(k)?" Spell":" Attack")+" Damage"),
+    fnd=t=>{t=nz(t);for(const v of [t,t.replace(/^\W{0,3}Damage\s+(?=Penetrates)/i,"")])for(const x of LR)if(x.re.test(v))return x.label;return"";};
+  const TIER=s=>{const m=s.match(/(?:^|[^A-Za-z0-9])(?:T|[1Il|])\s?([0-9OoQ])\s*\[\s*\d/);if(!m)return null;const v=/[OoQ]/.test(m[1])?0:+m[1];return v<=6?v:null;};
+  const ents=[];let last=null,prevText=false,pend="";
+  for(let ln of lines){
+    if(/^if equipped\b/i.test(ln))break;
+    let bul=false;const ln2=ln.replace(/^[*\u2022\u00b7\u00a2\u2666\u25c6\u2756]\s*/,"");if(ln2!==ln){bul=true;ln=ln2;}
+    const bi=ln.search(/\[\s*\d/),hasMk=bi>=0,tier=hasMk?TIER(ln):null;
+    const text=(hasMk?ln.slice(0,bi).replace(/(?:^|[\s_\u2014\u2013-])(?:T|[1Il|])\s?[0-9OoQ]\s*$/,""):ln).trim();
+    if(hasMk&&!/[A-Za-z]{3}/.test(text)){ /* marker-only line belongs to the entry above */
+      if(last&&!last.mk){last.mk=true;last.tier=tier;}
+      prevText=false;continue;
+    }
+    const lab=fnd(text);
+    if(lab){last={label:lab,text,tier,mk:hasMk,bul};ents.push(last);prevText=true;pend="";continue;}
+    if(last&&prevText){ /* wrapped second line: join only if it gives a better label */
+      const j=fnd(last.text+" "+text);
+      if(j&&j!==last.label){last.label=j;last.text+=" "+text;if(hasMk&&!last.mk){last.mk=true;last.tier=tier;}pend="";continue;}
+    }
+    if(pend){const j=fnd(pend+" "+text);if(j){last={label:j,text:pend+" "+text,tier,mk:hasMk,bul};ents.push(last);prevText=true;pend="";continue;}}
+    if(hasMk){last={label:"",text,tier,mk:true,bul};ents.push(last);prevText=true;pend="";continue;}
+    pend=/[A-Za-z]{3}/.test(text)?text:"";prevText=false;
   }
+  const first=ents.findIndex(e=>e.mk);
+  d.implicit=ents.filter((e,i)=>e.bul||(first>0&&i<first)).map(e=>e.label);
+  ents.forEach((e,i)=>{if(e.bul||(first>0&&i<first))return;d.mods.push({label:e.label,tier:e.tier});});
+  d.riven=d.mods.some(x=>x.tier===0);
   d.mods.forEach(x=>{const a=x.label?dcAff(x.label):null;x.tiers=a?a.n:0;x.lines=a?(LINEMAP[a.group]||[]):[];});
   for(let i=0;i<F.rules.length;i++){const n=(F.rules[i].name||"").trim();if(n.length>=3&&all.includes(dcNorm(n)))d.nameHit.push(i);}
   return d;
