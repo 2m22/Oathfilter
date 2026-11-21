@@ -2,6 +2,12 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (8)
+
+### Added
+- Language selector in the header: affix lines, item bases and unique names can be shown in any of the game's 30 languages, using the game's own texts. The page itself, the filter code and shared filters stay English. Search in the pick lists finds both the translated and the English name. The screenshot reader still reads English text only
+- Easy Mode: Holy chip (Holy Damage exists on Idols only, so it adds an Idol rule)
+
 ## 2026-11-21 (7)
 
 ### Changed
