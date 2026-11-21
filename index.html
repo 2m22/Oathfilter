@@ -354,7 +354,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
       <div class="brand-text"><h1 class="brand-title">OATHFILTER</h1><span class="brand-sub">Loot filter builder</span></div>
     </div>
     <div class="header-right">
-      <label class="langsel" title="Language of game texts: affix lines, item bases and unique names. The page itself, the filter code and shared filters stay English."><span>Game texts</span><select id="langSel" aria-label="Language of game texts"></select></label>
+      <label class="langsel" title="Language of game texts: affix lines, item bases and unique names. The page itself, the filter code and shared filters stay English."><span id="langLbl">Language</span><select id="langSel" aria-label="Language"></select></label>
       <div id="cap" class="count"></div>
     </div>
   </div>
@@ -649,7 +649,7 @@ const LINE_HAY={};DATA.lines.forEach(x=>{const ids=LINE_IDS[x[0]]||[x[1]];LINE_H
 const BASEN=Object.fromEntries(DATA.bases),REDN=Object.fromEntries(DATA.reds),LINEN=DATA.lid,RED_IDS={};DATA.reds.forEach(x=>(RED_IDS[x[1]]=RED_IDS[x[1]]||[]).push(x[0]));
 /* Display language (game texts only). Logic, export and share data keep the English names; the maps below only change what is shown. Files: lang/<code>.json, loaded when picked. */
 const LANGS=[["en","English"],["bg","Български"],["cs","Čeština"],["da","Dansk"],["de","Deutsch"],["el","Ελληνικά"],["es-ES","Español (España)"],["es-419","Español (Latinoamérica)"],["fi","Suomi"],["fr","Français"],["hu","Magyar"],["id","Indonesia"],["it","Italiano"],["ja","日本語"],["ko","한국어"],["ms","Melayu"],["nb","Norsk bokmål"],["nl","Nederlands"],["pl","Polski"],["pt-BR","Português (Brasil)"],["pt-PT","Português (Portugal)"],["ro","Română"],["ru","Русский"],["sv","Svenska"],["th","ไทย"],["tr","Türkçe"],["uk","Українська"],["vi","Tiếng Việt"],["zh-Hans","简体中文"],["zh-Hant","繁體中文"]];
-const LX={lines:{},bases:{},reds:{}};let LANG="en";
+const LX={ui:{},lines:{},bases:{},reds:{}};let LANG="en";
 const dl=t=>LX.lines[t]||t;
 const BASED=new Proxy(BASEN,{get:(o,k)=>typeof k==="string"?(LX.bases[k]||o[k]):o[k]});
 const REDD=new Proxy(REDN,{get:(o,k)=>typeof k==="string"?(LX.reds[k]||o[k]):o[k]});
@@ -3199,7 +3199,7 @@ async function setLang(code,quiet){
   if(!LANGS.some(x=>x[0]===code))code="en";
   let d={lines:{},bases:{},reds:{}};
   if(code!=="en"){try{const r=await fetch("lang/"+code+".json");if(!r.ok)throw new Error(r.status);d=await r.json();}catch(e){if(!quiet)toast("Could not load that language. Showing English.",true);code="en";}}
-  LANG=code;LX.lines={};Object.keys(d.lines||{}).forEach(k=>{LX.lines[cleanLineText(k)]=cleanLineText(d.lines[k]);});LX.bases=d.bases||{};LX.reds=d.reds||{};
+  LANG=code;LX.ui=d.ui||{};const ll=$("#langLbl");if(ll)ll.textContent=LX.ui.lang||"Language";LX.lines={};Object.keys(d.lines||{}).forEach(k=>{LX.lines[cleanLineText(k)]=cleanLineText(d.lines[k]);});LX.bases=d.bases||{};LX.reds=d.reds||{};
   const sel=$("#langSel");if(sel)sel.value=code;
   try{localStorage.setItem("oathfilter-lang",code);}catch(e){}
   document.documentElement.setAttribute("data-gamelang",code);
