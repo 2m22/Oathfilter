@@ -306,6 +306,11 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 #shPanel{min-width:0;max-width:100%}#shPanel .shres input,#shPanel .field{min-width:0;max-width:100%;box-sizing:border-box}
 #shMsg{overflow-wrap:anywhere}#shPanel .out{white-space:pre-wrap;overflow-wrap:anywhere}
 .eztk span{white-space:nowrap}
+#ezBox .cols>.l{flex:1 1 58%;max-width:none;min-width:320px}#ezBox .cols>.r{flex:1 1 30%;min-width:300px}
+#ezBox .chips .cb2{font-size:1rem;padding:9px 16px}
+#ezCtl .sub .hint{text-transform:none;letter-spacing:0;font-weight:400;font-size:.88rem;line-height:1.45}
+.ezdet{margin-top:10px}.ezdet>summary{cursor:pointer;font-size:.9rem;color:var(--text-muted);padding:6px 0}.ezdet>summary.bad{color:var(--hide-fg)}
+.ezdet[open]>summary{margin-bottom:8px}
 #rtip{max-height:calc(100vh - 16px);overflow:hidden}
 @media (max-width:560px){.ezbar{gap:10px}.ezbar .seg{flex:1 1 100%}.ezbar .ezact{margin-left:0;width:100%}.ezbar .ezact .btn{flex:1 1 130px}.eztk span:nth-child(even){display:none}}
 .updlog{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.8125rem;color:var(--text-main)}
@@ -366,7 +371,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <p class="hint" style="margin:0 0 12px">Build a whole filter from a few choices. The result is a normal game filter code. Easy Mode settings stay in this browser only.</p>
     <div id="ezCtl"></div></section>
   <section class="plate r" aria-labelledby="h-ezo"><h2 id="h-ezo" class="coltitle">Result</h2>
-    <div id="ezOut" role="status" aria-live="polite"></div><div id="ezOut2" role="status" aria-live="polite"></div></section>
+    <div id="ezOut" role="status" aria-live="polite"></div><details id="ezDet" class="ezdet"><summary id="ezDetS">Details</summary><div id="ezOut2" role="status" aria-live="polite"></div></details></section>
 </div></div>
 <div class="cols" id="edCols">
   <section class="plate l" aria-labelledby="h-rules">
@@ -2895,7 +2900,7 @@ const EZ_ARCH=[
  {k:"res",n:"Resists",col:0,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
  {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]}];
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
-const EZ_KEEP=[["1","Best tier"],["2","Best 2"],["3","Best 3"]]; /* how many of the tiers that can drop at that level a rule keeps */
+const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
@@ -2987,9 +2992,9 @@ function easyGen(s,pack){
 function ezHash(str){let h=0x811c9dc5;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16);}
 const ezHashF=f=>ezHash(encode(f).replace(/^BOFILTER:1,[^|]*/,""));
 function ezLoad(){let o=null;try{o=JSON.parse(localStorage.getItem(EZ_KEY)||"null");}catch(e){}
-  return{s:ezSane(o&&o.s),h:o&&typeof o.h==="string"?o.h:"",m:o&&o.m==="easy"?"easy":"adv"};}
+  return{s:ezSane(o&&o.s),h:o&&typeof o.h==="string"?o.h:"",m:o&&o.m==="easy"?"easy":"adv",r:o&&o.r===1?1:0};}
 var EZ=ezLoad();
-function ezSave(){try{localStorage.setItem(EZ_KEY,JSON.stringify({s:EZ.s,h:EZ.h,m:EZ.m}));}catch(e){}}
+function ezSave(){try{localStorage.setItem(EZ_KEY,JSON.stringify({s:EZ.s,h:EZ.h,m:EZ.m,r:EZ.r?1:0}));}catch(e){}}
 const ezSnap=()=>EZ?{s:EZ.s,h:EZ.h}:null;
 function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="string"?f.e.h:"";ezSave();}if(f)delete f.e;}
 const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
@@ -3016,10 +3021,11 @@ function ezBuild(){
   
   $("#ezCtl").innerHTML=`
   <div class="sub"><label class="lab" for="ez-rl">Rupture Level <output id="ez-rlo" aria-live="polite" style="color:var(--accent-gold);margin-left:6px"></output></label>
+    <p class="hint" style="margin:2px 0 4px">The monster level you farm at. It decides which affix tiers can drop.</p>
     <input id="ez-rl" class="ezsl" type="range" min="0" max="${EZ_RL.length-1}" step="1" value="0" list="ez-rlt" aria-valuetext="Any">
     <datalist id="ez-rlt">${EZ_RL.map((x,i)=>`<option value="${i}"></option>`).join("")}</datalist>
     <div class="eztk" aria-hidden="true">${EZ_RL.map((x,i)=>`<span style="left:calc(8px + (100% - 16px) * ${i/(EZ_RL.length-1)})">${x[1]}</span>`).join("")}</div>
-    <span class="lab" style="margin-top:10px;display:block">Keep tiers</span>${ezSeg("tk",EZ_KEEP,"Tiers to keep")}
+    <span class="lab" style="margin-top:12px;display:block">Tier strictness</span><p class="hint" style="margin:2px 0 6px">How many of the best tiers that can drop still count as good.</p>${ezSeg("tk",EZ_KEEP,"Tier strictness")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
   <div class="sub"><span class="lab">What I want to see</span><div class="chips">${EZ_ARCH.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
     <p class="hint" style="margin:6px 0 0">A pick also keeps the matching Idols and hides the other Idols. Picks without gear lines only change Idols. A line two picks share is listed once.</p>
@@ -3035,7 +3041,7 @@ function ezSync(){
     const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="idol"?s.idol===v:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
-  $("#ez-ilv").textContent=s.rl?"Rupture Level "+s.rl+" = monster level = drop level, so only affix tiers up to that item level can drop. Every gear pick (not Idols) needs a line within the best "+(s.tk===1?"droppable tier":s.tk+" droppable tiers")+" (T-limit per line, t=). Lower lines are hidden. Needs at least one pick.":"No tier limit. Pick your Rupture Level to hide gear whose lines are too low for what drops there.";
+  $("#ez-ilv").textContent=s.rl?"At Rupture Level "+s.rl+" only tiers up to item level "+s.rl+" can drop. Gear is kept only if a picked line is among the "+(s.tk===1?"best tier":"best "+s.tk+" tiers")+" that can drop there. Weaker lines are hidden. Idols are not limited. Choose at least one pick below.":"Any: no tier limit. Set your Rupture Level to hide gear whose picked lines are too weak for what drops there.";
 }
 function ezPreview(g){
   g=g||easyGen(EZ.s);
@@ -3060,6 +3066,7 @@ function ezPreview(g){
   ${w.length?`<div class="sub"><span class="lab">Warnings</span>${w.map(t=>`<p class="hint ezw" style="margin:4px 0 0">${esc(t)}</p>`).join("")}</div>`:""}
 `;
   $("#ezOut").innerHTML=top;$("#ezOut2").innerHTML=bot;
+  $("#ezDetS").textContent="Details · "+n+" / "+MAX_RULES+" rules"+(w.length?" · "+w.length+" note"+(w.length>1?"s":""):"");$("#ezDetS").classList.toggle("bad",over);
 }
 const ezRefresh=()=>{ezSync();ezPreview();};
 function ezTouched(){
@@ -3094,6 +3101,7 @@ function ezTouched(){
     else if(k==="idol")s.idol=v;
     EZ.s=ezSane(s);ezTouched();
   });
+  const dt=$("#ezDet");dt.open=!!EZ.r;dt.addEventListener("toggle",()=>{EZ.r=dt.open?1:0;ezSave();});
   ezMode(EZ.m,true);
 })();
 
