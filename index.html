@@ -2878,6 +2878,7 @@ function ezLines(ids,only){
 const ezGearIds=a=>ezLines(a.ids);
 const ezIdolIds=a=>ezLines(a.ids.concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
 /* tier limit t for one gear line at Rupture Level rl: for each affix with this text, the best tier whose item level is <= rl, plus (keep-1) tiers; the loosest affix decides. 0 = no limit. */
+function ezTP(ids){const parts=[];for(let i=0;i<ids.length;i+=4){const c=ids.slice(i,i+4),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}return parts;}
 function ezThr(id,rl,keep){
   if(!rl)return 0;const t=LINEN[id];let thr=0,top=0;
   AFF.forEach(a=>{if(a.id.indexOf("Idol")===0||LINEN[a.id]!==t)return;top=Math.max(top,a.n);
@@ -2886,7 +2887,7 @@ function ezThr(id,rl,keep){
   return thr&&thr<Math.min(top,EZ_TMAX)?thr:0;
 }
 const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=4)p.push(ids.slice(i,i+4));return p;};
-function easyGen(s){
+function easyGen(s,pack){
   s=ezSane(s);
   const notes=[],R=[],rl=s.rl;
   const mk=(o,name,fn)=>{const r=newRule(o);r.name=name.slice(0,NAME_MAX);if(fn)fn(r);R.push(r);return r;};
@@ -2897,9 +2898,17 @@ function easyGen(s){
   const og=own(),oi=own();
   /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 4 per rule. */
   const gearA=act.map(a=>{const ids=ezGearIds(a).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99})).sort((x,y)=>x.t-y.t);
-    const parts=[];for(let i=0;i<ids.length;i+=4){const c=ids.slice(i,i+4),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});} /* same rule count as without a tier limit: sorted by limit, 4 per rule, the loosest line of a rule sets its limit */
-    return{a,parts};}).filter(x=>x.parts.length);
-  const idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a).filter(oi))})).filter(x=>x.parts.length);
+    const parts=pack?[]:ezTP(ids); /* same rule count as without a tier limit: sorted by limit, 4 per rule, the loosest line of a rule sets its limit */
+    return{a,parts,ids};}).filter(x=>x.ids.length);
+  let idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a).filter(oi))})).filter(x=>x.parts.length);
+  let gearP=gearA;
+  /* too many rules: one shared list for all picks (4 lines per rule across picks, one colour). The caller falls back to this only when the normal build is over the limit. */
+  if(pack){
+    const gi=gearA.flatMap(x=>x.ids),ii=idolA.flatMap(x=>x.parts.flat());
+    const col=act[0]?act[0].col:6;
+    gearP=gi.length?[{a:{n:"Gear picks",col},parts:ezTP(gi.slice().sort((x,y)=>x.t-y.t))}]:[];
+    idolA=ii.length?[{a:{n:"Idol picks",col},parts:ezChunks(ii)}]:[];
+  }
   const rarHide=(s.hn||s.hm)?1:0;
   const white=gearA.length>0;
   const idolWhite=s.idol==="match"&&idolA.length>0;
@@ -2924,11 +2933,12 @@ function easyGen(s){
   if(!gearA.length)hideR();
   /* 4 gear picks and the level floor */
   if(white){
-    gearA.forEach(x=>x.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);})));
+    gearP.forEach(x=>x.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);})));
     if(gearA.length)hideR();
     mk({type:0,action:0},"Everything else");
   }
   if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
+  if(!pack&&R.length>MAX_RULES&&act.length){const g=easyGen(s,true);if(g.rules.length<R.length){g.notes.push("Too many rules for the 40 limit, so the picks share rules and one colour: "+R.length+" rules became "+g.rules.length+".");return g;}}
   return{rules:R,mode:white?"white":"black",why,notes};
 }
 /* ---- state, hash and storage ---- */
