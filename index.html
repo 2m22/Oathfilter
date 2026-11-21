@@ -368,7 +368,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 </header>
 <main>
 <div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit">
-<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><div class="ezact"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button><button type="button" class="hlp" data-help="copyAdv" aria-label="Help: Copy filter code" aria-expanded="false">?</button><button type="button" class="btn gold" id="shMake">Share</button><button type="button" class="hlp" data-help="share" aria-label="Help: Share" aria-expanded="false">?</button></div></div>
+<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><div class="ezact"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button><button type="button" class="hlp" data-help="copyAdv" aria-label="Help: Copy filter code" aria-expanded="false">?</button><button type="button" class="btn gold" id="shMake">Share</button><button type="button" class="hlp" data-help="share" aria-label="Help: Share" aria-expanded="false">?</button><button type="button" class="btn" id="clearF" style="margin-left:14px" title="Removes all rules. Ctrl+Z brings them back.">Clear filter</button></div></div>
 <div class="plate" id="shPanel" hidden style="margin:0 0 16px"><div class="shres" id="shRes" hidden><label class="lab" for="shUrl">Share link</label><input id="shUrl" class="field" type="text" readonly>
   <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="shCopy">Copy link</button><button type="button" class="btn" id="shDisc">Copy for Discord</button><button type="button" class="btn" id="shClose">Close</button></div></div>
   <p class="hint" id="shMsg" role="status" aria-live="polite" style="margin:8px 0 0"></p>
@@ -462,6 +462,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
      <li><b>No match.</b> An item that no rule matches is shown as normal.</li>
      <li><b>On or off.</b> The switch on a rule skips it without deleting it.</li>
      <li><b>One line group per rule.</b> To look for two line groups, use two rules.</li>
+     <li><b>Clear filter.</b> The button next to Share removes all rules (Advanced Mode). Ctrl+Z brings them back.</li>
     </ul>
     <h3 class="subtitle">Easy Mode</h3>
     <ul class="pl">
@@ -1933,6 +1934,7 @@ document.addEventListener("input",e=>{
   if(t.id==="rq"){V.q=t.value;clearTimeout(rqT);rqT=setTimeout(renderRows,100);return;}
   if(t.dataset.pk){S.pk[t.dataset.pk]=t.value;renderPickList(t.dataset.pk);}
 });
+$("#clearF").onclick=()=>{if(!F.rules.length){toast("The filter is already empty.");return;}F.preset="-1";F.rules=[];S.cur=null;fullRender();toast("Filter cleared. "+COPY.undo);};
 $("#copyAdv").onclick=()=>{if(EZ.m==="easy"&&V.view==="edit")ezCopy();else copyCode();};
 /* ---- modules: reusable groups of rules (localStorage only, same code format as local filters) ---- */
 const MD={key:"oathfilter-modules",max:50,
@@ -3163,7 +3165,7 @@ function ezApply(){
 }
 function ezMode(m,quiet){
   EZ.m=m==="easy"?"easy":"adv";
-  $("#ezBox").hidden=EZ.m!=="easy";$("#edCols").hidden=EZ.m==="easy";
+  $("#clearF").style.display=EZ.m==="easy"?"none":"";$("#ezBox").hidden=EZ.m!=="easy";$("#edCols").hidden=EZ.m==="easy";
   $$("#ezMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ezm===EZ.m?"true":"false"));
   REV++;renderAdvExport();
   if(EZ.m==="easy"&&!quiet)ezRefresh();
