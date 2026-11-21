@@ -2046,7 +2046,7 @@ function dcParse(text){
   if(!d.kind&&!d.rune&&/\b(?:skill|support)\s+gem\b|\bgem\b/i.test(raw)&&!/item level/i.test(raw))d.gem=true;
   d.core=/core[- ]?touched/i.test(raw);d.truesworn=/truesworn/i.test(raw);
   if(/\bunsworn\b/i.test(raw))d.unsworn=!/not unsworn/i.test(raw);
-  m=raw.match(/item\s*level\s*[:\-]?\s*(\d{1,3})/i);if(m)d.ilvl=+m[1];
+  m=raw.match(/[Il1\[|]tem\s*Lev[eo]l\s*[:\-!]?\s*(\d{1,3})/i);if(m)d.ilvl=+m[1];
   m=raw.match(/requires?\s*(?:hero\s*)?level\s*[:\-]?\s*(\d{1,3})/i);if(m)d.req=+m[1];
   m=raw.match(/^\W*sockets?\s*:\s*(.+)$/im);if(m){const t=m[1].split(/[\u00b7\-:|,]+/).map(x=>x.trim()).filter(x=>/[a-z]/i.test(x));if(t.length&&t.length<=6)d.sock=t.length;}else{m=raw.match(/(\d)\s*sockets?\b/i);if(m)d.sock=+m[1];}
   m=raw.match(/grade\s*[:\-]?\s*(\d{2,3})/i);if(m)d.grade=+m[1];
@@ -2063,13 +2063,13 @@ function dcParse(text){
      Long affixes wrap onto a second line. Lines before the first marker (and diamond lines) are implicits. */
   const LR=dcLineRes(),nz=t=>t.replace(/\b(Physical|Fire|Cold|Lightning|Poison|Chaos|Elemental)\s+Damage\s+to\s+(Spells|Attacks)\b/gi,(m,e,k)=>e+(/^s/i.test(k)?" Spell":" Attack")+" Damage"),
     fnd=t=>{t=nz(t);for(const v of [t,t.replace(/^\W{0,3}Damage\s+(?=Penetrates)/i,"")])for(const x of LR)if(x.re.test(v))return x.label;return"";};
-  const TIER=s=>{const m=s.match(/(?:^|[^A-Za-z0-9])(?:T|[1Il|])\s?([0-9OoQ])\s*\[\s*\d/);if(!m)return null;const v=/[OoQ]/.test(m[1])?0:+m[1];return v<=9?v:null;};
+  const TIER=s=>{const m=s.match(/(?:^|[^A-Za-z0-9])(?:T|[1Il|])\s?([0-9OoQIl|])\s*\[\s*\d/);if(!m)return null;const v=/[OoQ]/.test(m[1])?0:/[Il|]/.test(m[1])?1:+m[1];return v<=9?v:null;};
   const ents=[];let last=null,prevText=false,pend="";
   for(let ln of lines){
     if(/^if equipped\b/i.test(ln))break;
     let bul=false;const ln2=ln.replace(/^[*\u2022\u00b7\u00a2\u2666\u25c6\u2756]\s*/,"");if(ln2!==ln){bul=true;ln=ln2;}
     const bi=ln.search(/\[\s*\d/),hasMk=bi>=0,tier=hasMk?TIER(ln):null;
-    const text=(hasMk?ln.slice(0,bi).replace(/(?:^|[\s_\u2014\u2013-])(?:T|[1Il|])\s?[0-9OoQ]\s*$/,""):ln).trim();
+    const text=(hasMk?ln.slice(0,bi).replace(/(?:^|[\s_\u2014\u2013-])(?:T|[1Il|])\s?[0-9OoQIl|]\s*$/,""):ln).trim();
     if(hasMk&&!/[A-Za-z]{3}/.test(text)){ /* marker-only line belongs to the entry above */
       if(last&&!last.mk){last.mk=true;last.tier=tier;}
       prevText=false;continue;
