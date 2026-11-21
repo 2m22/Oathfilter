@@ -296,6 +296,8 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .upd b{font-size:1rem}
 .upd b{display:block;color:var(--accent-gold)}.upd span{color:var(--text-muted);font-size:.8125rem}
 .upd .updh{display:block;margin:0 0 6px;font-weight:700;color:var(--text-main);font-size:.8125rem}
+.ezsl{width:100%;min-width:0;height:22px;margin:4px 0 0;accent-color:var(--accent-gold)}
+.eztk{position:relative;height:16px;font-size:.6875rem;color:var(--text-muted)}.eztk span{position:absolute;top:0;transform:translateX(-50%)}
 .updlog{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.8125rem;color:var(--text-main)}
 .updlog i{font-style:normal;font-weight:700;color:var(--accent-gold);margin-right:6px;font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em}
 #updAll{display:inline-block;margin-top:8px;font-size:.8125rem}
@@ -2978,7 +2980,10 @@ const ezSeg=(k,list,lab)=>`<div class="seg" role="group" aria-label="${esc(lab)}
 function ezBuild(){
   
   $("#ezCtl").innerHTML=`
-  <div class="sub"><span class="lab">Rupture Level</span>${ezSeg("rl",EZ_RL,"Rupture Level")}
+  <div class="sub"><label class="lab" for="ez-rl">Rupture Level <output id="ez-rlo" aria-live="polite" style="color:var(--accent-gold);margin-left:6px"></output></label>
+    <input id="ez-rl" class="ezsl" type="range" min="0" max="${EZ_RL.length-1}" step="1" value="0" list="ez-rlt" aria-valuetext="Any">
+    <datalist id="ez-rlt">${EZ_RL.map((x,i)=>`<option value="${i}"></option>`).join("")}</datalist>
+    <div class="eztk" aria-hidden="true">${EZ_RL.map((x,i)=>`<span style="left:calc(8px + (100% - 16px) * ${i/(EZ_RL.length-1)})">${x[1]}</span>`).join("")}</div>
     <span class="lab" style="margin-top:10px;display:block">Keep tiers</span>${ezSeg("tk",EZ_KEEP,"Tiers to keep")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
   <div class="sub"><span class="lab">What I want to see</span><div class="chips">${EZ_ARCH.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
@@ -2989,6 +2994,7 @@ function ezBuild(){
 }
 function ezSync(){
   const s=EZ.s;
+  const sl=$("#ez-rl");if(sl){const i=Math.max(0,EZ_RL.findIndex(x=>+x[0]===s.rl));sl.value=i;sl.setAttribute("aria-valuetext",s.rl?"Rupture Level "+s.rl:"Any");$("#ez-rlo").textContent=s.rl?String(s.rl):"Any";}
   $$("#ezCtl button[data-ez]").forEach(b=>{
     const[k,v]=b.dataset.ez.split(",");
     const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="idol"?s.idol===v:String(s[k])===v;
@@ -3032,6 +3038,9 @@ function ezTouched(){
   ezBuild();
   const bx=$("#ezBox");
   $("#ezMode").addEventListener("click",e=>{const b=e.target.closest("button[data-ezm]");if(b)ezMode(b.dataset.ezm);});
+  const rlv=e=>+EZ_RL[+e.target.value][0];
+  bx.addEventListener("input",e=>{if(e.target.id!=="ez-rl")return;const v=rlv(e);$("#ez-rlo").textContent=v?String(v):"Any";}); /* live value while dragging */
+  bx.addEventListener("change",e=>{if(e.target.id!=="ez-rl")return;EZ.s=ezSane(Object.assign({},EZ.s,{rl:rlv(e)}));ezTouched();}); /* the filter updates on release */
   bx.addEventListener("click",e=>{
     const b=e.target.closest("button");if(!b||b.disabled)return;
     if(b.dataset.ezact){
