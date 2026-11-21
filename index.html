@@ -2852,15 +2852,17 @@ const EZ_ARCH=[
  {k:"life",n:"Life",col:7,ids:["life_large","life_regen","life_leech","mana","mana_regen","mana_leech"],idol:["idol_grand_life_inc"]},
  {k:"res",n:"Resists",col:0,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
  {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]}];
-const EZ_TIER=[["0","Any"],["5","T5+"],["4","T4+"],["3","T3+"],["2","T2+"],["1","T1"]]; /* tier filter: key t, "T{n} or better" (T1 = best) */
+const EZ_RL=[["0","Any"]].concat(LVSTEPS.map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
+const EZ_KEEP=[["1","Best tier"],["2","Best 2"],["3","Best 3"]]; /* how many of the tiers that can drop at that level a rule keeps */
+const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({tier:0,hl:1,idol:"match",hn:1,hm:1,arch:{},keep:{core:1,runes:1,tsw:1}});
+const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,arch:{},keep:{core:1,runes:1,tsw:1}});
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
-  const s={tier:n(o.tier,0,5,0),hl:on(o.hl,1),
+  const s={rl:LVSTEPS.includes(+o.rl)?+o.rl:0,tk:n(o.tk,1,3,2),hl:on(o.hl,1),
     idol:"match",hn:on(o.hn,1),hm:on(o.hm,0),arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.idol==="orbit")s.arch.orbit=1; /* older saves had "only orbiting" as an Idol mode */
@@ -2875,25 +2877,35 @@ function ezLines(ids,only){
 }
 const ezGearIds=a=>ezLines(a.ids);
 const ezIdolIds=a=>ezLines(a.ids.concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
+/* tier limit t for one gear line at Rupture Level rl: for each affix with this text, the best tier whose item level is <= rl, plus (keep-1) tiers; the loosest affix decides. 0 = no limit. */
+function ezThr(id,rl,keep){
+  if(!rl)return 0;const t=LINEN[id];let thr=0,top=0;
+  AFF.forEach(a=>{if(a.id.indexOf("Idol")===0||LINEN[a.id]!==t)return;top=Math.max(top,a.n);
+    let kb=0;for(let k=1;k<=a.n;k++)if(tierLvl(a,k)<=rl){kb=k;break;}
+    if(kb)thr=Math.max(thr,kb+keep-1);});
+  return thr&&thr<Math.min(top,EZ_TMAX)?thr:0;
+}
 const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=4)p.push(ids.slice(i,i+4));return p;};
 function easyGen(s){
   s=ezSane(s);
-  const notes=[],R=[],tr=s.tier;
+  const notes=[],R=[],rl=s.rl;
   const mk=(o,name,fn)=>{const r=newRule(o);r.name=name.slice(0,NAME_MAX);if(fn)fn(r);R.push(r);return r;};
   const act=EZ_ARCH.filter(a=>s.arch[a.k]);
   act.forEach(a=>{[a.ids,a.idol].forEach(l=>l.forEach(id=>{if(!EZ_LINEIDS.has(id)||!LINEN[id])notes.push("Line "+id+" is not in the game data of this page and was skipped.");}));});
   /* a line that two picks share (crit, for example) is listed once, under the first pick that has it, so it never wastes an a= slot or a rule */
   const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
   const og=own(),oi=own();
-  const gearA=act.map(a=>({a,parts:ezChunks(ezGearIds(a).filter(og))})).filter(x=>x.parts.length);
+  /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines with the same limit share rules. */
+  const gearA=act.map(a=>{const by={};ezGearIds(a).filter(og).forEach(id=>{const t=ezThr(id,rl,s.tk);(by[t]=by[t]||[]).push(id);});
+    const parts=[];Object.keys(by).map(Number).sort((x,y)=>(x||99)-(y||99)).forEach(t=>ezChunks(by[t]).forEach(p=>parts.push({p,t})));return{a,parts};}).filter(x=>x.parts.length);
   const idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a).filter(oi))})).filter(x=>x.parts.length);
   const rarHide=(s.hn||s.hm)?1:0;
-  const white=gearA.length>0||tr>0;
+  const white=gearA.length>0;
   const idolWhite=s.idol==="match"&&idolA.length>0;
-  let why=white?(gearA.length?"Gear picks are on, so matching gear is kept and the rest of the gear is hidden.":"The tier filter is on, so gear without a line of that tier is hidden."):"Only a few things are hidden, so everything else stays shown.";
+  let why=white?(gearA.length?"Gear picks are on, so matching gear is kept and the rest of the gear is hidden.":""):"Only a few things are hidden, so everything else stays shown.";
   const idolWhy=s.idol==="none"?" All Idols are hidden.":idolWhite?" Idols without your picked lines are hidden.":s.idol==="all"?" All Idols stay shown.":" Idols are not touched.";
   why+=idolWhy;
-  if(act.length||tr>0)why+=s.hm?" Match rules use Rarity Rare, because Magic is hidden.":" Match rules use any Rarity, because Magic is not hidden.";
+  if(act.length)why+=s.hm?" Match rules use Rarity Rare, because Magic is hidden.":" Match rules use any Rarity, because Magic is not hidden.";
   const anyHide=white||rarHide;
   /* 1 specials: the game's own End Game preset rules (kept above every hide so they are never caught) */
   if(s.keep.core)mk({type:13,action:3,colour:0},"Core-touched");
@@ -2911,8 +2923,7 @@ function easyGen(s){
   if(!gearA.length)hideR();
   /* 4 gear picks and the level floor */
   if(white){
-    gearA.forEach(x=>x.parts.forEach((p,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(tr)mset(r,"t",String(tr));msetList(r,"a",p);})));
-    if(!gearA.length&&tr>0)mk({type:0,rarity:s.hm?4:0,action:1},"Tier "+(tr===1?"T1":"T"+tr+" or better"),r=>mset(r,"t",String(tr)));
+    gearA.forEach(x=>x.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);})));
     if(gearA.length)hideR();
     mk({type:0,action:0},"Everything else");
   }
@@ -2956,7 +2967,8 @@ const ezSeg=(k,list,lab)=>`<div class="seg" role="group" aria-label="${esc(lab)}
 function ezBuild(){
   
   $("#ezCtl").innerHTML=`
-  <div class="sub"><span class="lab">Minimum tier</span>${ezSeg("tier",EZ_TIER,"Minimum tier")}
+  <div class="sub"><span class="lab">Rupture Level</span>${ezSeg("rl",EZ_RL,"Rupture Level")}
+    <span class="lab" style="margin-top:10px;display:block">Keep tiers</span>${ezSeg("tk",EZ_KEEP,"Tiers to keep")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
   <div class="sub"><span class="lab">What I want to see</span><div class="chips">${EZ_ARCH.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
     <p class="hint" style="margin:6px 0 0">A pick also keeps the matching Idols and hides the other Idols. Picks without gear lines only change Idols. A line two picks share is listed once.</p>
@@ -2971,7 +2983,7 @@ function ezSync(){
     const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="idol"?s.idol===v:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
-  $("#ez-ilv").textContent=s.tier?"Every gear rule (not Idols) needs a line of tier "+(s.tier===1?"T1":"T"+s.tier+" or better")+" (t="+s.tier+"). Rupture Level is not used: it does not equal item level.":"No tier filter. Pick a tier to keep only gear with a good line (T1 = best).";
+  $("#ez-ilv").textContent=s.rl?"Rupture Level "+s.rl+" = monster level = drop level, so only affix tiers up to that item level can drop. Every gear pick (not Idols) needs a line within the best "+(s.tk===1?"droppable tier":s.tk+" droppable tiers")+" (T-limit per line, t=). Lower lines are hidden. Needs at least one pick.":"No tier limit. Pick your Rupture Level to hide gear whose lines are too low for what drops there.";
 }
 function ezPreview(g){
   g=g||easyGen(EZ.s);
@@ -3026,7 +3038,7 @@ function ezTouched(){
     if(k==="arch")s.arch[v]=s.arch[v]?0:1;
     else if(k==="keep")s.keep[v]=s.keep[v]?0:1;
     else if(k==="hn"||k==="hm")s[k]=s[k]?0:1;
-    else if(k==="tier"||k==="hl")s[k]=+v;
+    else if(k==="rl"||k==="tk"||k==="hl")s[k]=+v;
     else if(k==="idol")s.idol=v;
     EZ.s=ezSane(s);ezTouched();
   });
