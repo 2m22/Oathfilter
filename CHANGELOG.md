@@ -2,6 +2,29 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21
+
+### Added
+- Easy Mode. A big **Easy | Advanced** switch at the top of the Editor. In Easy Mode you set a Rupture Level floor and click what you want to see, and the page builds the whole filter for you.
+  - Rupture Level steps 10, 20, 30, 40, 50, 60, 70 and 84+, with an adjustable "item level = RL + offset" assumption and a level floor (Off, Relaxed, Normal, Strict). RL = item level from RL 10 is reported by players and not confirmed in the game files.
+  - One list of picks: Attacks, Spells, Minions, Damage over time, Elemental, Curse / Vow, Move Speed, Melee, Slam, Bow / Projectile, Chain, Trap, Totem / Ballista, Channelling, Orbiting, Life, Resists and Defences. A pick keeps the matching gear and the matching Idols and hides the other Idols. Picks without gear lines only change Idols.
+  - Hide Normal gear and/or Magic gear. "Always keep" for Core-touched, Rune bases and Truesworn bases. Show or Highlight for your picks.
+  - Lines that two picks share (for example crit chance) are listed once, so they never waste a Named Line slot or a rule.
+  - The page chooses the strategy: only a few Hide rules when nothing else restricts the loot, otherwise Show or Highlight rules first and "Everything else" as the last Hide rule.
+  - A result panel with the rule count of the active filter and of the Easy Mode preview, the strategy, the rule list and warnings for rules that can never be reached. When a result would need more than 40 rules, it shows an error with the exact number and does not apply it.
+  - "Copy Easy Mode filter code" in the result panel copies the preview rules without applying them.
+  - Easy Mode never overwrites rules you changed in Advanced: it asks first, and Ctrl+Z brings your previous rules back. Its settings are stored in your browser only.
+- Check a drop screenshot (Drop Test). Paste, drop or choose a screenshot of a drop or tooltip. The text is read on your device, you can fix it, and the page finds the first matching rule top to bottom (rarity, type, item level, tiers, lines). If the tooltip names a rule, it is compared with the result. Things the screenshot cannot show are listed as open points. It recognises rune bases, skips runes and jewels with a note, and reads right-aligned tier markers and wrapped lines. The first scan downloads the text reader (tesseract.js) once; your image is never uploaded.
+
+### Changed
+- The top-right "Active filter" badge shows the rule count of the filter you have now. The "Copy filter code" button is hidden while Easy Mode is open, because Easy Mode has its own copy button.
+- Copying a filter with more than 40 rules still works, but now warns that the game takes 40.
+- "Any gear" no longer matches Idols in the Drop Test, like in the game. Rules for Idols need the Idol type.
+- Hide now works on Idols in the Drop Test, like in the game.
+
+### Fixed
+- Drop Test: loot on the ground view no longer overlaps or runs outside the stage when you zoom or resize the window. The stage scrolls when there is more loot than fits.
+
 ## 2026-11-20
 
 ### Added
