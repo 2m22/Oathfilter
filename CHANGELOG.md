@@ -2,6 +2,13 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (6)
+
+### Changed
+- Easy Mode: "Elemental" and "Damage over time" are replaced by Physical, Fire, Cold, Lightning, Poison, Bleed and Ignite. The picks are grouped into Playstyle, Damage type, Ailments and Other. Saved Easy Mode picks are converted automatically.
+- Easy Mode: a damage type or ailment narrows Attacks and Spells. With Spells + Cold, Fire and Lightning spell lines are no longer kept, so gear that only has those lines is hidden. Gear that also has another picked line (for example Spell Damage) stays visible. Spells alone still keeps every Spell line.
+- Easy Mode: Attacks now also keep flat Fire, Cold and Lightning damage on weapons. Shock, Chill, Freeze and Penetration lines belong to their element.
+
 ## 2026-11-21 (5)
 
 ### Added
