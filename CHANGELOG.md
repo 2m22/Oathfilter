@@ -2,6 +2,18 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (10)
+
+### Added
+- Modules (Editor, Advanced Mode): save one rule, several rules or your whole filter as a reusable module. Insert it at the top, after the selected rule or at the end, or replace your filter with it ("Replace filter", Ctrl+Z brings yours back). Modules keep rule names, MORE options and all rule fields. An insert that would go over 40 rules is blocked, with a preview like 27 + 16 = 43 / 40.
+- Shared filters can be saved as a module from the share preview.
+
+### Changed
+- Local filters are now modules. Your saved local filters are copied into Modules automatically.
+
+### Removed
+- The Local filters section in the Import tab.
+
 ## 2026-11-21 (9)
 
 ### Changed
