@@ -2039,16 +2039,16 @@ function dcParse(text){
     m=ln.match(/^(normal|magic|rare|unique|red)\b\s+(.+)$/i);
     if(m&&!/^requires/i.test(ln)){d.rar=DC_RAR[m[1].toLowerCase()];break;}
   }
-  if(!d.rar){m=raw.match(/\b(Normal|Magic|Rare|Unique|Red)\b/);if(m)d.rar=DC_RAR[m[1].toLowerCase()];}
+  if(!d.rar){m=raw.match(/\b(Normal|Magic|Rare|Unique|Red)(?=[A-Z\s]|$)/);if(m)d.rar=DC_RAR[m[1].toLowerCase()];}
   if(/\bidols?\b/i.test(raw)&&(/\b\d\s*x\s*\d\b/i.test(raw)||d.rar))d.kind="idol";
   if(/\bdwarven rune\b/i.test(raw)){d.dwarven=true;}
-  else if(/\brune\b/i.test(raw)&&!/rune\s+bases?/i.test(raw)&&!/runeword/i.test(raw)){d.rune=true;m=raw.match(/\bT\s*([1-6])\b/i)||raw.match(/tier\s*([1-6])/i);if(m)d.rtier=+m[1];}
+  else if(!/item\s*level/i.test(raw)&&(/\brune\s+\d+\s*of\s*\d+/i.test(raw)||lines.some(l=>/\brune\s*$/i.test(l)&&l.split(/\s+/).length<=3))){d.rune=true;m=raw.match(/\btier\s*([1-6])\b/i)||raw.match(/\bT\s*([1-6])\b/);if(m)d.rtier=+m[1];}
   if(!d.kind&&!d.rune&&/\b(?:skill|support)\s+gem\b|\bgem\b/i.test(raw)&&!/item level/i.test(raw))d.gem=true;
   d.core=/core[- ]?touched/i.test(raw);d.truesworn=/truesworn/i.test(raw);
   if(/\bunsworn\b/i.test(raw))d.unsworn=!/not unsworn/i.test(raw);
   m=raw.match(/item\s*level\s*[:\-]?\s*(\d{1,3})/i);if(m)d.ilvl=+m[1];
   m=raw.match(/requires?\s*(?:hero\s*)?level\s*[:\-]?\s*(\d{1,3})/i);if(m)d.req=+m[1];
-  m=raw.match(/(\d)\s*sockets?\b/i);if(m)d.sock=+m[1];
+  m=raw.match(/^\W*sockets?\s*:\s*(.+)$/im);if(m){const t=m[1].split(/[\u00b7\-:|,]+/).map(x=>x.trim()).filter(x=>/[a-z]/i.test(x));if(t.length&&t.length<=6)d.sock=t.length;}else{m=raw.match(/(\d)\s*sockets?\b/i);if(m)d.sock=+m[1];}
   m=raw.match(/grade\s*[:\-]?\s*(\d{2,3})/i);if(m)d.grade=+m[1];
   d.alt=/\balt\s*:/i.test(raw);
   m=raw.match(/(?:loot\s*filter\s*)?\brule\s*(?:#|no\.?|number)?\s*(\d{1,2})\b\s*(?::\s*([^\n]+))?/i);
@@ -2057,13 +2057,13 @@ function dcParse(text){
   let best=null;BASES.forEach(b=>{const n=dcNorm(b.name);if(n.length>=4&&all.includes(n)&&(!best||n.length>dcNorm(best.name).length))best=b;});
   if(best){d.baseId=best.id;d.baseName=best.name;if(!d.kind||d.kind!=="idol"){d.kind=best.kind;d.sub=best.sub||"";}}
   let ub=null;UNIQUES.forEach(u=>{const n=dcNorm(u.name);if(n.length>=4&&all.includes(n)&&(!ub||n.length>dcNorm(ub.name).length))ub=u;});
-  if(ub){d.redName=ub.name;d.redId=ub.id||(DATA.reds.find(x=>x[1]===ub.name)||[])[0]||"";d.rar="U";if(!d.baseId){d.baseId=ub.base.id;d.baseName=ub.base.name;}if(!d.kind){d.kind=ub.base.kind;d.sub=ub.base.sub||"";}}
+  if(ub&&(!d.rar||d.rar==="U")){d.redName=ub.name;d.redId=ub.id||(DATA.reds.find(x=>x[1]===ub.name)||[])[0]||"";d.rar="U";if(!d.baseId){d.baseId=ub.base.id;d.baseName=ub.base.name;}if(!d.kind){d.kind=ub.base.kind;d.sub=ub.base.sub||"";}}
   if(!d.kind&&!d.rune&&!d.gem)for(const k of DC_KW)if(k[0].test(raw)){d.kind=k[1];d.sub=k[2];break;}
   /* lines and tiers. The game puts "T3 [7-8]" right of the affix text or on the next line (uniques: only "[160-190]").
      Long affixes wrap onto a second line. Lines before the first marker (and diamond lines) are implicits. */
   const LR=dcLineRes(),nz=t=>t.replace(/\b(Physical|Fire|Cold|Lightning|Poison|Chaos|Elemental)\s+Damage\s+to\s+(Spells|Attacks)\b/gi,(m,e,k)=>e+(/^s/i.test(k)?" Spell":" Attack")+" Damage"),
     fnd=t=>{t=nz(t);for(const v of [t,t.replace(/^\W{0,3}Damage\s+(?=Penetrates)/i,"")])for(const x of LR)if(x.re.test(v))return x.label;return"";};
-  const TIER=s=>{const m=s.match(/(?:^|[^A-Za-z0-9])(?:T|[1Il|])\s?([0-9OoQ])\s*\[\s*\d/);if(!m)return null;const v=/[OoQ]/.test(m[1])?0:+m[1];return v<=6?v:null;};
+  const TIER=s=>{const m=s.match(/(?:^|[^A-Za-z0-9])(?:T|[1Il|])\s?([0-9OoQ])\s*\[\s*\d/);if(!m)return null;const v=/[OoQ]/.test(m[1])?0:+m[1];return v<=9?v:null;};
   const ents=[];let last=null,prevText=false,pend="";
   for(let ln of lines){
     if(/^if equipped\b/i.test(ln))break;
