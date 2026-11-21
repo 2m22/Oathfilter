@@ -2829,7 +2829,7 @@ const EZ_RL=[10,20,30,40,50,60,70,84];
 const EZ_FLOOR=["Off","Relaxed","Normal","Strict"],EZ_SLACK=[0,20,10,0];
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({rl:60,off:0,floor:0,hl:1,idol:"match",hn:1,hm:0,arch:{},keep:{core:1,runes:1,tsw:1}});
+const ezDef=()=>({rl:60,off:0,floor:0,hl:1,idol:"match",hn:1,hm:1,arch:{},keep:{core:1,runes:1,tsw:1}});
 const ezSnapRl=v=>{v=+v;if(!Number.isFinite(v))return 60;return EZ_RL.reduce((b,x)=>Math.abs(x-v)<Math.abs(b-v)?x:b,EZ_RL[0]);};
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
@@ -2874,6 +2874,7 @@ function easyGen(s){
   let why=white?(gearA.length?"Gear picks are on, so matching gear is kept and the rest of the gear is hidden.":"The level floor is on, so gear below it is hidden."):"Only a few things are hidden, so everything else stays shown.";
   const idolWhy=s.idol==="none"?" All Idols are hidden.":idolWhite?" Idols without your picked lines are hidden.":s.idol==="all"?" All Idols stay shown.":" Idols are not touched.";
   why+=idolWhy;
+  if(gearA.length)why+=s.hm?" Gear picks match Rare gear only.":" Gear picks match Magic and Rare gear, because Magic gear is not hidden.";
   const anyHide=white||rarHide;
   /* 1 specials: the game's own End Game preset rules (kept above every hide so they are never caught) */
   if(s.keep.core)mk({type:13,action:3,colour:0},"Core-touched");
@@ -2890,7 +2891,7 @@ function easyGen(s){
   if(rarRule)mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:0},s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear");
   /* 4 gear picks and the level floor */
   if(white){
-    gearA.forEach(x=>x.parts.forEach((p,i)=>mk({type:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(lo)msetRng(r,"i",lo,0);msetList(r,"a",p);})));
+    gearA.forEach(x=>x.parts.forEach((p,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(lo)msetRng(r,"i",lo,0);msetList(r,"a",p);})));
     if(!gearA.length&&lo>0)mk({type:0,action:1},"Item level "+lo+"+",r=>msetRng(r,"i",lo,0));
     mk({type:0,action:0},"Everything else");
   }
