@@ -2020,6 +2020,469 @@ const DC_RAR={normal:"N",magic:"M",rare:"R",unique:"U",red:"U"};
 const DC_KW=[[/\b(?:rings?)\b/i,"ring",""],[/\bamulets?\b/i,"amulet",""],[/\bbelts?\b/i,"belt",""],[/\b(?:gloves|gauntlets|mitts)\b/i,"gloves",""],[/\b(?:boots|greaves|sandals|shoes)\b/i,"boots",""],[/\b(?:helm|helmet|circlet|crown|cap|hood|diadem)\b/i,"helm",""],[/\b(?:shield|ward|buckler|aegis)\b/i,"shield",""],[/\btomes?\b/i,"tome",""],[/\b(?:vest|robe|cuirass|plate|jerkin|vestment|hauberk|garb|coat|brigandine)\b/i,"chest",""],[/\bbows?\b/i,"weapon","bow"],[/\bwands?\b/i,"weapon","wand"],[/\bstaff|staves\b/i,"weapon","staff"],[/\bscythes?\b/i,"weapon","scythe"],[/\bdaggers?\b/i,"weapon","dagger"],[/\bclaws?\b/i,"weapon","claw"]];
 const dcNorm=s=>String(s||"").replace(/[‘’´`]/g,"'").replace(/[×]/g,"x").replace(/\s+/g," ").trim().toLowerCase();
 let DC_LR=null;
+/* per-tier value ranges of every affix (game data), used to check or derive the tier shown as "T3 [7-8]" */
+const TIERR_SRC=`life_large|120-139;100-119;80-99;60-79;45-59;30-44;15-29;5-14
+life|75-89;60-74;45-59;35-44;25-34;15-24;5-14
+mana|70-79;60-69;50-59;40-49;30-39;20-29;10-19
+es_global|41-49;33-40;25-32;18-24;12-17;7-11;3-6
+armour_local|261-306;216-260;171-215;128-170;89-127;60-86;33-46;8-12
+armour_local_small|118-137;98-117;78-97;58-77;40-57;27-39;15-21;4-5
+evasion_local|261-306;216-260;171-215;128-170;89-127;60-86;33-46;8-12
+evasion_local_small|118-137;98-117;78-97;58-77;40-57;27-39;15-21;4-5
+es_local|71-82;60-70;48-59;37-47;26-36;18-25;10-15;4-6
+es_local_small|33-37;27-32;22-26;17-21;12-16;8-11;5-7;2-3
+defence_inc|101-110;92-100;80-91;68-79;56-67;43-55;27-42;11-26
+phys_inc_local|155-179;130-154;110-129;90-109;70-89;50-69;30-49;15-29
+phys_added_local|37-45~67-82;29-36~53-66;22-28~40-52;16-21~29-39;11-15~20-28;7-10~13-19;4-6~8-12;2-3~5-7
+fire_added_local|36-44~72-88;28-35~56-70;21-27~42-54;15-20~30-40;10-14~20-28;6-9~12-18;3-5~7-10;1-2~3-5
+fire_spell_added|29-37~59-74;22-29~45-58;16-22~33-44;11-16~23-32;7-11~15-22;4-7~9-14;2-4~5-8;1-2~3-4
+fire_dmg_inc|60-69;50-59;40-49;31-39;23-30;16-22;10-15;5-9
+fire_spell_added_2h|67-85~136-170;51-67~103-133;37-51~76-101;25-37~53-74;16-25~34-51;9-16~21-32;5-9~12-18;2-5~7-9
+fire_dmg_inc_2h|138-159;115-136;92-113;71-90;53-69;37-51;23-34;12-21
+cold_added_local|36-44~72-88;28-35~56-70;21-27~42-54;15-20~30-40;10-14~20-28;6-9~12-18;3-5~7-10;1-2~3-5
+cold_spell_added|29-37~59-74;22-29~45-58;16-22~33-44;11-16~23-32;7-11~15-22;4-7~9-14;2-4~5-8;1-2~3-4
+cold_dmg_inc|60-69;50-59;40-49;31-39;23-30;16-22;10-15;5-9
+cold_spell_added_2h|67-85~136-170;51-67~103-133;37-51~76-101;25-37~53-74;16-25~34-51;9-16~21-32;5-9~12-18;2-5~7-9
+cold_dmg_inc_2h|138-159;115-136;92-113;71-90;53-69;37-51;23-34;12-21
+lightning_added_local|36-44~72-88;28-35~56-70;21-27~42-54;15-20~30-40;10-14~20-28;6-9~12-18;3-5~7-10;1-2~3-5
+lightning_spell_added|29-37~59-74;22-29~45-58;16-22~33-44;11-16~23-32;7-11~15-22;4-7~9-14;2-4~5-8;1-2~3-4
+lightning_dmg_inc|60-69;50-59;40-49;31-39;23-30;16-22;10-15;5-9
+lightning_spell_added_2h|67-85~136-170;51-67~103-133;37-51~76-101;25-37~53-74;16-25~34-51;9-16~21-32;5-9~12-18;2-5~7-9
+lightning_dmg_inc_2h|138-159;115-136;92-113;71-90;53-69;37-51;23-34;12-21
+poison_spell_added|29-37~59-74;22-29~45-58;16-22~33-44;11-16~23-32;7-11~15-22;4-7~9-14;2-4~5-8;1-2~3-4
+poison_dmg_inc|60-69;50-59;40-49;31-39;23-30;16-22;10-15;5-9
+poison_spell_added_2h|67-85~136-170;51-67~103-133;37-51~76-101;25-37~53-74;16-25~34-51;9-16~21-32;5-9~12-18;2-5~7-9
+poison_dmg_inc_2h|138-159;115-136;92-113;71-90;53-69;37-51;23-34;12-21
+spell_inc|110-124;95-109;80-94;65-79;50-64;35-49;20-34;10-19
+spell_inc_2h|253-285;218-251;184-216;150-182;115-147;80-113;46-78;23-44
+skill_level|2-2;1-1
+skill_level_bow|2-2;1-1
+skill_level_2h|3-3;2-2;1-1
+attack_added_phys|9-13~14-21;7-11~12-18;6-9~10-15;4-7~8-12;3-5~6-9;2-3~4-6;1-2~3-4
+attack_added_lightning|3-7~57-70;3-6~45-56;2-5~33-44;2-4~23-32;1-3~15-22;1-2~9-14;1-1~5-8
+fire_res|41-45;36-40;31-35;26-30;21-25;16-20;11-15;6-10
+cold_res|41-45;36-40;31-35;26-30;21-25;16-20;11-15;6-10
+lightning_res|41-45;36-40;31-35;26-30;21-25;16-20;11-15;6-10
+poison_res|41-45;36-40;31-35;26-30;21-25;16-20;11-15;6-10
+all_res|17-18;15-16;12-14;9-11;6-8;3-5
+phys_as_elem|9-10;7-8;5-6;3-4
+str_flat|43-50;38-42;33-37;28-32;23-27;18-22;13-17;8-12
+dex_flat|43-50;38-42;33-37;28-32;23-27;18-22;13-17;8-12
+int_flat|43-50;38-42;33-37;28-32;23-27;18-22;13-17;8-12
+all_attr|25-28;21-24;17-20;13-16;9-12;5-8;1-4
+attack_speed_local|26-28;23-25;20-22;17-19;14-16;11-13;8-10;5-7
+attack_speed|14-16;11-13;8-10;5-7
+cast_speed|29-32;26-28;23-25;20-22;17-19;14-16;11-13;8-10
+cast_speed_2h|67-74;60-64;53-57;46-51;39-44;32-37;25-30;18-23
+cast_speed_jewel|14-16;11-13;8-10;5-7
+cooldown_recovery|12-14;9-11;7-8
+crit_local|35-38;30-34;25-29;20-24;15-19;10-14
+crit_global|35-38;30-34;25-29;20-24;15-19;10-14
+crit_multi|35-38;30-34;25-29;20-24;13-19;8-12
+move_speed|35-35;30-30;25-25;20-20;15-15;10-10
+life_regen|29-37;22-29;16-22;11-16;7-11;4-7;2-4;1-2
+mana_regen|62-67;56-61;50-55;40-49;30-39;20-29;10-19
+life_on_kill|29-38;21-28;14-20;9-13;5-8;2-4
+ring_life_on_kill|29-38;21-28;14-20;9-13;5-8;2-4
+mana_on_kill|8-10;6-8;4-6;3-4;2-3;1-2
+ring_mana_on_kill|8-10;6-8;4-6;3-4;2-3;1-2
+mana_leech|0.6-0.7;0.4-0.5;0.2-0.3
+ring_mana_leech|0.6-0.7;0.4-0.5;0.2-0.3
+es_leech|0.9-1;0.7-0.8;0.5-0.6;0.3-0.4
+ring_es_leech|0.9-1;0.7-0.8;0.5-0.6;0.3-0.4
+life_leech|0.9-1;0.7-0.8;0.5-0.6;0.2-0.4
+ring_life_leech|0.9-1;0.7-0.8;0.5-0.6;0.2-0.4
+area|17-20;14-16;11-13;8-10;5-7
+ignite_chance|16-20;11-15;7-10;4-6
+shock_chance|16-20;11-15;7-10;4-6
+ignite_effect|21-25;16-20;11-15;6-10
+poison_effect|21-25;16-20;11-15;6-10
+shock_effect|18-22;13-17;9-12;5-8
+freeze_duration|21-25;16-20;11-15;6-10
+bleed_chance|16-20;11-15;7-10;4-6
+bleed_effect|21-25;16-20;11-15;6-10
+dot_multi|15-18;11-14;7-10;4-6
+chill_effect|21-25;16-20;11-15;6-10
+minion_dmg|63-72;53-62;43-52;34-42;26-33;19-25;13-18;8-12
+minion_dmg_2h|113-130;95-112;77-94;61-76;47-59;34-45;23-32;14-22
+minion_dmg_jewel|32-37;26-31;21-25;16-20;12-15;8-11;5-7
+minion_life|35-40;30-34;25-29;20-24;16-19;12-15;8-11
+minion_speed|13-15;10-12;7-9;4-6
+minion_crit|35-38;30-34;25-29;20-24;15-19;10-14
+minion_crit_multi|30-34;25-29;20-24;13-19;8-12
+curse_effect|17-20;13-16;9-12;5-8
+curse_limit|1-1
+max_fire_res91|2-2;1-1
+max_cold_res91|2-2;1-1
+max_lightning_res91|2-2;1-1
+max_poison_res91|2-2;1-1
+req_reduce|20-24;17-19;14-16;11-13;8-10;5-7
+idol_life_s|16-19;12-14;7-10;5-6
+idol_life_m|29-33;20-26;13-19;10-12
+idol_life_l|41-46;29-36;17-26;13-16
+idol_life_x|51-61;38-46;23-32;17-22
+idol_mana_s|14-17;10-13;6-9;4-5
+idol_mana_m|26-32;19-23;10-16;8-9
+idol_mana_l|36-44;26-32;14-22;10-13
+idol_mana_x|46-55;32-42;19-28;14-18
+idol_es_s|10-12;7-9;4-6;3-3
+idol_es_m|19-20;13-16;7-10;5-6
+idol_es_l|26-29;17-22;12-14;9-10
+idol_es_x|32-38;23-28;14-19;10-13
+idol_armour_s|7-8;5-6;3-4;2-2
+idol_armour_m|13-14;9-11;5-7;4-4
+idol_armour_l|18-20;12-15;8-10;6-7
+idol_armour_x|22-26;16-19;10-13;8-9
+idol_evasion_s|7-8;5-6;3-4;2-2
+idol_evasion_m|13-14;9-11;5-7;4-4
+idol_evasion_l|18-20;12-15;8-10;6-7
+idol_evasion_x|22-26;16-19;10-13;8-9
+idol_phys_s|7-8;5-6;3-4;2-2
+idol_phys_m|13-14;9-11;5-7;4-4
+idol_phys_l|18-20;12-15;8-10;6-7
+idol_phys_x|22-26;16-19;10-13;8-9
+idol_elemental_s|7-8;5-6;3-4;2-2
+idol_elemental_m|13-14;9-11;5-7;4-4
+idol_elemental_l|18-20;12-15;8-10;6-7
+idol_elemental_x|22-26;16-19;10-13;8-9
+idol_spell_s|7-8;5-6;3-4;2-2
+idol_spell_m|13-14;9-11;5-7;4-4
+idol_spell_l|18-20;12-15;8-10;6-7
+idol_spell_x|22-26;16-19;10-13;8-9
+idol_melee_s|7-8;5-6;3-4;2-2
+idol_melee_m|13-14;9-11;5-7;4-4
+idol_melee_l|18-20;12-15;8-10;6-7
+idol_melee_x|22-26;16-19;10-13;8-9
+idol_minion_s|7-8;5-6;3-4;2-2
+idol_minion_m|13-14;9-11;5-7;4-4
+idol_minion_l|18-20;12-15;8-10;6-7
+idol_minion_x|22-26;16-19;10-13;8-9
+idol_fire_res_s|7-8;5-6;3-4;2-2
+idol_fire_res_m|13-14;9-11;5-7;4-4
+idol_fire_res_l|18-20;12-15;8-10;6-7
+idol_fire_res_x|22-26;16-19;10-13;8-9
+idol_cold_res_s|7-8;5-6;3-4;2-2
+idol_cold_res_m|13-14;9-11;5-7;4-4
+idol_cold_res_l|18-20;12-15;8-10;6-7
+idol_cold_res_x|22-26;16-19;10-13;8-9
+idol_lightning_res_s|7-8;5-6;3-4;2-2
+idol_lightning_res_m|13-14;9-11;5-7;4-4
+idol_lightning_res_l|18-20;12-15;8-10;6-7
+idol_lightning_res_x|22-26;16-19;10-13;8-9
+idol_poison_res_s|7-8;5-6;3-4;2-2
+idol_poison_res_m|13-14;9-11;5-7;4-4
+idol_poison_res_l|18-20;12-15;8-10;6-7
+idol_poison_res_x|22-26;16-19;10-13;8-9
+idol_move_s|3-3;2-2;1-1
+idol_move_m|5-5;4-4;2-2;1-1
+idol_move_l|8-8;5-5;2-2;1-1
+idol_move_x|10-10;6-6;3-3;2-2
+idol_regen_s|5-6;3-4;1-2
+idol_regen_m|9-11;5-7;2-4;1-1
+idol_regen_l|12-15;8-10;2-5;1-1
+idol_regen_x|16-19;10-13;3-6;2-2
+idol_attack_speed_s|3-3;2-2;1-1
+idol_attack_speed_m|5-5;4-4;2-2;1-1
+idol_attack_speed_l|8-8;5-5;2-2;1-1
+idol_attack_speed_x|10-10;6-6;3-3;2-2
+idol_cast_speed_s|3-3;2-2;1-1
+idol_cast_speed_m|5-5;4-4;2-2;1-1
+idol_cast_speed_l|8-8;5-5;2-2;1-1
+idol_cast_speed_x|10-10;6-6;3-3;2-2
+idol_crit_s|10-12;7-9;4-6;3-3
+idol_crit_m|18-22;13-16;7-11;5-6
+idol_crit_l|25-30;18-22;10-15;8-9
+idol_crit_x|32-38;22-29;13-19;10-12
+idol_crit_multi_s|6-7;4-5;2-3;1-1
+idol_crit_multi_m|11-13;7-9;4-5;3-3
+idol_crit_multi_l|15-18;10-12;5-8;4-4
+idol_crit_multi_x|19-22;13-16;6-10;4-5
+idol_life_kill_s|5-6;3-4;1-2
+idol_life_kill_m|9-11;5-7;2-4;1-1
+idol_life_kill_l|12-15;8-10;2-5;1-1
+idol_life_kill_x|16-19;10-13;3-6;2-2
+idol_mana_regen_s|10-12;7-9;4-6;3-3
+idol_mana_regen_m|18-22;13-16;7-11;5-6
+idol_mana_regen_l|25-30;18-22;10-15;8-9
+idol_mana_regen_x|32-38;22-29;13-19;10-12
+idol_area_s|4-5;3-3;1-2
+idol_area_m|7-9;5-5;2-4;1-1
+idol_area_l|10-12;8-8;2-5;1-1
+idol_area_x|13-16;10-10;3-6;2-2
+idol_str_s|6-7;4-5;2-3;1-1
+idol_str_m|11-13;7-9;4-5;3-3
+idol_str_l|15-18;10-12;5-8;4-4
+idol_str_x|19-22;13-16;6-10;4-5
+idol_dex_s|6-7;4-5;2-3;1-1
+idol_dex_m|11-13;7-9;4-5;3-3
+idol_dex_l|15-18;10-12;5-8;4-4
+idol_dex_x|19-22;13-16;6-10;4-5
+idol_int_s|6-7;4-5;2-3;1-1
+idol_int_m|11-13;7-9;4-5;3-3
+idol_int_l|15-18;10-12;5-8;4-4
+idol_int_x|19-22;13-16;6-10;4-5
+idol_ballista_speed_m|6-7;5-5;3-4;2-2
+idol_ballista_speed_l|9-10;7-8;5-6;4-4
+idol_ballista_speed_x|12-13;9-10;6-8;4-5
+idol_ballista_life_m|10-11;8-9;5-7;4-4
+idol_ballista_life_l|14-16;11-13;8-10;6-7
+idol_ballista_life_x|18-21;14-17;10-13;8-9
+idol_minion_life_m|6-7;5-5;3-4;2-2
+idol_minion_life_l|9-10;7-8;5-6;4-4
+idol_minion_life_x|12-13;9-10;6-8;4-5
+idol_minion_speed_m|4-4;3-3;2-2;1-1
+idol_minion_speed_l|5-5;4-4;3-3;2-2
+idol_minion_speed_x|6-6;5-5;4-4;3-3
+idol_channel_area_m|6-7;5-5;3-4;2-2
+idol_channel_area_l|9-10;7-8;5-6;4-4
+idol_channel_area_x|12-13;9-10;6-8;4-5
+idol_channel_cost_m|4-4;3-3;2-2;1-1
+idol_channel_cost_l|5-5;4-4;3-3;2-2
+idol_channel_cost_x|6-6;5-5;4-4;3-3
+idol_slam_damage_m|9-10;7-8;5-6;4-4
+idol_slam_damage_l|13-15;10-12;7-9;5-6
+idol_slam_damage_x|17-20;13-16;9-12;7-8
+idol_slam_area_m|6-6;4-5;3-3;2-2
+idol_slam_area_l|8-9;6-7;4-5;3-3
+idol_slam_area_x|10-12;8-9;5-6;4-4
+idol_chain_damage_m|9-10;7-8;5-6;4-4
+idol_chain_damage_l|13-15;10-12;7-9;5-6
+idol_chain_damage_x|17-20;13-16;9-12;7-8
+idol_orbit_damage_m|9-10;7-8;5-6;4-4
+idol_orbit_damage_l|13-15;10-12;7-9;5-6
+idol_orbit_damage_x|17-20;13-16;9-12;7-8
+idol_bow_area_m|6-6;4-5;3-3;2-2
+idol_bow_area_l|8-9;6-7;4-5;3-3
+idol_bow_area_x|10-12;8-9;5-6;4-4
+idol_projectile_damage_m|7-8;6-6;4-5;3-3
+idol_projectile_damage_l|10-12;8-9;6-7;4-5
+idol_projectile_damage_x|13-16;10-12;8-9;6-7
+idol_holy_damage_m|9-10;7-8;5-6;4-4
+idol_holy_damage_l|13-15;10-12;7-9;5-6
+idol_holy_damage_x|17-20;13-16;9-12;7-8
+idol_poison_damage_m|7-8;6-6;4-5;3-3
+idol_poison_damage_l|10-12;8-9;6-7;4-5
+idol_poison_damage_x|13-16;10-12;8-9;6-7
+idol_fire_damage_m|7-8;6-6;4-5;3-3
+idol_fire_damage_l|10-12;8-9;6-7;4-5
+idol_fire_damage_x|13-16;10-12;8-9;6-7
+idol_cold_damage_m|7-8;6-6;4-5;3-3
+idol_cold_damage_l|10-12;8-9;6-7;4-5
+idol_cold_damage_x|13-16;10-12;8-9;6-7
+idol_lightning_damage_m|7-8;6-6;4-5;3-3
+idol_lightning_damage_l|10-12;8-9;6-7;4-5
+idol_lightning_damage_x|13-16;10-12;8-9;6-7
+idol_movement_damage_m|6-6;4-5;3-3;2-2
+idol_movement_damage_l|8-9;6-7;4-5;3-3
+idol_movement_damage_x|10-12;8-9;5-6;4-4
+idol_trap_damage_m|9-10;7-8;5-6;4-4
+idol_trap_damage_l|13-15;10-12;7-9;5-6
+idol_trap_damage_x|17-20;13-16;9-12;7-8
+idol_shield_damage_m|9-10;7-8;5-6;4-4
+idol_shield_damage_l|13-15;10-12;7-9;5-6
+idol_shield_damage_x|17-20;13-16;9-12;7-8
+idol_bleed_damage_m|9-10;7-8;5-6;4-4
+idol_bleed_damage_l|13-15;10-12;7-9;5-6
+idol_bleed_damage_x|17-20;13-16;9-12;7-8
+idol_mana_leech_l|0.18-0.22;0.14-0.17;0.1-0.12;0.08-0.09
+idol_mana_leech_x|0.23-0.29;0.18-0.22;0.13-0.16;0.1-0.12
+idol_grand_chain_plus|1-1
+idol_grand_ballista_plus|1-1
+idol_grand_orbit_plus|1-1
+idol_grand_skeleton_plus|1-1
+idol_grand_slam_spike|1-1
+idol_grand_bow_projectile|1-1
+idol_grand_channel_ramp|4-5;3-4
+idol_grand_phys_as_fire|6-7;4-5
+idol_grand_phys_as_cold|6-7;4-5
+idol_grand_phys_as_lightning|6-7;4-5
+idol_grand_elemental_pen|4-5;3-3
+idol_grand_life_inc|6-7;4-5
+idol_grand_max_res|1-1
+idol_grand_max_poison_res|1-1
+idol_grand_melee_afterimage|1-1
+idol_grand_skeleton_wizard_plus|1-1
+idol_grand_eng_totem|28-36;20-26
+idol_grand_eng_afterimage|8-10;5-7
+idol_grand_eng_orbit|3-4;3-3
+idol_grand_eng_trap|6-8;4-5
+idol_grand_eng_minion|4-5;3-3
+idol_grand_eng_brand|28-36;20-26
+idol_grand_eng_slam|9-12;6-8
+idol_grand_trap_plus|1-1
+idol_grand_spark_plus|1-1
+drune_life|16-20
+drune_mana|15-18
+drune_es|10-12
+drune_armour|10-12
+drune_evasion|10-12
+drune_phys|10-12
+drune_elemental|10-12
+drune_spell|10-12
+drune_melee|10-12
+drune_projectile|10-12
+drune_minion|10-12
+drune_fire_res|10-12
+drune_cold_res|10-12
+drune_lightning_res|10-12
+drune_poison_res|10-12
+drune_attack_speed|3-3
+drune_cast_speed|3-3
+drune_crit|15-18
+drune_crit_multi|9-10
+drune_move|3-3
+drune_regen|8-9
+drune_area|6-8
+drune_str|9-10
+drune_dex|9-10
+drune_int|9-10
+ring_move_speed|4-5;3-4;2-3
+gloves_cast_speed|14-16;11-13;8-10;5-7
+ring_attack_speed|6-7;4-5;2-3
+ring_cast_speed|6-7;4-5;2-3
+poison_pen85_2h|10-12;8-9;6-7;4-5
+poison_pen85_1h|5-6;4-5;3-4;2-3
+riven95_life_large|146-167
+riven95_armour_local|321-367
+riven95_armour_local_small|144-164
+riven95_evasion_local|321-367
+riven95_evasion_local_small|144-164
+riven95_es_local|86-98
+riven95_es_local_small|39-44
+riven95_defence_inc|116-132
+riven95_phys_inc_local|188-215
+riven95_phys_added_local|47-54~86-98
+riven95_fire_added_local|46-53~92-106
+riven95_fire_spell_added|39-44~78-89
+riven95_fire_dmg_inc|72-83
+riven95_fire_spell_added_2h|89-102~178-204
+riven95_fire_dmg_inc_2h|167-191
+riven95_cold_added_local|46-53~92-106
+riven95_cold_spell_added|39-44~78-89
+riven95_cold_dmg_inc|72-83
+riven95_cold_spell_added_2h|89-102~178-204
+riven95_cold_dmg_inc_2h|167-191
+riven95_lightning_added_local|46-53~92-106
+riven95_lightning_spell_added|39-44~78-89
+riven95_lightning_dmg_inc|72-83
+riven95_lightning_spell_added_2h|89-102~178-204
+riven95_lightning_dmg_inc_2h|167-191
+riven95_poison_spell_added|39-44~78-89
+riven95_poison_dmg_inc|72-83
+riven95_poison_spell_added_2h|89-102~178-204
+riven95_poison_dmg_inc_2h|167-191
+riven95_spell_inc|130-149
+riven95_spell_inc_2h|299-342
+riven95_fire_res|47-54
+riven95_cold_res|47-54
+riven95_lightning_res|47-54
+riven95_poison_res|47-54
+riven95_phys_as_elem|11-12
+riven95_str_flat|52-60
+riven95_dex_flat|52-60
+riven95_int_flat|52-60
+riven95_attack_speed_local|29-34
+riven95_cast_speed|34-38
+riven95_cast_speed_2h|78-89
+riven95_crit_local|40-46
+riven95_crit_global|40-46
+riven95_crit_multi|40-46
+riven95_life_regen|39-44
+riven95_area|21-24
+riven95_minion_dmg|76-86
+riven95_minion_dmg_2h|136-156
+riven95_minion_dmg_jewel|39-44
+riven95_max_fire_res91|3-3
+riven95_max_cold_res91|3-3
+riven95_max_lightning_res91|3-3
+riven95_max_poison_res91|3-3
+riven95_skill_level|3-3
+riven95_skill_level_bow|3-3
+riven95_skill_level_2h|4-4
+riven95_cooldown_recovery|16-18
+riven95_dot_multi|20-23
+fire_pen95_2h|10-12;8-9;6-7;4-5
+fire_pen95_1h|5-6;4-5;3-4;2-3
+cold_pen95_2h|10-12;8-9;6-7;4-5
+cold_pen95_1h|5-6;4-5;3-4;2-3
+lightning_pen95_2h|10-12;8-9;6-7;4-5
+lightning_pen95_1h|5-6;4-5;3-4;2-3
+elemental_pen95_amulet|5-6;4-5;3-4;2-3
+vow_effect98|17-20;13-16;9-12;5-8`;
+let DC_TR=null;
+function dcTR(){ /* range key -> [{id,t}] ; riven affixes are tier 0 */
+  if(DC_TR)return DC_TR;DC_TR={};TR_BY_ID={};
+  TIERR_SRC.split("\n").forEach(l=>{const i=l.indexOf("|");if(i<0)return;const id=l.slice(0,i),riv=/^riven/.test(id);
+    TR_BY_ID[id]=l.slice(i+1).split(";");
+    TR_BY_ID[id].forEach((k,j)=>{(DC_TR[k]=DC_TR[k]||[]).push({id,t:riv?0:j+1});});});
+  return DC_TR;
+}
+let TR_BY_ID={};
+const dcRngKey=str=>{const m=String(str).match(/\[\s*(\d+)\s*(?:-\s*(\d+))?\s*(?:to\s*(\d+)\s*-\s*(\d+))?/i);if(!m)return null;
+  return m[1]+"-"+(m[2]||m[1])+(m[3]?"~"+m[3]+"-"+m[4]:"");};
+/* Tier check. ids: affix ids the line can belong to (null = unknown line). Returns {tier,unsure,src}. */
+function dcResolveTier(ocrTier,key,ids){
+  if(!key)return{tier:ocrTier,unsure:false,src:"text"};
+  const all=dcTR()[key]||[],pref=ids?all.filter(h=>ids.includes(h.id)):all,hits=pref.length?pref:all,ts=[...new Set(hits.map(h=>h.t))]; /* idol and riven ids are not in the line list, so fall back to every affix with this range */
+  if(ts.length===1){
+    if(ocrTier!==null&&ocrTier!==ts[0]&&ids){ /* the digit and the range disagree: if the digit's own range also half-fits, we cannot tell which one is misread */
+      const half=(a,b)=>{const x=a.split(/[-~]/),y=b.split(/[-~]/);return x.length===y.length&&x.length>=2&&x.some((v,i)=>v===y[i]);};
+      for(const id of ids){const r=(TR_BY_ID[id]||[])[ocrTier===0?0:ocrTier-1];if(r&&half(r,key))return{tier:null,unsure:true,src:"conflict",guess:ocrTier};}
+    }
+    return{tier:ts[0],unsure:false,src:ocrTier===ts[0]||ocrTier===null?"range":"range-fix",was:ocrTier};}
+  if(ts.length>1){return ocrTier!==null&&ts.includes(ocrTier)?{tier:ocrTier,unsure:false,src:"text+range"}:{tier:null,unsure:true,src:"ambiguous",guess:ocrTier};}
+  /* the range is not in the table: a digit may be misread. Accept the OCR tier only if its range is one digit away. */
+  if(ocrTier!==null&&ids){
+    const near=(a,b)=>{const x=a.split(/[-~]/),y=b.split(/[-~]/);if(x.length!==y.length)return false;let d=0;for(let i=0;i<x.length;i++){if(x[i]!==y[i]){if(Math.abs(+x[i]-+y[i])>1)return false;d++;}}return d<=1;};
+    for(const id of ids){const r=(TR_BY_ID[id]||[])[ocrTier===0?0:ocrTier-1];if(r&&near(r,key))return{tier:ocrTier,unsure:false,src:"text+near"};}
+    /* half the range still matches this tier's range (one number misread): the tier digit is corroborated */
+    const half=(a,b)=>{const x=a.split(/[-~]/),y=b.split(/[-~]/);return x.length===y.length&&x.length>=2&&x.filter((v,i)=>v===y[i]).length>=Math.ceil(x.length/2)&&x.some((v,i)=>v===y[i]);};
+    for(const id of ids){const r=(TR_BY_ID[id]||[])[ocrTier===0?0:ocrTier-1];if(r&&half(r,key))return{tier:ocrTier,unsure:false,src:"text+half"};}
+  }
+  return{tier:null,unsure:true,src:"no-match",guess:ocrTier};
+}
+/* fuzzy line match: numbers become #, then a similarity score against every line template */
+const dcFzN=t=>t.toLowerCase().replace(/\s*[\u00b7\u2022]\s*(adds|multiplies)\b.*$/,"").replace(/\s+-\s*adds\b.*$/,"").replace(/[+\-]?\d[\d.,]*(?:\s*-\s*\d[\d.,]*)?/g,"#").replace(/[^a-z#%\s]/g," ").replace(/\s+/g," ").trim();
+const dcLev=(a,b)=>{const m=a.length,n=b.length;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];};
+const DC_FZ_MIN=.86,DC_FZ_GAP=.04;
+let DC_FZL=null;const DC_FZC={};
+const dcTri=t=>{const o=new Set();for(let i=0;i<t.length-2;i++)o.add(t.slice(i,i+3));return o;};
+function dcFuzzy(text){
+  const a=dcFzN(text);if((a.match(/[a-z]/g)||[]).length<10)return"";
+  if(a in DC_FZC)return DC_FZC[a];
+  if(!DC_FZL)DC_FZL=Object.keys(LINE_IDS).map(l=>{const n=dcFzN(l.replace(/\(local\)/i,"").replace(/\b[XY]\b/g,"#"));return{label:l,n,tri:dcTri(n)};});
+  const ta=dcTri(a),sc=[];
+  for(const x of DC_FZL){ /* cheap trigram filter first, edit distance only for plausible templates */
+    let hit=0;for(const g of x.tri)if(ta.has(g))hit++;if(!x.tri.size||hit/x.tri.size<.5)continue;
+    let best=0;for(let L=Math.max(3,x.n.length-3);L<=x.n.length+3;L++){const pre=a.slice(0,L),v=1-dcLev(pre,x.n)/Math.max(pre.length,x.n.length);if(v>best)best=v;}
+    sc.push([best,x.label]);}
+  sc.sort((u,v)=>v[0]-u[0]);
+  return DC_FZC[a]=sc.length&&sc[0][0]>=DC_FZ_MIN&&sc[0][0]-(sc[1]?sc[1][0]:0)>=DC_FZ_GAP?sc[0][1]:"";
+}
+/* Word boxes -> text lines. Right-aligned "T3 [7-8]" markers are split from the text by position and joined with a TAB. */
+function dcFromWords(words,W){
+  const ws=(words||[]).filter(w=>w&&String(w.t).trim()).map(w=>({t:String(w.t).trim(),x0:w.x0,y0:w.y0,x1:w.x1,y1:w.y1}));
+  if(!ws.length)return"";
+  W=W||Math.max(...ws.map(w=>w.x1));
+  const hs=ws.map(w=>w.y1-w.y0).sort((a,b)=>a-b),mh=hs[hs.length>>1]||10;
+  ws.sort((a,b)=>(a.y0+a.y1)-(b.y0+b.y1));
+  const rows=[];
+  for(const w of ws){const yc=(w.y0+w.y1)/2,r=rows[rows.length-1];if(r&&Math.abs(yc-r.yc)<mh*.5){r.w.push(w);r.yc=(r.yc*(r.w.length-1)+yc)/r.w.length;}else rows.push({yc,w:[w]});}
+  return rows.map(r=>{
+    const a=r.w.sort((p,q)=>p.x0-q.x0);let k=a.findIndex(w=>/^\[\s*\d/.test(w.t)&&w.x0>=W*.3);
+    if(k>0&&/^[_\u2014\u2013-]*(?:[Tt])?[0-9OoIl|]{1,2}$/.test(a[k-1].t)&&a[k-1].x0>=W*.3)k--;
+    const left=(k<0?a:a.slice(0,k)).map(w=>w.t).join(" "),tail=k<0?[]:a.slice(k).map(w=>w.t).filter(t=>/[A-Za-z0-9]/.test(t));
+    return tail.length?left+"\t"+tail.join(" "):left;
+  }).join("\n");
+}
+function dcTextOf(data){ /* tesseract.js result -> text with a column split when word boxes exist */
+  try{
+    let ws=data.words;
+    if(!ws&&data.blocks)ws=data.blocks.flatMap(b=>b.paragraphs.flatMap(p=>p.lines.flatMap(l=>l.words)));
+    if(ws&&ws.length){const m=ws.map(w=>({t:w.text,x0:w.bbox.x0,y0:w.bbox.y0,x1:w.bbox.x1,y1:w.bbox.y1}));const t=dcFromWords(m);if(t.trim())return t;}
+  }catch(e){}
+  return data.text||"";
+}
 function dcLineRes(){
   if(DC_LR)return DC_LR;
   DC_LR=Object.keys(LINE_IDS).map(label=>{
@@ -2032,7 +2495,7 @@ function dcLineRes(){
 const dcLblOf=a=>LINEN[a.id]||LINEN[a.id.replace(/^Idol(.+?)_/,(m,x)=>"idol_"+x.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase()+"_")]||"";
 const dcAff=label=>AFF.find(a=>dcLblOf(a)===label);
 function dcParse(text){
-  const raw=String(text||""),lines=raw.split(/\r?\n/).map(s=>s.replace(/\s+/g," ").trim()).filter(Boolean),all=dcNorm(raw);
+  const raw=String(text||""),lines=raw.split(/\r?\n/).map(s=>s.replace(/[^\S\t]+/g," ").replace(/ ?\t ?/g,"\t").trim()).filter(Boolean),all=dcNorm(raw);
   const d={rar:null,kind:null,sub:"",rune:false,rtier:null,gem:false,core:false,truesworn:false,unsworn:null,ilvl:null,req:null,sock:null,grade:null,mods:[],baseId:"",baseName:"",redId:"",redName:"",ruleNo:null,ruleName:"",alt:false,nameHit:[],seen:[]};
   let m;
   for(const ln of lines){ /* rarity + type line, e.g. "Magic Idol 2x1" */
@@ -2062,31 +2525,39 @@ function dcParse(text){
   /* lines and tiers. The game puts "T3 [7-8]" right of the affix text or on the next line (uniques: only "[160-190]").
      Long affixes wrap onto a second line. Lines before the first marker (and diamond lines) are implicits. */
   const LR=dcLineRes(),nz=t=>t.replace(/\b(Physical|Fire|Cold|Lightning|Poison|Chaos|Elemental)\s+Damage\s+to\s+(Spells|Attacks)\b/gi,(m,e,k)=>e+(/^s/i.test(k)?" Spell":" Attack")+" Damage"),
-    fnd=t=>{t=nz(t);for(const v of [t,t.replace(/^\W{0,3}Damage\s+(?=Penetrates)/i,"")])for(const x of LR)if(x.re.test(v))return x.label;return"";};
+    fnd=t=>{t=nz(t);for(const v of [t,t.replace(/^\W{0,3}Damage\s+(?=Penetrates)/i,"")])for(const x of LR)if(x.re.test(v))return x.label;return dcFuzzy(t);};
+  const TIERC=s=>{const m=s.match(/^\W{0,2}(?:T|t)?\s?([0-9OoIl|])(?=\s|\[|$)/);if(!m)return null;const v=/[OoQ]/.test(m[1])?0:/[Il|]/.test(m[1])?1:+m[1];return v<=9?v:null;};
   const TIER=s=>{const m=s.match(/(?:^|[^A-Za-z0-9])(?:T|[1Il|])\s?([0-9OoQIl|])\s*\[\s*\d/);if(!m)return null;const v=/[OoQ]/.test(m[1])?0:/[Il|]/.test(m[1])?1:+m[1];return v<=9?v:null;};
   const ents=[];let last=null,prevText=false,pend="";
   for(let ln of lines){
     if(/^if equipped\b/i.test(ln))break;
     let bul=false;const ln2=ln.replace(/^[*\u2022\u00b7\u00a2\u2666\u25c6\u2756]\s*/,"");if(ln2!==ln){bul=true;ln=ln2;}
-    const bi=ln.search(/\[\s*\d/),hasMk=bi>=0,tier=hasMk?TIER(ln):null;
-    const text=(hasMk?ln.slice(0,bi).replace(/(?:^|[\s_\u2014\u2013-])(?:T|[1Il|])\s?[0-9OoQIl|]\s*$/,""):ln).trim();
+    let text,mkStr="",hasMk;
+    if(ln.includes("\t")){const ti=ln.indexOf("\t");text=ln.slice(0,ti).trim();mkStr=ln.slice(ti+1);hasMk=/\d/.test(mkStr);}
+    else{const bi=ln.search(/\[\s*\d/);hasMk=bi>=0;if(hasMk)mkStr=ln.slice(Math.max(0,bi-6));
+      text=(hasMk?ln.slice(0,bi).replace(/(?:^|[\s_\u2014\u2013-])(?:T|[1Il|])\s?[0-9OoQIl|]\s*$/,""):ln).trim();}
+    const tier=hasMk?TIER(mkStr)??TIERC(mkStr):null,rng=hasMk?dcRngKey(mkStr):null,riven=hasMk&&/riven/i.test(mkStr);
     if(hasMk&&!/[A-Za-z]{3}/.test(text)){ /* marker-only line belongs to the entry above */
-      if(last&&!last.mk){last.mk=true;last.tier=tier;}
+      if(last&&!last.mk){last.mk=true;last.tier=tier;last.rng=rng;last.riven=riven;}
       prevText=false;continue;
     }
     const lab=fnd(text);
-    if(lab){last={label:lab,text,tier,mk:hasMk,bul};ents.push(last);prevText=true;pend="";continue;}
+    if(lab){last={label:lab,text,tier,rng,riven,mk:hasMk,bul};ents.push(last);prevText=true;pend="";continue;}
     if(last&&prevText){ /* wrapped second line: join only if it gives a better label */
       const j=fnd(last.text+" "+text);
-      if(j&&j!==last.label){last.label=j;last.text+=" "+text;if(hasMk&&!last.mk){last.mk=true;last.tier=tier;}pend="";continue;}
+      if(j&&j!==last.label){last.label=j;last.text+=" "+text;if(hasMk&&!last.mk){last.mk=true;last.tier=tier;last.rng=rng;last.riven=riven;}pend="";continue;}
     }
-    if(pend){const j=fnd(pend+" "+text);if(j){last={label:j,text:pend+" "+text,tier,mk:hasMk,bul};ents.push(last);prevText=true;pend="";continue;}}
-    if(hasMk){last={label:"",text,tier,mk:true,bul};ents.push(last);prevText=true;pend="";continue;}
+    if(pend){const j=fnd(pend+" "+text);if(j){last={label:j,text:pend+" "+text,tier,rng,riven,mk:hasMk,bul};ents.push(last);prevText=true;pend="";continue;}}
+    if(hasMk){last={label:"",text,tier,rng,riven,mk:true,bul};ents.push(last);prevText=true;pend="";continue;}
     pend=/[A-Za-z]{3}/.test(text)?text:"";prevText=false;
   }
   const first=ents.findIndex(e=>e.mk);
   d.implicit=ents.filter((e,i)=>e.bul||(first>0&&i<first)).map(e=>e.label);
-  ents.forEach((e,i)=>{if(e.bul||(first>0&&i<first))return;d.mods.push({label:e.label,tier:e.tier});});
+  ents.forEach((e,i)=>{if(e.bul||(first>0&&i<first))return;
+    const ids=e.label?(LINE_IDS[e.label]||null):null,
+      r=d.rar==="U"||d.kind==="idol"?{tier:e.tier,unsure:false,src:"text"}  /* uniques have no tiers; idol ranges in the tooltip are scaled and do not match the table */
+       :e.riven?{tier:0,unsure:false,src:"riven"}:dcResolveTier(e.tier,e.rng,ids);
+    d.mods.push({label:e.label,tier:r.tier,unsure:!!r.unsure,src:r.src,rng:e.rng||null,fixed:r.src==="range-fix"});});
   d.riven=d.mods.some(x=>x.tier===0);
   d.mods.forEach(x=>{const a=x.label?dcAff(x.label):null;x.tiers=a?a.n:0;x.lines=a?(LINEMAP[a.group]||[]):[];});
   for(let i=0;i<F.rules.length;i++){const n=(F.rules[i].name||"").trim();if(n.length>=3&&all.includes(dcNorm(n)))d.nameHit.push(i);}
@@ -2155,6 +2626,9 @@ function dcCheck(d){
     else res.notes.push("The tooltip names rule "+d.ruleNo+", but your filter has only "+F.rules.length+" rules. Paste the filter you used in the game.");
   }else if(d.nameHit.length){const i=d.nameHit[0];res.stated={i,c:dcRule(F.rules[i],d),byName:true};}
   if(!res.win&&!res.maybe.length&&!res.stated)res.none=true;
+  const uns=d.mods.map((x,i)=>x.unsure?i+1:0).filter(Boolean);
+  if(uns.length)res.notes.push("The tier of line"+(uns.length>1?"s ":" ")+uns.join(", ")+" does not fit the affix table (a digit may be misread), so it is treated as unknown. Fix the text and check again.");
+  if(d.mods.some(x=>x.fixed))res.notes.push("A tier was corrected from its value range in brackets.");
   if(d.alt)res.notes.push("The tooltip is not expanded (Alt: compare, rules). Hold Alt in the game and scan again to see the rule details.");
   if(d.rar&&d.rar==="U")res.notes.push("Uniques and Reds are never hidden.");
   if(d.dwarven)res.notes.push("Dwarven Runes are never hidden.");
@@ -2240,7 +2714,7 @@ async function dcFile(file){
     dcStatus("Preparing the image…");const blob=await dcPrep(file);
     const r=await Tesseract.recognize(blob,"eng",{logger:m=>{if(job!==DC.job)return;if(m.status==="recognizing text"){dcProg(m.progress);dcStatus("Reading the text… "+Math.round(m.progress*100)+"%");}else if(/loading|initializ/i.test(m.status||"")){dcStatus("Loading the text reader…");}}});
     if(job!==DC.job)return;
-    $("#dcTxt").value=(r.data.text||"").trim();dcProg(null);
+    $("#dcTxt").value=dcTextOf(r.data).trim();dcProg(null);
     dcStatus($("#dcTxt").value?"Done. Fix the text below if a word was misread, then press Check text.":"No text found in this image. Try a sharper screenshot of the tooltip.",!$("#dcTxt").value);
     dcRun();
   }catch(e){
