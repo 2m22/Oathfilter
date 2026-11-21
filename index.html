@@ -2776,6 +2776,7 @@ const EZ_ARCH=[
  {k:"minion",n:"Minions",col:1,ids:["minion_dmg","minion_life","minion_speed","minion_crit","minion_crit_multi"],idol:["idol_grand_skeleton_plus","idol_grand_skeleton_wizard_plus"]},
  {k:"dot",n:"Damage over time",col:5,ids:["dot_multi","bleed_chance","bleed_effect","ignite_chance","ignite_effect","poison_dmg_inc","poison_effect"],idol:[]},
  {k:"elem",n:"Elemental",col:5,ids:["fire_dmg_inc","cold_dmg_inc","lightning_dmg_inc"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
+ {k:"curse",n:"Curse / Vow",col:6,ids:["curse_effect","curse_limit","vow_effect98"],idol:[]},
  {k:"move",n:"Move Speed",col:4,ids:["move_speed"],idol:["idol_movement_damage_m"]},
  {k:"melee",n:"Melee",col:6,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"]},
  {k:"slam",n:"Slam",col:6,ids:[],idol:["idol_slam_damage_m","idol_grand_slam_spike"]},
@@ -2826,8 +2827,11 @@ function easyGen(s){
   const mk=(o,name,fn)=>{const r=newRule(o);r.name=name.slice(0,NAME_MAX);if(fn)fn(r);R.push(r);return r;};
   const act=EZ_ARCH.filter(a=>s.arch[a.k]);
   act.forEach(a=>{[a.ids,a.idol].forEach(l=>l.forEach(id=>{if(!EZ_LINEIDS.has(id)||!LINEN[id])notes.push("Line "+id+" is not in the game data of this page and was skipped.");}));});
-  const gearA=act.map(a=>({a,parts:ezChunks(ezGearIds(a))})).filter(x=>x.parts.length);
-  const idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a))})).filter(x=>x.parts.length);
+  /* a line that two picks share (crit, for example) is listed once, under the first pick that has it, so it never wastes an a= slot or a rule */
+  const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
+  const og=own(),oi=own();
+  const gearA=act.map(a=>({a,parts:ezChunks(ezGearIds(a).filter(og))})).filter(x=>x.parts.length);
+  const idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a).filter(oi))})).filter(x=>x.parts.length);
   const rarHide=(s.hn||s.hm)?1:0;
   const white=gearA.length>0||lo>0;
   const idolWhite=s.idol==="match"&&idolA.length>0;
@@ -2846,7 +2850,8 @@ function easyGen(s){
   else if(s.idol==="all"&&!s.hl&&idolA.length)notes.push("Idols stay shown and Highlight is off, so Idol picks change nothing. Turn Highlight on or use Match my picks.");
   else if(s.idol==="match"&&act.length&&!idolA.length)notes.push("None of your picks has Idol lines, so Idols are not touched.");
   /* 3 hide normal / magic gear */
-  if(rarHide)mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:0},s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear");
+  const rarRule=rarHide&&!(white&&gearA.length&&!s.hm); /* plain Normal gear has no lines, so with picks on, "Everything else" already hides it */
+  if(rarRule)mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:0},s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear");
   /* 4 gear picks and the level floor */
   if(white){
     gearA.forEach(x=>x.parts.forEach((p,i)=>mk({type:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(lo)msetRng(r,"i",lo,0);msetList(r,"a",p);})));
@@ -2893,7 +2898,7 @@ function ezBuild(){
     <span class="lab" style="margin-top:10px;display:block">Level floor</span>${ezSeg("floor",EZ_FLOOR.map((l,i)=>[i,l]),"Level floor")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
   <div class="sub"><span class="lab">What I want to see</span><div class="chips">${EZ_ARCH.map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>
-    <p class="hint" style="margin:6px 0 0">A pick also keeps the matching Idols and hides the other Idols. Picks without gear lines only change Idols.</p>
+    <p class="hint" style="margin:6px 0 0">A pick also keeps the matching Idols and hides the other Idols. Picks without gear lines only change Idols. A line two picks share is listed once.</p>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
   <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div></div>
   <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>`;
