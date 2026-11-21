@@ -2,6 +2,15 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (3)
+
+### Changed
+- Easy Mode uses affix tiers instead of an item level floor. Rupture Level (slider, Any to 90) tells the page which affix tiers can drop at that level. Every gear pick gets a tier limit per line (Keep tiers: best tier, best 2 or best 3), so gear with only low lines is hidden. Idol rules are not affected.
+- The update box shows "What's new" below its buttons. After a reload, the same box shows the changes once instead of a separate box.
+
+### Fixed
+- Easy Mode no longer fails with too many rules when you pick many options. Over the 40-rule limit, your picks share rules and one colour (43 rules become 33 with every pick on).
+
 ## 2026-11-21 (2)
 
 ### Added
