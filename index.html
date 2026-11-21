@@ -216,6 +216,16 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 .drop[data-v="2"],.drop[data-v="3"]{border-color:var(--hc)}
 .drop .rn{display:inline-block;margin-top:4px;padding:1px 8px;border:1px solid var(--border);border-radius:5px;background:var(--bg-subtle);font-size:.75rem;font-weight:600;color:var(--text-muted)}
 .drop .meta{white-space:normal}
+.dcz{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px;border:2px dashed var(--border);border-radius:10px;background:var(--bg-subtle);text-align:center;cursor:pointer}
+.dcz span{font-size:.86em;opacity:.8}.dcz.over,.dcz:focus-visible{border-color:var(--accent-gold);outline:none}
+#dcTxt{width:100%;min-height:120px;resize:vertical;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);color:inherit;font:inherit}
+.dcres{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.dcdet{display:flex;flex-wrap:wrap;gap:6px}.dcchip{padding:2px 9px;border:1px solid var(--border);border-radius:999px;font-size:.85em;background:var(--bg-card)}
+.dcrule{padding:10px 12px;border:1px solid var(--accent-gold);border-radius:8px;background:var(--bg-card)}.dcrule .btn{margin-top:8px}
+.dcsum,.dcsrc{font-size:.88em;opacity:.85;margin-top:3px}.dcok{color:var(--show-fg,#7ec77e);margin:0}.dcwarn{color:var(--hide-fg);margin:0}.dcnote{margin:0;opacity:.9}
+.dcmay ul,.dcnotes{margin:4px 0 0;padding-left:20px;font-size:.88em}.dcnotes{opacity:.85}
+.rc.flash{animation:rcflash 1.6s ease-out}@keyframes rcflash{0%,40%{box-shadow:0 0 0 3px var(--accent-gold)}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.rc.flash{animation:none;outline:2px solid var(--accent-gold)}}
 .drop.in{animation:landin .5s ease-out}
 @keyframes landin{0%{transform:translateX(18px);opacity:0}100%{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.drop.in{animation:none}.sw,.sw::before,.bar i,.rc{transition:none}}
@@ -344,6 +354,16 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
       <label for="sC">Per click<input id="sC" type="range" min="1" max="25" value="1"><output id="oC" aria-live="polite">1</output></label></div></div>
   </aside>
   <div class="stack dropwrap">
+  <section class="plate" aria-labelledby="h-dc"><h2 id="h-dc" class="coltitle">Check a drop screenshot</h2>
+    <div class="dcz" id="dcZone" tabindex="0" role="button" aria-label="Drop a screenshot here, paste it with Ctrl+V, or press Enter to choose a file"><b>Paste (Ctrl+V), drop or choose a screenshot</b><span>Drop or tooltip screenshot, like an idol or a rare item</span><button type="button" class="btn" id="dcPick" tabindex="-1">Choose file</button><input type="file" id="dcFile" accept="image/*" hidden></div>
+    <p class="hint" id="dcHint" style="margin:8px 0 0">The text is read on your device. Your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN.</p>
+    <progress id="dcPg" max="1" value="0" hidden style="width:100%;margin-top:8px"></progress>
+    <p class="hint" id="dcSt" role="status" aria-live="polite" style="margin:6px 0 0"></p>
+    <img id="dcPv" alt="Your screenshot" hidden style="max-width:100%;max-height:220px;margin-top:8px;border:1px solid var(--border);border-radius:8px">
+    <label class="lab" for="dcTxt" style="display:block;margin-top:10px">Text from the screenshot (you can edit it)</label>
+    <textarea id="dcTxt" rows="7" spellcheck="false" placeholder="Or type or paste the tooltip text here, for example:&#10;Magic Idol 2x1&#10;Item Level 84&#10;T3 [7-8]&#10;Requires Level 20"></textarea>
+    <div class="dctlb" style="margin-top:8px"><button type="button" class="btn gold" id="dcCheck">Check text</button><button type="button" class="btn" id="dcClear">Clear</button></div>
+    <div id="dcRes" class="dcres" hidden aria-live="polite"></div></section>
   <section class="plate" aria-labelledby="h-drop"><h2 id="h-drop" class="coltitle">Result</h2>
     <div class="stats" id="stats"><div class="stat"><b id="nAll">0</b><span>Total samples</span></div><div class="stat"><b id="nShow" class="c-show">0</b><span>Shown</span></div><div class="stat"><b id="nHl" class="c-hl">0</b><span>Highlighted</span></div><div class="stat"><b id="nHide" class="c-hide">0</b><span>Hidden</span></div><div class="stat zero" id="stSell" hidden title="Sell: how the game handles it is not confirmed. The Drop Test treats it like Hide and counts it separately."><b id="nSell" style="color:var(--sell-fg)">0</b><span>Sell</span></div></div>
     <div class="bar" aria-hidden="true"><i id="bHl" style="width:0"></i><i id="bShow" style="width:0"></i><i id="bHide" style="width:0"></i><i id="bSell" style="width:0"></i></div></section>
@@ -458,6 +478,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <ul class="pl">
      <li><b>Drop 1 / Drop 25 / Auto-drop.</b> Varied sample items. Reset clears the log and the counters.</li>
      <li><b>Quick spawn.</b> Targeted items: White, Magic good or bad, Rare valuable, decent, bad or mid, Unique / Red and Idol. Use them to test a rule that random samples rarely hit.</li>
+     <li><b>Check a drop screenshot.</b> Paste (Ctrl+V), drop or choose a screenshot of a drop or tooltip. The text is read on your device and you can fix it before checking. The first matching rule is found top to bottom, using what the screenshot shows: rarity, type, item level, tiers and lines. If the tooltip names a rule, that rule is shown and compared. Details the screenshot cannot show (for example an unexpanded Alt tooltip) are listed as open points.</li>
      <li><b>Sliders.</b> “Lines at T1” sets how many T1 lines Rare valuable has (1–6), “Item level” the item level, “Idol size” the idol size (1–4) and “Per click” how many items one press creates.</li>
     </ul>
     <h3 class="subtitle">Reading the result</h3>
@@ -653,7 +674,7 @@ const RAR={0:"NMRU",1:"N",2:"M",3:"NM",4:"R",5:"RU"};
 function typeMatch(t,it){
   if(it.kind==="misc")return false;
   switch(t){
-    case 0:return true;
+    case 0:return it.kind!=="idol"; /* "Any gear" does not catch idols (game: tooltip named the Idols rule, not an earlier Any-gear rule) */
     case 1:return it.kind==="weapon";
     case 2:return["helm","chest","gloves","boots"].includes(it.kind);
     case 3:return["ring","amulet","belt"].includes(it.kind);
@@ -1418,7 +1439,7 @@ function covers(a,b){
   if(!a.on||!b.on)return false;
   if(!moreImplies(a,b))return false;
   const ra=RAR[a.rarity],rb=RAR[b.rarity];if(!ra||!rb||![...rb].every(c=>ra.includes(c)))return false;
-  if(!(a.type===0||a.type===b.type||(TYPE_KIDS[a.type]||[]).includes(b.type)))return false;
+  if(!((a.type===0&&b.type!==14)||a.type===b.type||(TYPE_KIDS[a.type]||[]).includes(b.type)))return false;
   const la=LEVEL[a.level],lb=LEVEL[b.level];if(!la||!lb||la[0]>lb[0]||la[1]<lb[1])return false;
   return (a.line===0||a.line===b.line)&&a.quality<=b.quality&&a.count<=b.count;
 }
@@ -1993,6 +2014,240 @@ async function shOpenFromHash(){
     shrShow({title:shErr[k][0],desc:shErr[k][1]+(k==="srv"&&e.status?" (HTTP "+e.status+")":""),body:"",buttons:(k==="net"||k==="srv"?[{id:"shrRetry",text:"Try again",cls:"gold",fn:retry}]:[]).concat([{id:"shrNo",text:"Close",fn:shrClose}])});return;}
   if(tok!==shTok)return;shPreview(b,views);}
 window.addEventListener("hashchange",shOpenFromHash);
+/* ---- drop screenshot checker (Drop Test tab): local OCR, text parser, top-to-bottom rule check ---- */
+const DC={job:0,tess:null,text:"",busy:false};
+const DC_RAR={normal:"N",magic:"M",rare:"R",unique:"U",red:"U"};
+const DC_KW=[[/\b(?:rings?)\b/i,"ring",""],[/\bamulets?\b/i,"amulet",""],[/\bbelts?\b/i,"belt",""],[/\b(?:gloves|gauntlets|mitts)\b/i,"gloves",""],[/\b(?:boots|greaves|sandals|shoes)\b/i,"boots",""],[/\b(?:helm|helmet|circlet|crown|cap|hood|diadem)\b/i,"helm",""],[/\b(?:shield|ward|buckler|aegis)\b/i,"shield",""],[/\btomes?\b/i,"tome",""],[/\b(?:vest|robe|cuirass|plate|jerkin|vestment|hauberk|garb|coat|brigandine)\b/i,"chest",""],[/\bbows?\b/i,"weapon","bow"],[/\bwands?\b/i,"weapon","wand"],[/\bstaff|staves\b/i,"weapon","staff"],[/\bscythes?\b/i,"weapon","scythe"],[/\bdaggers?\b/i,"weapon","dagger"],[/\bclaws?\b/i,"weapon","claw"]];
+const dcNorm=s=>String(s||"").replace(/[‘’´`]/g,"'").replace(/[×]/g,"x").replace(/\s+/g," ").trim().toLowerCase();
+let DC_LR=null;
+function dcLineRes(){
+  if(DC_LR)return DC_LR;
+  DC_LR=Object.keys(LINE_IDS).map(label=>{
+    const src=label.replace(/\(local\)/i,"").trim().replace(/[.*+?^${}()|[\]\\]/g,m=>m==="|"||m==="("||m===")"?m:"\\"+m);
+    let p=src.replace(/\bX\b/g,"#").replace(/#\|plural\\?\(one=([^,]+),other=([^)]+)\\?\)/g,"(?:$1|$2)").replace(/#/g,"[+\\-]?[\\d.,]+").replace(/\s+/g,"\\s+");
+    try{return{label,re:new RegExp("^\\W{0,3}"+p,"i"),len:label.length};}catch(e){return null;}
+  }).filter(Boolean).sort((a,b)=>b.len-a.len);
+  return DC_LR;
+}
+const dcLblOf=a=>LINEN[a.id]||LINEN[a.id.replace(/^Idol(.+?)_/,(m,x)=>"idol_"+x.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase()+"_")]||"";
+const dcAff=label=>AFF.find(a=>dcLblOf(a)===label);
+function dcParse(text){
+  const raw=String(text||""),lines=raw.split(/\r?\n/).map(s=>s.replace(/\s+/g," ").trim()).filter(Boolean),all=dcNorm(raw);
+  const d={rar:null,kind:null,sub:"",rune:false,rtier:null,gem:false,core:false,truesworn:false,unsworn:null,ilvl:null,req:null,sock:null,grade:null,mods:[],baseId:"",baseName:"",redId:"",redName:"",ruleNo:null,ruleName:"",alt:false,nameHit:[],seen:[]};
+  let m;
+  for(const ln of lines){ /* rarity + type line, e.g. "Magic Idol 2x1" */
+    m=ln.match(/^(normal|magic|rare|unique|red)\b\s+(.+)$/i);
+    if(m&&!/^requires/i.test(ln)){d.rar=DC_RAR[m[1].toLowerCase()];break;}
+  }
+  if(!d.rar){m=raw.match(/\b(Normal|Magic|Rare|Unique|Red)\b/);if(m)d.rar=DC_RAR[m[1].toLowerCase()];}
+  if(/\bidols?\b/i.test(raw)&&(/\b\d\s*x\s*\d\b/i.test(raw)||d.rar))d.kind="idol";
+  if(/\bdwarven rune\b/i.test(raw)){d.dwarven=true;}
+  else if(/\brune\b/i.test(raw)&&!/rune\s+bases?/i.test(raw)&&!/runeword/i.test(raw)){d.rune=true;m=raw.match(/\bT\s*([1-6])\b/i)||raw.match(/tier\s*([1-6])/i);if(m)d.rtier=+m[1];}
+  if(!d.kind&&!d.rune&&/\b(?:skill|support)\s+gem\b|\bgem\b/i.test(raw)&&!/item level/i.test(raw))d.gem=true;
+  d.core=/core[- ]?touched/i.test(raw);d.truesworn=/truesworn/i.test(raw);
+  if(/\bunsworn\b/i.test(raw))d.unsworn=!/not unsworn/i.test(raw);
+  m=raw.match(/item\s*level\s*[:\-]?\s*(\d{1,3})/i);if(m)d.ilvl=+m[1];
+  m=raw.match(/requires?\s*(?:hero\s*)?level\s*[:\-]?\s*(\d{1,3})/i);if(m)d.req=+m[1];
+  m=raw.match(/(\d)\s*sockets?\b/i);if(m)d.sock=+m[1];
+  m=raw.match(/grade\s*[:\-]?\s*(\d{2,3})/i);if(m)d.grade=+m[1];
+  d.alt=/\balt\s*:/i.test(raw);
+  m=raw.match(/(?:loot\s*filter\s*)?\brule\s*(?:#|no\.?|number)?\s*(\d{1,2})\b\s*(?::\s*([^\n]+))?/i);
+  if(m){d.ruleNo=+m[1];d.ruleName=(m[2]||"").trim();}
+  /* base / unique names: longest name that appears in the text */
+  let best=null;BASES.forEach(b=>{const n=dcNorm(b.name);if(n.length>=4&&all.includes(n)&&(!best||n.length>dcNorm(best.name).length))best=b;});
+  if(best){d.baseId=best.id;d.baseName=best.name;if(!d.kind||d.kind!=="idol"){d.kind=best.kind;d.sub=best.sub||"";}}
+  let ub=null;UNIQUES.forEach(u=>{const n=dcNorm(u.name);if(n.length>=4&&all.includes(n)&&(!ub||n.length>dcNorm(ub.name).length))ub=u;});
+  if(ub){d.redName=ub.name;d.redId=ub.id||(DATA.reds.find(x=>x[1]===ub.name)||[])[0]||"";d.rar="U";if(!d.baseId){d.baseId=ub.base.id;d.baseName=ub.base.name;}if(!d.kind){d.kind=ub.base.kind;d.sub=ub.base.sub||"";}}
+  if(!d.kind&&!d.rune&&!d.gem)for(const k of DC_KW)if(k[0].test(raw)){d.kind=k[1];d.sub=k[2];break;}
+  /* lines and tiers: an affix line is followed by a "T3 [7-8]" marker line */
+  const LR=dcLineRes();let cur=null;
+  for(const ln of lines){
+    const tm=ln.match(/\bT\s*([1-6])\b\s*(?:\[|\(|·|\.|$)/);
+    let hit=null;for(const x of LR){if(x.re.test(ln)){hit=x;break;}}
+    if(hit&&!/^t\s*\d\b/i.test(ln)){cur={label:hit.label,tier:null};d.mods.push(cur);}
+    else if(tm){if(cur&&cur.tier===null)cur.tier=+tm[1];else{cur={label:"",tier:+tm[1]};d.mods.push(cur);}}
+  }
+  d.mods.forEach(x=>{const a=x.label?dcAff(x.label):null;x.tiers=a?a.n:0;x.lines=a?(LINEMAP[a.group]||[]):[];});
+  for(let i=0;i<F.rules.length;i++){const n=(F.rules[i].name||"").trim();if(n.length>=3&&all.includes(dcNorm(n)))d.nameHit.push(i);}
+  return d;
+}
+/* three-way check of one rule: yes / no / maybe (a needed detail is not visible in the screenshot) */
+function dcRule(r,d){
+  const why=[],soft=[];let no=false;
+  const need=(c,msg)=>{if(c===null)why.push(msg);else if(!c)no=true;};
+  const rt=+mval(r,"rt")||0;
+  if(d.rune){need(rt?(d.rtier===null?null:d.rtier<=rt):false,"Rune tier not visible");return dcOut(no,why,soft);}
+  if(rt){return{s:"no",why:[],soft:[]};}
+  if(d.gem){return{s:r.type===17&&r.rarity===0&&r.level===0&&!r.line&&!r.quality&&!r.count&&!r.m.length?"yes":"no",why:[],soft:[]};}
+  need(d.rar===null?null:!!(RAR[r.rarity]&&RAR[r.rarity].includes(d.rar)),"Rarity not detected");
+  const t=r.type,kinds={5:"helm",6:"chest",7:"gloves",8:"boots",10:"ring",11:"amulet",12:"belt",14:"idol"};
+  if(t===0)need(d.kind==="idol"?false:true,"");
+  else if(t===13)need(d.core,"Core-touched not detected");
+  else if(t===15)need(d.sock===null?null:d.sock>=4,"Sockets not visible");
+  else if(t===16)need(d.grade===null?(d.truesworn?true:null):d.grade>=90,"Grade not visible (Truesworn = grade 90+)");
+  else if(t===17)need(false,"");
+  else if(t===4)need(d.kind==="idol"?false:null,"Rune base not detectable");
+  else if(d.kind===null)why.push("Item type not detected");
+  else need(typeMatch(t,{kind:d.kind,sub:d.sub,runebase:false,core:d.core,sockets4Plus:d.sock>=4,truesworn:d.truesworn}),"");
+  const lv=LEVEL[r.level]||LEVEL[0];
+  if(r.level)need(d.ilvl===null?null:(d.ilvl>=lv[0]&&d.ilvl<=lv[1]),"Item Level not visible");
+  const labelled=d.mods.filter(x=>x.label),unl=d.mods.filter(x=>!x.label).length;
+  if(r.line||r.quality||r.count){
+    if(!d.mods.length)why.push("No lines read from the screenshot");
+    else{
+      const n=d.mods.filter(x=>(!r.line||x.lines.includes(r.line))&&(!r.quality||(x.tier!==null&&x.tiers&&rollOk(r.quality,{tier:x.tier,tiers:x.tiers})))).length;
+      if(r.quality)soft.push("Good/top roll is estimated from the tier ladder; the screenshot shows only the tier.");
+      if(n<r.count+1){if(unl||d.mods.some(x=>x.tier===null&&r.quality))why.push("Some lines were not recognised");else no=true;}
+    }
+  }
+  const tt=+mval(r,"t")||0,nn=+mval(r,"n")||0;
+  if(tt||nn){
+    if(!d.mods.length)why.push("No lines/tiers read from the screenshot");
+    else{const unk=d.mods.some(x=>x.tier===null),c=d.mods.filter(x=>x.tier!==null&&(!tt||x.tier<=tt)).length;if(c<Math.max(1,nn)){if(unk)why.push("Some tiers not readable");else no=true;}}
+  }
+  const s=+mval(r,"s")||0;if(s)need(d.sock===null?null:d.sock>=s,"Sockets not visible");
+  const g=+mval(r,"g")||0,gx=+mval(r,"gx")||0;
+  if(g)need(d.grade===null?null:d.grade>=g,"Grade not visible");if(gx)need(d.grade===null?null:d.grade<gx,"Grade not visible");
+  const rd=+mval(r,"r")||0;if(rd===1)need(d.rar===null?null:d.rar==="U","");if(rd===2)need(d.rar&&d.rar!=="U"?false:null,"Chase red cannot be told from the screenshot");
+  const u=+mval(r,"u")||0;if(u===1)need(d.unsworn===null?null:!d.unsworn,"Unsworn state not visible");if(u===2)need(d.unsworn===null?null:d.unsworn,"Unsworn state not visible");
+  const[il,ih]=mrng(r,"i");if(il||ih)need(d.ilvl===null?null:!((il&&d.ilvl<il)||(ih&&d.ilvl>ih)),"Item Level not visible");
+  const[ql,qh]=mrng(r,"q");if(ql||qh)need(d.req===null?null:!((ql&&d.req<ql)||(qh&&d.req>qh)),"Required Level not visible");
+  const bs=mlist(r,"b");if(bs.length)need(d.baseId?bs.includes(d.baseId):null,"Base not recognised");
+  const rs=mlist(r,"rn");if(rs.length)need(d.rar&&d.rar!=="U"?false:(d.redId?rs.includes(d.redId):null),"Red not recognised");
+  const as=mlist(r,"a");
+  if(as.length){
+    const has=id=>labelled.some(x=>x.label===LINEN[id]),ok=mval(r,"all")==="1"?as.every(has):as.some(has);
+    if(!ok){if(unl||!labelled.length)why.push("Some lines were not recognised");else no=true;}
+  }
+  return dcOut(no,why,soft);
+}
+const dcOut=(no,why,soft)=>({s:no?"no":(why.filter(Boolean).length?"maybe":"yes"),why:[...new Set(why.filter(Boolean))],soft});
+function dcCheck(d){
+  const res={d,win:null,maybe:[],stated:null,notes:[],none:false};
+  F.rules.forEach((r,i)=>{if(!r.on)return;const c=dcRule(r,d);if(res.win)return;if(c.s==="yes"){res.win={i,c};}else if(c.s==="maybe")res.maybe.push({i,c});});
+  const guard=i=>(F.rules[i].action===0||F.rules[i].action===4)&&(d.rar==="U"||d.dwarven);
+  if(res.win){res.win.guard=guard(res.win.i);}
+  if(d.ruleNo!==null){
+    const i=d.ruleNo-1;
+    if(i>=0&&i<F.rules.length){const c=dcRule(F.rules[i],d);res.stated={i,c,name:d.ruleName,agree:res.win?res.win.i===i:null};}
+    else res.notes.push("The tooltip names rule "+d.ruleNo+", but your filter has only "+F.rules.length+" rules. Paste the filter you used in the game.");
+  }else if(d.nameHit.length){const i=d.nameHit[0];res.stated={i,c:dcRule(F.rules[i],d),byName:true};}
+  if(!res.win&&!res.maybe.length&&!res.stated)res.none=true;
+  if(d.alt)res.notes.push("The tooltip is not expanded (Alt: compare, rules). Hold Alt in the game and scan again to see the rule details.");
+  if(d.rar&&d.rar==="U")res.notes.push("Uniques and Reds are never hidden.");
+  if(d.dwarven)res.notes.push("Dwarven Runes are never hidden.");
+  return res;
+}
+const DC_DET=d=>{
+  const p=[];
+  p.push(d.rar?{N:"Normal",M:"Magic",R:"Rare",U:"Unique / Red"}[d.rar]:"Rarity ?");
+  p.push(d.rune?"Rune"+(d.rtier?" T"+d.rtier:""):d.gem?"Gem":d.kind==="idol"?"Idol":d.kind?(d.baseName||d.kind):"Type ?");
+  p.push(d.ilvl!==null?"Item Level "+d.ilvl:"Item Level ?");
+  if(d.req!==null)p.push("Requires "+d.req);
+  if(d.sock!==null)p.push(d.sock+" sockets");
+  if(d.grade!==null)p.push("Grade "+d.grade);
+  if(d.core)p.push("Core-touched");if(d.truesworn)p.push("Truesworn");
+  const tiers=d.mods.map(x=>x.tier!==null?"T"+x.tier:"T?");
+  p.push(d.mods.length?d.mods.length+" line"+(d.mods.length>1?"s":"")+" ("+tiers.join(", ")+")":"No lines read");
+  return p;
+};
+function dcRender(res){
+  const box=$("#dcRes");if(!box)return;
+  const d=res.d,det=DC_DET(d).map(x=>`<span class="dcchip">${esc(x)}</span>`).join("");
+  const ruleLine=(i,c,tag)=>{const r=F.rules[i];return `<div class="dcrule"><b>Rule #${i+1}${(r.name||"").trim()?` “${esc(r.name.trim())}”`:""}</b> · <span class="dcact a${r.action}">${esc(actWord(r.action))}</span><div class="dcsum">${esc(summary(r))}</div>${tag?`<div class="dcsrc">${tag}</div>`:""}<button type="button" class="btn" data-dcshow="${esc(r.id)}">Show rule in list</button></div>`;};
+  let h=`<div class="dcdet" aria-label="Detected">${det}</div>`;
+  if(res.stated){
+    const s=res.stated,r=F.rules[s.i];
+    h+=ruleLine(s.i,s.c,s.byName?"Named in the screenshot text.":"Named by the game in the tooltip (rule "+(s.i+1)+(s.name?": "+esc(s.name):"")+").");
+    if(res.win&&res.win.i!==s.i)h+=`<p class="dcwarn">Our top-to-bottom check picks rule #${res.win.i+1} (${esc(actWord(F.rules[res.win.i].action))}) instead. Either the screenshot does not show everything, or the Drop Test treats something differently from the game.</p>`;
+    else if(res.win)h+=`<p class="dcok">Our top-to-bottom check agrees.</p>`;
+    else if(s.c.s==="no")h+=`<p class="dcwarn">By what the screenshot shows, rule #${s.i+1} should not match. Check that the filter in the Editor is the one you used in the game.</p>`;
+    else if(s.c.s==="maybe")h+=`<p class="dcnote">Cannot confirm: ${esc(s.c.why.join("; "))}.</p>`;
+  }else if(res.win){
+    const w=res.win;h+=ruleLine(w.i,w.c,"First rule that fits, top to bottom."+(w.guard?" It would hide this item, but the game never hides it, so it is shown.":""));
+  }else if(res.maybe.length){
+    h+=`<p class="dcnote">No rule matches for sure. These could match if the missing details fit:</p>`;
+  }else h+=`<div class="dcrule"><b>No rule matches</b><div class="dcsum">The item is shown as normal (“Everything else: shown”).</div></div>`;
+  const mb=res.maybe.filter(x=>!res.win||x.i<res.win.i);
+  if(mb.length)h+=`<div class="dcmay"><b>${res.win||res.stated?"Earlier rules that might also catch it":"Possible rules"}</b><ul>${mb.slice(0,8).map(x=>`<li><button type="button" class="linkbtn" data-dcshow="${esc(F.rules[x.i].id)}">Rule #${x.i+1}</button> (${esc(actWord(F.rules[x.i].action))}): ${esc(x.c.why.join("; "))}</li>`).join("")}${mb.length>8?`<li>…and ${mb.length-8} more</li>`:""}</ul></div>`;
+  const soft=[...new Set([...(res.win?res.win.c.soft:[]),...(res.stated?res.stated.c.soft:[])])];
+  const notes=[...res.notes,...soft];
+  if(res.win&&res.win.c.s==="yes"&&!res.stated&&F.rules[res.win.i]&&Object.keys(F.rules[res.win.i].m||[]).length)notes.push("MORE conditions are checked only where the screenshot shows the value (item level, tiers, lines, base).");
+  if(notes.length)h+=`<ul class="dcnotes">${notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`;
+  box.innerHTML=h;box.hidden=false;
+}
+function dcRun(){
+  const t=($("#dcTxt").value||"").trim();
+  if(!t){$("#dcRes").hidden=true;return;}
+  if(!F.rules.length){const b=$("#dcRes");b.hidden=false;b.innerHTML='<p class="dcnote">Your filter has no rules yet. Add rules in the Editor first.</p>';return;}
+  try{dcRender(dcCheck(dcParse(t)));}catch(e){const b=$("#dcRes");b.hidden=false;b.innerHTML='<p class="dcwarn">The text could not be checked.</p>';}
+}
+function dcShowRule(id){
+  if(!F.rules.some(r=>r.id===id))return;
+  V.filter="all";V.q="";const q=$("#rq");if(q)q.value="";S.cur=id;
+  setView("edit");renderRows();renderEditor();
+  requestAnimationFrame(()=>{const el=document.querySelector('.rc[data-rid="'+id+'"]');if(!el)return;
+    el.scrollIntoView({block:"center",behavior:(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)?"auto":"smooth"});
+    el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1800);});
+}
+const DC_TESS="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+const dcLoad=()=>window.Tesseract?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement("script");s.src=DC_TESS;s.async=true;s.onload=ok;s.onerror=()=>no(new Error("load"));document.head.appendChild(s);});
+function dcPrep(file){ /* bigger, grayscale, dark background inverted: helps the OCR with light text on dark tooltips */
+  return new Promise(res0=>{
+    let done=false;const res=v=>{if(!done){done=true;res0(v);}};setTimeout(()=>res(file),5000); /* never hang if the image cannot be decoded */
+    try{const img=new Image(),url=URL.createObjectURL(file);
+      img.onload=()=>{try{const sc=Math.min(3,Math.max(1,1600/Math.max(img.width,1))),c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+        const x=c.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(img,0,0,c.width,c.height);const im=x.getImageData(0,0,c.width,c.height),p=im.data;let sum=0;
+        for(let i=0;i<p.length;i+=4){const g=.299*p[i]+.587*p[i+1]+.114*p[i+2];p[i]=p[i+1]=p[i+2]=g;sum+=g;}
+        const inv=sum/(p.length/4)<128;if(inv)for(let i=0;i<p.length;i+=4){p[i]=p[i+1]=p[i+2]=255-p[i];}
+        x.putImageData(im,0,0);URL.revokeObjectURL(url);c.toBlob(b=>res(b||file),"image/png");}catch(e){URL.revokeObjectURL(url);res(file);}};
+      img.onerror=()=>{URL.revokeObjectURL(url);res(file);};img.src=url;}catch(e){res(file);}
+  });
+}
+const dcStatus=(m,bad)=>{const e=$("#dcSt");if(e){e.textContent=m;e.style.color=bad?"var(--hide-fg)":"";}};
+const dcProg=v=>{const p=$("#dcPg");if(!p)return;p.hidden=v===null;if(v!==null)p.value=v;};
+async function dcFile(file){
+  if(!file||!/^image\//.test(file.type||"")){dcStatus("That file is not an image.",true);return;}
+  if(file.size>15*1048576){dcStatus("The image is larger than 15 MB.",true);return;}
+  const job=++DC.job;DC.busy=true;
+  const pv=$("#dcPv");if(pv){try{if(pv.dataset.u)URL.revokeObjectURL(pv.dataset.u);pv.dataset.u=URL.createObjectURL(file);pv.src=pv.dataset.u;pv.hidden=false;}catch(e){}}
+  dcStatus("Loading the text reader… (first time only, about 10 MB)");dcProg(0);
+  try{
+    await dcLoad();
+    if(job!==DC.job)return;
+    dcStatus("Preparing the image…");const blob=await dcPrep(file);
+    const r=await Tesseract.recognize(blob,"eng",{logger:m=>{if(job!==DC.job)return;if(m.status==="recognizing text"){dcProg(m.progress);dcStatus("Reading the text… "+Math.round(m.progress*100)+"%");}else if(/loading|initializ/i.test(m.status||"")){dcStatus("Loading the text reader…");}}});
+    if(job!==DC.job)return;
+    $("#dcTxt").value=(r.data.text||"").trim();dcProg(null);
+    dcStatus($("#dcTxt").value?"Done. Fix the text below if a word was misread, then press Check text.":"No text found in this image. Try a sharper screenshot of the tooltip.",!$("#dcTxt").value);
+    dcRun();
+  }catch(e){
+    if(job!==DC.job)return;dcProg(null);
+    dcStatus("The text reader could not be loaded. Check your connection, or type or paste the tooltip text below.",true);
+  }finally{if(job===DC.job)DC.busy=false;}
+}
+(function dcInit(){
+  const z=$("#dcZone");if(!z)return;
+  const pick=files=>{const f=[...files||[]].find(x=>/^image\//.test(x.type));if(f)dcFile(f);else if(files&&files.length)dcStatus("That file is not an image.",true);};
+  $("#dcFile").onchange=e=>{pick(e.target.files);e.target.value="";};
+  $("#dcPick").onclick=()=>$("#dcFile").click();
+  ["dragenter","dragover"].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.add("over");}));
+  ["dragleave","drop"].forEach(ev=>z.addEventListener(ev,e=>{e.preventDefault();z.classList.remove("over");}));
+  z.addEventListener("drop",e=>pick(e.dataTransfer&&e.dataTransfer.files));
+  z.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#dcFile").click();}});
+  document.addEventListener("paste",e=>{
+    const cd=e.clipboardData;if(!cd)return;
+    const f=[...(cd.files||[])].find(x=>/^image\//.test(x.type))||[...(cd.items||[])].map(i=>i.kind==="file"&&/^image\//.test(i.type)?i.getAsFile():null).find(Boolean);
+    if(!f)return;
+    e.preventDefault();if(V.view!=="test")setView("test");dcFile(f);
+  });
+  $("#dcCheck").onclick=dcRun;
+  let tm=0;$("#dcTxt").addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(dcRun,450);});
+  $("#dcClear").onclick=()=>{DC.job++;$("#dcTxt").value="";$("#dcRes").hidden=true;dcProg(null);dcStatus("");const pv=$("#dcPv");if(pv){pv.hidden=true;pv.removeAttribute("src");}};
+  $("#dcRes").addEventListener("click",e=>{const b=e.target.closest("[data-dcshow]");if(b)dcShowRule(b.dataset.dcshow);});
+  window.dcParse=dcParse;window.dcCheck=dcCheck;window.dcRun=dcRun;
+})();
+
 (function init(){
   let start=null;
   try{const c=localStorage.getItem("oathfilter4");if(c)start=decode(c).filter;}catch(e){}
