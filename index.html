@@ -113,7 +113,11 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .ezrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px}
 .ezw{color:var(--warn-fg)}.ezbanner{padding:10px 12px;border:1px solid var(--warn-fg);border-radius:8px;margin-bottom:12px}
 .ezol{margin:8px 0 0;padding-left:24px}.ezol li{margin:2px 0}
-.ezbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.ezbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:0 0 16px;padding:10px 14px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-subtle)}
+.ezbar .lab{margin:0}.ezbar .seg{border:2px solid var(--accent-gold);border-radius:10px;min-width:260px}
+.ezbar .seg button{min-height:46px;padding:0 26px;font-size:1.02rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.ezbar .seg button[aria-pressed="true"]{background:var(--accent-gold);color:#15110a;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.ezbar .hint{flex:1 1 220px}
 .eztick{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin:0 2px}
 .ezcount{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:4px}.ezcount b{font-size:17px}.ezcount.bad b{color:var(--hide-fg)}
 .ezerr{padding:12px 14px;border:2px solid var(--hide-fg);border-radius:8px;margin-bottom:12px;color:var(--hide-fg)}
@@ -335,7 +339,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 </header>
 <main>
 <div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit">
-<div class="ezbar"><div class="seg" role="group" aria-label="Editor mode" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><span class="hint" id="ezBarHint"></span></div>
+<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><span class="hint" id="ezBarHint"></span></div>
 <div id="ezBox" hidden><div class="cols">
   <section class="plate l" aria-labelledby="h-ezc">
     <h2 id="h-ezc" class="coltitle">Easy Mode</h2>
@@ -1581,7 +1585,7 @@ function checkOrder(){
   const o=$("#chkOut");
   o.innerHTML=out.length?`<div class="chk">${out.map(([i,t])=>`<button type="button" class="chkb" data-pick="${R[i].id}"><b>Rule ${i+1}</b> ${esc(t)}</button>`).join("")}</div><p class="hint" style="margin:8px 0 0">Based on ${N} sample items. A rare item can be missed. Click a rule to open it.</p>`:`<p class="hint" style="margin:8px 0 0">Every active rule decides at least one of ${N} sample items.</p>`;
 }
-function renderHead(){$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
+function renderHead(){$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;ezHeader();}
 
 /* ---- editor ---- */
 const chipRow=(k,r)=>`<div class="chips">${T[k].map(o=>`<button type="button" class="cb2" data-set="${k},${o[0]}" aria-pressed="${r[k]===o[0]}">${esc(o[1])}</button>`).join("")}</div>`;
@@ -1729,10 +1733,12 @@ function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genF
 /* ---- export ---- */
 function renderOut(){$("#out").textContent=encode(F);if(window.shSync)window.shSync();}
 function toast(m,bad){const e=$("#gt");e.hidden=false;e.textContent=m;e.className="gt"+(bad?" bad":"");clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,3600);}
-async function copyCode(){
-  const txt=encode(F);
-  try{await navigator.clipboard.writeText(txt);toast("Copied.");return;}catch(e){}
-  try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();if(ok){toast("Copied.");return;}}catch(e){}
+async function copyCode(arg){
+  const own=typeof arg==="string",txt=own?arg:encode(F);
+  const done=()=>{if(!own&&F.rules.length>MAX_RULES)toast("Copied, but this filter has "+F.rules.length+" rules. The game takes "+MAX_RULES+".",true);else toast("Copied.");};
+  try{await navigator.clipboard.writeText(txt);done();return;}catch(e){}
+  try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();if(ok){done();return;}}catch(e){}
+  if(own){ezShowCode(txt);toast("Copy is blocked here. The code is selected below: press Ctrl+C.",true);return;}
   setView("io");const rg=document.createRange();rg.selectNodeContents($("#out"));const s=getSelection();s.removeAllRanges();s.addRange(rg);toast("Copy is blocked here. The code is selected: press Ctrl+C.",true);
 }
 const H=[];
@@ -2871,7 +2877,15 @@ function ezSave(){try{localStorage.setItem(EZ_KEY,JSON.stringify({s:EZ.s,h:EZ.h,
 const ezSnap=()=>EZ?{s:EZ.s,h:EZ.h}:null;
 function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="string"?f.e.h:"";ezSave();}if(f)delete f.e;}
 const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
-let ezT=null,ezAsk=false;
+let ezT=null,ezAsk=false,ezCode="";
+function ezShowCode(t){ezCode=t;ezPreview();const x=$("#ez-code");if(x){x.focus();x.select();}}
+/* the top-right button always copies the ACTIVE filter; in Easy Mode it says so while the preview differs from it */
+function ezHeader(){
+  const b=$("#copyTop"),n=F.rules.length,off=EZ.m==="easy"&&!ezLinked();
+  b.textContent=off?"Copy active filter":"Copy filter code";
+  b.className="btn"+(off?"":" gold");
+  b.title=off?"Copies the filter you have now ("+n+" rule"+(n===1?"":"s")+"), not the Easy Mode preview. Use the button in the Result panel for that.":"Copies the filter you have now ("+n+" rule"+(n===1?"":"s")+").";
+}
 function ezApply(){
   const g=easyGen(EZ.s);
   if(g.rules.length>MAX_RULES){ezAsk=false;ezPreview(g);toast("Not applied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);return false;}
@@ -2879,11 +2893,11 @@ function ezApply(){
   EZ.h=ezHashF(F);ezSave();S.cur=F.rules[0]?F.rules[0].id:null;ezAsk=false;fullRender();return true;
 }
 function ezMode(m,quiet){
-  EZ.m=m==="easy"?"easy":"adv";ezSave();
+  EZ.m=m==="easy"?"easy":"adv";ezSave();ezCode="";
   $("#ezBox").hidden=EZ.m!=="easy";$("#edCols").hidden=EZ.m==="easy";
   $$("#ezMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ezm===EZ.m?"true":"false"));
-  $("#ezBarHint").textContent=EZ.m==="easy"?"Easy Mode builds the whole filter from a few choices.":"Advanced: edit every rule yourself.";
-  if(EZ.m==="easy"&&!quiet)ezRefresh();
+  $("#ezBarHint").textContent=EZ.m==="easy"?"Easy: pick what you want to see and the page builds the whole filter.":"Advanced: edit every rule yourself.";
+  if(EZ.m==="easy"&&!quiet)ezRefresh();else if(!quiet)ezHeader();
 }
 /* ---- controls ---- */
 const ezBtn=(d,label)=>`<button type="button" class="cb2" data-ez="${d}" aria-pressed="false">${esc(label)}</button>`;
@@ -2933,11 +2947,15 @@ function ezPreview(g){
   <div class="sub"><span class="lab">Rules in the preview</span>
     <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(actWord(r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol></div>
   ${w.length?`<div class="sub"><span class="lab">Warnings</span>${w.map(t=>`<p class="hint ezw" style="margin:4px 0 0">${esc(t)}</p>`).join("")}</div>`:""}
-  <div class="ezrow"><button type="button" class="btn" data-ezact="adv">Open in Advanced</button></div>`;
+  <div class="sub"><span class="lab">Export</span>
+    <div class="ezrow" style="margin-top:4px"><button type="button" class="btn gold" data-ezact="copy"${over?" disabled":""}>Copy Easy Mode filter code</button><button type="button" class="btn" data-ezact="adv">Open in Advanced</button></div>
+    <p class="hint" style="margin:6px 0 0">${over?"Blocked: the preview has "+n+" rules and the game takes "+MAX_RULES+".":linked?"Same code as your active filter ("+act+" rules).":"Copies the "+n+" rules in the preview. Your active filter is not changed."}</p>
+    ${ezCode?`<textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="margin-top:8px;width:100%">${esc(ezCode)}</textarea>`:""}</div>`;
+  ezHeader();
 }
 const ezRefresh=()=>{ezSync();ezPreview();};
 function ezTouched(){
-  ezSave();ezSync();ezPreview();
+  ezSave();ezCode="";ezSync();ezPreview();
   clearTimeout(ezT);ezT=setTimeout(()=>{if(ezLinked())ezApply();},250);
 }
 (function ezInit(){
@@ -2959,6 +2977,7 @@ function ezTouched(){
       else if(a==="cancel"){ezAsk=false;ezPreview();}
       else if(a==="keep"){EZ.h="";ezSave();ezAsk=false;ezMode("adv");}
       else if(a==="adv")ezMode("adv");
+      else if(a==="copy"){const g=easyGen(EZ.s);if(g.rules.length>MAX_RULES){toast("Not copied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);ezPreview(g);}else copyCode(encode({preset:"-1",rules:g.rules}));}
       return;
     }
     if(!b.dataset.ez)return;
