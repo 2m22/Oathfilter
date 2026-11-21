@@ -292,9 +292,13 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 /* update banner */
 .upd{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(8,10,14,.45);font-size:.875rem;color:var(--text-main)}
 .upd[hidden]{display:none}
-.upd .updbox{display:flex;flex-direction:column;align-items:flex-start;gap:14px;width:min(420px,100%);padding:18px 20px;border:1px solid var(--accent-gold);border-radius:12px;background:var(--bg-panel);box-shadow:0 12px 40px rgba(0,0,0,.55)}
+.upd .updbox{display:flex;flex-direction:column;align-items:flex-start;gap:14px;width:min(460px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:18px 20px;border:1px solid var(--accent-gold);border-radius:12px;background:var(--bg-panel);box-shadow:0 12px 40px rgba(0,0,0,.55)}
 .upd b{font-size:1rem}
 .upd b{display:block;color:var(--accent-gold)}.upd span{color:var(--text-muted);font-size:.8125rem}
+.upd .updh{display:block;margin:0 0 6px;font-weight:700;color:var(--text-main);font-size:.8125rem}
+.updlog{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.8125rem;color:var(--text-main)}
+.updlog i{font-style:normal;font-weight:700;color:var(--accent-gold);margin-right:6px;font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em}
+#updAll{display:inline-block;margin-top:8px;font-size:.8125rem}
 .upd .btn{min-height:34px;padding:0 12px;font-size:.8125rem}.upd div.bt{display:flex;gap:8px;flex-wrap:wrap}
 .upd .shbox{width:min(500px,100%);max-height:calc(100vh - 32px);overflow:auto}
 .upd .shbox strong{color:var(--text-main)}
@@ -582,7 +586,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   <p style="margin:4px 0 0"><button type="button" class="linkbtn" data-view="about">About, privacy and credits</button><br><a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">Source on GitHub</a></p>
 </footer>
 <div class="gt" id="gt" role="status" hidden></div>
-<div class="upd" id="upd" hidden><div class="updbox" role="alertdialog" aria-modal="true" aria-labelledby="updT" aria-describedby="updD"><div><b id="updT">A new version is available</b><span id="updD">Your filter is saved in this browser and stays as it is.</span></div><div class="bt"><button type="button" class="btn gold" id="updNow">Reload now</button><button type="button" class="btn" id="updLater">Remind me in 5 minutes</button></div></div></div>
+<div class="upd" id="upd" hidden><div class="updbox" role="alertdialog" aria-modal="true" aria-labelledby="updT" aria-describedby="updD"><div><b id="updT">A new version is available</b><span id="updD">Your filter is saved in this browser and stays as it is.</span></div><div id="updLog" hidden><span class="updh">What's new</span><ul class="updlog" id="updList"></ul><a href="https://github.com/2m22/Oathfilter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" id="updAll">Full changelog</a></div><div class="bt"><button type="button" class="btn gold" id="updNow">Reload now</button><button type="button" class="btn" id="updLater">Remind me in 5 minutes</button></div></div></div>
 <div class="upd" id="shr" hidden><div class="updbox shbox" role="alertdialog" aria-modal="true" aria-labelledby="shrT" aria-describedby="shrD"><div><b id="shrT"></b><span id="shrD"></span></div><div id="shrBody" style="width:100%"></div><div class="bt" id="shrBt"></div></div></div>
 <script>
 "use strict";
@@ -1901,11 +1905,36 @@ const BUILD="__BUILD__";
   const later=()=>{box.hidden=true;until=Date.now()+MIN;clearTimeout(tm);tm=setTimeout(show,MIN);if(prevFocus&&prevFocus.focus&&document.contains(prevFocus))prevFocus.focus();};
   box.addEventListener("keydown",e=>{
     if(e.key==="Escape"){e.preventDefault();later();return;}
-    if(e.key==="Tab"){const b=[$("#updNow"),$("#updLater")],i=b.indexOf(document.activeElement);e.preventDefault();b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus();}
+    if(e.key==="Tab"){const b=[$("#updNow"),$("#updLater")];if(!$("#updLog").hidden)b.push($("#updAll"));const i=b.indexOf(document.activeElement);e.preventDefault();b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus();}
   });
+  /* compact "what is new": the newest dated section of CHANGELOG.md (published next to this page), first sentences of the top-level entries only */
+  let logDone=false;
+  function compactLog(md){
+    const sec=md.split(/^## /m)[1];if(!sec)return[];
+    const out=[];let tag="";
+    sec.split("\n").slice(1).forEach(l=>{
+      const h=l.match(/^### (.+)/);if(h){tag=h[1].trim();return;}
+      const m=l.match(/^- (.+)/);if(!m)return;
+      let t=m[1].replace(/\[([^\]]+)\]\([^)]*\)/g,"$1").replace(/[*`_]/g,"").trim(),r="";
+      (t.match(/[^.!?]+[.!?]?(\s|$)/g)||[t]).some(x=>{r+=x;return r.length>=40;});
+      r=r.trim();if(r.length>130)r=r.slice(0,127).trim()+"…";
+      out.push([tag,r]);
+    });
+    return out;
+  }
+  async function loadLog(){
+    if(logDone)return;logDone=true;
+    try{
+      const r=await fetch("CHANGELOG.md?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;
+      const all=compactLog(await r.text());if(!all.length)return;
+      const MAXN=8,list=all.slice(0,MAXN);
+      $("#updList").innerHTML=list.map(([t,x])=>`<li><i>${esc(t)}</i>${esc(x)}</li>`).join("")+(all.length>MAXN?`<li class="hint">…and ${all.length-MAXN} more.</li>`:"");
+      $("#updLog").hidden=false;
+    }catch(e){}
+  }
   async function check(){
     try{const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;
-      const v=(await r.json()).version;if(v&&v!==BUILD){outdated=true;show();}}catch(e){}
+      const v=(await r.json()).version;if(v&&v!==BUILD){outdated=true;await loadLog();show();}}catch(e){}
   }
   setInterval(check,MIN);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)check();});

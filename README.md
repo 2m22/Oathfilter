@@ -23,7 +23,7 @@ Open `index.html` in a browser. No build, no install.
 
 ## Release (merging `test` into `main`)
 
-The Pages workflow (`.github/workflows/pages.yml`) builds `main` to `/` and `test` to `/test/`. It writes `version.json` and the build id into `index.html` of each site; the page uses them for the "new version" banner. When merging `test` into `main`, make sure `.github/workflows/pages.yml` is part of the merge (check `git diff main test -- .github/workflows/pages.yml` is empty afterwards). The workflow fails the build if a page has the update check but no build id or `version.json`.
+The Pages workflow (`.github/workflows/pages.yml`) builds `main` to `/` and `test` to `/test/`. It writes `version.json` and the build id into `index.html` of each site; the page uses them for the "new version" banner. When merging `test` into `main`, make sure `.github/workflows/pages.yml` is part of the merge (check `git diff main test -- .github/workflows/pages.yml` is empty afterwards). The workflow fails the build if a page has the update check but no build id or `version.json`. The "new version" banner also shows a compact "What's new" list. It reads the newest dated section of `CHANGELOG.md` (published next to the page) and shows the first sentence of each top-level entry, so start every changelog entry with a short headline sentence.
 
 ## License
 
