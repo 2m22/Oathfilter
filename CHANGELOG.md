@@ -2,6 +2,15 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (2)
+
+### Added
+- Update box shows what is new. When a new version is ready, the box lists only the changes since the version you have. If you dismissed it and reloaded later, a one-time "Oathfilter was updated" box shows what changed since your last visit. Nothing is sent anywhere.
+
+### Changed
+- Easy Mode picks follow your Magic setting. While Magic gear is hidden, every match rule (gear, Idols, level floor) uses Rarity Rare. When Magic gear is not hidden, they use any Rarity. Magic gear is now hidden by default.
+- Easy Mode rule order: the Hide rule for Normal and Magic gear now sits after your picks and before "Everything else", so shown matches are never caught by it. With only a level floor it still comes before the floor's Show rule.
+
 ## 2026-11-21
 
 ### Added
