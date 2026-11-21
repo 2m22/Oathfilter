@@ -46,6 +46,7 @@ button{cursor:pointer}
 .brand-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
 .brand-title{margin:0;font-family:var(--font-display);font-weight:700;font-size:1.4rem;letter-spacing:.14em;color:var(--accent-gold)}
 .brand-sub{margin-top:2px;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.langsel{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted,#9aa5b1)}.langsel select{max-width:170px;font-size:12px;padding:3px 6px}
 .header-right{grid-column:3;justify-self:end;display:inline-flex;flex-wrap:wrap;align-items:center;gap:10px}
 .count{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-variant-numeric:tabular-nums}
 
@@ -353,6 +354,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
       <div class="brand-text"><h1 class="brand-title">OATHFILTER</h1><span class="brand-sub">Loot filter builder</span></div>
     </div>
     <div class="header-right">
+      <label class="langsel" title="Language of game texts: affix lines, item bases and unique names. The page itself, the filter code and shared filters stay English."><span>Game texts</span><select id="langSel" aria-label="Language of game texts"></select></label>
       <div id="cap" class="count"></div>
     </div>
   </div>
@@ -409,7 +411,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   <div class="stack dropwrap">
   <section class="plate" aria-labelledby="h-dc"><h2 id="h-dc" class="coltitle">Check a drop screenshot</h2>
     <div class="dcz" id="dcZone" tabindex="0" role="button" aria-label="Drop a screenshot here, paste it with Ctrl+V, or press Enter to choose a file"><b>Paste (Ctrl+V), drop or choose a screenshot</b><span>Drop or tooltip screenshot, like an idol or a rare item</span><button type="button" class="btn" id="dcPick" tabindex="-1">Choose file</button><input type="file" id="dcFile" accept="image/*" hidden></div>
-    <p class="hint hrow" id="dcHint" style="margin:8px 0 0"><span>Read on your device, never uploaded.</span><button type="button" class="hlp" data-help="dcOcr" aria-label="Help: Screenshot reader" aria-expanded="false">?</button></p>
+    <p class="hint hrow" id="dcHint" style="margin:8px 0 0"><span>Read on your device, never uploaded. Reads English game text only; set the game to English for screenshots.</span><button type="button" class="hlp" data-help="dcOcr" aria-label="Help: Screenshot reader" aria-expanded="false">?</button></p>
     <progress id="dcPg" max="1" value="0" hidden style="width:100%;margin-top:8px"></progress>
     <p class="hint" id="dcSt" role="status" aria-live="polite" style="margin:6px 0 0"></p>
     <img id="dcPv" alt="Your screenshot" hidden style="max-width:100%;max-height:220px;margin-top:8px;border:1px solid var(--border);border-radius:8px">
@@ -645,6 +647,21 @@ const LINE_IDS={};Object.keys(DATA.lid).forEach(i=>{(LINE_IDS[DATA.lid[i]]=LINE_
 /* search text per named line: readable text, the raw game text with # and plural(), and every game id that shows this line */
 const LINE_HAY={};DATA.lines.forEach(x=>{const ids=LINE_IDS[x[0]]||[x[1]];LINE_HAY[x[1]]=(x[0]+" "+ids.map(i=>RAW_LINE[i]||"").join(" ")+" "+ids.join(" ")).toLowerCase();});
 const BASEN=Object.fromEntries(DATA.bases),REDN=Object.fromEntries(DATA.reds),LINEN=DATA.lid,RED_IDS={};DATA.reds.forEach(x=>(RED_IDS[x[1]]=RED_IDS[x[1]]||[]).push(x[0]));
+/* Display language (game texts only). Logic, export and share data keep the English names; the maps below only change what is shown. Files: lang/<code>.json, loaded when picked. */
+const LANGS=[["en","English"],["bg","Български"],["cs","Čeština"],["da","Dansk"],["de","Deutsch"],["el","Ελληνικά"],["es-ES","Español (España)"],["es-419","Español (Latinoamérica)"],["fi","Suomi"],["fr","Français"],["hu","Magyar"],["id","Indonesia"],["it","Italiano"],["ja","日本語"],["ko","한국어"],["ms","Melayu"],["nb","Norsk bokmål"],["nl","Nederlands"],["pl","Polski"],["pt-BR","Português (Brasil)"],["pt-PT","Português (Portugal)"],["ro","Română"],["ru","Русский"],["sv","Svenska"],["th","ไทย"],["tr","Türkçe"],["uk","Українська"],["vi","Tiếng Việt"],["zh-Hans","简体中文"],["zh-Hant","繁體中文"]];
+const LX={lines:{},bases:{},reds:{}};let LANG="en";
+const dl=t=>LX.lines[t]||t;
+const BASED=new Proxy(BASEN,{get:(o,k)=>typeof k==="string"?(LX.bases[k]||o[k]):o[k]});
+const REDD=new Proxy(REDN,{get:(o,k)=>typeof k==="string"?(LX.reds[k]||o[k]):o[k]});
+const LINED=new Proxy(LINEN,{get:(o,k)=>typeof k==="string"&&o[k]!==undefined?dl(o[k]):o[k]});
+/* item name on the ground: unique/base part in the chosen language, a rare's random prefix stays English */
+function dItemName(it){
+  if(LANG==="en"||!it)return it&&it.name;
+  if(it.rar==="U"&&it.redId&&LX.reds[it.redId])return LX.reds[it.redId];
+  const bn=it.baseId&&BASEN[it.baseId],lb=it.baseId&&LX.bases[it.baseId];
+  if(bn&&lb&&it.name.endsWith(bn))return it.name.slice(0,it.name.length-bn.length)+lb;
+  return it.name;
+}
 /* red ids that are Primal versions (same name as the normal red in the game files) */
 const PRIMAL_IDS=new Set(["the_oath_unbroken", "signet_of_the_lost_order_chain_reaction", "signet_of_the_lost_order_iron_resolve", "signet_of_the_lost_order_blood_magic", "signet_of_the_lost_order_elemental_overload", "signet_of_the_lost_order_spellblade", "signet_of_the_lost_order_hollow_covenant", "kingbreaker_primal", "gravesong_primal", "gravecleaver_primal", "tidebreaker_maul_primal", "stormfang_primal", "rimecrown_staff_primal", "cinderwick_primal"]);
 const redIdOf=n=>{const base=n.replace(/ \(Primal\)$/,""),pr=base!==n,l=RED_IDS[base]||[];return l.find(i=>PRIMAL_IDS.has(i)===pr)||l[0]||"";};
@@ -1484,7 +1501,7 @@ function moreParts(r,noLists){
   if(rd)o.push(["","Reds only","Chase reds"][rd]||"red "+rd);
   if(u)o.push(["","Not unsworn","Unsworn only"][u]||"unsworn "+u);
   const nm=(k,N,w)=>{const l=mlist(r,k);if(l.length&&!noLists)o.push(l.length===1?(N[l[0]]||l[0]):(k==="a"?(mval(r,"all")==="1"?"all of ":"any of "):"")+l.length+" "+w);};
-  nm("b",BASEN,"bases");nm("a",LINEN,"named lines");nm("rn",REDN,"named reds");
+  nm("b",BASED,"bases");nm("a",LINED,"named lines");nm("rn",REDD,"named reds");
   return o;
 }
 function summary(r){
@@ -1600,7 +1617,7 @@ function ruleTipHTML(r,i){
   const nm=(r.name||"").trim(),all=mval(r,"all")==="1";
   const lst=(title,items,note)=>{const shown=items.slice(0,TIPMAX),more=items.length-shown.length;
     return `<div class="tg"><div class="th">${title}${note?`<span class="tn">${note}</span>`:""}</div><ul>${shown.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>${more>0?`<div class="tm">+ ${more} more. Open the rule to see all.</div>`:""}</div>`;};
-  const na=tipList(r,"a",LINEN),nb=tipList(r,"b",BASEN),nr=tipList(r,"rn",REDN),sec=[];
+  const na=tipList(r,"a",LINED),nb=tipList(r,"b",BASED),nr=tipList(r,"rn",REDD),sec=[];
   if(na.length)sec.push(lst(na.length>1?"Named lines":"Named line",na,na.length>1?(all?"All of them":"Any of them"):""));
   if(nb.length)sec.push(lst(nb.length>1?"Bases":"Base",nb));
   if(nr.length)sec.push(lst(nr.length>1?"Named reds":"Named red",nr));
@@ -1682,7 +1699,7 @@ function sel(k,r){return `<div class="selwrap"><select id="f-${k}" data-f="${k}"
 const msel=(id,key,val,opts)=>{const has=opts.some(o=>String(o[0])===String(val));return `<div class="selwrap"><select id="${id}" ${key}>${opts.map(o=>`<option value="${o[0]}" ${String(o[0])===String(val)?"selected":""}>${esc(o[1])}</option>`).join("")}${has?"":`<option value="${esc(val)}" selected>value ${esc(val)}</option>`}</select></div>`;};
 const nOpts=(any,f)=>[["",any]].concat([1,2,3,4,5,6].map(n=>[n,f(n)]));
 const lvOpts=(any,f)=>[["0",any]].concat(LVSTEPS.map(v=>[v,f(v)]));
-const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,ph:"Type a line, like life or fire"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,ph:"Type a red name"}};
+const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,disp:BASED,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line, like life or fire"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,disp:REDD,ph:"Type a red name"}};
 S.pk={b:"",a:"",rn:""};S.moreOpen=true;
 /* what the sample drops can produce: other bases and reds still go into the code, but the drop test never shows them */
 const SAMPLE={b:new Set(BASES.map(b=>b.id).concat(VAR_IDS,SPECIAL.map(b=>b.id),["dwarven_rune"])),rn:new Set(UNIQUES.map(u=>u.id||redIdOf(u.name)))};
@@ -1693,7 +1710,7 @@ function pickHTML(r,k){
   return `<div class="pk" data-pkbox="${k}"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>
    <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>[i,l.n,l]).sort(ALPHA).map(([i,n,l])=>`<option value="${i}">${esc(n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>Delete list</button></div>
    ${k==="a"?`<div class="seg" role="group" aria-label="Named lines: any or all" style="margin:0 0 8px"><button type="button" data-allm="" aria-pressed="${mval(r,"all")!=="1"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mval(r,"all")==="1"}">All of them</button></div>`:""}
-   <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.name[x]||x],[0,P.name[y]||y])).map(id=>`<span class="b more" title="${esc(P.name[id]||id)}"><span class="bt">${esc(P.name[id]||id)}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">✕</button></span>`).join("")}</div>
+   <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.disp[x]||x],[0,P.disp[y]||y])).map(id=>`<span class="b more" title="${esc(P.disp[id]||id)}"><span class="bt">${esc(P.disp[id]||id)}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">✕</button></span>`).join("")}</div>
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
    <div class="pklist" id="pl-${k}"></div></div>`;
 }
@@ -1702,14 +1719,15 @@ function renderPickList(k){
   const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=4;
   const lineSel=new Set(ids.map(i=>P.name[i]));
   const words=q.split(/\s+/).filter(Boolean);
-  const hayOf=x=>k==="a"?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase();
+  const shw=x=>k==="a"?dl(x[1]):k==="b"?(LX.bases[x[0]]||x[1]):(LX.reds[x[0]]||x[1]);
+  const hayOf=x=>(k==="a"?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase())+(LANG==="en"?"":" "+shw(x).toLowerCase());
   const res=P.list().filter(x=>{if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
   const tag=x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);
     if(on)return "<small>picked</small>";
     if(k==="a"){const li=LINE_IDS[x[1]]||[];if(li.length&&li.every(i=>COND_LINE.has(i)))return '<small title="This line comes from game files that load only while a game switch is on. It may not be live yet.">switch-dependent</small>';return "";}
     return SAMPLE[k]&&!SAMPLE[k].has(x[0])?"<small>no test drop</small>":"";};
-  const tip=x=>{if(k!=="a")return String(x[1]);const li=LINE_IDS[x[1]]||[x[0]];return x[1]+"\nGame ids ("+li.length+"): "+li.slice(0,10).join(", ")+(li.length>10?", …":"");};
-  box.innerHTML=res.length?res.map(x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" title="${esc(tip(x))}" ${on||full?"disabled":""}><span>${esc(x[1])}</span>${tag(x)}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
+  const tip=x=>{if(k!=="a")return shw(x)+(shw(x)!==String(x[1])?"\n"+x[1]:"");const li=LINE_IDS[x[1]]||[x[0]];return (shw(x)!==x[1]?shw(x)+"\n":"")+x[1]+"\nGame ids ("+li.length+"): "+li.slice(0,10).join(", ")+(li.length>10?", …":"");};
+  box.innerHTML=res.length?res.map(x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" title="${esc(tip(x))}" ${on||full?"disabled":""}><span>${esc(shw(x))}</span>${tag(x)}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
 }
 function moreHTML(r){
   const [il,ih]=mrng(r,"i"),[ql,qh]=mrng(r,"q"),rt=mval(r,"rt");
@@ -1801,7 +1819,7 @@ function dropHTML(it,e,anim){
   const WD=["hid it","showed it","highlighted it","highlighted it with a beam","sold it (unconfirmed)"];
   const rule=e.i>=0?`<span class="rn"><b>Rule #${e.i+1}</b>${(DROPR[e.i].name||"").trim()?` “${esc(DROPR[e.i].name.trim())}”`:""} ${e.guard?"matched, but the game never hides this item, so it is shown":WD[DROPR[e.i].action]} · ${esc(summary(DROPR[e.i]))}</span>`:`<span class="rn">No matching rule, so it is shown normally</span>`;
   return `<li class="drop ${anim?"in":""}" data-r="${it.rar}" data-v="${e.v}" style="--hc:${hc}"><span class="rar"></span>
-   <div style="min-width:0"><div class="nm">${esc(it.name)}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
+   <div style="min-width:0"><div class="nm">${esc(dItemName(it))}</div><div class="meta">${it.cls?`<b class="gold-t">${esc(it.cls)}</b> · `:""}${it.kind==="misc"?"":"item level "+it.lvl+" · "}${esc(mods)}${fl}</div>${rule}</div>
    <span class="vd" title="${e.guard?"never hidden":e.v===4?COPY.sell:""}">${e.guard?"SHOW*":["HIDE","SHOW","HIGHLIGHT","HIGHLIGHT + BEAM","SELL"][e.v]}</span></li>`;
 }
 const sellRel=n=>n>0||DROPR.some(r=>r.on&&r.action===4);
@@ -1819,7 +1837,7 @@ function renderDrops(animId){
   ev.forEach(e=>{if(e.v===0)t.hide++;else if(e.v===4)t.sell++;else if(isHl(e.v))t.hl++;else t.show++;});
   $("#drops").innerHTML=S.items.map((it,k)=>dropHTML(it,ev[k],it.id===animId)).join("");
   const dps=S.items.slice(0,15).map((it,k)=>({it,e:ev[k]})).filter(o=>o.e.v!==0&&o.e.v!==4&&(!S.hlOnly||isHl(o.e.v))).reverse().map(({it,e})=>{const c=colOf(e.col)[2],col=isHl(e.v);
-    return `<div class="dp">${e.v===3?`<span class="beam" style="--c:${c}"></span>`:""}<span class="lbl" style="--c:${col?c:"#d9d2c0"}">${esc(it.name)}</span></div>`;}).join("");
+    return `<div class="dp">${e.v===3?`<span class="beam" style="--c:${c}"></span>`:""}<span class="lbl" style="--c:${col?c:"#d9d2c0"}">${esc(dItemName(it))}</span></div>`;}).join("");
   $("#scene").innerHTML=dps||`<p class="empty">${S.items.length?"No highlights or beams in the latest drops.":"Press “Drop 1”, “Drop 25” or a Quick spawn button."}</p>`;
   $$("#sceneMode button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.sm==="hl")===S.hlOnly));
   const n=t.all||1;
@@ -3177,6 +3195,23 @@ function ezTouched(){
   ezMode(EZ.m,true);
 })();
 
+async function setLang(code,quiet){
+  if(!LANGS.some(x=>x[0]===code))code="en";
+  let d={lines:{},bases:{},reds:{}};
+  if(code!=="en"){try{const r=await fetch("lang/"+code+".json");if(!r.ok)throw new Error(r.status);d=await r.json();}catch(e){if(!quiet)toast("Could not load that language. Showing English.",true);code="en";}}
+  LANG=code;LX.lines={};Object.keys(d.lines||{}).forEach(k=>{LX.lines[cleanLineText(k)]=cleanLineText(d.lines[k]);});LX.bases=d.bases||{};LX.reds=d.reds||{};
+  const sel=$("#langSel");if(sel)sel.value=code;
+  try{localStorage.setItem("oathfilter-lang",code);}catch(e){}
+  document.documentElement.setAttribute("data-gamelang",code);
+  fullRender();
+}
+(function langInit(){
+  const sel=$("#langSel");if(!sel)return;
+  sel.innerHTML=LANGS.map(x=>`<option value="${x[0]}">${esc(x[1])}</option>`).join("");
+  sel.addEventListener("change",()=>setLang(sel.value));
+  let c="en";try{c=localStorage.getItem("oathfilter-lang")||"en";}catch(e){}
+  if(c!=="en")setTimeout(()=>setLang(c,true),0);
+})();
 (function init(){
   let start=null;
   let initWarn="";
