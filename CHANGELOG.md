@@ -2,6 +2,11 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (11)
+
+### Added
+- Clear filter button next to Share (Advanced Mode). It removes all rules, and Ctrl+Z brings them back.
+
 ## 2026-11-21 (10)
 
 ### Added
