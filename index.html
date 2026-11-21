@@ -117,7 +117,7 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .ezbar .lab{margin:0}.ezbar .seg{border:2px solid var(--accent-gold);border-radius:10px;min-width:260px}
 .ezbar .seg button{min-height:46px;padding:0 26px;font-size:1.02rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
 .ezbar .seg button[aria-pressed="true"]{background:var(--accent-gold);color:#15110a;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
-.ezbar .hint{flex:1 1 220px}
+.ezbar .ezact{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
 .eztick{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin:0 2px}
 .ezcount{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:4px}.ezcount b{font-size:17px}.ezcount.bad b{color:var(--hide-fg)}
 .ezerr{padding:12px 14px;border:2px solid var(--hide-fg);border-radius:8px;margin-bottom:12px;color:var(--hide-fg)}
@@ -345,14 +345,18 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 </header>
 <main>
 <div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit">
-<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><span class="hint" id="ezBarHint"></span></div>
+<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><div class="ezact"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button><button type="button" class="btn gold" id="shMake">Share</button></div></div>
+<div class="plate" id="shPanel" hidden style="margin:0 0 16px"><div class="shres" id="shRes" hidden><label class="lab" for="shUrl">Share link</label><input id="shUrl" class="field" type="text" readonly>
+  <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="shCopy">Copy link</button><button type="button" class="btn" id="shDisc">Copy for Discord</button><button type="button" class="btn" id="shClose">Close</button></div></div>
+  <p class="hint" id="shMsg" role="status" aria-live="polite" style="margin:8px 0 0"></p>
+  <pre class="out" id="out" tabindex="0" hidden style="max-height:160px;margin-top:8px"></pre></div>
 <div id="ezBox" hidden><div class="cols">
   <section class="plate l" aria-labelledby="h-ezc">
     <h2 id="h-ezc" class="coltitle">Easy Mode</h2>
     <p class="hint" style="margin:0 0 12px">Build a whole filter from a few choices. The result is a normal game filter code. Easy Mode settings stay in this browser only.</p>
     <div id="ezCtl"></div></section>
   <section class="plate r" aria-labelledby="h-ezo"><h2 id="h-ezo" class="coltitle">Result</h2>
-    <div id="ezOut" role="status" aria-live="polite"></div><div id="ezShare"></div><div id="ezOut2" role="status" aria-live="polite"></div></section>
+    <div id="ezOut" role="status" aria-live="polite"></div><div id="ezOut2" role="status" aria-live="polite"></div></section>
 </div></div>
 <div class="cols" id="edCols">
   <section class="plate l" aria-labelledby="h-rules">
@@ -366,15 +370,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <div id="rows"></div>
     <div class="hint" id="actCount" style="margin-top:20px"></div></section>
   <section class="plate r" aria-labelledby="h-edit"><h2 id="h-edit" class="coltitle"><span id="edTitle">Rule editor</span></h2>
-    <div class="sub" id="xpAdv">
-    <span class="lab">Export</span><div class="ezrow" style="margin-top:4px"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button></div><p class="hint" id="copyAdvHint" style="margin:6px 0 0"></p><pre class="out" id="out" tabindex="0" hidden style="max-height:160px;margin-top:8px"></pre>
-    <div id="shareBox" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><h3 style="margin:0 0 10px;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Share</h3>
-      <p class="hint" style="margin:0 0 10px">A share link stores the game code and your rule names on the Oathfilter share service, so anyone with the link can open it. Your game export is not changed. It always shares your active filter, so in Easy Mode press "Apply to my filter" first.</p>
-      <button type="button" class="btn gold" id="shMake">Create share link</button>
-      <div class="shres" id="shRes" hidden><label class="lab" for="shUrl">Share link</label><input id="shUrl" class="field" type="text" readonly>
-        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="shCopy">Copy link</button><button type="button" class="btn" id="shDisc">Copy for Discord</button></div></div>
-      <p class="hint" id="shMsg" role="status" aria-live="polite" style="margin:8px 0 0"></p></div></div>
-     <div id="editor"></div></section>
+         <div id="editor"></div></section>
 </div></div>
 
 <div class="panel" id="p-test" role="tabpanel" aria-labelledby="t-test" hidden><div class="cols">
@@ -433,7 +429,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
      <li><b>1. Pick a start.</b> Choose a game preset in the Editor. It is only a starting point.</li>
      <li><b>2. Edit the rules.</b> Select a rule and set what it checks and what it does. Add, duplicate or remove rules (red X) and drag them into order.</li>
      <li><b>3. Test it.</b> Open Drop Test and press Drop 25 or a Quick spawn button. Each sample item shows which rule caught it.</li>
-     <li><b>4. Export.</b> Use “Copy filter code” in the Editor (Advanced: Export block, Easy: Result), then paste the code into the game’s loot filter window.</li>
+     <li><b>4. Export.</b> Use “Copy filter code” in the bar at the top of the Editor, then paste the code into the game’s loot filter window.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g2"><h2 id="h-g2" class="coltitle">How rules work</h2>
     <p class="callout"><b>Order is the most important part of a filter.</b> The game checks the rules from top to bottom. The first rule that matches an item decides, and the rules below it never see that item.</p>
@@ -522,8 +518,8 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     </ul>
     <h3 class="subtitle">Export</h3>
     <ul class="pl">
-     <li><b>Game code.</b> “Copy filter code” in the Editor (Export block in Advanced, Result in Easy) copies the code you paste into the game.</li>
-     <li><b>Share.</b> “Create share link” in the Editor’s Export block makes a short link to your filter with its rule names. Whoever opens it sees a preview first and can load it or save it to their local filters.</li>
+     <li><b>Game code.</b> “Copy filter code” in the bar at the top of the Editor copies the code you paste into the game.</li>
+     <li><b>Share.</b> “Share” in the bar at the top of the Editor makes a short link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). Whoever opens it sees a preview first and can load it or save it to their local filters.</li>
      <li><b>Saved in your browser.</b> Your current filter is kept automatically, so it is still there next time.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g9"><h2 id="h-g9" class="coltitle">Keyboard shortcuts</h2>
@@ -550,7 +546,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <p class="callout" style="margin:12px 0 0"><b>Planned:</b> archetype modules, for example Caster Cold, Caster Lightning, Melee Physical, Melee Cold and Bow Physical.</p></section>
   <section class="plate" aria-labelledby="h-pv"><h2 id="h-pv" class="coltitle">Privacy &amp; technical</h2>
     <ul class="bl">
-     <li>Runs in your browser. Your filter stays on your device unless you press "Create link" in the Editor's Export block.</li>
+     <li>Runs in your browser. Your filter stays on your device unless you press "Share" in the Editor.</li>
      <li>Your filter is saved only in local storage.</li>
      <li>No cookies, no tracking, no accounts.</li>
      <li>Share links: "Create link" uploads your game code and rule names (no personal data) to a small service on Cloudflare (Workers and D1), which stores them and returns a short link. Anyone with the link can open it, and the stored data cannot be deleted by you. Opening a link loads it from the same service. Cloudflare may log requests, for example your IP address. If the service is down, an offline link is created that contains the filter itself and uploads nothing.</li>
@@ -1589,7 +1585,7 @@ function checkOrder(){
   const o=$("#chkOut");
   o.innerHTML=out.length?`<div class="chk">${out.map(([i,t])=>`<button type="button" class="chkb" data-pick="${R[i].id}"><b>Rule ${i+1}</b> ${esc(t)}</button>`).join("")}</div><p class="hint" style="margin:8px 0 0">Based on ${N} sample items. A rare item can be missed. Click a rule to open it.</p>`:`<p class="hint" style="margin:8px 0 0">Every active rule decides at least one of ${N} sample items.</p>`;
 }
-function renderAdvExport(){const h=$("#copyAdvHint");if(h){const n=F.rules.length;h.textContent=n>MAX_RULES?"Copies your active filter: "+n+" rules, but the game takes "+MAX_RULES+".":"Copies your active filter ("+n+" rule"+(n===1?"":"s")+").";}}
+function renderAdvExport(){const b=$("#copyAdv");if(b){const n=F.rules.length;b.title=n>MAX_RULES?"Copies your active filter: "+n+" rules, but the game takes "+MAX_RULES+".":"Copies your active filter ("+n+" rule"+(n===1?"":"s")+"). In Easy Mode it copies the Easy Mode preview.";}}
 function renderHead(){renderAdvExport();$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${F.rules.length>MAX_RULES?"color:var(--hide-fg)":""}">${F.rules.length} / ${MAX_RULES}</b>`;}
 
 /* ---- editor ---- */
@@ -1744,7 +1740,7 @@ async function copyCode(arg){
   try{await navigator.clipboard.writeText(txt);done();return;}catch(e){}
   try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();if(ok){done();return;}}catch(e){}
   if(own){ezShowCode(txt);toast("Copy is blocked here. The code is selected below: press Ctrl+C.",true);return;}
-  if(V.view!=="edit")setView("edit");if(EZ.m==="easy")ezMode("adv");const o=$("#out");o.hidden=false;o.textContent=encode(F);const rg=document.createRange();rg.selectNodeContents($("#out"));const s=getSelection();s.removeAllRanges();s.addRange(rg);toast("Copy is blocked here. The code is selected: press Ctrl+C.",true);
+  if(V.view!=="edit")setView("edit");$("#shPanel").hidden=false;const o=$("#out");o.hidden=false;o.textContent=encode(F);const rg=document.createRange();rg.selectNodeContents($("#out"));const s=getSelection();s.removeAllRanges();s.addRange(rg);toast("Copy is blocked here. The code is selected: press Ctrl+C.",true);
 }
 const H=[];
 const NAME_MAX=40;
@@ -1826,7 +1822,7 @@ document.addEventListener("input",e=>{
 function downloadCode(){const d=new Date(),p=n=>String(n).padStart(2,"0"),name="oathfilter-"+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+".txt";
   const a=document.createElement("a"),url=URL.createObjectURL(new Blob([encode(F)+"\n"],{type:"text/plain"}));a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Saved "+name+".");}
 
-$("#copyAdv").onclick=()=>copyCode();
+$("#copyAdv").onclick=()=>{if(EZ.m==="easy"&&V.view==="edit")ezCopy();else copyCode();};
 /* ---- local filters (localStorage only) ---- */
 const LF={key:"oathfilter-saved",max:50,
   all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},
@@ -2010,7 +2006,11 @@ async function shCopyText(txt,ok){
   try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const done=document.execCommand("copy");ta.remove();if(done){shMsg(ok);return;}}catch(e){}
   const u=$("#shUrl");u.focus();u.select();shMsg("Copy is blocked here. The link is selected: press Ctrl+C.",true);}
 window.shSync=()=>{const r=$("#shRes");if(r&&!r.hidden&&shLast.code!==encode(F)){r.hidden=true;shMsg("The filter changed. Create a new link to share the latest version.");}};
-$("#shMake").onclick=async()=>{
+$("#shClose").onclick=()=>{$("#shPanel").hidden=true;};
+$("#shMake").onclick=()=>{ /* Easy Mode: the Easy filter replaces the active filter first, then it is shared */
+  if(EZ.m==="easy"&&V.view==="edit"&&!ezApply())return;
+  $("#shPanel").hidden=false;shRun();};
+const shRun=async()=>{
   if(shLast.busy)return;
   if(!F.rules.length){shMsg("Add at least one rule first.",true);return;}
   const pl=shPayload(),btn=$("#shMake");
@@ -2953,6 +2953,7 @@ function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="
 const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
 let ezT=null,ezAsk=false,ezCode="";
 function ezShowCode(t){ezCode=t;ezPreview();const x=$("#ez-code");if(x){x.focus();x.select();}}
+function ezCopy(){const g=easyGen(EZ.s);if(g.rules.length>MAX_RULES){toast("Not copied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);ezPreview(g);}else copyCode(encode({preset:"-1",rules:g.rules}));}
 function ezApply(){
   const g=easyGen(EZ.s);
   if(g.rules.length>MAX_RULES){ezAsk=false;ezPreview(g);toast("Not applied: "+g.rules.length+" / "+MAX_RULES+" rules. Uncheck some options.",true);return false;}
@@ -2961,10 +2962,8 @@ function ezApply(){
 }
 function ezMode(m,quiet){
   EZ.m=m==="easy"?"easy":"adv";
-  const sb=$("#shareBox"),tg=EZ.m==="easy"?$("#ezShare"):$("#xpAdv");if(sb&&tg&&sb.parentNode!==tg)tg.appendChild(sb); /* one share box, shown in the Result (Easy) or the Export block (Advanced) */ezSave();ezCode="";
   $("#ezBox").hidden=EZ.m!=="easy";$("#edCols").hidden=EZ.m==="easy";
   $$("#ezMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ezm===EZ.m?"true":"false"));
-  $("#ezBarHint").textContent=EZ.m==="easy"?"Easy: pick what you want to see and the page builds the whole filter.":"Advanced: edit every rule yourself.";
   if(EZ.m==="easy"&&!quiet)ezRefresh();
 }
 /* ---- controls ---- */
@@ -3008,10 +3007,7 @@ function ezPreview(g){
   const mn={black:"Hide only",white:"Show and highlight first, then hide the rest"}[g.mode];
   const w=g.notes.concat(sh);
   const hh=status+`
-  <div class="sub"><span class="lab">Export</span>
-    <div class="ezrow" style="margin-top:4px"><button type="button" class="btn gold" data-ezact="copy"${over?" disabled":""}>Copy Easy Mode filter code</button><button type="button" class="btn" data-ezact="adv">Open in Advanced</button></div>
-    <p class="hint" style="margin:6px 0 0">${over?"Blocked: the preview has "+n+" rules and the game takes "+MAX_RULES+".":linked?"Same code as your active filter ("+act+" rules).":"Copies the "+n+" rules in the preview. Your active filter is not changed."}</p>
-    ${ezCode?`<textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="margin-top:8px;width:100%">${esc(ezCode)}</textarea>`:""}</div>
+  ${ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:""}
   <div class="sub"><span class="lab">Rule count</span>
     <div class="ezcount"><span>Active filter (badge, top right)</span><b>${act} / ${MAX_RULES}</b></div>
     <div class="ezcount${over?" bad":""}"><span>Easy Mode ${linked?"rules (applied)":"preview (not applied)"}</span><b>${n} / ${MAX_RULES}</b></div></div>
