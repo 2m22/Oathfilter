@@ -2959,6 +2959,7 @@ const EZ_ARCH=[
  {k:"fire",n:"Fire",el:1,col:0,ids:["fire_dmg_inc","fire_pen95_2h","fire_spell_added","fire_added_local"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
  {k:"cold",n:"Cold",el:1,col:2,ids:["cold_dmg_inc","cold_pen95_2h","chill_effect","freeze_duration","cold_spell_added","cold_added_local"],idol:[]},
  {k:"light",n:"Lightning",el:1,col:4,ids:["lightning_dmg_inc","lightning_pen95_2h","shock_chance","shock_effect","lightning_spell_added","lightning_added_local","attack_added_lightning"],idol:[]},
+ {k:"holy",n:"Holy (Idols)",el:1,col:5,ids:[],idol:["idol_holy_damage_m"]},
  {k:"pois",n:"Poison",el:1,col:1,ids:["poison_dmg_inc","poison_effect","poison_pen85_2h","dot_multi","poison_spell_added"],idol:[]},
  {k:"bleed",n:"Bleed",el:1,col:5,ids:["bleed_chance","bleed_effect","dot_multi"],idol:[]},
  {k:"ign",n:"Ignite",el:1,col:0,ids:["ignite_chance","ignite_effect","dot_multi"],idol:[]},
@@ -2979,7 +2980,7 @@ const EZ_ARCH=[
 const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",
  fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
 const EZ_ATK=["attack","melee","slam","bow"];
-const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois"]],["Ailments",["bleed","ign"]],["Other",["curse","move","life","res","def"]]];
+const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["curse","move","life","res","def"]]];
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
