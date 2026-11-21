@@ -2886,13 +2886,15 @@ function easyGen(s){
   else if(idolWhite)mk({type:14,action:0},"Other idols");
   else if(s.idol==="all"&&!s.hl&&idolA.length)notes.push("Idols stay shown and Highlight is off, so Idol picks change nothing. Turn Highlight on or use Match my picks.");
   else if(s.idol==="match"&&act.length&&!idolA.length)notes.push("None of your picks has Idol lines, so Idols are not touched.");
-  /* 3 hide normal / magic gear */
-  const rarRule=rarHide&&!(white&&gearA.length&&!s.hm); /* plain Normal gear has no lines, so with picks on, "Everything else" already hides it */
-  if(rarRule)mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:0},s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear");
+  /* 3 hide normal / magic gear. With gear picks it comes after them (so shown Magic matches are never caught) and before the catch-all.
+        Without picks it must come before the level-floor show rule, or Normal and Magic gear above the floor would be shown first. */
+  const hideR=()=>{if(rarHide)mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:0},s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear");};
+  if(!gearA.length)hideR();
   /* 4 gear picks and the level floor */
   if(white){
     gearA.forEach(x=>x.parts.forEach((p,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(lo)msetRng(r,"i",lo,0);msetList(r,"a",p);})));
     if(!gearA.length&&lo>0)mk({type:0,action:1},"Item level "+lo+"+",r=>msetRng(r,"i",lo,0));
+    if(gearA.length)hideR();
     mk({type:0,action:0},"Everything else");
   }
   if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
