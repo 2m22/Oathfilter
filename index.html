@@ -586,6 +586,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
   <p style="margin:4px 0 0"><button type="button" class="linkbtn" data-view="about">About, privacy and credits</button><br><a href="https://github.com/2m22/Oathfilter" target="_blank" rel="noopener noreferrer">Source on GitHub</a></p>
 </footer>
 <div class="gt" id="gt" role="status" hidden></div>
+<div class="upd" id="wn" hidden><div class="updbox" role="dialog" aria-modal="true" aria-labelledby="wnT"><div><b id="wnT">Oathfilter was updated</b><span>This is what changed since you were last here.</span></div><div><ul class="updlog" id="wnList"></ul><a href="https://github.com/2m22/Oathfilter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" id="wnAll" style="display:inline-block;margin-top:8px">Full changelog</a></div><div class="bt"><button type="button" class="btn gold" id="wnOk">Got it</button></div></div></div>
 <div class="upd" id="upd" hidden><div class="updbox" role="alertdialog" aria-modal="true" aria-labelledby="updT" aria-describedby="updD"><div><b id="updT">A new version is available</b><span id="updD">Your filter is saved in this browser and stays as it is.</span></div><div id="updLog" hidden><span class="updh">What's new</span><ul class="updlog" id="updList"></ul><a href="https://github.com/2m22/Oathfilter/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" id="updAll">Full changelog</a></div><div class="bt"><button type="button" class="btn gold" id="updNow">Reload now</button><button type="button" class="btn" id="updLater">Remind me in 5 minutes</button></div></div></div>
 <div class="upd" id="shr" hidden><div class="updbox shbox" role="alertdialog" aria-modal="true" aria-labelledby="shrT" aria-describedby="shrD"><div><b id="shrT"></b><span id="shrD"></span></div><div id="shrBody" style="width:100%"></div><div class="bt" id="shrBt"></div></div></div>
 <script>
@@ -1896,6 +1897,28 @@ $("#auto").onclick=()=>{const b=$("#auto");if(timer){clearInterval(timer);timer=
 $("#preset").innerHTML=`<option value="" disabled selected>Game presets…</option>`+PRESETS.map((p,i)=>[i,p.label]).sort(ALPHA).map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
 /* update check: the build step writes the commit id into BUILD and into version.json next to this page */
 const BUILD="__BUILD__";
+/* what is new: the build step writes the newest CHANGELOG.md heading into REL. Each merge adds a new heading on top, so everything above REL is new to this page. */
+const REL="__REL__";
+const relOk=/^\d{4}-\d{2}-\d{2}/.test(REL);
+const topRelOf=md=>((md.match(/^## (.+)$/m)||[])[1]||"").trim();
+function newSince(md,rel){
+  const secs=md.split(/^## /m).slice(1);let n=secs.findIndex(x=>x.split("\n")[0].trim()===rel);
+  if(n<0)n=1; /* release not found: show the newest section only */
+  const out=[];
+  secs.slice(0,n).forEach(sec=>{let tag="";sec.split("\n").slice(1).forEach(l=>{
+    const h=l.match(/^### (.+)/);if(h){tag=h[1].trim();return;}
+    const m=l.match(/^- (.+)/);if(!m)return;
+    let t=m[1].replace(/\[([^\]]+)\]\([^)]*\)/g,"$1").replace(/[*`_]/g,"").trim(),r="";
+    (t.match(/[^.!?]+[.!?]?(\s|$)/g)||[t]).some(x=>{r+=x;return r.length>=40;});
+    r=r.trim();if(r.length>130)r=r.slice(0,127).trim()+"…";
+    out.push([tag,r]);});});
+  return out;
+}
+function fillLog(ul,all){
+  if(!all.length)return false;const MAXN=8;
+  ul.innerHTML=all.slice(0,MAXN).map(([t,x])=>`<li><i>${esc(t)}</i>${esc(x)}</li>`).join("")+(all.length>MAXN?`<li class="hint">…and ${all.length-MAXN} more.</li>`:"");
+  return true;
+}
 (function(){
   if(!/^[0-9a-f]{7,40}$/.test(BUILD))return; /* local copy, no build id */
   const MIN=5*60*1000;let outdated=false,until=0,tm=null;
@@ -1907,29 +1930,14 @@ const BUILD="__BUILD__";
     if(e.key==="Escape"){e.preventDefault();later();return;}
     if(e.key==="Tab"){const b=[$("#updNow"),$("#updLater")];if(!$("#updLog").hidden)b.push($("#updAll"));const i=b.indexOf(document.activeElement);e.preventDefault();b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus();}
   });
-  /* compact "what is new": the newest dated section of CHANGELOG.md (published next to this page), first sentences of the top-level entries only */
-  let logDone=false;
-  function compactLog(md){
-    const sec=md.split(/^## /m)[1];if(!sec)return[];
-    const out=[];let tag="";
-    sec.split("\n").slice(1).forEach(l=>{
-      const h=l.match(/^### (.+)/);if(h){tag=h[1].trim();return;}
-      const m=l.match(/^- (.+)/);if(!m)return;
-      let t=m[1].replace(/\[([^\]]+)\]\([^)]*\)/g,"$1").replace(/[*`_]/g,"").trim(),r="";
-      (t.match(/[^.!?]+[.!?]?(\s|$)/g)||[t]).some(x=>{r+=x;return r.length>=40;});
-      r=r.trim();if(r.length>130)r=r.slice(0,127).trim()+"…";
-      out.push([tag,r]);
-    });
-    return out;
-  }
+  /* compact "what is new" in the update prompt: only what is newer than the release this page runs (REL) */
+  let logDone=false,topRel="";
   async function loadLog(){
     if(logDone)return;logDone=true;
     try{
       const r=await fetch("CHANGELOG.md?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;
-      const all=compactLog(await r.text());if(!all.length)return;
-      const MAXN=8,list=all.slice(0,MAXN);
-      $("#updList").innerHTML=list.map(([t,x])=>`<li><i>${esc(t)}</i>${esc(x)}</li>`).join("")+(all.length>MAXN?`<li class="hint">…and ${all.length-MAXN} more.</li>`:"");
-      $("#updLog").hidden=false;
+      const md=await r.text();topRel=topRelOf(md);
+      if(fillLog($("#updList"),newSince(md,REL)))$("#updLog").hidden=false;
     }catch(e){}
   }
   async function check(){
@@ -1938,9 +1946,26 @@ const BUILD="__BUILD__";
   }
   setInterval(check,MIN);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)check();});
-  $("#updNow").onclick=()=>{try{save();}catch(e){}fetch(location.href,{cache:"reload"}).catch(()=>{}).then(()=>location.reload());}; /* refresh the cached page first, or the host cache may serve the old one again */
+  $("#updNow").onclick=()=>{try{save();}catch(e){}try{if(topRel)localStorage.setItem("oathfilter-seen",topRel);}catch(e){}fetch(location.href,{cache:"reload"}).catch(()=>{}).then(()=>location.reload());}; /* refresh the cached page first, or the host cache may serve the old one again */
   $("#updLater").onclick=later;
   window.__updCheck=check;
+})();
+/* after a reload: if the changes were never shown (the prompt was dismissed), show them once, only what is newer than the last release this browser has seen */
+(function(){
+  if(!relOk)return;
+  const K="oathfilter-seen";let seen=null;
+  try{seen=localStorage.getItem(K);}catch(e){}
+  const mark=()=>{try{localStorage.setItem(K,REL);}catch(e){}};
+  if(!seen||seen===REL){mark();return;}
+  const box=$("#wn");let prev=null;
+  const done=()=>{box.hidden=true;mark();if(prev&&prev.focus&&document.contains(prev))prev.focus();};
+  box.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();done();}else if(e.key==="Tab"){const b=[$("#wnOk"),$("#wnAll")],i=b.indexOf(document.activeElement);e.preventDefault();b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus();}});
+  $("#wnOk").onclick=done;
+  fetch("CHANGELOG.md?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(md=>{
+    if(!md)return;
+    if(!fillLog($("#wnList"),newSince(md,seen))){mark();return;}
+    prev=document.activeElement;box.hidden=false;$("#wnOk").focus();
+  }).catch(()=>{});
 })();
 /* ---- share links: short link through the Oathfilter share worker (POST /s, GET /s/<id>); offline fallback #s=... ---- */
 const SHARE_URL="https://oathfilter-share.mathiesjng.workers.dev",SH_NAME_MAX=40,SH_BY_MAX=30,SH_ID=/^[A-Za-z0-9_-]{3,40}$/;

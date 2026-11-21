@@ -35,6 +35,9 @@ jobs:
           stamp() { # $1 = dir, $2 = ref
             v=$(git rev-parse --short=10 "$2")
             sed -i "s/__BUILD__/$v/" "$1/index.html"
+            # newest changelog heading of that ref: the page shows everything above it as "what is new"
+            rel=$(git show "$2:CHANGELOG.md" 2>/dev/null | grep -m1 '^## ' | sed 's/^## //' | tr -d '&#/\\' || true)
+            sed -i "s#__REL__#$rel#" "$1/index.html"
             printf '{"version":"%s"}\n' "$v" > "$1/version.json"
           }
           stamp _site origin/main
@@ -43,6 +46,7 @@ jobs:
           # guard: a page that has the update check must have a real build id and a version.json
           for d in _site _site/test; do
             [ -f "$d/index.html" ] || continue
+            if grep -q 'const REL="__REL__"' "$d/index.html"; then echo "::error::$d still has the __REL__ placeholder"; exit 1; fi
             if grep -q 'const BUILD=' "$d/index.html"; then
               grep -q 'const BUILD="[0-9a-f]\{10\}"' "$d/index.html" && [ -f "$d/version.json" ] || { echo "::error::$d has no build id / version.json"; exit 1; }
             fi
