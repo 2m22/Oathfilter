@@ -2,6 +2,21 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-21 (4)
+
+### Changed
+- The Drop Test simulates the Easy Mode preview while Easy Mode is on (up to 40 rules), and a line in the Result panel says which rules are simulated.
+- The Copy filter code button shows the rule count in red when the filter is over the 40-rule limit.
+- Easy Mode changes you have not applied yet can be undone with Ctrl+Z.
+- Loading a saved filter that is unreadable, has more than 40 rules or a rule with more than 4 named lines now shows a warning.
+- Share links with an oversized payload are refused instead of freezing the page.
+- The Easy / Advanced bar, the Share panel and the Rupture Level ticks fit narrow screens and zoomed pages better.
+
+### Fixed
+- Ctrl+D and Alt+Up / Down no longer change your hidden Advanced rules while Easy Mode is on.
+- A share link shown in the Editor is hidden as soon as the filter changes.
+- Ctrl+Z no longer undoes your filter while you type in a form field or work outside the Editor.
+
 ## 2026-11-21 (3)
 
 ### Changed
