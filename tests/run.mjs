@@ -162,5 +162,14 @@ eq(DATA_BUILD.build,87,"data build is 87");eq(DATA_BUILD.apiChecked,85,"public A
   ok(!/BOFILTER[^|]*\|[^|]*Sell gems/.test(encode({preset:"-1",rules:sell.rules})),"rule names never reach the code");
 }
 
+/* game exports with Vow effect (22.11.2026): single line, two lines (Area written with a capital), and all=1 after the list */
+["a=vow_effect98","a=vow_effect98+Area","a=vow_effect98+Area;all=1"].forEach(m=>{const c="BOFILTER:1,-1|1,0,1,0,0,0,0,0,0,255,3:"+m;eq(encode(decode(c).filter),c,"game export round trips: "+m);});
+{
+  const am={id:"a",name:"t",kind:"amulet",sub:"",rar:"N",lvl:80,def:0,baseId:"jade_amulet",redId:"",sock:0,grade:1,req:60,mods:[{lineLabel:LINEN.area,pre:2,tier:1,lines:[23],group:"Area"}]};
+  const R=m=>decode("BOFILTER:1,-1|1,0,1,0,0,0,0,0,0,255,3:"+m).filter.rules[0];
+  ok(matches(R("a=vow_effect98+Area"),am),"any of Vow effect + Area: Area alone is enough (capital A in the code)");
+  ok(!matches(R("a=vow_effect98+Area;all=1"),am),"all of Vow effect + Area: Area alone is not enough");
+}
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
