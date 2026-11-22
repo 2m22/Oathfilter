@@ -264,6 +264,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .pklist button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;min-height:44px;padding:0 12px;border:0;border-bottom:1px solid var(--border);background:none;text-align:left;font-weight:600;color:var(--text-main);cursor:pointer}
 .pklist button:hover:not(:disabled){background:var(--bg-card)}.pklist button:disabled{opacity:.45;cursor:not-allowed}
 .pklist small{color:var(--text-muted);font-weight:400;white-space:nowrap}
+.qm{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:4px;border:1px solid var(--text-muted);border-radius:50%;font-size:10px;line-height:1;color:var(--text-muted);cursor:help}
 /* drop test: controls column left, main area right */
 .dctl{flex:0 0 280px;min-width:260px;position:sticky;top:8px;max-height:calc(100vh - 16px);overflow-y:auto;padding:12px}
 .dctlb{display:grid;grid-template-columns:1fr 1fr;gap:6px}.dctlb .btn{min-height:34px;padding:0 8px;font-size:.8125rem}

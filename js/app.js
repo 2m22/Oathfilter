@@ -223,6 +223,11 @@ const msel=(id,key,val,opts)=>{const has=opts.some(o=>String(o[0])===String(val)
 const chgMark=t=>{const w=t.closest(".selwrap");if(w)w.classList.toggle("chg",!(t.value===""||t.value==="0"));};
 const nOpts=(any,f)=>[["",any]].concat([1,2,3,4,5,6].map(n=>[n,f(n)]));
 const lvOpts=(any,f)=>[["0",any]].concat(LVSTEPS.map(v=>[v,f(v)]));
+/* "local" lines roll on the weapon itself; the Attack-Damage variants roll on gloves, quivers, rings, amulets and boots. The picker says so (label suffix and a "?"), the code and the names in rules do not change. */
+const LOCAL_LINE=id=>/(_added_local|^phys_inc_local)$/.test(id);
+const ATTACK_LINE=id=>/^attack_added_(phys|fire|cold|lightning)$/.test(id);
+const lineExtra=id=>LOCAL_LINE(id)?" (local)":"";
+const lineWhere=id=>{if(LOCAL_LINE(id))return "Local: rolls on the weapon itself, e.g. on a bow (not on quivers).";if(ATTACK_LINE(id)){const a=AFF.find(x=>x.id===id);const w=a?a.tags.filter(t=>/^(Gloves|Quiver|Ring|Amulet|Boots)$/.test(t)).map(t=>t.toLowerCase()+(t==="Boots"?"":"s")).join(", "):"gloves, quivers, rings, amulets";return "Applies to "+w+" (e.g. quivers for bows), not to the weapon itself.";}return "";};
 const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,disp:BASED,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line, like life or fire"},na:{title:"Not these lines",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line that must NOT be on the item"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,disp:REDD,ph:"Type a red name"}};
 S.pk={b:"",a:"",na:"",rn:""};S.moreOpen=true;
 /* what the sample drops can produce: other bases and reds still go into the code, but the drop test never shows them */
@@ -241,7 +246,7 @@ function invHTML(r,k){
 function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k),lists=(PL.load()[k]||[]);
   return `<div class="pk" data-pkbox="${k}"><div class="pkhead"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of ${MAXL[k]} picked</label>${k==="a"?anyAllHTML(r):k==="b"||k==="rn"?invHTML(r,k):""}${ids.length?`<button type="button" class="lnk" data-pclr="${k}">Clear</button>`:""}</div>
-   <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.disp[x]||x],[0,P.disp[y]||y])).map(id=>`<span class="b more" title="${esc(P.disp[id]||id)}"><span class="bt">${esc(P.disp[id]||id)}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">${li("x")}</button></span>`).join("")}</div>
+   <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.disp[x]||x],[0,P.disp[y]||y])).map(id=>`<span class="b more" title="${esc(P.disp[id]||id)}"><span class="bt">${esc((P.disp[id]||id)+((k==="a"||k==="na")?lineExtra(id):""))}${(k==="a"||k==="na")&&ATTACK_LINE(id)?`<span class="qm" title="${esc(lineWhere(id))}" aria-label="${esc(lineWhere(id))}">?</span>`:""}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">${li("x")}</button></span>`).join("")}</div>
    <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>[i,l.n,l]).sort(ALPHA).map(([i,n,l])=>`<option value="${i}">${esc(n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>${li("save")}Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>${li("trash")}Delete list</button></div>
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
    <div class="pklist" id="pl-${k}"></div></div>`;
@@ -251,14 +256,15 @@ function renderPickList(k){
   const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=MAXL[k];
   const lineSel=new Set(ids.map(i=>P.name[i]));
   const words=q.split(/\s+/).filter(Boolean);
-  const shw=x=>(k==="a"||k==="na")?dl(x[1]):k==="b"?(LX.bases[x[0]]||x[1]):REDD[x[0]];
+  const shw=x=>(k==="a"||k==="na")?dl(x[1])+lineExtra(x[0]):k==="b"?(LX.bases[x[0]]||x[1]):REDD[x[0]];
   const hayOf=x=>((k==="a"||k==="na")?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase())+(LANG==="en"?"":" "+shw(x).toLowerCase());
   const res=P.list().filter(x=>{if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
   const tag=x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);
     if(on)return "<small>picked</small>";
+    if((k==="a"||k==="na")&&ATTACK_LINE(x[0]))return `<small class="qm" title="${esc(lineWhere(x[0]))}" aria-label="${esc(lineWhere(x[0]))}">?</small>`;
     if(k==="a"||k==="na"){const li=LINE_IDS[x[1]]||[];if(li.length&&li.every(i=>COND_LINE.has(i)))return '<small title="This line comes from game files that load only while a game switch is on. It may not be live yet.">switch-dependent</small>';return "";}
     return SAMPLE[k]&&!SAMPLE[k].has(x[0])?"<small>no test drop</small>":"";};
-  const tip=x=>{if(k!=="a"&&k!=="na")return shw(x)+(shw(x)!==String(x[1])?"\n"+x[1]:"");const li=LINE_IDS[x[1]]||[x[0]];return (shw(x)!==x[1]?shw(x)+"\n":"")+x[1]+"\nGame ids ("+li.length+"): "+li.slice(0,10).join(", ")+(li.length>10?", …":"");};
+  const tip=x=>{if(k!=="a"&&k!=="na")return shw(x)+(shw(x)!==String(x[1])?"\n"+x[1]:"");const li=LINE_IDS[x[1]]||[x[0]];const wh=lineWhere(x[0]);return (wh?wh+"\n":"")+(shw(x)!==x[1]?shw(x)+"\n":"")+x[1]+"\nGame ids ("+li.length+"): "+li.slice(0,10).join(", ")+(li.length>10?", …":"");};
   box.innerHTML=res.length?res.map(x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" title="${esc(tip(x))}" ${on||full?"disabled":""}><span>${esc(shw(x))}</span>${tag(x)}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
 }
 function moreHTML(r){

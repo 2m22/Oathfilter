@@ -337,5 +337,11 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   eq(act(q("attack_added_cold")),2,"a Rare quiver with Adds Cold Attack Damage is highlighted by the Bow pick");
   eq(act({...q("life"),mods:[{lineLabel:LINEN.life,tier:1,pre:1,lines:[],group:"life"}]}),0,"a Rare quiver without a Bow line is hidden"); }
 
+{ const app=(await import("node:fs")).readFileSync(new URL("../js/app.js",import.meta.url),"utf8");
+  const lw=app.slice(app.indexOf("const lineWhere"),app.indexOf("const lineWhere")+700);
+  ok(/const LOCAL_LINE=/.test(app)&&app.includes('" (local)"'),"picker marks local lines with (local)");
+  ok(app.includes("ATTACK_LINE=")&&app.includes('class="qm"'),"picker shows a ? for the Attack Damage variants");
+  ok(/quivers/.test(lw)&&/bow/.test(lw),"the hints mention bows and quivers"); }
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
