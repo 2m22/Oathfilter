@@ -2,6 +2,21 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-22 (7)
+
+### Added
+- Penetration lines (Fire, Cold and Lightning, one-handed and two-handed, and the Elemental amulet line) with their four tiers from the game files. Easy Mode uses them for its tier limits. They do not drop in the Drop Test, because the game loads them only while a game switch is on.
+- Easy Mode: the Bow / Projectile pick now covers bows and quivers (Adds Physical, Fire, Cold and Lightning Attack Damage, Increased and Added Physical Damage, Attack Speed, Crit Chance, Crit Multiplier and +Level of all Skill Gems). Before, it had no gear lines at all.
+
+### Changed
+- Easy Mode puts a line without a tier limit into a rule whose limit already covers all its tiers, so some picks need one rule fewer (for example Attacks + Cold at Rupture Level 60: two rules instead of three).
+- Reds that share a name are told apart in the picker: Primal copies show "(Primal)", the Signets of the Lost Order show their variant.
+
+### Fixed
+- The pick lists stopped after 4 entries. They now allow the game limits again: 6 named lines, 6 not-these lines, 12 bases and 12 reds.
+- "X% increased effect of your Vows" was listed twice.
+- Thunderwake Maul uses the right base (Mace 1h 2) and level 10 in the Drop Test.
+
 ## 2026-11-22 (6)
 
 ### Added
