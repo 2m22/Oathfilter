@@ -982,7 +982,7 @@ const EZ_ARCH=[
  {k:"move",n:"Move Speed",col:7,ids:["move_speed"],idol:["idol_movement_damage_m"]},
  {k:"melee",n:"Melee",col:7,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"]},
  {k:"slam",n:"Slam",col:7,ids:[],idol:["idol_slam_damage_m","idol_grand_slam_spike"]},
- {k:"bow",n:"Bow / Projectile",col:7,ids:[],idol:["idol_projectile_damage_m","idol_grand_bow_projectile"]},
+ {k:"bow",n:"Bow / Projectile",col:7,ids:["attack_speed_local","crit_local","crit_multi","skill_level","phys_inc_local","phys_added_local","attack_added_phys","attack_added_fire","attack_added_cold","attack_added_lightning"],idol:["idol_projectile_damage_m","idol_grand_bow_projectile"]},
  {k:"chain",n:"Chain",col:7,ids:[],idol:["idol_chain_damage_m","idol_grand_chain_plus"]},
  {k:"trap",n:"Trap",col:7,ids:[],idol:["idol_trap_damage_m","idol_grand_trap_plus","idol_grand_eng_trap"]},
  {k:"totem",n:"Totem / Ballista",col:7,ids:[],idol:["idol_ballista_speed_m","idol_ballista_life_m","idol_grand_ballista_plus","idol_grand_eng_totem"]},

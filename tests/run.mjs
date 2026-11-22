@@ -329,5 +329,13 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(fn.includes("full=ids.length>=MAXL[k]")&&!/full=ids\.length>=\d/.test(fn),"the picker closes at the game limit (6 / 12), not at a fixed 4");
   let pen=0;for(let i=0;i<4000;i++){const it=genItem({kind:"amulet",ilvl:84});if(it&&it.mods&&it.mods.some(m=>/_pen95_/.test(m.id||m.group||"")))pen++;}eq(pen,0,"pen95 lines do not drop in the test (game switch)"); }
 
+/* ---- Easy Mode Bow / Projectile also covers quivers (its lines are the ones bows and quivers roll) ---- */
+{ const R=easyGen(ezSane({arch:{bow:1}})).rules,gear=R.filter(r=>r.type===0&&r.action>0),all=gear.flatMap(r=>mlistT(r,"a"));
+  ok(["attack_added_phys","attack_added_fire","attack_added_cold","attack_added_lightning","attack_speed_local","skill_level"].every(x=>all.includes(x)),"Bow pick: quiver and bow lines are in the rules");
+  const q=(id)=>({rar:"R",kind:"quiver",sub:"",lvl:80,mods:[{lineLabel:LINEN[id],tier:1,pre:id.startsWith("attack_added")?1:2,lines:[],group:id}],sock:0,req:0,grade:0,def:0,baseId:"hunters_quiver"});
+  const act=it=>{const r=R.find(x=>x.on&&matches(x,it));return r?r.action:null;};
+  eq(act(q("attack_added_cold")),2,"a Rare quiver with Adds Cold Attack Damage is highlighted by the Bow pick");
+  eq(act({...q("life"),mods:[{lineLabel:LINEN.life,tier:1,pre:1,lines:[],group:"life"}]}),0,"a Rare quiver without a Bow line is hidden"); }
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
