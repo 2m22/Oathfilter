@@ -3040,33 +3040,33 @@ async function dcFile(file){
 const EZ_KEY="oathfilter-easy";
 /* g: gear lines (type 0). Idol rules use the gear lines whose text also exists on Idols, plus the Idol-only lines in "idol". */
 const EZ_ARCH=[
- {k:"attack",n:"Attacks",col:6,ids:["attack_speed_local","crit_local","crit_multi"],idol:[]},
- {k:"spell",n:"Spells",col:2,ids:["spell_inc","cast_speed","skill_level","crit_local","crit_multi"],idol:["idol_grand_eng_brand","idol_grand_spark_plus"]},
- {k:"minion",n:"Minions",col:1,ids:["minion_dmg","minion_life","minion_speed","minion_crit","minion_crit_multi"],idol:["idol_grand_skeleton_plus","idol_grand_skeleton_wizard_plus"]},
- {k:"phys",n:"Physical",el:1,col:6,ids:["phys_inc_local","phys_added_local","attack_added_phys"],idol:["idol_grand_phys_as_fire"]},
- {k:"fire",n:"Fire",el:1,col:0,ids:["fire_dmg_inc","fire_pen95_2h","fire_spell_added","fire_added_local"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
- {k:"cold",n:"Cold",el:1,col:2,ids:["cold_dmg_inc","cold_pen95_2h","chill_effect","freeze_duration","cold_spell_added","cold_added_local"],idol:[]},
- {k:"light",n:"Lightning",el:1,col:4,ids:["lightning_dmg_inc","lightning_pen95_2h","shock_chance","shock_effect","lightning_spell_added","lightning_added_local","attack_added_lightning"],idol:[]},
- {k:"holy",n:"Holy (Idols)",el:1,col:5,ids:[],idol:["idol_holy_damage_m"]},
- {k:"pois",n:"Poison",el:1,col:1,ids:["poison_dmg_inc","poison_effect","poison_pen85_2h","dot_multi","poison_spell_added"],idol:[]},
- {k:"bleed",n:"Bleed",el:1,col:5,ids:["bleed_chance","bleed_effect","dot_multi"],idol:[]},
- {k:"ign",n:"Ignite",el:1,col:0,ids:["ignite_chance","ignite_effect","dot_multi"],idol:[]},
- {k:"curse",n:"Curse / Vow",col:6,ids:["curse_effect","curse_limit","vow_effect98"],idol:[]},
- {k:"aoe",n:"AoE",col:4,ids:["area"],idol:[]},
- {k:"move",n:"Move Speed",col:4,ids:["move_speed"],idol:["idol_movement_damage_m"]},
- {k:"melee",n:"Melee",col:6,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"]},
- {k:"slam",n:"Slam",col:6,ids:[],idol:["idol_slam_damage_m","idol_grand_slam_spike"]},
- {k:"bow",n:"Bow / Projectile",col:6,ids:[],idol:["idol_projectile_damage_m","idol_grand_bow_projectile"]},
- {k:"chain",n:"Chain",col:6,ids:[],idol:["idol_chain_damage_m","idol_grand_chain_plus"]},
- {k:"trap",n:"Trap",col:6,ids:[],idol:["idol_trap_damage_m","idol_grand_trap_plus","idol_grand_eng_trap"]},
- {k:"totem",n:"Totem / Ballista",col:6,ids:[],idol:["idol_ballista_speed_m","idol_ballista_life_m","idol_grand_ballista_plus","idol_grand_eng_totem"]},
- {k:"channel",n:"Channelling",col:2,ids:[],idol:["idol_channel_cost_m","idol_grand_channel_ramp"]},
- {k:"orbit",n:"Orbiting",col:4,ids:[],idol:["idol_orbit_damage_m","idol_grand_orbit_plus","idol_grand_eng_orbit"]},
+ {k:"attack",n:"Attacks",col:7,ids:["attack_speed_local","crit_local","crit_multi"],idol:[]},
+ {k:"spell",n:"Spells",col:7,ids:["spell_inc","cast_speed","skill_level","crit_local","crit_multi"],idol:["idol_grand_eng_brand","idol_grand_spark_plus"]},
+ {k:"minion",n:"Minions",col:7,ids:["minion_dmg","minion_life","minion_speed","minion_crit","minion_crit_multi"],idol:["idol_grand_skeleton_plus","idol_grand_skeleton_wizard_plus"]},
+ {k:"phys",n:"Physical",el:1,col:7,ids:["phys_inc_local","phys_added_local","attack_added_phys"],idol:["idol_grand_phys_as_fire"]},
+ {k:"fire",n:"Fire",el:1,col:7,ids:["fire_dmg_inc","fire_pen95_2h","fire_spell_added","fire_added_local"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
+ {k:"cold",n:"Cold",el:1,col:7,ids:["cold_dmg_inc","cold_pen95_2h","chill_effect","freeze_duration","cold_spell_added","cold_added_local"],idol:[]},
+ {k:"light",n:"Lightning",el:1,col:7,ids:["lightning_dmg_inc","lightning_pen95_2h","shock_chance","shock_effect","lightning_spell_added","lightning_added_local","attack_added_lightning"],idol:[]},
+ {k:"holy",n:"Holy (Idols)",el:1,col:7,ids:[],idol:["idol_holy_damage_m"]},
+ {k:"pois",n:"Poison",el:1,col:7,ids:["poison_dmg_inc","poison_effect","poison_pen85_2h","dot_multi","poison_spell_added"],idol:[]},
+ {k:"bleed",n:"Bleed",el:1,col:7,ids:["bleed_chance","bleed_effect","dot_multi"],idol:[]},
+ {k:"ign",n:"Ignite",el:1,col:7,ids:["ignite_chance","ignite_effect","dot_multi"],idol:[]},
+ {k:"curse",n:"Curse / Vow",col:7,ids:["curse_effect","curse_limit","vow_effect98"],idol:[]},
+ {k:"aoe",n:"AoE",col:7,ids:["area"],idol:[]},
+ {k:"move",n:"Move Speed",col:7,ids:["move_speed"],idol:["idol_movement_damage_m"]},
+ {k:"melee",n:"Melee",col:7,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"]},
+ {k:"slam",n:"Slam",col:7,ids:[],idol:["idol_slam_damage_m","idol_grand_slam_spike"]},
+ {k:"bow",n:"Bow / Projectile",col:7,ids:[],idol:["idol_projectile_damage_m","idol_grand_bow_projectile"]},
+ {k:"chain",n:"Chain",col:7,ids:[],idol:["idol_chain_damage_m","idol_grand_chain_plus"]},
+ {k:"trap",n:"Trap",col:7,ids:[],idol:["idol_trap_damage_m","idol_grand_trap_plus","idol_grand_eng_trap"]},
+ {k:"totem",n:"Totem / Ballista",col:7,ids:[],idol:["idol_ballista_speed_m","idol_ballista_life_m","idol_grand_ballista_plus","idol_grand_eng_totem"]},
+ {k:"channel",n:"Channelling",col:7,ids:[],idol:["idol_channel_cost_m","idol_grand_channel_ramp"]},
+ {k:"orbit",n:"Orbiting",col:7,ids:[],idol:["idol_orbit_damage_m","idol_grand_orbit_plus","idol_grand_eng_orbit"]},
  {k:"life",n:"Life",col:7,ids:["life_large"],idol:["idol_grand_life_inc"]},
- {k:"mana",n:"Mana",col:2,ids:["mana","mana_regen"],idol:[]},
- {k:"leech",n:"Leech & Regen",col:6,ids:["life_leech","mana_leech","es_leech","life_regen"],idol:[]},
- {k:"res",n:"Resists",col:0,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
- {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]}];
+ {k:"mana",n:"Mana",col:7,ids:["mana","mana_regen"],idol:[]},
+ {k:"leech",n:"Leech & Regen",col:7,ids:["life_leech","mana_leech","es_leech","life_regen"],idol:[]},
+ {k:"res",n:"Resists",col:7,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
+ {k:"def",n:"Defences",col:7,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]}];
 /* Style-bound element lines. A line tagged "spell" or "attack" only stays when that style is picked (or no style is picked). Everything else of a picked element stays. */
 const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",
  fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
@@ -3143,8 +3143,8 @@ function easyGen(s,pack){
   /* picks with the same colour share rules (any-of lines with the same action, colour and tier limit behave exactly like one rule), so 4 lines fill a rule even across picks */
   if(!pack){
     const byCol=(list,get)=>{const m=new Map();list.forEach(x=>{const c=x.a.col;if(!m.has(c))m.set(c,{n:[],col:c,ids:[]});const g=m.get(c);g.n.push(x.a.n);g.ids.push(...get(x));});return[...m.values()];};
-    gearP=byCol(gearA,x=>x.ids).map(g=>({a:{n:g.n.join(" + "),col:g.col},parts:ezTP(g.ids.slice().sort((x,y)=>x.t-y.t))}));
-    idolA=byCol(idolA,x=>x.parts.flat()).map(g=>({a:{n:g.n.join(" + "),col:g.col},parts:ezChunks(g.ids)}));
+    gearP=byCol(gearA,x=>x.ids).map(g=>({a:{n:g.n.length>3?"Picks":g.n.join(" + "),col:g.col},parts:ezTP(g.ids.slice().sort((x,y)=>x.t-y.t))}));
+    idolA=byCol(idolA,x=>x.parts.flat()).map(g=>({a:{n:g.n.length>3?"Picks":g.n.join(" + "),col:g.col},parts:ezChunks(g.ids)}));
   }
   const rarHide=(s.hn||s.hm)?1:0;
   const white=gearA.length>0;
