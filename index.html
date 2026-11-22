@@ -3108,7 +3108,8 @@ const ezIdolIds=(a,s)=>ezLines(ezEff(a,s).concat(a.idol),(id,t)=>a.idol.includes
 function ezTP(ids){const parts=[];[ids.filter(x=>x.t!==99),ids.filter(x=>x.t===99)].forEach(g=>{for(let i=0;i<g.length;i+=4){const c=g.slice(i,i+4),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}});return parts;} /* lines without a known tier limit get their own rules, so they never lift the limit of the other lines */
 function ezThr(id,rl,keep){
   if(!rl)return 0;const t=LINEN[id];let thr=0,top=0;
-  AFF.forEach(a=>{if(a.id.indexOf("Idol")===0||LINEN[a.id]!==t)return;top=Math.max(top,a.n);
+  AFF.forEach(a=>{if(/^idol/i.test(a.id)||LINEN[a.id]!==t)return; /* Idol affixes (also the idol_grand_* ones) never drop on gear, so they must not loosen a gear rule */
+   top=Math.max(top,a.n);
     let kb=0;for(let k=1;k<=a.n;k++)if(tierLvl(a,k)<=rl){kb=k;break;}
     if(kb)thr=Math.max(thr,kb+keep-1);});
   if(thr&&top===1)return 1; /* a one-tier line is always T1, so it must not lift the limit of the rule it sits in */
