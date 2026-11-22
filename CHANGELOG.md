@@ -8,12 +8,21 @@ All notable changes for players. Newest first.
 - Patch 87 filter options in the Editor (More conditions): Defence type (Armour, Evasion, Energy shield and the three mixes), Count lines of type (Prefix or Suffix lines only, for Tier and Lines), Not these lines (up to 6), None of these for bases and reds, and Any N of them for named lines.
 - Item types Dwarven Runes and Quivers. Type 9 is now "Shields, foci & quivers".
 - New named line: Vow effect (amulet suffix). Two missing lines, Adds Fire and Cold Attack Damage, were added too.
+- Easy Mode: the Defences chip is split into Armour, Evasion and Energy Shield.
 - Drop Test: 34 new Core Touched armour bases, 52 new reds (including the chase reds Shard of the Fourth Spark and Mardoth's Last Pebble) from game build 87.
 
 ### Changed
 - New list limits as in the game: 6 named lines, 12 bases, 12 reds and 6 not-these lines per rule. The rule limit is 200.
 - Easy Mode puts six lines into one rule instead of four, so the filter needs fewer rules.
+- Easy Mode has a new layout: full width, a result bar at the bottom, grouped chips with a check mark, a Clear all button, and new chip icons and hover and selected states.
+- Advanced Mode: modules start collapsed, an "Active only" toggle, a one-line summary on each rule, a badge when More conditions are set, a dimmed look section for Hide and Sell, a Clear link and Esc in the picker search. The RULES column stays in place while the rule editor scrolls.
+- Rule editor: the Base, Named line and Named red pickers line up, Normal rarity dims Roll quality and Lines needed with a note, and More conditions are grouped into Level & tier, Item properties and Special flags. Changed dropdowns are highlighted.
+- The tooltip text now says Good roll = T1-T2 and Top roll = T1, as in the game's filter text.
 - Imported codes keep the key order they came with. Oathfilter writes new codes in the order the game uses.
+
+### Removed
+- The drag handle on rule cards (rules can still be moved with Alt+Shift+Arrow and by dragging the card).
+- The Privacy & technical section, the privacy wording in the footer and the privacy section in the README.
 
 ### Fixed
 - Ids that the game writes with a capital letter (Life, Mana, Bow_1) are now found. Before, their names were missing and the rule did not match in the Drop Test.
