@@ -3065,12 +3065,14 @@ const EZ_ARCH=[
  {k:"mana",n:"Mana",col:7,ids:["mana","mana_regen"],idol:[]},
  {k:"leech",n:"Leech & Regen",col:7,ids:["life_leech","mana_leech","es_leech","life_regen"],idol:[]},
  {k:"res",n:"Resists",col:7,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
- {k:"def",n:"Defences",col:7,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]}];
+ {k:"armour",n:"Armour",col:7,ids:["armour_local","defence_inc"],idol:["idol_armour_s"]},
+ {k:"evasion",n:"Evasion",col:7,ids:["evasion_local","defence_inc"],idol:["idol_evasion_s"]},
+ {k:"es",n:"Energy Shield",col:7,ids:["es_global","defence_inc"],idol:[]}]; /* Increased Defences counts for all three; a shared line is listed once. The Idol Energy Shield line has the same text as es_global, so it needs no extra id. */
 /* Style-bound element lines. A line tagged "spell" or "attack" only stays when that style is picked (or no style is picked). Everything else of a picked element stays. */
 const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",
  fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
 const EZ_ATK=["attack","melee","slam","bow"];
-const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["aoe","curse","move","life","mana","leech","res","def"]]];
+const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["aoe","curse","move","life","mana","leech","res","armour","evasion","es"]]];
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.filter(v=>v<=84).map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
@@ -3086,6 +3088,7 @@ function ezSane(o){
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
   if(o.arch&&o.arch.dot){s.arch.pois=s.arch.bleed=s.arch.ign=1;} /* ... and one Damage over time pick */
+  if(o.arch&&o.arch.def){s.arch.armour=s.arch.evasion=s.arch.es=1;} /* ... and one Defences pick */
   if(o.idol==="orbit")s.arch.orbit=1; /* older saves had "only orbiting" as an Idol mode */
   ["core","runes","tsw"].forEach(k=>{s.keep[k]=on(o.keep&&o.keep[k],d.keep[k]);});
   return s;
