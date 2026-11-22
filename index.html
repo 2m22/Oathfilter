@@ -3062,14 +3062,16 @@ const EZ_ARCH=[
  {k:"totem",n:"Totem / Ballista",col:6,ids:[],idol:["idol_ballista_speed_m","idol_ballista_life_m","idol_grand_ballista_plus","idol_grand_eng_totem"]},
  {k:"channel",n:"Channelling",col:2,ids:[],idol:["idol_channel_cost_m","idol_grand_channel_ramp"]},
  {k:"orbit",n:"Orbiting",col:4,ids:[],idol:["idol_orbit_damage_m","idol_grand_orbit_plus","idol_grand_eng_orbit"]},
- {k:"life",n:"Life",col:7,ids:["life_large","life_regen","life_leech","mana","mana_regen","mana_leech"],idol:["idol_grand_life_inc"]},
+ {k:"life",n:"Life",col:7,ids:["life_large"],idol:["idol_grand_life_inc"]},
+ {k:"mana",n:"Mana",col:2,ids:["mana","mana_regen"],idol:[]},
+ {k:"leech",n:"Leech & Regen",col:6,ids:["life_leech","mana_leech","es_leech","life_regen"],idol:[]},
  {k:"res",n:"Resists",col:0,ids:["fire_res","cold_res","lightning_res","poison_res","all_res"],idol:["idol_grand_max_res"]},
  {k:"def",n:"Defences",col:3,ids:["armour_local","evasion_local","es_global","defence_inc"],idol:["idol_armour_s","idol_evasion_s"]}];
 /* Style-bound element lines. A line tagged "spell" or "attack" only stays when that style is picked (or no style is picked). Everything else of a picked element stays. */
 const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",
  fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
 const EZ_ATK=["attack","melee","slam","bow"];
-const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["aoe","curse","move","life","res","def"]]];
+const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["aoe","curse","move","life","mana","leech","res","def"]]];
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.filter(v=>v<=84).map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
