@@ -325,8 +325,6 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .ezpair{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 @media (max-width:700px){.ezbrow .btn{margin-left:0;flex:1 1 100%}}
 /* Advanced polish */
-.grip{display:none;position:absolute;left:-1px;top:9px;color:var(--text-muted);opacity:.55;pointer-events:none}
-#rows.canmove .grip{display:inline-flex}#rows.canmove .rc:hover .grip{opacity:1;color:var(--accent-gold)}
 .actonly{min-height:40px;white-space:nowrap}.actonly[aria-pressed="true"]{background:var(--accent-gold-soft);border-color:var(--accent-gold);color:var(--accent-gold);font-weight:700}
 .rsum{margin:8px 0 0;padding:8px 12px;border-left:3px solid var(--accent-gold);background:var(--bg-subtle);border-radius:0 8px 8px 0;font-size:.9rem;color:var(--text-main);overflow-wrap:anywhere}
 .mbadge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--accent-gold);color:#15110a;font-size:.75rem;font-weight:800}
@@ -365,4 +363,4 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 #rows .sort-fallback,.rc.sort-fallback{z-index:30;box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 1px var(--accent-gold);border-color:var(--accent-gold);background:var(--bg-card-hover);opacity:.97!important;cursor:grabbing}
 
 /* Lucide icons */
-.xb .li{width:12px;height:12px}.grip .li{width:14px;height:16px}.chosen button .li{width:13px;height:13px}
+.xb .li{width:12px;height:12px}.chosen button .li{width:13px;height:13px}
