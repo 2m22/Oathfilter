@@ -1,40 +1,68 @@
 # Oathfilter
 
-Loot filter builder and drop simulator for **Broken Oath**. Uses the real BOFILTER 1 format: import, edit, test and export in one HTML file.
+A single-page loot filter builder and drop simulator for **Broken Oath**. Import, edit, test, and export filters using the native `BOFILTER 1` format directly in your browser.
 
-Unofficial fan tool, not affiliated with Crater Studios.
+* **Live:** https://2m22.github.io/Oathfilter/
+* **Changelog:** [`CHANGELOG.md`](CHANGELOG.md) *(newest first)*
+* **Note:** Unofficial fan tool, not affiliated with Crater Studios.
 
-**Live: https://2m22.github.io/Oathfilter/**
+---
 
-**Changelog: [CHANGELOG.md](CHANGELOG.md)** (what changed, newest first)
+## Features & Usage
 
-## Use
+Open `index.html` in any modern browser — no build step, no installation required.
 
-Open `index.html` in a browser. No build, no install.
+* **Editor:** Create and organize rule cards with action, rarity, item type, level, line, quality, count, colour, and sound. Search and filter across your rule list.
+* **Easy / Advanced Mode:** Toggle **Easy Mode** at the top to generate a complete filter from a Rupture Level floor and a few clicks, or switch to **Advanced** for full rule-level control.
+* **Drop Test:** Simulate random drops against your active filter to see which rule matches each item, or check a drop screenshot directly against your rules.
+* **Import, Copy & Share:** Paste a `BOFILTER:1,...` code, load a saved/shared filter, or copy and share your setup from the top editor bar.
+* **Game Presets:** Load the five built-in game filters (*All loot*, *Tidy*, *Strict*, *Very strict*, *End Game*) from the preset menu above the rule list.
 
-- **Editor**: rule cards with action, rarity, item type, level, line, quality, count, colour and sound. Search and filter the rule list. The **Easy | Advanced** switch at the top turns on Easy Mode, which builds a whole filter from a Rupture Level floor and a few clicks.
-- **Drop Test**: roll random drops against your filter and see which rule catches each item. You can also check a drop screenshot against your filter.
-- **Import**: paste a `BOFILTER:1,...` code, or load a saved or shared filter. Copy and Share are in the bar at the top of the Editor.
-- Game presets: the menu above the rule list loads the five in-game filters (All loot, Tidy, Strict, Very strict, End Game).
+---
 
-## Format
+## `BOFILTER 1` Format Reference
 
-`BOFILTER:1,<preset>` followed by rules `|on,type,rarity,level,line,action,colour,quality,count,sound` (10 integers per rule). The first matching rule wins; items that match no rule are shown. Oathfilter allows up to 200 rules (the game's limit is 200 since Patch 87; it was 40 before). The options of the game's MORE window follow the ten numbers as `,3:key=value;key=value` (`3` is the filter version): `t` tier, `n` lines, `s` sockets, `i` item level `from-to`, `q` required level `from-to`, `g` grade, `gx` top grade, `r` red (1 reds only, 2 chase reds), `u` unsworn (1 not, 2 only), `rt` runes up to tier, `b` base, `a` named line, `rn` named red (several entries joined with `+`; up to 6 lines, 12 bases, 12 reds). Patch 87 added: `k` count only prefix (1) or suffix (2) lines for `t`/`n`, `d` defence type (1 Armour, 2 Evasion, 3 Energy shield, 4 Ar+Ev, 5 Ar+ES, 6 Ev+ES), `na` not these lines (up to 6), `nb=1` / `nr=1` turn the base / red list into "none of these", `an=N` any N of the named lines (`all=1` = all of them); `nb` and `nr` do not work together with `all` or `an`. Item types 33 (Dwarven Runes) and 34 (Quivers) are new. The keys were read from filter codes exported in the game. Fields this page does not know are kept unchanged.
+Filters start with `BOFILTER:1,<preset>` followed by pipe-separated rules (`|`). Rules are evaluated top-to-bottom: **the first matching rule wins**, and items matching no rule remain visible.
 
-## Release (merging `test` into `main`)
+* **Rule Limit:** Up to **200 rules** per filter *(increased from 40 in Patch 87)*.
+* **Base Rule Structure:** `|on,type,rarity,level,line,action,colour,quality,count,sound` *(10 integers)*.
+* **Extended Options (`MORE` window):** Appended as `,3:key=value;key=value` *(where `3` is the filter version)*. Unrecognized fields are preserved unchanged on export.
 
-The Pages workflow (`.github/workflows/pages.yml`) builds `main` to `/` and `test` to `/test/`. It writes `version.json` and the build id into `index.html` of each site; the page uses them for the "new version" banner. When merging `test` into `main`, make sure `.github/workflows/pages.yml` is part of the merge (check `git diff main test -- .github/workflows/pages.yml` is empty afterwards). The workflow fails the build if a page has the update check but no build id or `version.json`. The "new version" banner also shows a compact "What's new" list. It reads `CHANGELOG.md` (published next to the page) and shows the first sentence of each top-level entry, so start every changelog entry with a short headline sentence. Every merge adds a **new** `## <date>` section on top (for a second merge on the same day use `## <date> (2)`): the build writes the newest heading into the page as its release, and the banner (and, after a reload, a one-time "Oathfilter was updated" box for people who dismissed the banner) lists only the sections above the release the visitor had.
+| Key | Description | Notes / Limits |
+| :--- | :--- | :--- |
+| `t` | Tier | |
+| `n` | Number of lines | |
+| `s` | Sockets | |
+| `i` | Item level range (`from-to`) | |
+| `q` | Required level range (`from-to`) | |
+| `g` / `gx` | Grade / Top grade | |
+| `r` | Red items | `1` = reds only, `2` = chase reds |
+| `u` | Unsworn | `1` = not unsworn, `2` = unsworn only |
+| `rt` | Runes up to tier | |
+| `b` | Base item(s) | Joined with `+` *(max 12)* |
+| `a` | Named line(s) | Joined with `+` *(max 6)* |
+| `rn` | Named red(s) | Joined with `+` *(max 12)* |
+| `k` | Prefix / Suffix line count *(Patch 87)* | `1` = prefix only, `2` = suffix only (for `t`/`n`) |
+| `d` | Defence type *(Patch 87)* | `1` Armour, `2` Evasion, `3` Energy Shield, `4` Ar+Ev, `5` Ar+ES, `6` Ev+ES |
+| `na` | Not these lines *(Patch 87)* | Joined with `+` *(max 6)* |
+| `nb=1` / `nr=1` | Invert base / red list *(Patch 87)* | Turns `b` / `rn` into *"none of these"* |
+| `an=N` / `all=1` | Named line match mode *(Patch 87)* | `an=N` = any `N` lines, `all=1` = all of them *(incompatible with `nb`/`nr`)* |
 
-## License
+* **New Item Types (Patch 87):** `33` (Dwarven Runes), `34` (Quivers).
 
-The code is under the GPL-3.0 (see `LICENSE`). Broken Oath names, item data and game content belong to Crater Studios and are not covered by it.
+---
 
-## Credits
+## Release Workflow (`test` → `main`)
 
-- Drop simulator idea: Lilshrimper
-- Community filter builder: its author, for the sound list and format reference
+GitHub Pages (`.github/workflows/pages.yml`) deploys `main` to `/` and `test` to `/test/`, injecting `version.json` and the build ID into `index.html` for the in-app update banner.
 
+1. **Changelog Format:** Add a new top heading `## <date>` *(or `## <date> (2)` for multiple merges on the same day)* at the top of `CHANGELOG.md`. Start every entry with a concise headline sentence, as the *"What's new"* banner displays the first sentence of each top-level item.
+2. **Merge Check:** Ensure `.github/workflows/pages.yml` is included when merging `test` into `main` (`git diff main test -- .github/workflows/pages.yml` should be empty afterwards). Builds fail if the update check is present without `version.json` or a build ID.
 
-## License
+---
 
-GPL-3.0, see `LICENSE`.
+## Credits & License
+
+* **Drop Simulator Idea:** Lilshrimper
+* **Sound List & Format Reference:** Community filter builder author
+* **License:** Code is licensed under **GPL-3.0** (see [`LICENSE`](LICENSE)). *Broken Oath* names, item data, and game content belong to Crater Studios and are not covered by GPL-3.0.
