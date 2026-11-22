@@ -2,6 +2,14 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-22 (2)
+
+### Changed
+- Easy Mode: Rupture Level now stops at 84. Item level 84 is the highest tier level for affixes, so 90 never gave anything new. A saved 90 is loaded as 84.
+
+### Fixed
+- Easy Mode tier limits were too loose in some rules, so a rule could show "T2 or better" where "Best tier only" should give T1. Two causes: a line without known tier data (for example fire_pen95_2h) took the whole rule's tier limit away, and Idol lines with the same text loosened the limit for gear. Such lines now get their own rule, and Idol lines no longer count for gear.
+
 ## 2026-11-22 (1)
 
 ### Added
