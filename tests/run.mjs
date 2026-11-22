@@ -120,9 +120,9 @@ eq(defOf(["Chest","Armour","EnergyShield"]),5,"defence type Armour + ES");eq(def
   eq(encode(decode(base+"1,17,0,0,0,4,0,0,0,255").filter),base+"1,17,0,0,0,4,0,0,0,255","Gems + Sell with any rarity round trips (game export, 22.11.2026)");
   eq(encode(decode(base+"1,17,4,0,0,4,0,0,0,255").filter),base+"1,17,4,0,0,4,0,0,0,255","game export of a Gems Sell rule (22.11.2026, rarity field was 4 = Rare) round trips");
 }
-/* ---- Vow effect: group in the HAS A LINE names (exe order after Cooldown recovery); the number 27 is inferred, not seen in an export ---- */
+/* ---- Vow effect: HAS A LINE group 27, confirmed in game by importing 1,0,1,0,27,0,0,0,0,255 ---- */
 {
-  eq(T.line.find(o=>o[0]===27)[1],"Vow effect","line group 27 is Vow effect");eq(LINEMAP.VowEffect98.join(),"27","the Vow effect affix group maps to line group 27");
+  eq(T.line.find(o=>o[0]===27)[1],"Vow effect","line group 27 is Vow effect (confirmed in game, 22.11.2026)");eq(LINEMAP.VowEffect98.join(),"27","the Vow effect affix group maps to line group 27");
   const am={id:"a",name:"t",kind:"amulet",sub:"",rar:"R",lvl:80,def:0,baseId:"jade_amulet",redId:"",sock:0,grade:1,req:60,mods:[{lineLabel:LINEN.vow_effect98,pre:2,tier:1,lines:[27],group:"VowEffect98"}]};
   ok(matches(decode("BOFILTER:1,-1|1,0,4,0,27,3,0,0,0,255").filter.rules[0],am),"HAS A LINE Vow effect matches an amulet with the line");
   ok(matches(decode("BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:a=vow_effect98").filter.rules[0],am),"named line vow_effect98 matches it too");
@@ -171,5 +171,6 @@ eq(DATA_BUILD.build,87,"data build is 87");eq(DATA_BUILD.apiChecked,85,"public A
   ok(!matches(R("a=vow_effect98+Area;all=1"),am),"all of Vow effect + Area: Area alone is not enough");
 }
 
+eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255","Vow effect line group round trips");
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
