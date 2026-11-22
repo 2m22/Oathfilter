@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
+import {REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -320,6 +320,14 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(g.some(r=>mval(r,"a").includes("cold_pen95_2h")&&mval(r,"t")==="4"),"the penetration line sits in the rule with limit T4");
   const h=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!mval(r,"t"));
   eq(h.length,0,"no rule is left without a limit when every line is covered by T4"); }
+
+/* ---- picker: no double entries, and the list is not capped below the game limit ---- */
+{ const ids=DATA.lines.map(x=>x[1]);eq(new Set(ids).size,ids.length,"every named line is listed once");
+  const labs=Object.keys(REDN).map(i=>REDD[i]);eq(new Set(labs).size,labs.length,"every red has its own label (Primal copies and the Signets are told apart)");
+  eq(REDD.kingbreaker_primal,"Kingbreaker (Primal)","a Primal red is labelled");ok(/Signet of the Lost Order \(/.test(REDD.signet_of_the_lost_order_chain_reaction),"a Signet variant is labelled");
+  const app=(await import("node:fs")).readFileSync(new URL("../js/app.js",import.meta.url),"utf8"),fn=app.slice(app.indexOf("function renderPickList"),app.indexOf("function renderPickList")+400);
+  ok(fn.includes("full=ids.length>=MAXL[k]")&&!/full=ids\.length>=\d/.test(fn),"the picker closes at the game limit (6 / 12), not at a fixed 4");
+  let pen=0;for(let i=0;i<4000;i++){const it=genItem({kind:"amulet",ilvl:84});if(it&&it.mods&&it.mods.some(m=>/_pen95_/.test(m.id||m.group||"")))pen++;}eq(pen,0,"pen95 lines do not drop in the test (game switch)"); }
 
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);

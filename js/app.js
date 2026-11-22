@@ -248,10 +248,10 @@ function pickHTML(r,k){
 }
 function renderPickList(k){
   const r=curRule(),box=$("#pl-"+k);if(!r||!box)return;
-  const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=4;
+  const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=MAXL[k];
   const lineSel=new Set(ids.map(i=>P.name[i]));
   const words=q.split(/\s+/).filter(Boolean);
-  const shw=x=>(k==="a"||k==="na")?dl(x[1]):k==="b"?(LX.bases[x[0]]||x[1]):(LX.reds[x[0]]||x[1]);
+  const shw=x=>(k==="a"||k==="na")?dl(x[1]):k==="b"?(LX.bases[x[0]]||x[1]):REDD[x[0]];
   const hayOf=x=>((k==="a"||k==="na")?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase())+(LANG==="en"?"":" "+shw(x).toLowerCase());
   const res=P.list().filter(x=>{if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
   const tag=x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);

@@ -10,7 +10,7 @@ const COND_LINE=new Set(["fire_pen95_2h","fire_pen95_1h","cold_pen95_2h","cold_p
   [["fire","Fire"],["cold","Cold"],["lightning","Lightning"]].forEach(([k,n])=>{const t="Penetrates #% "+n+" Resistance";
     DATA.lid[k+"_pen95_2h"]=t;DATA.lid[k+"_pen95_1h"]=t;DATA.lines.push([t,k+"_pen95_2h"]);});
   DATA.lid.elemental_pen95_amulet="Damage Penetrates #% Elemental Resistances";
-  DATA.lid.vow_effect98="#% increased effect of your Vows";DATA.lines.push([DATA.lid.vow_effect98,"vow_effect98"]);
+  DATA.lid.vow_effect98="#% increased effect of your Vows";if(!DATA.lines.some(x=>x[1]==="vow_effect98"))DATA.lines.push([DATA.lid.vow_effect98,"vow_effect98"]); /* the line is also in the DATA text above: add it only once, or the picker lists it twice */
 })();
 /* game texts carry template syntax: "#" is a number, "#|plural(one=a,other=b)" picks a word by that number. Show them as plain, readable text. */
 function cleanLineText(t){
@@ -34,7 +34,10 @@ const LANGS=[["en","English"],["bg","Български"],["cs","Čeština"],["d
 const LX={ui:{},ui2:{},raw:{},lines:{},bases:{},reds:{}};let DC_REV=null;let LANG="en";
 const dl=t=>LX.lines[t]||t;
 const BASED=new Proxy(BASEN,{get:(o,k)=>typeof k==="string"?(LX.bases[k]||o[k]):o[k]});
-const REDD=new Proxy(REDN,{get:(o,k)=>typeof k==="string"?(LX.reds[k]||o[k]):o[k]});
+/* Reds that share a name (a Primal copy, the six Signets of the Lost Order) get a label that tells them apart; the id and the name in the data stay as they are */
+const REDLAB={};Object.entries(RED_IDS).forEach(([n,ids])=>{if(ids.length<2)return;const norm=ids.filter(i=>!/_primal$/.test(i)),slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");
+  ids.forEach(i=>{if(/_primal$/.test(i))REDLAB[i]=n+" (Primal)";else if(norm.length>1){const rest=i.startsWith(slug+"_")?i.slice(slug.length+1):i;REDLAB[i]=n+" ("+rest.split("_").map(w=>w[0].toUpperCase()+w.slice(1)).join(" ")+")";}});});
+const REDD=new Proxy(REDN,{get:(o,k)=>typeof k==="string"?(LX.reds[k]||REDLAB[k]||o[k]):o[k]});
 const LINED=new Proxy(LINEN,{get:(o,k)=>typeof k==="string"&&o[k]!==undefined?dl(o[k]):o[k]});
 /* item name on the ground: unique/base part in the chosen language, a rare's random prefix stays English */
 function dItemName(it){
@@ -884,7 +887,7 @@ function tierPick(a,lvl,mode){
 /* tp: {top:n lines forced to tiers[T1 or T1-T2], rest:mode for every other line} */
 function rollMods(tags,lvl,want,maxEach,tp){
   tp=tp||{};
-  const pool=AFF.filter(a=>a.tags.some(t=>tags.includes(t))&&!a.ex.some(t=>tags.includes(t))&&a.lo<=lvl);
+  const pool=AFF.filter(a=>!/_pen95_/.test(a.id)&&a.tags.some(t=>tags.includes(t))&&!a.ex.some(t=>tags.includes(t))&&a.lo<=lvl); /* pen95 lines are loaded only while a game switch is on (bPen95): Easy Mode knows their tiers, but they do not drop in the test */
   const mods=[],used=new Set();let p=0,s=0;
   const add=(a,mode)=>{
     used.add(a.group);a.type==="P"?p++:s++;
@@ -1127,4 +1130,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,NAME_MAX};
+export {REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,NAME_MAX};
