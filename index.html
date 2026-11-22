@@ -3070,7 +3070,7 @@ const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys
  fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
 const EZ_ATK=["attack","melee","slam","bow"];
 const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["aoe","curse","move","life","res","def"]]];
-const EZ_RL=[["0","Any"]].concat(LVSTEPS.map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
+const EZ_RL=[["0","Any"]].concat(LVSTEPS.filter(v=>v<=84).map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
@@ -3080,7 +3080,7 @@ function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
-  const s={rl:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
+  const s={rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
     idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
@@ -3105,12 +3105,13 @@ function ezEff(a,s){
 const ezGearIds=(a,s)=>ezLines(ezEff(a,s));
 const ezIdolIds=(a,s)=>ezLines(ezEff(a,s).concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
 /* tier limit t for one gear line at Rupture Level rl: for each affix with this text, the best tier whose item level is <= rl, plus (keep-1) tiers; the loosest affix decides. 0 = no limit. */
-function ezTP(ids){const parts=[];for(let i=0;i<ids.length;i+=4){const c=ids.slice(i,i+4),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}return parts;}
+function ezTP(ids){const parts=[];[ids.filter(x=>x.t!==99),ids.filter(x=>x.t===99)].forEach(g=>{for(let i=0;i<g.length;i+=4){const c=g.slice(i,i+4),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}});return parts;} /* lines without a known tier limit get their own rules, so they never lift the limit of the other lines */
 function ezThr(id,rl,keep){
   if(!rl)return 0;const t=LINEN[id];let thr=0,top=0;
   AFF.forEach(a=>{if(a.id.indexOf("Idol")===0||LINEN[a.id]!==t)return;top=Math.max(top,a.n);
     let kb=0;for(let k=1;k<=a.n;k++)if(tierLvl(a,k)<=rl){kb=k;break;}
     if(kb)thr=Math.max(thr,kb+keep-1);});
+  if(thr&&top===1)return 1; /* a one-tier line is always T1, so it must not lift the limit of the rule it sits in */
   return thr&&thr<Math.min(top,EZ_TMAX)?thr:0;
 }
 const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=4)p.push(ids.slice(i,i+4));return p;};
