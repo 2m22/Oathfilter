@@ -139,7 +139,7 @@ eq(defOf(["Chest","Armour","EnergyShield"]),5,"defence type Armour + ES");eq(def
 }
 /* ---- key order: only pairs seen in game exports are fixed; the rest stays free and import keeps any order ---- */
 {
-  const SEEN=[["b","a"],["a","all"],["a","an"],["an","na"],["na","t"],["a","nb"],["nr","rn"],["t","k"],["k","n"],["n","d"],["t","n"],["n","i"],["b","s"],["s","rt"]];
+  const SEEN=[["b","a"],["a","all"],["a","an"],["an","na"],["na","t"],["a","nb"],["nr","rn"],["an","rn"],["t","k"],["k","n"],["n","s"],["s","d"],["d","i"],["i","q"],["q","g"],["g","gx"],["gx","r"],["r","rn"],["rn","u"],["b","s"],["s","rt"],["n","d"],["t","n"],["n","i"]];
   const keys=[...new Set(SEEN.flat())];
   [keys,keys.slice().reverse(),keys.slice().sort()].forEach((order,j)=>{
     const r=newRule();order.forEach(k=>mset(r,k,"1"));const at=k=>r.m.findIndex(x=>x[0]===k);
@@ -182,5 +182,7 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
 }
 
 {const c="BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:b=Bow_1;s=2;rt=2";eq(encode(decode(c).filter),c,"game export b;s;rt round trips (22.11.2026)");}
+{const c="BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:b=Bow_1;a=Life+Mana;t=1;k=1;n=2;s=4;d=4;i=60-75;q=0-75;g=50;gx=90;r=1;rn=windwhisper;u=1";eq(encode(decode(c).filter),c,"game export with 14 keys round trips (22.11.2026)");
+  const r=newRule();c.split(",3:")[1].split(";").reverse().forEach(x=>{const[k,v]=x.split("=");mset(r,k,v);});eq(r.m.map(x=>x[0]).join(","),"b,a,t,k,n,s,d,i,q,g,gx,r,rn,u","Oathfilter writes these 14 keys in the game order");}
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
