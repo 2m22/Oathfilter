@@ -172,5 +172,14 @@ eq(DATA_BUILD.build,87,"data build is 87");eq(DATA_BUILD.apiChecked,85,"public A
 }
 
 eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255","Vow effect line group round trips");
+/* game export (22.11.2026): three named reds + an=2 is kept as written, an before rn, and the game shows "one of them" */
+{
+  const c="BOFILTER:1,-1|1,0,1,0,0,1,0,0,0,255,3:an=2;rn=windwhisper+adders_kiss+aegis_of_the_oath";
+  eq(encode(decode(c).filter),c,"game export with an before rn round trips");
+  const ur=(id)=>({id:"u",name:"t",kind:"ring",sub:"",rar:"U",lvl:60,def:0,baseId:"x",redId:id,sock:0,grade:1,req:50,mods:[]});
+  const r=decode(c.replace(",1,0,0,1,",",5,0,0,1,")).filter.rules[0];
+  ok(matches(r,ur("adders_kiss"))&&!matches(r,ur("oathbreaker")),"an does not change a red list: one of the named reds is enough");
+}
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
