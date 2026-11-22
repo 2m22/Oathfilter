@@ -3052,6 +3052,7 @@ const EZ_ARCH=[
  {k:"bleed",n:"Bleed",el:1,col:5,ids:["bleed_chance","bleed_effect","dot_multi"],idol:[]},
  {k:"ign",n:"Ignite",el:1,col:0,ids:["ignite_chance","ignite_effect","dot_multi"],idol:[]},
  {k:"curse",n:"Curse / Vow",col:6,ids:["curse_effect","curse_limit","vow_effect98"],idol:[]},
+ {k:"aoe",n:"AoE",col:4,ids:["area"],idol:[]},
  {k:"move",n:"Move Speed",col:4,ids:["move_speed"],idol:["idol_movement_damage_m"]},
  {k:"melee",n:"Melee",col:6,ids:[],idol:["idol_melee_s","idol_grand_melee_afterimage","idol_grand_eng_afterimage"]},
  {k:"slam",n:"Slam",col:6,ids:[],idol:["idol_slam_damage_m","idol_grand_slam_spike"]},
@@ -3068,7 +3069,7 @@ const EZ_ARCH=[
 const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",
  fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
 const EZ_ATK=["attack","melee","slam","bow"];
-const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["curse","move","life","res","def"]]];
+const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["aoe","curse","move","life","res","def"]]];
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
