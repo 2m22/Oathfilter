@@ -34,18 +34,6 @@ The code is under the GPL-3.0 (see `LICENSE`). Broken Oath names, item data and 
 - Drop simulator idea: Lilshrimper
 - Community filter builder: its author, for the sound list and format reference
 
-## License
-
-The code is under the GPL-3.0 (see `LICENSE`). Broken Oath names, item data and game content belong to Crater Studios and are not covered by it.
-
-## Credits
-
-- Drop simulator idea: Lilshrimper
-- Community filter builder: its author, for the sound list and format reference
-
-## Privacy
-
-Everything runs in your browser. No filter data is sent anywhere, and there are no cookies or analytics. The current filter is kept in your browser's local storage. The fonts (Cinzel and Barlow, SIL Open Font License) are built into the page, so nothing is loaded from Google. The page is hosted on GitHub Pages.
 
 ## License
 
