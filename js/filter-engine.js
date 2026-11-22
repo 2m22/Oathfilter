@@ -49,8 +49,8 @@ const PRIMAL_IDS=new Set(["the_oath_unbroken", "signet_of_the_lost_order_chain_r
 const redIdOf=n=>{const base=n.replace(/ \(Primal\)$/,""),pr=base!==n,l=RED_IDS[base]||[];return l.find(i=>PRIMAL_IDS.has(i)===pr)||l[0]||"";};
 /* BOFILTER format: Broken Oath developer file loot_filter.md (build 73) and the community Broken Oath Builder. */
 const MAX_RULES=200;
-/* Easy Mode keeps its own, smaller target: past this many rules the picks share rules (see easyGen). Kept at the old limit so Easy Mode output does not change. */
-const EASY_PACK_LIMIT=40;
+/* Past this many rules the Easy Mode picks share rules and one colour (see easyGen). Same as the game's limit of 200 rules since Patch 87, so only a huge pick list is packed. */
+const EASY_PACK_LIMIT=MAX_RULES;
 /* Shared copy: one wording for messages that appear in several places */
 const COPY={
  sell:"Sell is known from the game files for gems: a gem under a Gems Sell rule is sold when it lands. For other items the exact behaviour is not confirmed. The Drop Test treats Sell like Hide and counts it as Sell.",
