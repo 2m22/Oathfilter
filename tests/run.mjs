@@ -139,7 +139,7 @@ eq(defOf(["Chest","Armour","EnergyShield"]),5,"defence type Armour + ES");eq(def
 }
 /* ---- key order: only pairs seen in game exports are fixed; the rest stays free and import keeps any order ---- */
 {
-  const SEEN=[["b","a"],["a","all"],["a","an"],["an","na"],["na","t"],["a","nb"],["nr","rn"],["t","k"],["k","n"],["n","d"],["t","n"],["n","i"]];
+  const SEEN=[["b","a"],["a","all"],["a","an"],["an","na"],["na","t"],["a","nb"],["nr","rn"],["t","k"],["k","n"],["n","d"],["t","n"],["n","i"],["b","s"],["s","rt"]];
   const keys=[...new Set(SEEN.flat())];
   [keys,keys.slice().reverse(),keys.slice().sort()].forEach((order,j)=>{
     const r=newRule();order.forEach(k=>mset(r,k,"1"));const at=k=>r.m.findIndex(x=>x[0]===k);
@@ -181,5 +181,6 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(matches(r,ur("adders_kiss"))&&!matches(r,ur("oathbreaker")),"an does not change a red list: one of the named reds is enough");
 }
 
+{const c="BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:b=Bow_1;s=2;rt=2";eq(encode(decode(c).filter),c,"game export b;s;rt round trips (22.11.2026)");}
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
