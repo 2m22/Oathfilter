@@ -1,6 +1,6 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
-import {MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN} from "../js/filter-engine.js";
+import {MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -93,6 +93,16 @@ eq(defOf(["Chest","Armour","EnergyShield"]),5,"defence type Armour + ES");eq(def
   ok(!matches(R("1,0,5,0,0,3,0,0,0,255,3:nr=1;rn=windwhisper"),mk({rar:"U",redId:"windwhisper"})),"nr: a red that is in the list");
   ok(matches(R("1,34,0,0,0,1,0,0,0,255"),mk({kind:"quiver",rar:"R"}))&&matches(R("1,9,0,0,0,1,0,0,0,255"),mk({kind:"quiver",rar:"R"})),"types 34 and 9 catch quivers");
   ok(!matches(R("1,0,0,0,0,1,0,0,0,255"),mk({kind:"rune",rar:"U"}))&&matches(R("1,33,0,0,0,1,0,0,0,255"),mk({kind:"rune",rar:"U"})),"Dwarven Runes only match type 33");
+}
+
+/* the game rewrites ids with a capital (seen in an export, 22.11.2026): they must still match and round trip */
+{
+  const G="BOFILTER:1,-1|1,0,4,0,0,3,1,0,0,255,3:a=Life+fire_res+cast_speed+evasion_local;an=2;na=Mana;t=1;k=1;n=1;d=4|1,1,4,0,0,3,5,0,0,255,3:b=Bow_1+Bow_2;a=attack_speed_local;nb=1|1,0,5,0,0,3,2,0,0,255,3:nr=1;rn=windwhisper|1,0,4,0,0,0,0,0,0,255";
+  eq(encode(decode(G).filter),G,"game-written export round trips (key order kept)");
+  const rr=decode(G).filter.rules;
+  ok(LINEN[mlistT(rr[0],"a")[0]]===LINEN.life,"capitalised line id finds the line");
+  const bow=(id)=>({id:"x",name:"t",kind:"weapon",sub:"bow",rar:"R",lvl:80,def:0,baseId:id,redId:"",sock:0,grade:1,req:60,mods:[{lineLabel:LINEN.attack_speed_local,pre:2,tier:1,lines:[],group:"g"}]});
+  ok(!matches(rr[1],bow("bow_1"))&&matches(rr[1],bow("bow_3")),"Bow_1 in a none-of-these list excludes bow_1");
 }
 
 console.log(passed+" passed, "+failed+" failed");

@@ -85,8 +85,8 @@ const colOf=v=>(COLOURS.find(c=>c[0]===v)||COLOURS.find(c=>c[0]===0));
 const uid=()=>Math.random().toString(36).slice(2,9);
 const newRule=o=>Object.assign({extra:[],m:[]},NEW_RULE,o||{});
 /* MORE options: the part after the ten fields, written as ,3:key=value;key=value (3 = filter version 3). Several entries in one field are joined with + */
-/* order of the keys the game wrote in exports; where an=, na=, nb=, nr= sit relative to all= is a guess (readers use the key name) */
-const MORE_ORDER=["t","n","k","d","s","i","q","g","gx","r","u","rt","b","nb","a","an","na","nr","rn","all"];
+/* key order as the game writes it (export of 22.11.2026: b;a;an;na;nb / t;k;n;d / nr;rn, lists before t k n d). Where all, s, i, q, g, gx, r, u and rt sit is a guess; readers use the key name */
+const MORE_ORDER=["b","a","an","na","nb","nr","rn","all","t","k","n","d","s","i","q","g","gx","r","u","rt"];
 const MAXL={a:6,b:12,rn:12,na:6}; /* list limits shown in the game (Patch 87) */
 const parseMore=s=>s.split(";").filter(x=>x!=="").map(seg=>{const i=seg.indexOf("=");return i<0?[seg,null]:[seg.slice(0,i),seg.slice(i+1)];});
 const moreStr=r=>r.m&&r.m.length?",3:"+r.m.map(p=>p[1]===null?p[0]:p[0]+"="+p[1]).join(";"):"";
@@ -101,7 +101,8 @@ function mset(r,k,v){
 }
 const mrng=(r,k)=>{const m=mval(r,k).match(/^(\d+)-(\d+)$/);return m?[+m[1],+m[2]]:[0,0];};
 const msetRng=(r,k,lo,hi)=>mset(r,k,lo||hi?lo+"-"+hi:"");
-const mlist=(r,k)=>mval(r,k)?mval(r,k).split("+").filter(Boolean):[];
+/* the game writes some ids with a capital (Life, Mana, Area, Bow_1) even when they were entered in lower case; all ids in the data are lower case, so lists are read lower-cased (the stored code text stays as it was) */
+const mlist=(r,k)=>mval(r,k)?mval(r,k).split("+").filter(Boolean).map(x=>x.toLowerCase()):[];
 const msetList=(r,k,a)=>mset(r,k,a.join("+"));
 const hasRaw=r=>(r.m||[]).some(p=>p[1]===null||!MORE_ORDER.includes(p[0]));
 
