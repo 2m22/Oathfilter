@@ -339,6 +339,23 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .ezfoot .ezerr,.ezfoot .ezbanner{margin:0 0 10px}.ezfoot .sub{margin-top:10px}
 .ezpair{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 @media (max-width:700px){.ezbrow .btn{margin-left:0;flex:1 1 100%}}
+/* Advanced polish */
+.grip{display:none;position:absolute;left:-1px;top:9px;color:var(--text-muted);opacity:.55;pointer-events:none}
+#rows.canmove .grip{display:inline-flex}#rows.canmove .rc:hover .grip{opacity:1;color:var(--accent-gold)}
+.actonly{min-height:40px;white-space:nowrap}.actonly[aria-pressed="true"]{background:var(--accent-gold-soft);border-color:var(--accent-gold);color:var(--accent-gold);font-weight:700}
+.rsum{margin:8px 0 0;padding:8px 12px;border-left:3px solid var(--accent-gold);background:var(--bg-subtle);border-radius:0 8px 8px 0;font-size:.9rem;color:var(--text-main);overflow-wrap:anywhere}
+.mbadge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--accent-gold);color:#15110a;font-size:.75rem;font-weight:800}
+.lknote{margin:0 0 8px}#lookWrap.dim{opacity:.42;filter:saturate(.5)}
+.seg button[aria-pressed="true"],#editor .cb2[aria-pressed="true"]{background:linear-gradient(180deg,rgba(240,180,50,.26),rgba(240,180,50,.14));color:var(--accent-gold);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--accent-gold)}
+.seg button:not([aria-pressed="true"]):hover{background:var(--bg-card-hover)}
+.swc[aria-pressed="true"]{border-color:var(--bg-panel);box-shadow:0 0 0 3px var(--accent-gold);transform:scale(1.08)}
+.pkhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.pkhead .lab{margin:0 0 6px}
+.lnk{border:0;background:none;color:var(--accent-gold);font-size:.8rem;text-decoration:underline;cursor:pointer;padding:4px}
+.pk .chosen{margin-bottom:10px}.pk .chosen:empty{display:none}
+.plrow{gap:8px;margin-bottom:10px}.plrow .btn{display:inline-flex;align-items:center;gap:6px}
+.li{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pklist{border-color:transparent;background:var(--bg-card)}
+.mgrid+.grid2{margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
 #rtip{max-height:calc(100vh - 16px);overflow:hidden}
 @media (max-width:560px){.ezbar{gap:10px}.ezbar .seg{flex:1 1 100%}.ezbar .ezact{margin-left:0;width:100%}.ezbar .ezact .btn{flex:1 1 130px}.eztk span:nth-child(even){display:none}}
 .updlog{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.8125rem;color:var(--text-main)}
@@ -407,7 +424,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
     <div class="sub"><label class="lab" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div>
     <div class="sub" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
-    <details class="sub ezdet" id="mdBox" open><summary style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.8rem;color:var(--text)">Modules</summary>
+    <details class="sub ezdet" id="mdBox"><summary style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.8rem;color:var(--text)">Modules</summary>
       <div class="hrow" style="margin:8px 0"><p class="hint" style="margin:0">Save rules as a reusable module and insert them into any filter.</p><button type="button" class="hlp" data-help="modules" aria-label="Help: Modules" aria-expanded="false">?</button></div>
       <label class="lab" for="mdName">Name for the new module</label>
       <input id="mdName" class="field" type="text" maxlength="40" placeholder="e.g. Hide junk" autocomplete="off">
@@ -415,7 +432,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
       <p class="hint" id="mdMsg" role="status" aria-live="polite" style="margin:8px 0"></p>
       <label class="lab" for="mdPos">Insert at</label><div class="selwrap"><select id="mdPos"><option value="after">After selected rule</option><option value="top">Top</option><option value="end">End</option></select></div>
       <ul class="lfl" id="mdList" style="margin-top:10px"></ul></details>
-    <div class="seg" role="group" aria-label="Show rules" id="rfilter" style="margin-top:12px"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button><button type="button" data-rf="sell" aria-pressed="false">Sell</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:12px"><div class="seg" role="group" aria-label="Show rules" id="rfilter" style="flex:1 1 auto;margin:0"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button><button type="button" data-rf="sell" aria-pressed="false">Sell</button></div><button type="button" class="btn actonly" id="rfAct" data-rfact="1" aria-pressed="false" title="Show only rules that are switched on">Active only</button></div>
     <div class="sub" style="margin-top:12px"><button type="button" class="btn" id="chkOrder" style="width:100%">Check rule order</button><div id="chkOut" role="status" aria-live="polite"></div></div>
     <p class="hint" id="rhint" style="margin:12px 0 0"></p>
     <div id="rows"></div>
@@ -1540,7 +1557,7 @@ const SPK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="c
 const WAVE='<path d="M16.5 8.5a5 5 0 0 1 0 7"/>';
 
 /* ---- view ---- */
-const V={filter:"all",q:"",view:"edit"};
+const V={filter:"all",q:"",view:"edit",act:false};
 function setView(v){V.view=v;$$(".panel").forEach(p=>p.hidden=p.id!=="p-"+v);$$("#nav button").forEach(b=>{const on=b.dataset.view===v;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1;});
   if(v==="test"){renderDrops();}if(v==="io"){renderOut();}if(v==="edit"&&EZ.m==="easy"){ezRefresh();}}
 /* does an earlier active rule catch at least everything this rule catches? (same reading as the drop test) */
@@ -1603,25 +1620,26 @@ function labelHTML(r){
 }
 const SPKI=on=>SPK.replace("WAVE",on?WAVE:"");
 function visibleRules(){const q=V.q.trim().toLowerCase();return F.rules.map((r,i)=>[r,i]).filter(([r])=>{
+  if(V.act&&!r.on)return false;
   if(V.filter==="hide"&&r.action!==0)return false;if(V.filter==="show"&&r.action!==1)return false;if(V.filter==="mark"&&!isHl(r.action))return false;if(V.filter==="sell"&&r.action!==4)return false;
   if(q&&!(summary(r)+" "+actWord(r.action)+" "+(r.name||"")).toLowerCase().includes(q))return false;return true;});}
 function renderRows(){const rw=$("#rows"),rst=rw?rw.scrollTop:0;renderRowsRaw();if(rw)rw.scrollTop=rst;}
 function renderRowsRaw(){
   if(window.hideRuleTip)window.hideRuleTip();
   {const o=$("#chkOut");if(o)o.innerHTML="";}
-  const list=visibleRules(),free=V.filter==="all"&&!V.q.trim();$("#rows").classList.toggle("canmove",free&&F.rules.length>1);
+  const list=visibleRules(),free=V.filter==="all"&&!V.q.trim()&&!V.act;$("#rows").classList.toggle("canmove",free&&F.rules.length>1);
   $("#rows").innerHTML=list.length?list.map(([r,i])=>{
     const sh=shadowOf(i),AC=["hide","show","highlight","beam","sell"][r.action]||"show",hex=colOf(r.colour)[2];
     return `<div class="rc ${r.id===S.cur?"sel":""} ${r.on?"":"off"}" data-rid="${r.id}">
      <button type="button" class="pickb" data-pick="${r.id}" aria-pressed="${r.id===S.cur}" aria-label="Edit rule ${i+1}${(r.name||"").trim()?" ("+esc(r.name.trim())+")":""}: ${esc(summary(r))}">
-      <span class="nb">${i+1}</span><span class="conds">${(r.name||"").trim()?`<span class="rname">${esc(r.name.trim())}</span>`:""}<span class="bd">${badges(r)}</span>${sh>=0?(()=>{const e=F.rules[sh],same=e.action===r.action&&(!isHl(r.action)||e.colour===r.colour);return `<span class="shadow ${same?"":"conf"}" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. ${same?"Both do the same, so this rule is redundant.":"The two rules do different things, so this one is probably not working as you intend."} Check the order.">${same?"Redundant: rule "+(sh+1)+" does the same":"Overridden by rule "+(sh+1)+" (different action)"}</span>`;})():""}</span></button>
+      <span class="grip" aria-hidden="true"><svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor"><circle cx="3.500" cy="3" r="1.500"/><circle cx="8.500" cy="3" r="1.500"/><circle cx="3.500" cy="8" r="1.500"/><circle cx="8.500" cy="8" r="1.500"/><circle cx="3.500" cy="13" r="1.500"/><circle cx="8.500" cy="13" r="1.500"/></svg></span><span class="nb">${i+1}</span><span class="conds">${(r.name||"").trim()?`<span class="rname">${esc(r.name.trim())}</span>`:""}<span class="bd">${badges(r)}</span>${sh>=0?(()=>{const e=F.rules[sh],same=e.action===r.action&&(!isHl(r.action)||e.colour===r.colour);return `<span class="shadow ${same?"":"conf"}" title="Rule ${sh+1} is active, comes first and matches at least these items, so this rule may never apply. ${same?"Both do the same, so this rule is redundant.":"The two rules do different things, so this one is probably not working as you intend."} Check the order.">${same?"Redundant: rule "+(sh+1)+" does the same":"Overridden by rule "+(sh+1)+" (different action)"}</span>`;})():""}</span></button>
      <button type="button" class="xb" data-rm="${r.id}" aria-label="Remove rule ${i+1}" title="Remove rule ${i+1} (Ctrl+Z brings it back)"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></button>
      <div class="rr"><span class="act"><span class="action-badge action-badge--${r.on?AC:"off"}">${r.on?actWord(r.action):"Off"}</span>${r.action===3?`<span class="beam-ico" title="Light beam" style="--c:${hex}"></span>`:""}${isHl(r.action)?`<span class="color-dot" title="Highlight colour: ${colOf(r.colour)[1]}" style="background:${hex}"></span>`:""}${r.action>0&&r.sound!==0?`<span class="spk" title="Sound on">${SPKI(true)}</span>`:""}</span>
       <span class="ctl"><input class="sw sm" type="checkbox" data-on="${r.id}" ${r.on?"checked":""} aria-label="Rule ${i+1} active"></span></div></div>`;
   }).join(""):`<div class="hint" style="padding:18px;text-align:center">${F.rules.length?'No rules match. <div style="margin-top:12px"><button type="button" class="btn" data-clearf="1">Clear search and filters</button></div>':"No rules. The game shows everything."}</div>`;
   $("#actCount").textContent=F.rules.filter(r=>r.on).length+" of "+F.rules.length+" rules active";
   $("#rhint").textContent=free?"The numbers show the order the game checks the rules. The top matching rule decides.":"Filtered view. Clear the search and choose All to reorder rules.";
-  $$("#rfilter button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rf===V.filter));
+  $$("#rfilter button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rf===V.filter));{const a=$("#rfAct");if(a)a.setAttribute("aria-pressed",V.act);}
 }
 /* ---- rule hover preview: which named lines / mods / conditions one rule covers (fixed box, ignores the pointer, never moves the page) ---- */
 const TIPMAX=8;
@@ -1728,10 +1746,10 @@ const SAMPLE={b:new Set(BASES.map(b=>b.id).concat(VAR_IDS,SPECIAL.map(b=>b.id),[
 const PL={load(){try{return JSON.parse(localStorage.getItem("oathfilter-lists")||"{}");}catch(e){return {};}},save(o){try{localStorage.setItem("oathfilter-lists",JSON.stringify(o));}catch(e){}}};
 function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k),lists=(PL.load()[k]||[]);
-  return `<div class="pk" data-pkbox="${k}"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>
-   <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>[i,l.n,l]).sort(ALPHA).map(([i,n,l])=>`<option value="${i}">${esc(n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>Delete list</button></div>
-   ${k==="a"?`<div class="seg" role="group" aria-label="Named lines: any or all" style="margin:0 0 8px"><button type="button" data-allm="" aria-pressed="${mval(r,"all")!=="1"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mval(r,"all")==="1"}">All of them</button></div>`:""}
+  return `<div class="pk" data-pkbox="${k}"><div class="pkhead"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>${ids.length?`<button type="button" class="lnk" data-pclr="${k}">Clear</button>`:""}</div>
    <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.disp[x]||x],[0,P.disp[y]||y])).map(id=>`<span class="b more" title="${esc(P.disp[id]||id)}"><span class="bt">${esc(P.disp[id]||id)}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">✕</button></span>`).join("")}</div>
+   <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>[i,l.n,l]).sort(ALPHA).map(([i,n,l])=>`<option value="${i}">${esc(n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}><svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5zM8 3v6h7V3M8 21v-7h8v7"/></svg>Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}><svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg>Delete list</button></div>
+   ${k==="a"?`<div class="seg" role="group" aria-label="Named lines: any or all" style="margin:0 0 8px"><button type="button" data-allm="" aria-pressed="${mval(r,"all")!=="1"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mval(r,"all")==="1"}">All of them</button></div>`:""}
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
    <div class="pklist" id="pl-${k}"></div></div>`;
 }
@@ -1753,7 +1771,7 @@ function renderPickList(k){
 function moreHTML(r){
   const [il,ih]=mrng(r,"i"),[ql,qh]=mrng(r,"q"),rt=mval(r,"rt");
   const open=S.moreOpen,act=moreParts(r);
-  const head=`<div class="hrow"><button type="button" data-moretoggle="1" aria-expanded="${open}" style="display:flex;align-items:center;gap:10px;width:100%;padding:4px 0;margin-bottom:${open?8:0}px;border:0;background:none;color:inherit;cursor:pointer;text-align:left"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="transform:rotate(${open?90:0}deg);flex:none"><path d="M4 1l7 6-7 6z"/></svg><h3 class="sub" style="margin:0">More conditions (the game's MORE window)</h3></button>${hb("more")}</div>`;
+  const head=`<div class="hrow"><button type="button" data-moretoggle="1" aria-expanded="${open}" style="display:flex;align-items:center;gap:10px;width:100%;padding:4px 0;margin-bottom:${open?8:0}px;border:0;background:none;color:inherit;cursor:pointer;text-align:left"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="transform:rotate(${open?90:0}deg);flex:none"><path d="M4 1l7 6-7 6z"/></svg><h3 class="sub" style="margin:0">More conditions (the game's MORE window)</h3>${act.length?`<span class="mbadge" title="${act.length} condition${act.length>1?"s":""} set here">${act.length}</span>`:""}</button>${hb("more")}</div>`;
   if(!open)return head+`<p class="hint" style="margin:8px 0 0">${act.length?esc(act.join(" · ")):"No more conditions set."}</p>`;
   return head+`<p class="hint" style="margin:0 0 14px">All of them must fit, together with the options above.${rt?" Runes up to a tier turns this rule into a rune rule.":""}</p>
    <div class="mgrid">
@@ -1793,6 +1811,7 @@ function renderEditorRaw(){
    <div style="margin-bottom:12px"><label class="lab" for="f-name">Rule name (optional)</label><input id="f-name" class="field" type="text" maxlength="${NAME_MAX}" placeholder="e.g. Good rares" value="${esc(r.name||"")}" autocomplete="off"><div class="hint" style="margin-top:4px">Only for you. Names stay in this browser and in saved local filters. They are never part of the game code.</div></div>
    <div class="hrow" style="margin-bottom:6px"><span class="lab">What happens</span>${hb("hide")}${hb("sell")}</div><div class="seg" role="group" aria-label="Action">${T.action.map(o=>`<button type="button" data-set="action,${o[0]}" aria-pressed="${r.action===o[0]}">${o[1]}</button>`).join("")}</div>
    <div class="hint" id="actHint" style="margin-top:6px"></div>
+   <p class="rsum" id="rsum" aria-live="polite"></p>
    <div class="divider"></div>
    <span class="lab">Rarity</span>${chipRow("rarity",r)}
    <div class="grid3" style="margin-top:12px"><div><label class="lab" for="f-type">Item type</label>${sel("type",r)}</div><div><label class="lab" for="f-level">Item level</label>${sel("level",r)}</div><div><label class="lab" for="f-line">Line group</label>${sel("line",r)}</div></div>
@@ -1801,7 +1820,8 @@ function renderEditorRaw(){
    ${moreHTML(r)}
    <div class="divider"></div>
    <h3 class="sub">Look and sound</h3>
-   <div class="grid2" style="align-items:start"><div><div id="lookBox"><span class="lab">Highlight colour</span><div class="swatches">${COLOURS.map(c=>`<button type="button" class="swc" style="--c:${c[2]}" data-col="${c[0]}" aria-pressed="${r.colour===c[0]}" aria-label="${c[1]}" title="${c[1]}"></button>`).join("")}</div></div>
+   <p class="hint lknote" id="lkNote" hidden>Not used: hidden and sold items show no label and play no sound.</p>
+   <div class="grid2" id="lookWrap" style="align-items:start"><div><div id="lookBox"><span class="lab">Highlight colour</span><div class="swatches">${COLOURS.map(c=>`<button type="button" class="swc" style="--c:${c[2]}" data-col="${c[0]}" aria-pressed="${r.colour===c[0]}" aria-label="${c[1]}" title="${c[1]}"></button>`).join("")}</div></div>
    <div style="margin-top:10px"><label class="lab" for="f-sound">Sound</label>${sel("sound",r)}</div></div>
    <div><span class="lab">Ground preview</span><div class="ground" id="ground"></div></div></div>
    ${(r.extra&&r.extra.length)||hasRaw(r)?`<div class="flag">This rule has fields this page does not know. They stay in the export as they are.</div>`:""}`;
@@ -1813,7 +1833,8 @@ function syncEditor(){
   $("#posInfo").textContent="Rule "+(F.rules.indexOf(r)+1)+" of "+F.rules.length;
   $$("#editor [data-set]").forEach(b=>{const[k,v]=b.dataset.set.split(",");b.setAttribute("aria-pressed",r[k]===+v);});
   $$("#editor [data-col]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.col===r.colour));
-  $("#lookBox").hidden=!isHl(r.action);
+  $("#lookBox").hidden=r.action===1;const dim=r.action===0||r.action===4;$("#lookWrap").classList.toggle("dim",dim);$("#lkNote").hidden=!dim;
+  {const c=condParts(r),sm=$("#rsum");if(sm)sm.textContent=actWord(r.action)+": "+(c.length?c.join(" · "):"all items")+(r.on?"":" (rule is off)");}
   $("#actHint").textContent=["Matching items are hidden, except the always-visible items (see ?).","Matching items are shown as normal.","The item name is drawn in the chosen colour.","Colour plus a light beam on the ground.",COPY.sell][r.action]||"";
   $("#addRule").disabled=F.rules.length>=MAX_RULES;$("#dupRule").disabled=F.rules.length>=MAX_RULES;
   $("#ground").innerHTML=`<div style="display:flex;align-items:center;gap:14px">${labelHTML(r)}</div>`;
@@ -1906,7 +1927,8 @@ document.addEventListener("click",e=>{
   const t=e.target.closest("button");if(!t)return;const d=t.dataset;
   if(d.view){setView(d.view);return;}
   if(t.id==="undo"){undo();return;}
-  if(d.clearf){V.q="";V.filter="all";$("#rq").value="";renderRows();return;}
+  if(d.rfact){V.act=!V.act;renderRows();return;}
+  if(d.clearf){V.q="";V.filter="all";V.act=false;$("#rq").value="";renderRows();return;}
   if(d.sm){S.hlOnly=d.sm==="hl";renderDrops();return;}
   if(d.rf){V.filter=d.rf;renderRows();return;}
   if(d.moretoggle){S.moreOpen=!S.moreOpen;renderEditor();return;}
@@ -1921,6 +1943,7 @@ document.addEventListener("click",e=>{
   if(d.pldel){const k=d.pldel,sel=$("#pls-"+k),o=PL.load();if(!sel||sel.value===""||!(o[k]||[])[+sel.value]){toast("Pick a saved list first.",true);return;}const n=o[k][+sel.value].n;o[k].splice(+sel.value,1);PL.save(o);renderEditor();toast("List \""+n+"\" deleted.");return;}
   if(d.allm!==undefined){mset(r,"all",d.allm);touch();renderEditor();return;}
   if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<4&&!l.includes(id)){l.push(id);msetList(r,k,l);touch();renderEditor("#pl-"+k);if(window.matchMedia&&matchMedia("(pointer:fine)").matches){const i=$("#pk-"+k);if(i)i.focus({preventScroll:true});}}return;}
+  if(d.pclr){const k=d.pclr;msetList(r,k,[]);touch();renderEditor("#pl-"+k);return;}
   if(d.prm){const[k,id]=d.prm.split(/,(.+)/);msetList(r,k,mlist(r,k).filter(x=>x!==id));touch();renderEditor("#pl-"+k);return;}
   if(d.set){const[k,v]=d.set.split(",");r[k]=+v;touch();return;}
   if(d.col){r.colour=+d.col;touch();return;}
@@ -1928,6 +1951,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("keydown",e=>{
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="d"&&V.view==="edit"&&EZ.m!=="easy"){e.preventDefault();const b=$("#dupRule");if(b&&!b.disabled)b.click();return;}
   if(e.altKey&&!e.shiftKey&&/^Arrow(Up|Down)$/.test(e.key)&&V.view==="edit"&&EZ.m!=="easy"&&F.rules.length){e.preventDefault();const i=Math.max(0,F.rules.findIndex(r=>r.id===S.cur)),j=Math.min(F.rules.length-1,Math.max(0,i+(e.key==="ArrowDown"?1:-1)));S.cur=F.rules[j].id;renderRows();renderEditor();return;}
+  if(e.key==="Escape"&&e.target.matches&&e.target.matches("input[data-pk]")&&e.target.value){const k=e.target.dataset.pk;S.pk[k]="";e.target.value="";renderPickList(k);e.preventDefault();return;}
   if(e.key==="Escape"&&V.q){V.q="";$("#rq").value="";renderRows();return;}
   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key.toLowerCase()==="z"&&V.view==="edit"&&!e.target.matches("textarea,select,[contenteditable],input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=button])")){e.preventDefault();undo();return;}
   if(!e.target.matches("#nav button")||!/^Arrow(Left|Right)$/.test(e.key))return;
