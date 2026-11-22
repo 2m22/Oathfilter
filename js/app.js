@@ -1,10 +1,10 @@
-import {AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
 const LI={x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',save:'<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/>',trash:'<path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',"chevron-right":'<path d="m9 18 6-6-6-6"/>',check:'<path d="M20 6 9 17l-5-5"/>',info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',"layers":'<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>',"package":'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/>',"flag":'<path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/>',"sliders-horizontal":'<path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/>',"zap":'<path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"/>',"gem":'<path d="M10.5 3 8 9l4 13 4-13-2.5-6"/><path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/><path d="M2 9h20"/>',"palette":'<path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>',"copy":'<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',"plus":'<path d="M5 12h14"/><path d="M12 5v14"/>'};
 const li=(n,c="")=>window.lucide?`<i data-lucide="${n}" class="li ${c}" aria-hidden="true"></i>`:`<svg class="li ${c}" viewBox="0 0 24 24" aria-hidden="true">${LI[n]}</svg>`;
-const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. You can save one rule, several rules or your whole filter. Insert adds the rules at the chosen place and keeps their order. Replace filter starts a new filter from the module. Share makes a link, and whoever opens it can insert the rules into their own filter. If an insert would go over 200 rules, it is blocked. Ctrl+Z takes it back. Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to four named bases, lines or reds per rule."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."]};
+const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. You can save one rule, several rules or your whole filter. Insert adds the rules at the chosen place and keeps their order. Replace filter starts a new filter from the module. Share makes a link, and whoever opens it can insert the rules into their own filter. If an insert would go over 200 rules, it is blocked. Ctrl+Z takes it back. Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to 6 named lines, 12 bases and 12 reds per rule (plus 6 not-these lines)."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."]};
 const hb=k=>`<button type="button" class="hlp" data-help="${k}" aria-label="Help: ${HELP[k][0]}" aria-expanded="false">?</button>`;
 (function(){
   const pop=document.createElement("div");pop.id="hlpPop";pop.setAttribute("role","tooltip");pop.hidden=true;document.body.appendChild(pop);
@@ -40,15 +40,18 @@ const curRule=()=>F.rules.find(r=>r.id===S.cur)||null;
 function moreParts(r,noLists){
   const o=[],t=+mval(r,"t")||0,n=+mval(r,"n")||0,s=+mval(r,"s")||0,g=+mval(r,"g")||0,gx=+mval(r,"gx")||0,rd=+mval(r,"r")||0,u=+mval(r,"u")||0,rt=+mval(r,"rt")||0;
   if(rt)o.push("Runes up to T"+rt);
-  if(t||n)o.push((n?n+"+ lines":"A line")+(t?" "+(t===1?"at T1":"at T"+t+" or better"):""));
+  {const kk=+mval(r,"k")||0,dd=+mval(r,"d")||0;
+  if(t||n)o.push((n?n+"+ ":"A ")+(kk===1?"prefix ":kk===2?"suffix ":"")+(n?"lines":"line")+(t?" "+(t===1?"at T1":"at T"+t+" or better"):""));
+  else if(kk)o.push(kk===1?"Prefix lines only":"Suffix lines only");
+  if(dd)o.push(["","Armour","Evasion","Energy shield","Armour + Evasion","Armour + Energy shield","Evasion + Energy shield"][dd]||"defence "+dd);}
   if(s)o.push(s+"+ sockets");
   const i=rngText(...mrng(r,"i"),"item level"),q=rngText(...mrng(r,"q"),"needs level");
   if(i)o.push(i);if(q)o.push(q);
   if(g)o.push(g>=90?"Truesworn":"grade "+g+"+");if(gx)o.push("grade under "+gx);
   if(rd)o.push(["","Reds only","Chase reds"][rd]||"red "+rd);
   if(u)o.push(["","Not unsworn","Unsworn only"][u]||"unsworn "+u);
-  const nm=(k,N,w)=>{const l=mlist(r,k);if(l.length&&!noLists)o.push(l.length===1?(N[l[0]]||l[0]):(k==="a"?(mval(r,"all")==="1"?"all of ":"any of "):"")+l.length+" "+w);};
-  nm("b",BASED,"bases");nm("a",LINED,"named lines");nm("rn",REDD,"named reds");
+  const nm=(k,N,w)=>{const l=mlist(r,k);if(l.length&&!noLists)o.push(l.length===1?(N[l[0]]||l[0]):(k==="a"?(mval(r,"all")==="1"?"all of ":mval(r,"an")?"any "+mval(r,"an")+" of ":"any of "):k==="na"?"none of ":(k==="b"&&mval(r,"nb")==="1")||(k==="rn"&&mval(r,"nr")==="1")?"none of ":"")+l.length+" "+w);};
+  nm("b",BASED,"bases");nm("a",LINED,"named lines");nm("na",LINED,"excluded lines");nm("rn",REDD,"named reds");
   return o;
 }
 function summary(r){
@@ -114,9 +117,11 @@ function moreImplies(a,b){
     }}
   return true;
 }
+/* Patch 87 keys: a rule that uses d, k, na, nb, nr or an is never reported as covering another rule (not provable here) */
+const NEWKEYS=["d","k","na","nb","nr","an"];
 function covers(a,b){
   if(!a.on||!b.on)return false;
-  if(!moreImplies(a,b))return false;
+  if(NEWKEYS.some(k=>mval(a,k)!==""))return false;if((mval(b,"nb")==="1"&&mlist(a,"b").length)||(mval(b,"nr")==="1"&&mlist(a,"rn").length))return false;if(!moreImplies(a,b))return false;
   const ra=RAR[a.rarity],rb=RAR[b.rarity];if(!ra||!rb||![...rb].every(c=>ra.includes(c)))return false;
   if(!((a.type===0&&b.type!==14)||a.type===b.type||(TYPE_KIDS[a.type]||[]).includes(b.type)))return false;
   const la=LEVEL[a.level],lb=LEVEL[b.level];if(!la||!lb||la[0]>lb[0]||la[1]<lb[1])return false;
@@ -258,15 +263,24 @@ const msel=(id,key,val,opts)=>{const has=opts.some(o=>String(o[0])===String(val)
 const chgMark=t=>{const w=t.closest(".selwrap");if(w)w.classList.toggle("chg",!(t.value===""||t.value==="0"));};
 const nOpts=(any,f)=>[["",any]].concat([1,2,3,4,5,6].map(n=>[n,f(n)]));
 const lvOpts=(any,f)=>[["0",any]].concat(LVSTEPS.map(v=>[v,f(v)]));
-const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,disp:BASED,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line, like life or fire"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,disp:REDD,ph:"Type a red name"}};
-S.pk={b:"",a:"",rn:""};S.moreOpen=true;
+const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,disp:BASED,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line, like life or fire"},na:{title:"Not these lines",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line that must NOT be on the item"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,disp:REDD,ph:"Type a red name"}};
+S.pk={b:"",a:"",na:"",rn:""};S.moreOpen=true;
 /* what the sample drops can produce: other bases and reds still go into the code, but the drop test never shows them */
 const SAMPLE={b:new Set(BASES.map(b=>b.id).concat(VAR_IDS,SPECIAL.map(b=>b.id),["dwarven_rune"])),rn:new Set(UNIQUES.map(u=>u.id||redIdOf(u.name)))};
-/* saved pick lists: only in this browser, not part of the filter code; applying one copies its ids into the rule (max 4) */
+/* saved pick lists: only in this browser, not part of the filter code; applying one copies its ids into the rule (max 6 lines, 12 bases, 12 reds) */
 const PL={load(){try{return JSON.parse(localStorage.getItem("oathfilter-lists")||"{}");}catch(e){return {};}},save(o){try{localStorage.setItem("oathfilter-lists",JSON.stringify(o));}catch(e){}}};
+/* Patch 87: "Any of them / All of them / Any N of them" for named lines; "In this list / None of these" for bases and reds (nb, nr). nb/nr cannot be combined with All or Any N (game rule). */
+function anyAllHTML(r){
+  const all=mval(r,"all")==="1",an=+mval(r,"an")||0,n=mlist(r,"a").length,mode=all?"all":an?"an":"any";
+  return `<div class="seg sm" role="group" aria-label="Named lines: any, all or any N"><button type="button" data-allm="" aria-pressed="${mode==="any"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mode==="all"}">All of them</button><button type="button" data-allm="n" aria-pressed="${mode==="an"}" title="Any N of the named lines, for example any 2 of 5">Any N</button></div>${mode==="an"?msel("m-an","data-m=\"an\" aria-label=\"How many of the named lines\"",String(an),[2,3,4,5,6].filter(x=>x<=Math.max(n,an)).map(x=>[x,"Any "+x+" of them"])):""}${mval(r,"nb")==="1"||mval(r,"nr")==="1"?'<small class="hint">Not available together with “None of these” bases or reds.</small>':""}`;
+}
+function invHTML(r,k){
+  const key=k==="b"?"nb":"nr",on=mval(r,key)==="1",blocked=!!(mval(r,"all")==="1"||mval(r,"an"));
+  return `<div class="seg sm" role="group" aria-label="${k==="b"?"Bases":"Reds"}: in this list or none of these"><button type="button" data-invm="${key},0" aria-pressed="${!on}">One of these</button><button type="button" data-invm="${key},1" aria-pressed="${on}" ${blocked?'disabled title="Not available together with All of them or Any N"':""}>None of these</button></div>`;
+}
 function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k),lists=(PL.load()[k]||[]);
-  return `<div class="pk" data-pkbox="${k}"><div class="pkhead"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of 4 picked</label>${k==="a"?`<div class="seg sm" role="group" aria-label="Named lines: any or all"><button type="button" data-allm="" aria-pressed="${mval(r,"all")!=="1"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mval(r,"all")==="1"}">All of them</button></div>`:""}${ids.length?`<button type="button" class="lnk" data-pclr="${k}">Clear</button>`:""}</div>
+  return `<div class="pk" data-pkbox="${k}"><div class="pkhead"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of ${MAXL[k]} picked</label>${k==="a"?anyAllHTML(r):k==="b"||k==="rn"?invHTML(r,k):""}${ids.length?`<button type="button" class="lnk" data-pclr="${k}">Clear</button>`:""}</div>
    <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.disp[x]||x],[0,P.disp[y]||y])).map(id=>`<span class="b more" title="${esc(P.disp[id]||id)}"><span class="bt">${esc(P.disp[id]||id)}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">${li("x")}</button></span>`).join("")}</div>
    <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>[i,l.n,l]).sort(ALPHA).map(([i,n,l])=>`<option value="${i}">${esc(n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>${li("save")}Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>${li("trash")}Delete list</button></div>
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
@@ -277,15 +291,15 @@ function renderPickList(k){
   const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=4;
   const lineSel=new Set(ids.map(i=>P.name[i]));
   const words=q.split(/\s+/).filter(Boolean);
-  const shw=x=>k==="a"?dl(x[1]):k==="b"?(LX.bases[x[0]]||x[1]):(LX.reds[x[0]]||x[1]);
-  const hayOf=x=>(k==="a"?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase())+(LANG==="en"?"":" "+shw(x).toLowerCase());
+  const shw=x=>(k==="a"||k==="na")?dl(x[1]):k==="b"?(LX.bases[x[0]]||x[1]):(LX.reds[x[0]]||x[1]);
+  const hayOf=x=>((k==="a"||k==="na")?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase())+(LANG==="en"?"":" "+shw(x).toLowerCase());
   const res=P.list().filter(x=>{if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
-  const tag=x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);
+  const tag=x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);
     if(on)return "<small>picked</small>";
-    if(k==="a"){const li=LINE_IDS[x[1]]||[];if(li.length&&li.every(i=>COND_LINE.has(i)))return '<small title="This line comes from game files that load only while a game switch is on. It may not be live yet.">switch-dependent</small>';return "";}
+    if(k==="a"||k==="na"){const li=LINE_IDS[x[1]]||[];if(li.length&&li.every(i=>COND_LINE.has(i)))return '<small title="This line comes from game files that load only while a game switch is on. It may not be live yet.">switch-dependent</small>';return "";}
     return SAMPLE[k]&&!SAMPLE[k].has(x[0])?"<small>no test drop</small>":"";};
-  const tip=x=>{if(k!=="a")return shw(x)+(shw(x)!==String(x[1])?"\n"+x[1]:"");const li=LINE_IDS[x[1]]||[x[0]];return (shw(x)!==x[1]?shw(x)+"\n":"")+x[1]+"\nGame ids ("+li.length+"): "+li.slice(0,10).join(", ")+(li.length>10?", …":"");};
-  box.innerHTML=res.length?res.map(x=>{const on=k==="a"?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" title="${esc(tip(x))}" ${on||full?"disabled":""}><span>${esc(shw(x))}</span>${tag(x)}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
+  const tip=x=>{if(k!=="a"&&k!=="na")return shw(x)+(shw(x)!==String(x[1])?"\n"+x[1]:"");const li=LINE_IDS[x[1]]||[x[0]];return (shw(x)!==x[1]?shw(x)+"\n":"")+x[1]+"\nGame ids ("+li.length+"): "+li.slice(0,10).join(", ")+(li.length>10?", …":"");};
+  box.innerHTML=res.length?res.map(x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" title="${esc(tip(x))}" ${on||full?"disabled":""}><span>${esc(shw(x))}</span>${tag(x)}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
 }
 function moreHTML(r){
   const [il,ih]=mrng(r,"i"),[ql,qh]=mrng(r,"q"),rt=mval(r,"rt");
@@ -296,6 +310,7 @@ function moreHTML(r){
    <div class="mgroups">
    <div class="mgrp"><h4 class="mgh">${li("layers")}Level &amp; tier</h4><div class="mgrid">
     <div><label class="lab" for="m-t">Tier</label>${msel("m-t","data-m=\"t\"",mval(r,"t"),[["","Any tier"],[1,"T1 lines"]].concat([2,3,4,5,6,7,8].map(n=>[n,"T"+n+" or better"])))}</div>
+    <div><label class="lab" for="m-k">Count lines of type</label>${msel("m-k","data-m=\"k\"",mval(r,"k"),[["","Prefixes and suffixes"],[1,"Prefix lines only"],[2,"Suffix lines only"]])}</div>
     <div><label class="lab" for="m-n">Lines of that tier</label>${msel("m-n","data-m=\"n\"",mval(r,"n"),nOpts("Any lines",n=>n+"+ lines"))}</div>
     <div><label class="lab" for="m-i0">Item level from</label>${msel("m-i0","data-mr=\"i,0\"",il,lvOpts("Any item level",v=>"Item level "+v+"+"))}</div>
     <div><label class="lab" for="m-i1">Item level to</label>${msel("m-i1","data-mr=\"i,1\"",ih,lvOpts("No max item level",v=>"Item level "+v+" or lower"))}</div>
@@ -303,6 +318,7 @@ function moreHTML(r){
     <div><label class="lab" for="m-q1">Required level to</label>${msel("m-q1","data-mr=\"q,1\"",qh,lvOpts("No max required level",v=>"Requires level "+v+" or lower"))}</div>
    </div></div>
    <div class="mgrp"><h4 class="mgh">${li("package")}Item properties</h4><div class="mgrid">
+    <div><label class="lab" for="m-d">Defence type</label>${msel("m-d","data-m=\"d\"",mval(r,"d"),[["","Any defence type"],[1,"Armour"],[2,"Evasion"],[3,"Energy shield"],[4,"Armour + Evasion"],[5,"Armour + Energy shield"],[6,"Evasion + Energy shield"]])}</div>
     <div><label class="lab" for="m-s">Sockets</label>${msel("m-s","data-m=\"s\"",mval(r,"s"),nOpts("Any sockets",n=>n+"+ sockets"))}</div>
     <div><label class="lab" for="m-g">Grade</label>${msel("m-g","data-m=\"g\"",mval(r,"g"),[["","Any grade"],[50,"Grade 50+"],[70,"Grade 70+"],[90,"Truesworn"]])}</div>
     <div><label class="lab" for="m-gx">Top grade</label>${msel("m-gx","data-m=\"gx\"",mval(r,"gx"),[["","Any top grade"],[50,"Under grade 50"],[70,"Under grade 70"],[90,"Under grade 90"]])}</div>
@@ -313,7 +329,7 @@ function moreHTML(r){
     <div><label class="lab" for="m-rt">Gear or runes</label>${msel("m-rt","data-m=\"rt\"",rt,[["","Gear row"]].concat([1,2,3,4,5,6].map(n=>[n,"Runes up to T"+n])))}</div>
    </div></div>
    </div>
-   <div class="grid2" style="margin-top:12px">${pickHTML(r,"b")}${pickHTML(r,"a")}${pickHTML(r,"rn")}</div>`;
+   <div class="grid2" style="margin-top:12px">${pickHTML(r,"b")}${pickHTML(r,"a")}${pickHTML(r,"na")}${pickHTML(r,"rn")}</div>`;
 }
 /* keep every list, and the page, exactly where the user is across a re-render; anchor = a list whose on-screen position must not move */
 function keepScroll(fn,anchor){
@@ -351,7 +367,7 @@ function renderEditorRaw(){
    <div><span class="lab">Ground preview</span><div class="ground" id="ground"></div></div></div>
    ${(r.extra&&r.extra.length)||hasRaw(r)?`<div class="flag">This rule has fields this page does not know. They stay in the export as they are.</div>`:""}`;
   syncEditor();
-  ["b","a","rn"].forEach(renderPickList);
+  ["b","a","na","rn"].forEach(renderPickList);
 }
 function syncEditor(){
   const r=curRule();if(!r||!$("#f-on"))return;
@@ -467,8 +483,13 @@ document.addEventListener("click",e=>{
   if(!r)return;
   if(d.plsave){const k=d.plsave,ids=mlist(r,k);if(!ids.length)return;const n=(prompt("Name for this list",PK[k].title+" list")||"").trim();if(!n)return;const o=PL.load();(o[k]=o[k]||[]).push({n:n.slice(0,40),ids:ids.slice()});PL.save(o);renderEditor();toast("List saved in this browser.");return;}
   if(d.pldel){const k=d.pldel,sel=$("#pls-"+k),o=PL.load();if(!sel||sel.value===""||!(o[k]||[])[+sel.value]){toast("Pick a saved list first.",true);return;}const n=o[k][+sel.value].n;o[k].splice(+sel.value,1);PL.save(o);renderEditor();toast("List \""+n+"\" deleted.");return;}
-  if(d.allm!==undefined){mset(r,"all",d.allm);touch();renderEditor();return;}
-  if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<4&&!l.includes(id)){l.push(id);msetList(r,k,l);touch();renderEditor("#pl-"+k);if(window.matchMedia&&matchMedia("(pointer:fine)").matches){const i=$("#pk-"+k);if(i)i.focus({preventScroll:true});}}return;}
+  if(d.allm!==undefined){
+    if(d.allm==="n"){mset(r,"all","");if(!mval(r,"an"))mset(r,"an",Math.min(6,Math.max(2,Math.min(mlist(r,"a").length,2))));}
+    else{mset(r,"all",d.allm);mset(r,"an","");}
+    if(d.allm!==""){mset(r,"nb","");mset(r,"nr","");}
+    touch();renderEditor();return;}
+  if(d.invm){const[key,v]=d.invm.split(",");if(v==="1"){mset(r,"all","");mset(r,"an","");}mset(r,key,v==="1"?"1":"");touch();renderEditor();return;}
+  if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<MAXL[k]&&!l.includes(id)){l.push(id);msetList(r,k,l);touch();renderEditor("#pl-"+k);if(window.matchMedia&&matchMedia("(pointer:fine)").matches){const i=$("#pk-"+k);if(i)i.focus({preventScroll:true});}}return;}
   if(d.pclr){const k=d.pclr;msetList(r,k,[]);touch();renderEditor("#pl-"+k);return;}
   if(d.prm){const[k,id]=d.prm.split(/,(.+)/);msetList(r,k,mlist(r,k).filter(x=>x!==id));touch();renderEditor("#pl-"+k);return;}
   if(d.set){const[k,v]=d.set.split(",");r[k]=+v;touch();return;}
@@ -495,7 +516,7 @@ document.addEventListener("change",e=>{
 document.addEventListener("change",e=>{
   const t=e.target,k=t.dataset&&t.dataset.pls;if(!k||t.value==="")return;
   const r=curRule(),l=(PL.load()[k]||[])[+t.value];if(!r||!l)return;
-  msetList(r,k,l.ids.slice(0,4));touch();renderEditor();toast("List applied: "+l.n);
+  msetList(r,k,l.ids.slice(0,MAXL[k]));touch();renderEditor();toast("List applied: "+l.n);
 });
 let nameT=null,rqT=null;
 document.addEventListener("input",e=>{
@@ -540,7 +561,7 @@ function mdPlace(rs,name){
   rs.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});
   F.preset="-1";F.rules.splice(at,0,...rs);S.cur=rs[0].id;V.filter="all";V.q="";$("#rq").value="";
   fullRender();mdMsg("");toast("Inserted "+n+" rule"+(n===1?"":"s")+(name?" from “"+name+"”":"")+". "+COPY.undo);
-  const w=rs.filter(r=>mlist(r,"a").length>4).length;if(w)toast("Inserted. "+w+" rule"+(w>1?"s list":" lists")+" more than 4 named lines. The Editor allows 4 per rule.",true);
+  const w=rs.filter(r=>Object.keys(MAXL).some(k=>mlist(r,k).length>MAXL[k])).length;if(w)toast("Inserted. "+w+" rule"+(w>1?"s go":" goes")+" over a list limit (6 named lines, 12 bases, 12 reds, 6 not-these lines).",true);
   return true;
 }
 /* share a module: same link service and offline fallback as the filter share */
