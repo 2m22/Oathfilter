@@ -116,7 +116,7 @@ eq(defOf(["Chest","Armour","EnergyShield"]),5,"defence type Armour + ES");eq(def
   eq(ev(base+"1,0,0,0,0,0,0,0,0,255",gem).v,1,"Any gear + Hide does not touch gems");
   eq(ev(base+"1,17,0,0,0,2,3,0,0,255",gem).v,2,"Gems + Highlight still works");
   ok(ev(base+"1,17,0,0,0,4,0,0,0,255",cur).i===-1,"a Gems rule does not catch currency");
-  ok(!matches(decode(base+"1,17,0,0,0,4,0,0,0,255,3:t=1").filter.rules[0],gem),"assumption: a Gems rule with extra conditions does not match gems");
+  ok(!matches(decode(base+"1,17,0,0,0,4,0,0,0,255,3:t=1").filter.rules[0],gem),"decided: a Gems rule with extra conditions does not match gems");
   eq(encode(decode(base+"1,17,0,0,0,4,0,0,0,255").filter),base+"1,17,0,0,0,4,0,0,0,255","Gems + Sell with any rarity round trips (game export, 22.11.2026)");
   eq(encode(decode(base+"1,17,4,0,0,4,0,0,0,255").filter),base+"1,17,4,0,0,4,0,0,0,255","game export of a Gems Sell rule (22.11.2026, rarity field was 4 = Rare) round trips");
 }

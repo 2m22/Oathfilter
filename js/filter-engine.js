@@ -191,7 +191,7 @@ function matches(r,it){
   const rt=+mval(r,"rt")||0;
   if(it.rune)return !!rt&&it.rtier<=rt;
   if(rt)return false;
-  if(it.gem)return r.type===17&&r.rarity===0&&r.level===0&&!r.line&&!r.quality&&!r.count&&!r.m.length; /* assumption: a Gems rule has no other conditions */
+  if(it.gem)return r.type===17&&r.rarity===0&&r.level===0&&!r.line&&!r.quality&&!r.count&&!r.m.length; /* decided (Mathies, 22.11.2026): Gems are only handled with Rarity Any and no other condition; the game export is 1,17,0,0,0,<action>,... */
   if(!RAR[r.rarity]||!RAR[r.rarity].includes(it.rar))return false;
   if(!typeMatch(r.type,it))return false;
   const lv=LEVEL[r.level]||LEVEL[0];
