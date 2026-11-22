@@ -2,6 +2,12 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-22 (3)
+
+### Changed
+- Easy Mode: the Life chip is split into three chips. Life keeps only +Life. Mana (+Mana and Mana Regen) and Leech & Regen (Life Leech, Mana Leech, Energy Shield Leech and Life Regen) are new. If you had Life picked before, only +Life stays, so pick Mana or Leech & Regen again if you want them.
+- Easy Mode: all chips now use the same colour (white), and picks share rules. Lines from several picks fill the same rule, four lines per rule, with the same result as before but fewer rules. With all chips picked, the filter fits in 37 rules instead of falling back to one shared colour and list.
+
 ## 2026-11-22 (2)
 
 ### Changed
