@@ -313,11 +313,28 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 #shPanel{min-width:0;max-width:100%}#shPanel .shres input,#shPanel .field{min-width:0;max-width:100%;box-sizing:border-box}
 #shMsg{overflow-wrap:anywhere}#shPanel .out{white-space:pre-wrap;overflow-wrap:anywhere}
 .eztk span{white-space:nowrap}
-#ezBox .cols>.l{flex:1 1 58%;max-width:none;min-width:320px}#ezBox .cols>.r{flex:1 1 30%;min-width:300px}
 #ezBox .chips .cb2{font-size:1rem;padding:9px 16px}
 #ezCtl .sub .hint{text-transform:none;letter-spacing:0;font-weight:400;font-size:.88rem;line-height:1.45}
 .ezdet{margin-top:10px}.ezdet>summary{cursor:pointer;font-size:.9rem;color:var(--text-muted);padding:6px 0}.ezdet>summary.bad{color:var(--hide-fg)}
 .ezdet[open]>summary{margin-bottom:8px}
+/* Easy Mode: single card, grouped chips, bottom bar */
+.ezplate{max-width:none}
+.ez2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px 24px;margin-bottom:12px}
+.ezgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:6px}
+.ezg{border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--bg-subtle)}
+.ezgt{display:flex;align-items:center;gap:6px;margin:0 0 8px;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-gold)}
+.ezgl{display:block;margin:8px 0 4px}.ezgt+.ezgl{margin-top:0}
+.ezwant{gap:10px}.ezpk{margin-left:auto;font-size:.85rem;color:var(--text-muted)}.ezclr{min-height:30px;padding:0 12px;font-size:.85rem}.ezclr:disabled{opacity:.45;cursor:default}
+#ezCtl .cb2{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 10px}
+#ezCtl .cb2::before{content:"";flex:none;width:16px;height:16px;border:2px solid var(--border-strong);border-radius:50%;box-sizing:border-box;background:transparent}
+#ezCtl .cb2[aria-pressed="true"]{background:var(--accent-gold);border-color:var(--accent-gold);color:#15110a;font-weight:700;box-shadow:0 0 0 2px var(--bg-card),0 0 0 4px var(--accent-gold)}
+#ezCtl .cb2[aria-pressed="true"]::before{content:"\2713";display:flex;align-items:center;justify-content:center;border-color:#15110a;background:#15110a;color:var(--accent-gold);font-size:11px;line-height:1;font-weight:900}
+.ezfoot{position:sticky;bottom:0;z-index:5;margin:14px -4px 0;padding:10px 12px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-card);box-shadow:0 -6px 14px rgba(0,0,0,.25)}
+.ezbrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.ezbrow .btn{margin-left:auto}
+.ezcnt b{font-size:1.1rem;color:var(--accent-gold)}.ezcnt.bad b{color:var(--hide-fg)}.ezmsg{margin:0;flex:1 1 220px}
+.ezfoot .ezerr,.ezfoot .ezbanner{margin:0 0 10px}.ezfoot .sub{margin-top:10px}
+.ezpair{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+@media (max-width:700px){.ezfoot{position:static;box-shadow:none;margin:14px 0 0}.ezbrow .btn{margin-left:0;flex:1 1 100%}}
 #rtip{max-height:calc(100vh - 16px);overflow:hidden}
 @media (max-width:560px){.ezbar{gap:10px}.ezbar .seg{flex:1 1 100%}.ezbar .ezact{margin-left:0;width:100%}.ezbar .ezact .btn{flex:1 1 130px}.eztk span:nth-child(even){display:none}}
 .updlog{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.8125rem;color:var(--text-main)}
@@ -368,19 +385,18 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 </header>
 <main>
 <div class="panel" id="p-edit" role="tabpanel" aria-labelledby="t-edit">
-<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><div class="ezact"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button><button type="button" class="hlp" data-help="copyAdv" aria-label="Help: Copy filter code" aria-expanded="false">?</button><button type="button" class="btn gold" id="shMake">Share</button><button type="button" class="hlp" data-help="share" aria-label="Help: Share" aria-expanded="false">?</button><button type="button" class="btn" id="clearF" style="margin-left:14px" title="Removes all rules. Ctrl+Z brings them back.">Clear filter</button></div></div>
+<div class="ezbar"><span class="lab" id="ezModeLab">Mode</span><div class="seg" role="group" aria-labelledby="ezModeLab" id="ezMode"><button type="button" data-ezm="easy" aria-pressed="false">Easy</button><button type="button" data-ezm="adv" aria-pressed="true">Advanced</button></div><div class="ezact"><span class="ezpair"><button type="button" class="btn gold" id="copyAdv">Copy filter code</button><button type="button" class="hlp" data-help="copyAdv" aria-label="Help: Copy filter code" aria-expanded="false">?</button></span><span class="ezpair"><button type="button" class="btn gold" id="shMake">Share</button><button type="button" class="hlp" data-help="share" aria-label="Help: Share" aria-expanded="false">?</button></span><button type="button" class="btn" id="clearF" style="margin-left:14px" title="Removes all rules. Ctrl+Z brings them back.">Clear filter</button></div></div>
 <div class="plate" id="shPanel" hidden style="margin:0 0 16px"><div class="shres" id="shRes" hidden><label class="lab" for="shUrl">Share link</label><input id="shUrl" class="field" type="text" readonly>
   <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="shCopy">Copy link</button><button type="button" class="btn" id="shDisc">Copy for Discord</button><button type="button" class="btn" id="shClose">Close</button></div></div>
   <p class="hint" id="shMsg" role="status" aria-live="polite" style="margin:8px 0 0"></p>
   <pre class="out" id="out" tabindex="0" hidden style="max-height:160px;margin-top:8px"></pre></div>
-<div id="ezBox" hidden><div class="cols">
-  <section class="plate l" aria-labelledby="h-ezc">
+<div id="ezBox" hidden><section class="plate ezplate" aria-labelledby="h-ezc">
     <div class="hrow" style="margin-bottom:10px"><h2 id="h-ezc" class="coltitle" style="margin:0">Easy Mode</h2><button type="button" class="hlp" data-help="ezMode" aria-label="Help: Easy Mode" aria-expanded="false">?</button></div>
     <p class="hint" style="margin:0 0 12px">Build a whole filter from a few choices. The result is a normal game filter code.</p>
-    <div id="ezCtl"></div></section>
-  <section class="plate r" aria-labelledby="h-ezo"><h2 id="h-ezo" class="coltitle">Result</h2>
-    <div id="ezOut" role="status" aria-live="polite"></div><details id="ezDet" class="ezdet"><summary id="ezDetS">Details</summary><div id="ezOut2" role="status" aria-live="polite"></div></details></section>
-</div></div>
+    <div id="ezCtl"></div>
+    <div class="ezfoot" id="ezFoot"><div id="ezOut" role="status" aria-live="polite"></div></div>
+    <details id="ezDet" class="ezdet"><summary id="ezDetS">Details</summary><div id="ezOut2" role="status" aria-live="polite"></div></details>
+</section></div>
 <div class="cols" id="edCols">
   <section class="plate l" aria-labelledby="h-rules">
     <div class="hrow" style="margin-bottom:10px"><h2 id="h-rules" class="coltitle" style="margin:0">Rules</h2><button type="button" class="hlp" data-help="order" aria-label="Help: Rule order" aria-expanded="false">?</button></div>
@@ -3072,7 +3088,7 @@ const EZ_ARCH=[
 const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",
  fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
 const EZ_ATK=["attack","melee","slam","bow"];
-const EZ_GRP=[["Playstyle",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]],["Damage type",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]],["Other",["aoe","curse","move","life","mana","leech","res","armour","evasion","es"]]];
+const EZ_GRP=[["Playstyle","play",[["",["attack","spell","minion","melee","slam","bow","chain","trap","totem","channel","orbit"]]]],["Damage & Ailments","dmg",[["Damage types",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]]]],["Defences","def",[["",["life","armour","evasion","es","res"]]]],["Utility","util",[["",["aoe","curse","move","mana","leech"]]]]]; /* every chip id stays; only the grouping changed */
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.filter(v=>v<=84).map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
@@ -3209,27 +3225,37 @@ function ezMode(m,quiet){
 /* ---- controls ---- */
 const ezBtn=(d,label)=>`<button type="button" class="cb2" data-ez="${d}" aria-pressed="false">${esc(label)}</button>`;
 const ezSeg=(k,list,lab)=>`<div class="seg" role="group" aria-label="${esc(lab)}">${list.map(([v,l])=>`<button type="button" data-ez="${k},${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</div>`;
+const EZ_ICO={play:'<path d="M5 19 19 5M14 5h5v5M7 17l-3 3"/>',dmg:'<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 3-6 .5 1.5 1.5 2 2 3 0-3-1-4 0-7z"/>',def:'<path d="M12 3l7 3v6c0 4.500-3 7.500-7 9-4-1.500-7-4.500-7-9V6z"/>',util:'<path d="M13 2 5 14h6l-1 8 8-12h-6z"/>'};
+const ezIco=k=>`<svg class="ezico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${EZ_ICO[k]||""}</svg>`;
+const ezChip=k=>{const a=EZ_ARCH.find(x=>x.k===k);return ezBtn("arch,"+a.k,a.n);};
 function ezBuild(){
-  
   $("#ezCtl").innerHTML=`
+  <div class="ez2">
   <div class="sub"><div class="hrow"><label class="lab" for="ez-rl">Rupture Level <output id="ez-rlo" aria-live="polite" style="color:var(--accent-gold);margin-left:6px"></output></label>${hb("ezRL")}</div>
     <p class="hint" style="margin:2px 0 4px">The monster level you farm at. It decides which affix tiers can drop.</p>
     <input id="ez-rl" class="ezsl" type="range" min="0" max="${EZ_RL.length-1}" step="1" value="0" list="ez-rlt" aria-valuetext="Any">
     <datalist id="ez-rlt">${EZ_RL.map((x,i)=>`<option value="${i}"></option>`).join("")}</datalist>
-    <div class="eztk" aria-hidden="true">${EZ_RL.map((x,i)=>`<span style="left:calc(8px + (100% - 16px) * ${i/(EZ_RL.length-1)})">${x[1]}</span>`).join("")}</div>
-    <div class="hrow" style="margin-top:12px"><span class="lab">Tier strictness</span>${hb("ezKeep")}</div><p class="hint" style="margin:2px 0 6px">How many of the best droppable tiers count as good.</p>${ezSeg("tk",EZ_KEEP,"Tier strictness")}
+    <div class="eztk" aria-hidden="true">${EZ_RL.map((x,i)=>`<span style="left:calc(8px + (100% - 16px) * ${i/(EZ_RL.length-1)})">${x[1]}</span>`).join("")}</div></div>
+  <div class="sub"><div class="hrow"><span class="lab">Tier strictness</span>${hb("ezKeep")}</div><p class="hint" style="margin:2px 0 6px">How many of the best droppable tiers count as good.</p>${ezSeg("tk",EZ_KEEP,"Tier strictness")}
     <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
-  <div class="sub"><div class="hrow" style="margin-bottom:6px"><span class="lab">What I want to see</span>${hb("ezWant")}</div>${EZ_GRP.map(([t,ks])=>`<span class="lab" style="margin:10px 0 4px;font-size:.7rem">${t}</span><div class="chips">${ks.map(k=>EZ_ARCH.find(a=>a.k===k)).map(a=>ezBtn("arch,"+a.k,a.n)).join("")}</div>`).join("")}
-    <p class="hint" style="margin:6px 0 0">Picks also decide which Idols stay.</p>
+  </div>
+  <div class="sub"><div class="hrow ezwant"><span class="lab">What I want to see</span>${hb("ezWant")}<span class="ezpk" id="ezPicked" aria-live="polite"></span><button type="button" class="btn ezclr" data-ez="clear,all" title="Unpick every chip. Ctrl+Z brings them back.">Clear all</button></div>
+    <div class="ezgrid">${EZ_GRP.map(([t,ic,blocks])=>`<div class="ezg" role="group" aria-label="${esc(t)}"><div class="ezgt">${ezIco(ic)}<span>${esc(t)}</span></div>${blocks.map(([bt,ks])=>`${bt?`<span class="lab ezgl">${esc(bt)}</span>`:""}<div class="chips">${ks.map(ezChip).join("")}</div>`).join("")}</div>`).join("")}</div>
+    <p class="hint" style="margin:8px 0 0">Picks also decide which Idols stay.</p>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
+  <div class="ez2">
   <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div></div>
-  <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>`;
+  <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>
+  </div>`;
 }
 function ezSync(){
   const s=EZ.s;
   const sl=$("#ez-rl");if(sl){const i=Math.max(0,EZ_RL.findIndex(x=>+x[0]===s.rl));sl.value=i;sl.setAttribute("aria-valuetext",s.rl?"Rupture Level "+s.rl:"Any");$("#ez-rlo").textContent=s.rl?String(s.rl):"Any";}
+  const pk=EZ_ARCH.filter(a=>s.arch[a.k]).length,pe=$("#ezPicked"),ce=$("#ezCtl .ezclr");
+  if(pe)pe.textContent=pk?pk+" picked":"None picked";if(ce)ce.disabled=!pk;
   $$("#ezCtl button[data-ez]").forEach(b=>{
     const[k,v]=b.dataset.ez.split(",");
+    if(k==="clear")return;
     const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="idol"?s.idol===v:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
@@ -3239,16 +3265,16 @@ function ezPreview(g){
   g=g||easyGen(EZ.s);
   const n=g.rules.length,over=n>MAX_RULES,linked=ezLinked(),div=!!EZ.h&&!linked,act=F.rules.length;
   const sh=[];g.rules.forEach((r,i)=>{for(let k=0;k<i;k++)if(covers(g.rules[k],r)){sh.push("Rule "+(i+1)+" ("+r.name+") is never reached: rule "+(k+1)+" already catches everything it would take.");break;}});
-  let status="";
-  if(over)status=`<div class="ezerr" role="alert"><b>${COPY.over(n)}</b><p class="hint" style="margin:6px 0 0">Nothing was applied. Your filter keeps its ${act} rule${act===1?"":"s"}.</p></div>`;
-  if(div)status+=`<div class="ezbanner" role="alert"><b>Your filter was changed outside Easy Mode.</b><p class="hint" style="margin:6px 0 8px">Easy Mode stopped controlling it, so your work is safe. Replace it with the Easy Mode rules (Ctrl+Z brings yours back) or keep it and carry on in Advanced.</p><div class="ezrow"><button type="button" class="btn danger" data-ezact="replace"${over?" disabled":""}>Replace with Easy Mode rules</button><button type="button" class="btn" data-ezact="keep">Keep my filter, go to Advanced</button></div></div>`;
-  else if(linked)status+=`<p class="hint" style="margin:0 0 10px">Easy Mode controls your filter. Changes apply when you let go of a control.</p>`;
-  else if(ezAsk&&!over)status+=`<div class="ezbanner" role="alert"><b>Replace your current ${act} rule${act===1?"":"s"}?</b><p class="hint" style="margin:6px 0 8px">Easy Mode builds the whole filter. Ctrl+Z brings your rules back.</p><div class="ezrow"><button type="button" class="btn gold" data-ezact="replace">Replace</button><button type="button" class="btn" data-ezact="cancel">Cancel</button></div></div>`;
-  else status+=`<p class="hint" style="margin:0 0 10px">Easy Mode is not applied yet. Your filter stays as it is until you apply it.</p><div class="ezrow" style="margin:0 0 12px"><button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>Apply to my filter</button></div>`;
+  let alerts="",msg="",btn="";
+  if(over)alerts+=`<div class="ezerr" role="alert"><b>${COPY.over(n)}</b><p class="hint" style="margin:6px 0 0">Nothing was applied. Your filter keeps its ${act} rule${act===1?"":"s"}.</p></div>`;
+  if(div)alerts+=`<div class="ezbanner" role="alert"><b>Your filter was changed outside Easy Mode.</b><p class="hint" style="margin:6px 0 8px">Easy Mode stopped controlling it, so your work is safe. Replace it with the Easy Mode rules (Ctrl+Z brings yours back) or keep it and carry on in Advanced.</p><div class="ezrow"><button type="button" class="btn danger" data-ezact="replace"${over?" disabled":""}>Replace with Easy Mode rules</button><button type="button" class="btn" data-ezact="keep">Keep my filter, go to Advanced</button></div></div>`;
+  else if(linked)msg="Applied. Easy Mode controls your filter; changes apply when you let go of a control.";
+  else if(ezAsk&&!over)alerts+=`<div class="ezbanner" role="alert"><b>Replace your current ${act} rule${act===1?"":"s"}?</b><p class="hint" style="margin:6px 0 8px">Easy Mode builds the whole filter. Ctrl+Z brings your rules back.</p><div class="ezrow"><button type="button" class="btn gold" data-ezact="replace">Replace</button><button type="button" class="btn" data-ezact="cancel">Cancel</button></div></div>`;
+  else{msg="Not applied yet. Your filter stays as it is until you apply it.";btn=`<button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>Apply to my filter</button>`;}
   const mn={black:"Hide only",white:"Show and highlight first, then hide the rest"}[g.mode];
   const w=g.notes.concat(sh);
-  const top=status+`
-  ${ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:""}`;
+  const top=alerts+`<div class="ezbrow"><span class="ezcnt${over?" bad":""}"><b>${n} / ${MAX_RULES}</b> rules</span>${msg?`<span class="hint ezmsg">${esc(msg)}</span>`:""}${btn}</div>`+
+  (ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:"");
   const bot=`<div class="sub"><span class="lab">Rule count</span>
     <div class="ezcount"><span>Active filter (badge, top right)</span><b>${act} / ${MAX_RULES}</b></div>
     <div class="ezcount${over?" bad":""}"><span>Easy Mode ${linked?"rules (applied)":"preview (not applied)"}</span><b>${n} / ${MAX_RULES}</b></div></div>
@@ -3286,7 +3312,8 @@ function ezTouched(){
     }
     if(!b.dataset.ez)return;
     const[k,v]=b.dataset.ez.split(","),s=EZ.s;
-    if(k==="arch")s.arch[v]=s.arch[v]?0:1;
+    if(k==="clear")EZ_ARCH.forEach(a=>{s.arch[a.k]=0;});
+    else if(k==="arch")s.arch[v]=s.arch[v]?0:1;
     else if(k==="keep")s.keep[v]=s.keep[v]?0:1;
     else if(k==="hn"||k==="hm")s[k]=s[k]?0:1;
     else if(k==="rl"||k==="tk"||k==="hl")s[k]=+v;
