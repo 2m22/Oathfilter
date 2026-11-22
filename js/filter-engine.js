@@ -85,7 +85,7 @@ const colOf=v=>(COLOURS.find(c=>c[0]===v)||COLOURS.find(c=>c[0]===0));
 const uid=()=>Math.random().toString(36).slice(2,9);
 const newRule=o=>Object.assign({extra:[],m:[]},NEW_RULE,o||{});
 /* MORE options: the part after the ten fields, written as ,3:key=value;key=value (3 = filter version 3). Several entries in one field are joined with + */
-/* key order as the game writes it. Seen in exports (22.11.2026): b a t k n s d i q g gx r rn u (one string with all of them), b s rt, a an na t k n d, b a nb, nr rn, an rn, a all. Guessed: where all, an, na, nb and nr sit among each other, and rt after u. Readers use the key name. */
+/* key order as the game writes it. Seen in exports (22.11.2026): b a t k n s d i q g gx r rn u (one string with all of them), b s rt, a an na t k n d, b a na nb rn, a na rn, b a nb, nr rn, an rn, a all. Guessed: where all, an, na, nb and nr sit among each other, and rt after u. Readers use the key name. */
 const MORE_ORDER=["b","a","all","an","na","nb","t","k","n","s","d","i","q","g","gx","r","nr","rn","u","rt"];
 /* data version of the item lists above */
 const DATA_BUILD={build:87,source:"local game files",read:"2026-11-22",apiChecked:85};
