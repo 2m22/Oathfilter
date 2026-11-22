@@ -2,6 +2,18 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-22 (6)
+
+### Added
+- Module library in the Editor: built-in modules for armour base tiers, defence types, chase reds (including Shard of the Fourth Spark and Mardoth's Last Pebble), caster affix control (hides Adds X to Y Cold Damage and Adds Fire / Cold Attack Damage, keeps Cold Damage to Spells), Dwarven Runes and Quivers, gems and cleanup. Search by name, description, category, base or line, and filter by category.
+- Before a module is inserted you see how many rules it adds, the total out of 200, the insert position, and a warning if it would pass 200 rules or earlier rules would catch its items first.
+- Modules that are too long are split into several rules at the game limits (6 named lines, 12 bases, 12 reds, 6 not-these lines). "Any N" and "all" rules are never split.
+- Your own modules: save from selected rules, rename, edit, duplicate, delete, add a description and category, copy and share. Module and rule names stay in your browser and in shared files, never in the game code.
+- Sell asks for confirmation when it is used for Hide Magic, Hide Normal or custom rules, because a broad or misordered Sell rule can sell items you wanted.
+
+### Changed
+- Cleaner look: duplicate styles removed, hover and focus colours fixed, long names wrap inside lists, the Drop Test control bar scrolls on short windows, and dialogs and messages are no longer covered by help tooltips.
+
 ## 2026-11-22 (5)
 
 ### Added
