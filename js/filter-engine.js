@@ -995,13 +995,13 @@ const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,gems:0,arch:{},keep:{core:1,runes:1,tsw:1}}); /* gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
+const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,arch:{},keep:{core:1,runes:1,tsw:1}}); /* gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
   const s={rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
-    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),gems:n(o.gems,0,2,d.gems),arch:{},keep:{}};
+    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
   if(o.arch&&o.arch.dot){s.arch.pois=s.arch.bleed=s.arch.ign=1;} /* ... and one Damage over time pick */
@@ -1086,7 +1086,7 @@ function easyGen(s,pack){
   else if(s.idol==="match"&&act.length&&!idolA.length)notes.push("None of your picks has Idol lines, so Idols are not touched.");
   /* 3 hide normal / magic gear. With gear picks it comes after them (so shown Magic matches are never caught) and before the catch-all.
         Without picks it must come before the level-floor show rule, or Normal and Magic gear above the floor would be shown first. */
-  const hideR=()=>{if(rarHide)mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:0},s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear");};
+  const hideR=()=>{if(rarHide){const w=s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear";mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:s.hs?4:0},s.hs?"Sell "+w[0].toLowerCase()+w.slice(1):w);}};
   if(!gearA.length)hideR();
   /* 4 gear picks and the level floor */
   if(white){

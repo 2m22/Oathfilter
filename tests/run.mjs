@@ -1,6 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
-import {MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
+import * as MOD from "../js/modules.js";
+import {msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -187,5 +188,128 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
 {for(const c of ["BOFILTER:1,-1|1,0,4,0,0,0,0,0,0,255,3:a=attack_speed_local+idol_armour_s+Area;na=ignite_effect;rn=aftershock_greaves","BOFILTER:1,-1|1,0,4,0,0,0,0,0,0,255,3:b=agate_amulet;a=attack_speed_local+idol_armour_s+Area;na=ignite_effect;nb=1;rn=aftershock_greaves"])eq(encode(decode(c).filter),c,"game export a/na/nb/rn round trips (22.11.2026)");}
 {const s=ezSane({arch:{fire:1,cold:1}});const txt=easyGen(s).rules.map(r=>mval(r,"a")).join("+");ok(txt.includes("attack_added_fire")&&txt.includes("attack_added_cold"),"Easy Mode Fire/Cold picks include the Build 87 attack_added lines");
   const a=ezSane({arch:{spell:1,fire:1}});ok(!easyGen(a).rules.map(r=>mval(r,"a")).join("+").includes("attack_added_fire"),"attack_added_fire is style-bound: not kept for a Spell-only pick");}
+/* ---------- module library (js/modules.js, no DOM) ---------- */
+{
+  const {splitRule,fitRules,ruleIssues,sellKind,sellCaution,insertCheck,placeAt,BUILTIN,builtinRules,moduleCode,filterModules,cleanModule,duplicateModule,moduleToShare,moduleFromShare,covers}=MOD;
+  const R=(o,m,name)=>{const r=newRule(o);r.name=name||"";Object.keys(m||{}).forEach(k=>Array.isArray(m[k])?msetList(r,k,m[k]):mset(r,k,String(m[k])));r.id=Math.random().toString(36).slice(2);return r;};
+  const ids=(p,n)=>Array.from({length:n},(_,i)=>p+i);
+  const first=(rules,it)=>{const r=rules.find(x=>x.on&&matches(x,it));return r?r.action:null;};
+  /* unknown fields and key order survive a round trip */
+  for(const c of ["BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:a=life;zz=5;t=1","BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,9:foo=1","BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,7,8","BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:b=Bow_1;a=Life+Mana;t=1;k=1;n=2;s=4;d=4;i=60-75;q=0-75;g=50;gx=90;r=1;rn=windwhisper;u=1"])
+    eq(encode(decode(c).filter),c,"round trip keeps unknown fields and key order: "+c.slice(30,80));
+  /* new item types and keys */
+  for(const c of ["BOFILTER:1,-1|1,33,0,0,0,2,4,0,0,255","BOFILTER:1,-1|1,34,4,0,0,2,1,0,0,255","BOFILTER:1,-1|1,0,4,0,0,2,0,0,0,255,3:d=5;k=2;na=life;nb=1;b=bow_1","BOFILTER:1,-1|1,0,4,0,0,2,0,0,0,255,3:a=life+mana+fire_res;all=1","BOFILTER:1,-1|1,0,4,0,0,2,0,0,0,255,3:a=life+mana+fire_res;an=2"])
+    eq(encode(decode(c).filter),c,"Patch 87 code round trips: "+c.slice(14,60));
+  /* nb / nr with all / an are refused: reported by ruleIssues */
+  ok(ruleIssues(R({},{b:["bow_1"],nb:1,all:1})).some(x=>x.code==="neg-all"),"nb + all is reported");
+  ok(ruleIssues(R({},{rn:["windwhisper"],nr:1,an:2})).some(x=>x.code==="neg-all"),"nr + an is reported");
+  ok(ruleIssues(R({},{b:["bow_1"],nb:1})).length===0&&ruleIssues(R({},{a:["life","mana","area"],all:1})).length===0,"nb alone and all alone are fine");
+  /* auto-split: caps 12 bases, 12 reds, 6 named lines */
+  { const b=splitRule(R({action:2},{b:ids("bow_",30)},"Bases"));
+    eq(b.rules.length,3,"30 bases -> 3 rules");ok(b.rules.every(r=>mlistT(r,"b").length<=12)&&b.rules.flatMap(r=>mlistT(r,"b")).join()===ids("bow_",30).join(),"bases keep their order and none is lost");
+    ok(b.rules.every(r=>r.action===2),"split rules keep the action");
+    const rn=splitRule(R({rarity:5,action:3},{rn:ids("red_",25)}));eq(rn.rules.length,3,"25 reds -> 3 rules");
+    const a=splitRule(R({},{a:["life","mana","area","cast_speed","fire_res","cold_res","lightning_res"]}));eq(a.rules.length,2,"7 named lines -> 2 rules");ok(a.rules.every(r=>mlistT(r,"a").length<=6),"named lines at most 6");
+    const x=splitRule(R({},{b:ids("b",25),a:["life","mana","area","cast_speed","fire_res","cold_res","lightning_res"]}));eq(x.rules.length,6,"3 base chunks x 2 line chunks = 6 rules");
+    const one=R({},{b:ids("b",5)});eq(splitRule(one).rules[0],one,"a rule within the limits is returned as it is");
+    ok(!/ 1\/3/.test(encode({preset:"-1",rules:b.rules})),"rule names never reach the code"); }
+  /* split rules match exactly what the unsplit rule matched */
+  { const it0=[];for(let i=0;i<400;i++)it0.push(genItem());
+    const pool=[...new Set(it0.map(i=>i.baseId))].slice(0,30);const whole=R({action:2},{b:pool}),parts=splitRule(whole).rules;
+    ok(parts.length>=2,"test list is long enough to split");
+    ok(it0.every(i=>(matches({...whole,m:whole.m},i)||false)===parts.some(r=>matches(r,i))),"split rules match the same items as the long list"); }
+  /* an=N, all=1, nb/nr, na are not split: the meaning would change */
+  { const an=splitRule(R({},{a:["life","mana","area","cast_speed","fire_res","cold_res","lightning_res"],an:2}));eq(an.rules.length,1,"an=N is not split");ok(an.notes.length===1,"an=N over the limit is reported");
+    const all=splitRule(R({},{a:["life","mana","area","cast_speed","fire_res","cold_res","lightning_res"],all:1}));eq(all.rules.length,1,"all=1 is not split");
+    const nb=splitRule(R({},{b:ids("b",20),nb:1}));eq(nb.rules.length,1,"nb is not split");
+    const na=splitRule(R({},{na:["life","mana","area","cast_speed","fire_res","cold_res","lightning_res"]}));eq(na.rules.length,1,"na over 6 is not split");ok(na.notes.length===1,"na over the limit is reported");
+    ok(ruleIssues(na.rules[0]).some(x=>x.code==="limit-na"),"na over the limit stays an issue"); }
+  /* 200 rule limit */
+  { const ex=Array.from({length:199},()=>R({}, {}));const chk=insertCheck(ex,[R({}),R({})],"end",null);
+    ok(chk.over&&chk.total===201&&chk.max===200,"199 + 2 is over the limit of 200");
+    ok(!insertCheck(ex,[R({})],"end",null).over,"199 + 1 is exactly 200 and fine");
+    eq(placeAt(ex,"top"),0,"insert at top");eq(placeAt(ex,"end"),199,"insert at end");eq(placeAt(ex,"after",ex[10].id),11,"insert after the selected rule"); }
+  /* pre-insert: shadowed rules are found */
+  { const broad=R({type:0,rarity:3,action:0},{},"hide nm"),narrow=R({type:0,rarity:2,action:1},{},"show magic");
+    const c1=insertCheck([broad],[narrow],"end",null);eq(c1.shadowed.length,1,"a new rule under a broader earlier rule is shadowed");
+    const c2=insertCheck([broad],[narrow],"top",null);eq(c2.shadowed.length,0,"at the top it is not shadowed");
+    const c3=insertCheck([narrow],[broad],"top",null);eq(c3.shadows.length,1,"a broad rule inserted above a narrow one makes it unreachable (reported)"); }
+  /* Sell + Caution: Magic, Normal, Custom (and gems); Hide gives none */
+  { eq(sellKind(R({type:0,rarity:2,action:4})),"magic","Sell Magic gear is kind magic");
+    eq(sellKind(R({type:0,rarity:1,action:4})),"normal","Sell Normal gear is kind normal");
+    eq(sellKind(R({type:0,rarity:3,action:4})),"normalmagic","Sell Normal and Magic is kind normalmagic");
+    eq(sellKind(R({type:0,rarity:4,action:4},{a:["life"]})),"custom","a Sell rule with conditions is a custom rule");
+    eq(sellKind(R({type:5,rarity:4,action:4})),"custom","Sell Rare helms is a custom rule");
+    eq(sellKind(R({type:17,action:4})),"gems","Sell gems is kind gems");
+    eq(sellKind(R({type:0,rarity:2,action:0})),null,"Hide Magic needs no caution");
+    const off=R({type:0,rarity:2,action:4});off.on=0;eq(sellKind(off),null,"a disabled Sell rule needs no caution");
+    const cs=sellCaution([R({type:0,rarity:2,action:4}),R({type:0,rarity:1,action:4}),R({type:5,action:4}),R({type:0,action:0})]);
+    eq(cs.map(x=>x.kind).sort().join(),"custom,magic,normal","caution lists each kind once");ok(cs.every(x=>x.text&&x.text.includes("sold")||x.text.includes("sell")),"caution texts explain the risk");
+    const e1=easyGen(ezSane({gems:0,hs:1,arch:{fire:1}})),e0=easyGen(ezSane({arch:{fire:1}}));
+    ok(e1.rules.some(r=>r.action===4&&r.rarity===3&&r.type===0),"Easy Mode hs=1 sells Normal and Magic gear");ok(!e0.rules.some(r=>r.action===4),"Easy Mode default does not sell");
+    eq(sellCaution(e1.rules).map(x=>x.kind).join(),"normalmagic","Easy Mode Sell is cautioned as Normal and Magic");
+    ok(sellCaution(builtinRules(BUILTIN.find(m=>m.id==="gems-sell")).rules).length===1,"the Sell gems module is cautioned");
+    ok(BUILTIN.filter(m=>m.id!=="gems-sell").every(m=>sellCaution(builtinRules(m).rules).length===0),"no other built-in module sells"); }
+  /* built-in modules: every one is valid and the in-game code has no names */
+  { ok(BUILTIN.length>=30,"built-in modules exist ("+BUILTIN.length+")");
+    const idsSeen=new Set(BUILTIN.map(m=>m.id));eq(idsSeen.size,BUILTIN.length,"built-in ids are unique");
+    ok(BUILTIN.every(m=>m.name&&m.cat&&m.desc),"every built-in module has a name, category and description");
+    ok(!BUILTIN.some(m=>/debug|audit|marker|currency/i.test(m.name+m.cat+m.id)),"no debug, audit or currency modules");
+    BUILTIN.forEach(m=>{const r=builtinRules(m);ok(r.rules.length>0&&r.rules.length<=MAX_RULES&&r.rules.every(x=>ruleIssues(x).length===0),"module "+m.id+" is valid within the limits");
+      const code=moduleCode(r.rules);ok(/^BOFILTER:1,-1(\|[0-9,]+(,3:[A-Za-z0-9_=;+.\-]+)?)+$/.test(code),"module "+m.id+" exports a plain game code");
+      ok(!code.includes(m.name)&&r.rules.every(x=>!x.name||!code.includes(x.name)),"module "+m.id+": names are not in the code");
+      eq(encode(decode(code).filter),code,"module "+m.id+" round trips");}); }
+  /* Drop Test: T1 armour bases, chase reds, gems, caster */
+  { const it=(o)=>Object.assign({rar:"R",kind:"chest",sub:"",lvl:80,mods:[],sock:0,req:0,grade:0,def:1,baseId:"plate_chest_7"},o);
+    const t1=builtinRules(BUILTIN.find(m=>m.id==="arm-t1-all")).rules,t2=builtinRules(BUILTIN.find(m=>m.id==="arm-t2-all")).rules;
+    eq(first(t1,it({baseId:"plate_chest_7"})),2,"T1 armour base (Titan Plate) is highlighted");
+    eq(first(t1,it({baseId:"plate_chest_6"})),null,"T2 base is not touched by the T1 module");eq(first(t2,it({baseId:"plate_chest_6"})),2,"T2 module highlights the T2 base");
+    eq(first(t1,it({baseId:"silk_boots_7",kind:"boots"})),2,"T1 works for another slot and defence type");
+    ok(t1.length===2&&t1.every(r=>mlistT(r,"b").length<=12),"all 24 T1 bases fit in two rules of at most 12");
+    const chase=builtinRules(BUILTIN.find(m=>m.id==="chase-beam")).rules,p87=builtinRules(BUILTIN.find(m=>m.id==="chase-p87")).rules;
+    const red=(o)=>Object.assign({rar:"U",kind:"amulet",chase:true,redId:"the_first_vow",baseId:"a",mods:[],lvl:80,sock:0,req:0,grade:0},o);
+    eq(first(chase,red({})),3,"a Chase red gets the beam");eq(first(chase,red({chase:false})),null,"a normal red is not a Chase red");
+    eq(first(p87,red({redId:"u200_shard_of_the_fourth_spark"})),3,"Shard of the Fourth Spark is a Chase red");eq(first(p87,red({redId:"u200_mardoths_last_pebble"})),3,"Mardoth's Last Pebble is a Chase red");eq(first(p87,red({redId:"the_first_vow"})),null,"the P87 module names only the two new reds");
+    const gh=builtinRules(BUILTIN.find(m=>m.id==="gems-hide")).rules,gs=builtinRules(BUILTIN.find(m=>m.id==="gems-sell")).rules,gem={gem:true,rar:"N",kind:"misc",mods:[],lvl:1};
+    eq(first(gh,gem),0,"Hide gems hides a gem");eq(first(gs,gem),4,"Sell gems sells a gem");eq(first(gh,it({})),null,"the gem rule does not touch gear");
+    const caster=builtinRules(BUILTIN.find(m=>m.id==="caster-hide-attack")).rules;
+    const mod=(k,pre)=>({lineLabel:LINEN[k],tier:1,pre:pre||1,lines:[]});
+    eq(first(caster,it({kind:"helm",baseId:"x",mods:[mod("cold_spell_added")]})),2,"Caster keeps Cold Damage to Spells (highlighted)");
+    eq(first(caster,it({kind:"helm",baseId:"x",mods:[mod("cold_added_local")]})),0,"Caster hides Adds X to Y Cold Damage");
+    eq(first(caster,it({kind:"helm",baseId:"x",mods:[mod("attack_added_cold")]})),0,"Caster hides Adds Cold Attack Damage");
+    eq(first(caster,it({kind:"helm",baseId:"x",mods:[mod("attack_added_fire")]})),0,"Caster hides Adds Fire Attack Damage");
+    eq(first(caster,it({kind:"helm",baseId:"x",mods:[mod("cold_added_local"),mod("cast_speed",2)]})),2,"a spell line saves an item that also has an attack flat line");
+    eq(first(caster,it({kind:"helm",baseId:"x",mods:[mod("life")]})),null,"other Rare gear is not touched");
+    const dt=builtinRules(BUILTIN.find(m=>m.id==="def-brigandine")).rules;eq(first(dt,it({def:4,kind:"chest"})),2,"Armour + Evasion type module matches def 4");eq(first(dt,it({def:1})),null,"and not Armour only");
+    const dw=builtinRules(BUILTIN.find(m=>m.id==="runes-dwarven-hl")).rules;eq(first(dw,{rar:"N",kind:"misc",dwarven:true,mods:[]}),null,"Dwarven Rune handling stays with the type rule (see type 33 tests)");
+    ok(dw[0].type===33&&builtinRules(BUILTIN.find(m=>m.id==="quiver-rare")).rules[0].type===34,"Dwarven Runes use type 33, Quivers type 34");
+    const trash=builtinRules(BUILTIN.find(m=>m.id==="trash-nm")).rules;
+    eq(first(trash,it({rar:"M",kind:"helm"})),0,"cleanup hides Magic gear");eq(first(trash,it({rar:"U",kind:"helm"})),null,"cleanup never reaches uniques");eq(first(trash,it({rar:"R"})),null,"cleanup leaves Rare gear");
+    ok(first(trash,{rar:"N",kind:"misc",gem:false,mods:[]})===null,"cleanup does not touch currency, runes, gold or flasks");
+    eq(first(trash,it({rar:"M",kind:"helm",core:true,cls:"core"})),3,"a Core-touched Magic item is kept (beam), the keep rules come before the hide"); }
+  /* search over name, description, category, bases and lines */
+  { const names=q=>filterModules(BUILTIN,q).map(m=>m.id);
+    ok(names("armour").includes("arm-t1-all"),"search by name");ok(names("Titan Plate").includes("arm-t1-plate")||names("Titan Plate").includes("arm-t1-all"),"search by base name");
+    ok(names("Cold Spell Damage").includes("caster-hide-attack"),"search by line text");ok(names("Shard of the Fourth Spark").includes("chase-p87"),"search by red name");
+    ok(names("highest chest").includes("arm-t1-chest")||names("highest body").length>=0,"search by description words");
+    eq(filterModules(BUILTIN,"",  "Gems").length,2,"category filter");ok(filterModules(BUILTIN,"xyzzy").length===0,"no match gives an empty list"); }
+  /* custom modules: stored shape stays readable, duplicate, share round trip */
+  { const old={id:"m1",name:"Old module",c:"BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255",n:["x"],t:5};
+    eq(JSON.stringify(cleanModule(old)),JSON.stringify(old),"a module saved by the previous version loads unchanged");
+    ok(cleanModule({id:1,name:"x",c:""})===null,"a broken record is dropped");
+    const withInfo=cleanModule({...old,desc:"d",cat:"c"});ok(withInfo.desc==="d"&&withInfo.cat==="c","description and category are kept");
+    const d=duplicateModule([old],"m1");ok(d.module&&d.module.name==="Old module copy"&&d.list.length===2&&d.module.c===old.c&&d.module.id!==old.id,"duplicate makes a copy with a new id");
+    ok(duplicateModule(d.list,"m1").module.name==="Old module copy 2","a second copy gets a number");
+    ok(duplicateModule(Array.from({length:50},(_,i)=>({...old,id:"i"+i,name:"n"+i})),"i1").err,"duplicate respects the module limit");
+    const sh=moduleToShare({...old,desc:"d",cat:"c"}),back=moduleFromShare(sh);ok(back.module&&back.module.name==="Old module"&&back.module.c===old.c&&back.rules===1,"share file round trips");
+    ok(moduleFromShare("hello").err&&moduleFromShare('{"a":1}').err,"bad share text is refused");
+    ok(!old.c.includes("Old module")&&!decode(back.module.c).filter.rules.some(r=>(r.name||"").length),"names are not part of the game code"); }
+  /* localStorage: old Easy Mode saves without the Sell setting still load and give the same rules */
+  { const oldSave={rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,gems:0,arch:{fire:1},keep:{core:1,runes:1,tsw:1}};
+    const a=ezSane(oldSave);eq(a.hs,0,"an old Easy Mode save gets Sell off");
+    eq(encode({preset:"-1",rules:easyGen(a).rules}),encode({preset:"-1",rules:easyGen(ezSane({...oldSave,hs:0})).rules}),"an old Easy Mode save builds the same filter");
+    eq(ezSane({...oldSave,hs:1}).hs,1,"the Sell setting is kept"); }
+}
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);

@@ -1,3 +1,5 @@
+import {covers,fitRules,placeAt,sellKind} from "./modules.js";
+import {mountModuleUi,mountCaution} from "./module-ui.js";
 import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
@@ -71,6 +73,8 @@ const WAVE='<path d="M16.5 8.5a5 5 0 0 1 0 7"/>';
 /* ---- view ---- */
 /* ---- reactive UI state (Vue 3). The DOM that only mirrors this state (tabs, panels, rule filter, Active only, mode switch, rule counter) is driven by synchronous effects below, so it always follows the state and no render function has to remember to update it. If the Vue module cannot be loaded, a tiny stand-in with the same two functions keeps the page working. ---- */
 let Vue=null;try{Vue=await import("vue");}catch(e){console.warn("Vue could not be loaded, using the built-in fallback.");}
+/* Sell confirmation: a Vue dialog; without Vue the browser confirm is used. Resolves true only when the user confirms. */
+let askCaution=kinds=>Promise.resolve(window.confirm("Caution: Sell sells matching items automatically when they land. A broad or misordered rule can sell items you wanted. Use Sell?"));
 const _fx=new Set();
 const {reactive,watchEffect}=Vue?{reactive:Vue.reactive,watchEffect:f=>Vue.watchEffect(f,{flush:"sync"})}
   :{reactive:o=>new Proxy(o,{set(t,k,v){const ch=t[k]!==v;t[k]=v;if(ch)_fx.forEach(f=>f());return true;}}),watchEffect:f=>{_fx.add(f);f();}};
@@ -83,50 +87,6 @@ watchEffect(()=>{const m=ui.mode;$$("#ezMode button").forEach(b=>b.setAttribute(
 watchEffect(()=>{const n=ui.count,mx=ui.max;$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${n>mx?"color:var(--hide-fg)":""}">${n} / ${mx}</b>`;});
 function setView(v){V.view=v;
   if(v==="test"){renderDrops();}if(v==="io"){renderOut();}if(v==="edit"&&EZ.m==="easy"){ezRefresh();}}
-/* does an earlier active rule catch at least everything this rule catches? (same reading as the drop test) */
-const TYPE_KIDS={1:[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],2:[5,6,7,8],3:[10,11,12]};
-/* true when every item that passes rule b's MORE options also passes rule a's (so a's options cannot exclude anything b would take) */
-function moreImplies(a,b){
-  if(!a.m.length)return true;
-  if(hasRaw(a)||hasRaw(b)||mval(a,"rt")||mval(b,"rt"))return false;
-  const N=(r,k)=>+mval(r,k)||0;
-  const ta=N(a,"t"),na=N(a,"n"),tb=N(b,"t"),nb=N(b,"n");
-  if(ta||na){
-    const need=Math.max(1,na);
-    if(ta){if(!(tb&&tb<=ta&&Math.max(1,nb)>=need))return false;}
-    else if(!(Math.max(1,nb)>=need||(!b.line&&!b.quality&&b.count+1>=need)))return false; /* any tier: b needs at least as many lines */
-  }
-  if(N(a,"s")&&N(b,"s")<N(a,"s"))return false;
-  for(const k of ["i","q"]){
-    const[al,ah]=mrng(a,k),[bl,bh]=mrng(b,k);
-    if(al&&bl<al)return false;
-    if(ah&&!(bh&&bh<=ah))return false;
-  }
-  if(N(a,"g")&&N(b,"g")<N(a,"g"))return false;
-  if(N(a,"gx")&&!(N(b,"gx")&&N(b,"gx")<=N(a,"gx")))return false;
-  const ra=N(a,"r"),rb=N(b,"r");if(ra===1&&rb<1)return false;if(ra===2&&rb!==2)return false;
-  const ua=N(a,"u");if(ua&&N(b,"u")!==ua)return false;
-  for(const k of ["b","rn"]){const A=mlist(a,k),B=mlist(b,k);if(A.length&&!(B.length&&B.every(x=>A.includes(x))))return false;}
-  {const A=mlist(a,"a"),B=mlist(b,"a");
-    if(A.length){
-      const allA=mval(a,"all")==="1"||A.length===1,allB=mval(b,"all")==="1"||B.length===1;
-      if(!B.length)return false;
-      if(allA){if(!(allB&&A.every(x=>B.includes(x))))return false;}                 /* a needs every line: b must need at least those */
-      else if(allB){if(!B.some(x=>A.includes(x)))return false;}                     /* a needs one of A: b needs all of B, one of them is in A */
-      else if(!B.every(x=>A.includes(x)))return false;                              /* both "any": every line b accepts must be accepted by a */
-    }}
-  return true;
-}
-/* Patch 87 keys: a rule that uses d, k, na, nb, nr or an is never reported as covering another rule (not provable here) */
-const NEWKEYS=["d","k","na","nb","nr","an"];
-function covers(a,b){
-  if(!a.on||!b.on)return false;
-  if(NEWKEYS.some(k=>mval(a,k)!==""))return false;if((mval(b,"nb")==="1"&&mlist(a,"b").length)||(mval(b,"nr")==="1"&&mlist(a,"rn").length))return false;if(!moreImplies(a,b))return false;
-  const ra=RAR[a.rarity],rb=RAR[b.rarity];if(!ra||!rb||![...rb].every(c=>ra.includes(c)))return false;
-  if(!((a.type===0&&b.type!==14)||a.type===b.type||(TYPE_KIDS[a.type]||[]).includes(b.type)))return false;
-  const la=LEVEL[a.level],lb=LEVEL[b.level];if(!la||!lb||la[0]>lb[0]||la[1]<lb[1])return false;
-  return (a.line===0||a.line===b.line)&&a.quality<=b.quality&&a.count<=b.count;
-}
 function shadowOf(i){for(let k=0;k<i;k++)if(covers(F.rules[k],F.rules[i]))return k;return -1;}
 function badges(r){
   const b=[];if(r.type)b.push(["cls",nameOf("type",r.type)]);if(r.rarity)b.push(["rar",nameOf("rarity",r.rarity)]);if(r.level)b.push(["lvl","Level "+nameOf("level",r.level).toLowerCase()]);
@@ -492,7 +452,9 @@ document.addEventListener("click",e=>{
   if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<MAXL[k]&&!l.includes(id)){l.push(id);msetList(r,k,l);fixAn(r);touch();renderEditor("#pl-"+k);if(window.matchMedia&&matchMedia("(pointer:fine)").matches){const i=$("#pk-"+k);if(i)i.focus({preventScroll:true});}}return;}
   if(d.pclr){const k=d.pclr;msetList(r,k,[]);fixAn(r);touch();renderEditor("#pl-"+k);return;}
   if(d.prm){const[k,id]=d.prm.split(/,(.+)/);msetList(r,k,mlist(r,k).filter(x=>x!==id));fixAn(r);touch();renderEditor("#pl-"+k);return;}
-  if(d.set){const[k,v]=d.set.split(",");r[k]=+v;touch();return;}
+  if(d.set){const[k,v]=d.set.split(",");
+    if(k==="action"&&+v===4&&r.action!==4){askCaution([sellKind(Object.assign({},r,{action:4,on:1}))]).then(ok=>{if(ok){r.action=4;touch();}});return;}
+    r[k]=+v;touch();return;}
   if(d.col){r.colour=+d.col;touch();return;}
 });
 document.addEventListener("keydown",e=>{
@@ -531,89 +493,37 @@ $("#copyAdv").onclick=()=>{if(EZ.m==="easy"&&V.view==="edit")ezCopy();else copyC
 const MD={key:"oathfilter-modules",max:50,
   all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},
   put(a){try{localStorage.setItem(this.key,JSON.stringify(a));return true;}catch(e){return false;}}};
-let mdMode={},mdOver="";
-const mdMsg=(m,bad)=>{const e=$("#mdMsg");if(!e)return;e.textContent=m;e.style.color=bad?"var(--hide-fg)":"";};
-function mdRules(x){let f;try{f=unpackState(JSON.stringify({c:x.c,n:x.n}));}catch(e){return null;}return f.rules;}
-function renderMD(){
-  const ul=$("#mdList");if(!ul)return;const a=MD.all().sort((x,y)=>ALPHA([0,x.name],[0,y.name])),cur=F.rules.length;
-  if(ul.contains(document.activeElement)&&document.activeElement.matches("input"))return;
-  ul.innerHTML=a.length?a.map(x=>{
-    const rs=mdRules(x)||[],n=rs.length,tot=cur+n,over=tot>MAX_RULES,m=mdMode[x.id];
-    const acts=[...new Set(rs.map(r=>(T.action.find(o=>o[0]===r.action)||[0,"?"])[1]))].join(", ");
-    const info=`<div class="lfi"><b title="${esc(x.name)}">${esc(x.name)}</b><span class="hint">${n} rule${n===1?"":"s"}${acts?" · "+esc(acts):""}</span><span class="hint"${over?' style="color:var(--hide-fg)"':""}>${cur} + ${n} = ${tot} / ${MAX_RULES}</span></div>`;
-    if(m==="ren")return `<li data-md="${x.id}"><input class="field" type="text" maxlength="40" value="${esc(x.name)}" aria-label="New name" data-mdin="${x.id}"><div class="lfb"><button type="button" class="btn gold" data-mda="rensave" data-id="${x.id}">Save</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Cancel</button></div></li>`;
-    if(m==="del")return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn danger" data-mda="delyes" data-id="${x.id}">Delete</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Cancel</button></div></li>`;
-    if(m==="shr")return `<li data-md="${x.id}">${info}<input class="field" type="text" readonly value="${esc(mdShr[x.id]||"")}" aria-label="Share link" data-mdurl="1" style="flex:1 1 100%"><div class="lfb"><button type="button" class="btn" data-mda="cplink" data-id="${x.id}">Copy link</button><button type="button" class="btn" data-mda="cpdisc" data-id="${x.id}">Copy for Discord</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Close</button></div></li>`;
-    if(m==="rep")return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn danger" data-mda="repyes" data-id="${x.id}">Replace current filter</button><button type="button" class="btn" data-mda="cancel" data-id="${x.id}">Cancel</button></div><p class="hint" style="margin:0;flex:1 1 100%">This replaces your ${cur} rule${cur===1?"":"s"} with these ${n}. Ctrl+Z brings them back.</p></li>`;
-    return `<li data-md="${x.id}">${info}<div class="lfb"><button type="button" class="btn" data-mda="ins" data-id="${x.id}"${over?' disabled title="Over the limit of '+MAX_RULES+' rules. Delete some rules first."':""}>Insert</button><button type="button" class="btn" data-mda="rep" data-id="${x.id}">Replace filter</button><button type="button" class="btn" data-mda="shr" data-id="${x.id}">Share</button><button type="button" class="btn" data-mda="ren" data-id="${x.id}">Rename</button><button type="button" class="btn" data-mda="del" data-id="${x.id}">Delete</button></div>${over?`<p class="hint" style="margin:0;flex:1 1 100%;color:var(--hide-fg)">Too many rules for the game's limit. Delete ${tot-MAX_RULES} rule${tot-MAX_RULES===1?"":"s"} first.</p>`:""}</li>`;
-  }).join(""):`<li class="hint" style="border-style:dashed">No modules yet. Save a few rules above.</li>`;
-  const f=ul.querySelector("[data-mdin]");if(f){f.focus();f.select();}
-}
-function mdLoad(x){const rs=mdRules(x);if(!rs||!rs.length){mdMsg("This module could not be read.",true);mdMode={};renderMD();return;}
-  mdMode={};setFilter({preset:"-1",rules:rs});mdMsg("");toast("Started from “"+x.name+"” ("+rs.length+" rule"+(rs.length===1?"":"s")+"). "+COPY.undo);}
-function mdInsert(x){const rs=mdRules(x);if(!rs||!rs.length){mdMsg("This module could not be read.",true);return;}mdPlace(rs,x.name);}
-function mdPlace(rs,name){
+let mdUi=null;
+function renderMD(){if(mdUi)mdUi.refresh();}
+/* insert rules into the filter at top / after the selected rule / end (the list and the pre-insert check are in module-ui.js; shared links use this too) */
+function mdPlace(rs,name,pos="after"){
   if(typeof EZ!=="undefined"&&EZ.m==="easy")return false;
   const n=rs.length,tot=F.rules.length+n;
-  if(tot>MAX_RULES){mdMsg(F.rules.length+" + "+n+" = "+tot+" / "+MAX_RULES+". Delete "+(tot-MAX_RULES)+" rule"+(tot-MAX_RULES===1?"":"s")+" first.",true);return false;}
-  const pos=$("#mdPos").value;let at=F.rules.length;
-  if(pos==="top")at=0;else if(pos==="after"){const i=F.rules.findIndex(r=>r.id===S.cur);if(i>=0)at=i+1;}
+  if(tot>MAX_RULES){toast(F.rules.length+" + "+n+" = "+tot+" / "+MAX_RULES+". Delete "+(tot-MAX_RULES)+" rule"+(tot-MAX_RULES===1?"":"s")+" first.",true);return false;}
+  const fit=fitRules(rs);rs=fit.rules;
+  const at=placeAt(F.rules,pos,S.cur);
   rs.forEach(r=>{r.id=uid();if(!r.extra)r.extra=[];if(!r.m)r.m=[];});
   F.preset="-1";F.rules.splice(at,0,...rs);S.cur=rs[0].id;V.filter="all";V.q="";$("#rq").value="";
-  fullRender();mdMsg("");toast("Inserted "+n+" rule"+(n===1?"":"s")+(name?" from “"+name+"”":"")+". "+COPY.undo);
-  const w=rs.filter(r=>Object.keys(MAXL).some(k=>mlist(r,k).length>MAXL[k])).length;if(w)toast("Inserted. "+w+" rule"+(w>1?"s go":" goes")+" over a list limit (6 named lines, 12 bases, 12 reds, 6 not-these lines).",true);
+  fullRender();toast("Inserted "+rs.length+" rule"+(rs.length===1?"":"s")+(name?" from “"+name+"”":"")+". "+COPY.undo);
+  if(fit.notes.length)toast(fit.notes[0],true);
   return true;
 }
-/* share a module: same link service and offline fallback as the filter share */
-let mdShr={},mdBusy=false;
+/* share a module: same link service and offline fallback as the filter share. Returns {url,offline} or null. */
 async function mdShare(x){
-  if(mdBusy)return;const pl={bofilter:x.c,ruleNames:(x.n||[]).map(v=>String(v||"").slice(0,NAME_MAX))};
-  mdBusy=true;mdMsg("Creating link…");let url="";
+  const pl={bofilter:x.c,ruleNames:(x.n||[]).map(v=>String(v||"").slice(0,NAME_MAX))};
   try{const key=await shKey(pl),old=shCache.get(key,shBase());
-    if(old)url=old;else{try{url=shBase()+"#f="+await shPost(pl);shCache.put(key,url);}catch(e){url=shBase()+"#s="+await shPack(pl);}}}
-  catch(e){mdBusy=false;mdMsg("The link could not be created.",true);return;}
-  mdBusy=false;mdShr={};mdShr[x.id]=url;mdMode={};mdMode[x.id]="shr";mdMsg(url.indexOf("#s=")>0?"Offline link created. It works without the service"+(url.length>1800?", but it is long and Discord may cut it.":"."):"Link created.",url.length>1800);renderMD();
+    if(old)return {url:old,offline:old.indexOf("#s=")>0};
+    try{const url=shBase()+"#f="+await shPost(pl);shCache.put(key,url);return {url,offline:false};}catch(e){const url=shBase()+"#s="+await shPack(pl);return {url,offline:true};}}
+  catch(e){return null;}
 }
-async function mdCopy(txt,ok){
-  try{await navigator.clipboard.writeText(txt);mdMsg(ok);return;}catch(e){}
-  const u=$("#mdList [data-mdurl]");if(u){u.focus();u.select();}mdMsg(COPY.blocked+" The link is selected: press Ctrl+C.",true);}
-$("#mdSave").onclick=()=>{
-  const name=$("#mdName").value.trim().slice(0,40),n=F.rules.length;
-  if(!name){mdMsg("Give the module a name first.",true);$("#mdName").focus();return;}
-  if(!n){mdMsg("There are no rules to save.",true);return;}
-  const cur=F.rules.findIndex(r=>r.id===S.cur)+1;
-  let a=parseInt($("#mdFrom").value,10),b=parseInt($("#mdTo").value,10);
-  if(!a)a=cur;if(!b)b=a;
-  if(!(a>=1)||b<a||b>n){mdMsg("Choose rule numbers from 1 to "+n+", with “From” not above “To”.",true);return;}
-  const all=MD.all(),i=all.findIndex(x=>x.name.toLowerCase()===name.toLowerCase());
-  if(i>=0&&mdOver!==name.toLowerCase()){mdOver=name.toLowerCase();mdMsg("“"+all[i].name+"” already exists. Click Save again to overwrite it.");return;}
-  if(i<0&&all.length>=MD.max){mdMsg("You can keep up to "+MD.max+" modules. Delete one first.",true);return;}
-  const rules=F.rules.slice(a-1,b),rec={id:i>=0?all[i].id:"m"+Date.now().toString(36)+uid().slice(0,3),name:i>=0?all[i].name:name,c:encode({preset:"-1",rules}),n:rules.map(r=>r.name||""),t:Date.now()};
-  if(i>=0)all[i]=rec;else all.unshift(rec);
-  if(!MD.put(all)){mdMsg(COPY.storage,true);return;}
-  mdOver="";mdMsg((i>=0?"Updated “":"Saved “")+rec.name+"” ("+rules.length+" rule"+(rules.length===1?"":"s")+").");$("#mdName").value="";$("#mdFrom").value="";$("#mdTo").value="";renderMD();};
-$("#mdAll").onclick=()=>{if(!F.rules.length){mdMsg("There are no rules to save.",true);return;}$("#mdFrom").value=1;$("#mdTo").value=F.rules.length;$("#mdSave").click();};
-$("#mdName").addEventListener("input",()=>{mdOver="";});
-$("#mdName").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#mdSave").click();}});
-$("#mdList").addEventListener("keydown",e=>{const i=e.target.closest("[data-mdin]");if(i&&e.key==="Enter"){e.preventDefault();const b=$("#mdList [data-mda=rensave]");if(b)b.click();}if(i&&e.key==="Escape"){mdMode={};renderMD();}});
-$("#mdList").addEventListener("click",e=>{
-  const b=e.target.closest("[data-mda]");if(!b||b.disabled)return;const id=b.dataset.id,all=MD.all(),x=all.find(y=>y.id===id);if(!x)return;const act=b.dataset.mda;
-  if(act==="ins"){mdInsert(x);return;}
-  if(act==="shr"){mdShare(x);return;}
-  if(act==="cplink"){mdCopy(mdShr[id]||"","Link copied.");return;}
-  if(act==="cpdisc"){mdCopy("[Oathfilter module]("+(mdShr[id]||"")+")","Discord link copied.");return;}
-  if(act==="rep"){if(!F.rules.length){mdLoad(x);return;}mdMode={};mdMode[id]="rep";renderMD();const q=$("#mdList [data-mda=repyes]");if(q)q.focus();return;}
-  if(act==="repyes"){mdLoad(x);return;}
-  if(act==="ren"){mdMode={};mdMode[id]="ren";renderMD();return;}
-  if(act==="del"){mdMode={};mdMode[id]="del";renderMD();const q=$("#mdList [data-mda=delyes]");if(q)q.focus();return;}
-  if(act==="cancel"){mdMode={};renderMD();return;}
-  if(act==="rensave"){const inp=$("#mdList [data-mdin]"),nn=(inp?inp.value:"").trim().slice(0,40);
-    if(!nn){mdMsg("Give the module a name.",true);return;}
-    if(all.some(y=>y.id!==id&&y.name.toLowerCase()===nn.toLowerCase())){mdMsg("Another module is already called “"+nn+"”.",true);return;}
-    x.name=nn;mdMode={};if(!MD.put(all))mdMsg(COPY.storage,true);else mdMsg("Renamed.");renderMD();return;}
-  if(act==="delyes"){const r=all.filter(y=>y.id!==id);mdMode={};if(MD.put(r))mdMsg("Deleted “"+x.name+"”.");else mdMsg("Could not delete (browser storage error).",true);renderMD();return;}
-});
-renderMD();
+if(Vue){
+  mdUi=mountModuleUi(Vue,{F:()=>F,curId:()=>S.cur,easy:()=>typeof EZ!=="undefined"&&EZ.m==="easy",insert:(rs,pos,name)=>mdPlace(rs,name,pos),
+    replace:(rs,name)=>{setFilter({preset:"-1",rules:fitRules(rs).rules});toast("Started from “"+name+"” ("+rs.length+" rule"+(rs.length===1?"":"s")+"). "+COPY.undo);},
+    toast,share:mdShare,store:MD,storageMsg:COPY.storage,copyBlocked:COPY.blocked+" Select the text and press Ctrl+C."},$("#mdApp"));
+  askCaution=mountCaution(Vue,$("#cautionHost"));
+}else{
+  $("#mdApp").innerHTML='<p class="hint">The module library needs the Vue library, which could not be loaded. Check your connection and reload the page.</p>';
+}
 /* ---- old local filters: read-only, copied into modules once ---- */
 const LF={key:"oathfilter-saved",max:50,
   all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},
@@ -1662,7 +1572,7 @@ function ezBuild(){
     <p class="hint" style="margin:8px 0 0">Picks also decide which Idols stay.</p>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
   <div class="ez2">
-  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div><span class="lab" style="margin-top:10px;display:block">Gems</span><div class="chips">${ezBtn("gems,1","Hide gems")}${ezBtn("gems,2","Sell gems")}</div><p class="hint" style="margin:6px 0 0">Neither: gems are not touched. A gem under a Sell rule is sold when it lands.</p></div>
+  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div><span class="lab" style="margin-top:10px;display:block">How</span><div class="chips">${ezBtn("hs","Sell instead of hide")}</div><p class="hint" style="margin:6px 0 0">Sell sells Normal and Magic gear when it lands. Caution: sold items are gone.</p><span class="lab" style="margin-top:10px;display:block">Gems</span><div class="chips">${ezBtn("gems,1","Hide gems")}${ezBtn("gems,2","Sell gems")}</div><p class="hint" style="margin:6px 0 0">Neither: gems are not touched. A gem under a Sell rule is sold when it lands.</p></div>
   <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>
   </div>`;
 }
@@ -1674,7 +1584,7 @@ function ezSync(){
   $$("#ezCtl button[data-ez]").forEach(b=>{
     const[k,v]=b.dataset.ez.split(",");
     if(k==="clear")return;
-    const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="gems"?s.gems===+v:k==="idol"?s.idol===v:String(s[k])===v;
+    const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm"||k==="hs")?s[k]:k==="gems"?s.gems===+v:k==="idol"?s.idol===v:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
   $("#ez-ilv").textContent=s.rl?"Rupture Level "+s.rl+": only tiers up to item level "+s.rl+" can drop. Gear needs a picked line within the "+(s.tk===1?"best tier":"best "+s.tk+" tiers")+" that can drop; weaker lines are hidden. Pick at least one.":"Any: no tier limit. Set your Rupture Level to hide gear whose picked lines are too weak for what drops there.";
@@ -1730,10 +1640,15 @@ function ezTouched(){
     }
     if(!b.dataset.ez)return;
     const[k,v]=b.dataset.ez.split(","),s=EZ.s;
+    /* Sell needs a confirmation first (Caution); turning it off needs none */
+    if((k==="hs"&&!s.hs)||(k==="gems"&&+v===2&&s.gems!==2)){
+      const kind=k==="gems"?"gems":s.hn&&!s.hm?"normal":s.hm&&!s.hn?"magic":"normalmagic";
+      askCaution([kind]).then(ok=>{if(ok){if(k==="hs")s.hs=1;else s.gems=2;EZ.s=ezSane(s);ezTouched();}});return;}
     if(k==="clear")EZ_ARCH.forEach(a=>{s.arch[a.k]=0;});
     else if(k==="arch")s.arch[v]=s.arch[v]?0:1;
     else if(k==="keep")s.keep[v]=s.keep[v]?0:1;
     else if(k==="hn"||k==="hm")s[k]=s[k]?0:1;
+    else if(k==="hs")s.hs=s.hs?0:1;
     else if(k==="gems")s.gems=s.gems===+v?0:+v;
     else if(k==="rl"||k==="tk"||k==="hl")s[k]=+v;
     else if(k==="idol")s.idol=v;

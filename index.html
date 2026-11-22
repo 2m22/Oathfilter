@@ -83,14 +83,9 @@
     <div class="sub"><label class="lab" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div>
     <div class="sub" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
-    <details class="sub ezdet" id="mdBox"><summary style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.8rem;color:var(--text)">Modules</summary>
-      <div class="hrow" style="margin:8px 0"><p class="hint" style="margin:0">Save rules as a reusable module and insert them into any filter.</p><button type="button" class="hlp" data-help="modules" aria-label="Help: Modules" aria-expanded="false">?</button></div>
-      <label class="lab" for="mdName">Name for the new module</label>
-      <input id="mdName" class="field" type="text" maxlength="40" placeholder="e.g. Hide junk" autocomplete="off">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:8px"><div style="flex:1 1 90px"><label class="lab" for="mdFrom">From rule</label><input id="mdFrom" class="field" type="number" min="1" inputmode="numeric"></div><div style="flex:1 1 90px"><label class="lab" for="mdTo">To rule</label><input id="mdTo" class="field" type="number" min="1" inputmode="numeric"></div><button type="button" class="btn gold" id="mdSave">Save as module</button><button type="button" class="btn" id="mdAll">Save whole filter</button></div>
-      <p class="hint" id="mdMsg" role="status" aria-live="polite" style="margin:8px 0"></p>
-      <label class="lab" for="mdPos">Insert at</label><div class="selwrap"><select id="mdPos"><option value="after">After selected rule</option><option value="top">Top</option><option value="end">End</option></select></div>
-      <ul class="lfl" id="mdList" style="margin-top:10px"></ul></details>
+    <details class="sub ezdet" id="mdBox"><summary style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.8rem;color:var(--text-main)">Modules</summary>
+      <div class="hrow" style="margin:8px 0"><p class="hint" style="margin:0">Built-in modules and your own. Check the result before you insert it.</p><button type="button" class="hlp" data-help="modules" aria-label="Help: Modules" aria-expanded="false">?</button></div>
+      <div id="mdApp"><p class="hint">Loading modules…</p></div></details>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:12px"><div class="seg" role="group" aria-label="Show rules" id="rfilter" style="flex:1 1 auto;margin:0"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button><button type="button" data-rf="sell" aria-pressed="false">Sell</button></div><button type="button" class="btn actonly" id="rfAct" data-rfact="1" aria-pressed="false" title="Show only rules that are switched on">Active only</button></div>
     <div class="sub" style="margin-top:12px"><button type="button" class="btn" id="chkOrder" style="width:100%">Check rule order</button><div id="chkOut" role="status" aria-live="polite"></div></div>
     <p class="hint" id="rhint" style="margin:12px 0 0"></p>
@@ -308,5 +303,6 @@
 <!-- the deploy workflow stamps the build id and the newest changelog heading into the two placeholders below -->
 <script>window.__OF={build:"__BUILD__",rel:"__REL__"};</script>
 <script type="module" src="js/app.js"></script>
+<div id="cautionHost"></div>
 </body>
 </html>

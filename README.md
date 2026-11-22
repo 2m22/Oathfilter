@@ -10,12 +10,13 @@ A single-page loot filter builder and drop simulator for **Broken Oath**. Import
 
 ## Features & Usage
 
-Open `index.html` in any modern browser — no build step, no installation required.
+Open `index.html` in any modern browser — no build step, no installation required. The UI uses Vue 3 (module library), Tailwind CSS (utilities) and Lucide (icons) from a CDN; the filter logic (`js/filter-engine.js`, `js/modules.js`) has no DOM or framework dependency, and `node tests/run.mjs` runs without a browser.
 
 * **Editor:** Create and organize rule cards with action, rarity, item type, level, line, quality, count, colour, and sound. Search and filter across your rule list.
 * **Easy / Advanced Mode:** Toggle **Easy Mode** at the top to generate a complete filter from a Rupture Level floor and a few clicks, or switch to **Advanced** for full rule-level control.
 * **Drop Test:** Simulate random drops against your active filter to see which rule matches each item, or check a drop screenshot directly against your rules.
 * **Import, Copy & Share:** Paste a `BOFILTER:1,...` code, load a saved/shared filter, or copy and share your setup from the top editor bar.
+* **Modules:** Insert built-in modules (armour base tiers, defence types, chase reds, caster affix control, Dwarven Runes and Quivers, gems, cleanup) or your own. Before inserting, the check shows the new rule count out of 200, the position and rules that would be shadowed. Oversized lists are split into several rules at the game limits (`an=N` rules are never split). **Sell** needs a confirmation for Hide Magic, Hide Normal and custom rules. Module, rule and author names stay in the browser and in share files, never in the game code.
 * **Game Presets:** Load the five built-in game filters (*All loot*, *Tidy*, *Strict*, *Very strict*, *End Game*) from the preset menu above the rule list.
 
 ---
