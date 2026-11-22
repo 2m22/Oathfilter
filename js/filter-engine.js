@@ -960,8 +960,8 @@ const EZ_ARCH=[
  {k:"spell",n:"Spells",col:7,ids:["spell_inc","cast_speed","skill_level","crit_local","crit_multi"],idol:["idol_grand_eng_brand","idol_grand_spark_plus"]},
  {k:"minion",n:"Minions",col:7,ids:["minion_dmg","minion_life","minion_speed","minion_crit","minion_crit_multi"],idol:["idol_grand_skeleton_plus","idol_grand_skeleton_wizard_plus"]},
  {k:"phys",n:"Physical",el:1,col:7,ids:["phys_inc_local","phys_added_local","attack_added_phys"],idol:["idol_grand_phys_as_fire"]},
- {k:"fire",n:"Fire",el:1,col:7,ids:["fire_dmg_inc","fire_pen95_2h","fire_spell_added","fire_added_local"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
- {k:"cold",n:"Cold",el:1,col:7,ids:["cold_dmg_inc","cold_pen95_2h","chill_effect","freeze_duration","cold_spell_added","cold_added_local"],idol:[]},
+ {k:"fire",n:"Fire",el:1,col:7,ids:["fire_dmg_inc","fire_pen95_2h","fire_spell_added","fire_added_local","attack_added_fire"],idol:["idol_elemental_s","idol_grand_elemental_pen"]},
+ {k:"cold",n:"Cold",el:1,col:7,ids:["cold_dmg_inc","cold_pen95_2h","chill_effect","freeze_duration","cold_spell_added","cold_added_local","attack_added_cold"],idol:[]},
  {k:"light",n:"Lightning",el:1,col:7,ids:["lightning_dmg_inc","lightning_pen95_2h","shock_chance","shock_effect","lightning_spell_added","lightning_added_local","attack_added_lightning"],idol:[]},
  {k:"holy",n:"Holy (Idols)",el:1,col:7,ids:[],idol:["idol_holy_damage_m"]},
  {k:"pois",n:"Poison",el:1,col:7,ids:["poison_dmg_inc","poison_effect","poison_pen85_2h","dot_multi","poison_spell_added"],idol:[]},
@@ -986,7 +986,7 @@ const EZ_ARCH=[
  {k:"evasion",n:"Evasion",col:7,ids:["evasion_local","defence_inc"],idol:["idol_evasion_s"]},
  {k:"es",n:"Energy Shield",col:7,ids:["es_global","defence_inc"],idol:[]}]; /* Increased Defences counts for all three; a shared line is listed once. The Idol Energy Shield line has the same text as es_global, so it needs no extra id. */
 /* Style-bound element lines. A line tagged "spell" or "attack" only stays when that style is picked (or no style is picked). Everything else of a picked element stays. */
-const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",
+const EZ_ST={phys_inc_local:"attack",phys_added_local:"attack",attack_added_phys:"attack",fire_added_local:"attack",cold_added_local:"attack",lightning_added_local:"attack",attack_added_lightning:"attack",attack_added_fire:"attack",attack_added_cold:"attack",
  fire_spell_added:"spell",cold_spell_added:"spell",lightning_spell_added:"spell",poison_spell_added:"spell"};
 const EZ_ATK=["attack","melee","slam","bow"];
 const EZ_GRP=[["Playstyle","play",[["",["attack","spell","minion","melee","slam","bow","trap","totem"]]]],["Damage & Ailments","dmg",[["Damage types",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]]]],["Defences","def",[["",["life","armour","evasion","es","res"]]]],["Utility","util",[["",["aoe","chain","channel","orbit","curse","move","mana","leech"]]]]]; /* every chip id stays; only the grouping changed */
@@ -1046,20 +1046,20 @@ function easyGen(s,pack){
   /* a line that two picks share (crit, for example) is listed once, under the first pick that has it, so it never wastes an a= slot or a rule */
   const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
   const og=own(),oi=own();
-  /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 4 per rule. */
+  /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 6 per rule. */
   const gearA=act.map(a=>{const ids=ezGearIds(a,s).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99})).sort((x,y)=>x.t-y.t);
-    const parts=pack?[]:ezTP(ids); /* same rule count as without a tier limit: sorted by limit, 4 per rule, the loosest line of a rule sets its limit */
+    const parts=pack?[]:ezTP(ids); /* same rule count as without a tier limit: sorted by limit, up to 6 per rule, the loosest line of a rule sets its limit */
     return{a,parts,ids};}).filter(x=>x.ids.length);
   let idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a,s).filter(oi))})).filter(x=>x.parts.length);
   let gearP=gearA;
-  /* too many rules: one shared list for all picks (4 lines per rule across picks, one colour). The caller falls back to this only when the normal build is over the limit. */
+  /* too many rules: one shared list for all picks (up to 6 lines per rule across picks, one colour). The caller falls back to this only when the normal build is over the limit. */
   if(pack){
     const gi=gearA.flatMap(x=>x.ids),ii=idolA.flatMap(x=>x.parts.flat());
     const col=act[0]?act[0].col:6;
     gearP=gi.length?[{a:{n:"Gear picks",col},parts:ezTP(gi.slice().sort((x,y)=>x.t-y.t))}]:[];
     idolA=ii.length?[{a:{n:"Idol picks",col},parts:ezChunks(ii)}]:[];
   }
-  /* picks with the same colour share rules (any-of lines with the same action, colour and tier limit behave exactly like one rule), so 4 lines fill a rule even across picks */
+  /* picks with the same colour share rules (any-of lines with the same action, colour and tier limit behave exactly like one rule), so 6 lines fill a rule even across picks */
   if(!pack){
     const byCol=(list,get)=>{const m=new Map();list.forEach(x=>{const c=x.a.col;if(!m.has(c))m.set(c,{n:[],col:c,ids:[]});const g=m.get(c);g.n.push(x.a.n);g.ids.push(...get(x));});return[...m.values()];};
     gearP=byCol(gearA,x=>x.ids).map(g=>({a:{n:g.n.length>3?"Picks":g.n.join(" + "),col:g.col},parts:ezTP(g.ids.slice().sort((x,y)=>x.t-y.t))}));

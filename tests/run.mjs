@@ -185,5 +185,7 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
 {const c="BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:b=Bow_1;a=Life+Mana;t=1;k=1;n=2;s=4;d=4;i=60-75;q=0-75;g=50;gx=90;r=1;rn=windwhisper;u=1";eq(encode(decode(c).filter),c,"game export with 14 keys round trips (22.11.2026)");
   const r=newRule();c.split(",3:")[1].split(";").reverse().forEach(x=>{const[k,v]=x.split("=");mset(r,k,v);});eq(r.m.map(x=>x[0]).join(","),"b,a,t,k,n,s,d,i,q,g,gx,r,rn,u","Oathfilter writes these 14 keys in the game order");}
 {for(const c of ["BOFILTER:1,-1|1,0,4,0,0,0,0,0,0,255,3:a=attack_speed_local+idol_armour_s+Area;na=ignite_effect;rn=aftershock_greaves","BOFILTER:1,-1|1,0,4,0,0,0,0,0,0,255,3:b=agate_amulet;a=attack_speed_local+idol_armour_s+Area;na=ignite_effect;nb=1;rn=aftershock_greaves"])eq(encode(decode(c).filter),c,"game export a/na/nb/rn round trips (22.11.2026)");}
+{const s=ezSane({arch:{fire:1,cold:1}});const txt=easyGen(s).rules.map(r=>mval(r,"a")).join("+");ok(txt.includes("attack_added_fire")&&txt.includes("attack_added_cold"),"Easy Mode Fire/Cold picks include the Build 87 attack_added lines");
+  const a=ezSane({arch:{spell:1,fire:1}});ok(!easyGen(a).rules.map(r=>mval(r,"a")).join("+").includes("attack_added_fire"),"attack_added_fire is style-bound: not kept for a Spell-only pick");}
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
