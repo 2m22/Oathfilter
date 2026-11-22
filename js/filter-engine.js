@@ -64,7 +64,7 @@ const COPY={
 };
 /* Help popovers: every ? button carries data-help=<key>. Opens on hover, focus and click/tap (click keeps it open). */
 const T={
- type:[[0,"Any gear"],[1,"Weapons"],[2,"Armour"],[3,"Jewellery"],[4,"Rune bases"],[5,"Helms"],[6,"Body armour"],[7,"Gloves"],[8,"Boots"],[9,"Shields and foci"],[10,"Rings"],[11,"Amulets"],[12,"Belts"],[13,"Core-touched"],[14,"Idols"],[15,"4+ sockets"],[16,"Truesworn"],[17,"Gems"],[18,"Bows"],[19,"Claws"],[20,"Daggers"],[21,"Dual blades"],[22,"Fist weapons"],[23,"2H swords"],[24,"2H axes"],[25,"2H maces"],[26,"Mace and shield"],[27,"1H axes"],[28,"1H maces"],[29,"1H swords"],[30,"Scythes"],[31,"Staves"],[32,"Wands"]],
+ type:[[0,"Any gear"],[1,"Weapons"],[2,"Armour"],[3,"Jewellery"],[4,"Rune bases"],[5,"Helms"],[6,"Body armour"],[7,"Gloves"],[8,"Boots"],[9,"Shields, foci & quivers"],[10,"Rings"],[11,"Amulets"],[12,"Belts"],[13,"Core-touched"],[14,"Idols"],[15,"4+ sockets"],[16,"Truesworn"],[17,"Gems"],[18,"Bows"],[19,"Claws"],[20,"Daggers"],[21,"Dual blades"],[22,"Fist weapons"],[23,"2H swords"],[24,"2H axes"],[25,"2H maces"],[26,"Mace and shield"],[27,"1H axes"],[28,"1H maces"],[29,"1H swords"],[30,"Scythes"],[31,"Staves"],[32,"Wands"],[33,"Dwarven Runes"],[34,"Quivers"]],
  rarity:[[0,"Any rarity"],[1,"Normal"],[2,"Magic"],[3,"Normal and magic"],[4,"Rare"],[5,"Rare and unique"]],
  level:[[0,"Any level"],[1,"Below 20"],[2,"Below 40"],[3,"Below 60"],[4,"Below 75"],[5,"60 and up"],[6,"75 and up"],[7,"82 and up"]],
  line:[[0,"Any line"],[1,"Life"],[2,"Resistance"],[3,"Minion"],[4,"Move speed"],[5,"+Skill levels"],[6,"Spell"],[7,"Critical"],[8,"Attack speed"],[9,"Cast speed"],[10,"Mana"],[11,"Fire damage"],[12,"Cold damage"],[13,"Lightning damage"],[14,"Physical damage"],[15,"Poison and ignite"],[16,"Fire res"],[17,"Cold res"],[18,"Lightning res"],[19,"Poison res"],[20,"Attributes"],[21,"Defence"],[22,"Leech and recovery"],[23,"Area"],[24,"Bleed and DoT"],[25,"Curses"],[26,"Cooldown recovery"]],
@@ -85,7 +85,9 @@ const colOf=v=>(COLOURS.find(c=>c[0]===v)||COLOURS.find(c=>c[0]===0));
 const uid=()=>Math.random().toString(36).slice(2,9);
 const newRule=o=>Object.assign({extra:[],m:[]},NEW_RULE,o||{});
 /* MORE options: the part after the ten fields, written as ,3:key=value;key=value (3 = filter version 3). Several entries in one field are joined with + */
-const MORE_ORDER=["t","n","s","i","q","g","gx","r","u","rt","b","a","rn","all"];
+/* order of the keys the game wrote in exports; where an=, na=, nb=, nr= sit relative to all= is a guess (readers use the key name) */
+const MORE_ORDER=["t","n","k","d","s","i","q","g","gx","r","u","rt","b","nb","a","an","na","nr","rn","all"];
+const MAXL={a:6,b:12,rn:12,na:6}; /* list limits shown in the game (Patch 87) */
 const parseMore=s=>s.split(";").filter(x=>x!=="").map(seg=>{const i=seg.indexOf("=");return i<0?[seg,null]:[seg.slice(0,i),seg.slice(i+1)];});
 const moreStr=r=>r.m&&r.m.length?",3:"+r.m.map(p=>p[1]===null?p[0]:p[0]+"="+p[1]).join(";"):"";
 const mval=(r,k)=>{const p=(r.m||[]).find(x=>x[0]===k);return p&&p[1]!==null?p[1]:"";};
@@ -124,11 +126,13 @@ function decode(text){
   const odd=f.rules.filter(r=>["type","rarity","level","line","action","colour","quality","count","sound"].some(k=>!known(k,r[k]))).length;
   if(odd)notes.push(odd+" rule"+(odd>1?"s use":" uses")+" values this page does not know. They are kept as they are, but the drop test may read them wrongly.");
   if(f.rules.length>MAX_RULES)notes.push("The code has "+f.rules.length+" rules. "+COPY.limit);
-  const wide=[];f.rules.forEach((r,i)=>{const n=mlist(r,"a").length;if(n>4)wide.push((i+1)+" ("+n+")");});
-  if(wide.length)notes.push("Rule "+wide.slice(0,6).join(", ")+(wide.length>6?" …":"")+" lists more than 4 named lines. The Editor allows 4 per rule, so check how the game reads the extra lines.");
+  const wide=[];f.rules.forEach((r,i)=>{const over=Object.keys(MAXL).map(k=>mlist(r,k).length-MAXL[k]).some(x=>x>0),n=mlist(r,"a").length;if(over)wide.push((i+1)+" ("+n+")");});
+  const clash=[];f.rules.forEach((r,i)=>{if((mval(r,"nb")==="1"||mval(r,"nr")==="1")&&(mval(r,"all")==="1"||mval(r,"an")))clash.push(i+1);});
+  if(wide.length)notes.push("Rule "+wide.slice(0,6).join(", ")+(wide.length>6?" …":"")+" goes over a list limit (6 named lines, 12 bases, 12 reds, 6 not-these lines). The Editor keeps to these limits, so check how the game reads the extra entries.");
+  if(clash.length)notes.push("Rule "+clash.slice(0,6).join(", ")+" combines a \"none of these\" bases or reds list with All or Any N of the lines. The game does not allow that.");
   if(f.rules.some(r=>r.extra.length||hasRaw(r)))notes.push("Some rules carry fields this page does not know. They are kept as they are.");
   const warn=[];if(f.rules.length>MAX_RULES)warn.push("Your saved filter has "+f.rules.length+" rules. "+COPY.limit);
-  if(wide.length)warn.push("A saved rule lists more than 4 named lines. The Editor allows 4 per rule.");if(bad)warn.push("A saved rule had unreadable fields and was filled with defaults.");
+  if(wide.length)warn.push("A saved rule goes over a list limit (6 named lines, 12 bases, 12 reds, 6 not-these lines).");if(bad)warn.push("A saved rule had unreadable fields and was filled with defaults.");
   return{filter:f,notes,warn};
 }
 
@@ -144,30 +148,36 @@ const RAR={0:"NMRU",1:"N",2:"M",3:"NM",4:"R",5:"RU"};
 function typeMatch(t,it){
   if(it.kind==="misc")return false;
   switch(t){
-    case 0:return it.kind!=="idol"; /* "Any gear" does not catch idols (game: tooltip named the Idols rule, not an earlier Any-gear rule) */
+    case 0:return it.kind!=="idol"&&it.kind!=="rune"; /* Any gear catches quivers (Patch 87) but not Dwarven Runes: those only match an explicit rule */ /* "Any gear" does not catch idols (game: tooltip named the Idols rule, not an earlier Any-gear rule) */
     case 1:return it.kind==="weapon";
     case 2:return["helm","chest","gloves","boots"].includes(it.kind);
     case 3:return["ring","amulet","belt"].includes(it.kind);
     case 4:return it.runebase;case 13:return it.core;case 15:return it.sockets4Plus;case 16:return it.truesworn;
     case 5:return it.kind==="helm";case 6:return it.kind==="chest";case 7:return it.kind==="gloves";case 8:return it.kind==="boots";
-    case 9:return it.kind==="shield"||it.kind==="tome";case 10:return it.kind==="ring";case 11:return it.kind==="amulet";case 12:return it.kind==="belt";case 14:return it.kind==="idol";
+    case 9:return it.kind==="shield"||it.kind==="tome"||it.kind==="quiver";case 33:return it.kind==="rune";case 34:return it.kind==="quiver";case 10:return it.kind==="ring";case 11:return it.kind==="amulet";case 12:return it.kind==="belt";case 14:return it.kind==="idol";
     case 17:return false;
     default:{const sub={18:"bow",19:"claw",20:"dagger",21:"dual",22:"fist",23:"sword2h",24:"axe2h",25:"mace2h",26:"macesh",27:"axe1h",28:"mace1h",29:"sword1h",30:"scythe",31:"staff",32:"wand"}[t];return it.sub===sub;}
   }
 }
+const defOf=tags=>{const a=tags.includes("Armour"),e=tags.includes("Evasion"),z=tags.includes("EnergyShield");return a&&e?4:a&&z?5:e&&z?6:a?1:e?2:z?3:0;};
 function rollOk(q,m){if(!q)return true;return q===1?m.tier<=2:m.tier<=1;}
 function moreMatch(r,it){
   const t=+mval(r,"t")||0,n=+mval(r,"n")||0,s=+mval(r,"s")||0,g=+mval(r,"g")||0,gx=+mval(r,"gx")||0,rd=+mval(r,"r")||0,u=+mval(r,"u")||0;
-  if(t||n){const c=it.mods.filter(m=>!t||m.tier<=t).length;if(c<Math.max(1,n))return false;}
+  const k=+mval(r,"k")||0,dd=+mval(r,"d")||0;
+  if(dd&&it.def!==dd)return false;
+  if(t||n){const c=it.mods.filter(m=>(!t||m.tier<=t)&&(!k||m.pre===k)).length;if(c<Math.max(1,n))return false;} /* k=1 only prefix lines, k=2 only suffix lines (confirmed in game) */
   if(s&&it.sock<s)return false;
   const[il,ih]=mrng(r,"i");if((il&&it.lvl<il)||(ih&&it.lvl>ih))return false;
   const[ql,qh]=mrng(r,"q");if((ql&&it.req<ql)||(qh&&it.req>qh))return false;
   if(g&&it.grade<g)return false;if(gx&&it.grade>=gx)return false;
   if(rd===1&&it.rar!=="U")return false;if(rd===2&&!(it.rar==="U"&&it.chase))return false;
   if(u===1&&it.unsworn)return false;if(u===2&&!it.unsworn)return false;
-  const bs=mlist(r,"b");if(bs.length&&!bs.includes(it.baseId))return false;
-  const rs=mlist(r,"rn");if(rs.length&&!rs.includes(it.redId))return false;
-  const as=mlist(r,"a");if(as.length){const has=id=>it.mods.some(m=>m.lineLabel&&m.lineLabel===LINEN[id]);if(!(mval(r,"all")==="1"?as.every(has):as.some(has)))return false;} /* named lines: "any of them" by default, "all of them" with all=1 (shown in the game) */
+  const bs=mlist(r,"b");if(bs.length&&(mval(r,"nb")==="1"?bs.includes(it.baseId):!bs.includes(it.baseId)))return false;
+  const rs=mlist(r,"rn");if(rs.length&&(mval(r,"nr")==="1"?rs.includes(it.redId):!rs.includes(it.redId)))return false;
+  const as=mlist(r,"a");const hasL=id=>it.mods.some(m=>m.lineLabel&&m.lineLabel===LINEN[id]);
+  if(as.length){const an=+mval(r,"an")||0;const ok=mval(r,"all")==="1"?as.every(hasL):an?as.filter(hasL).length>=an:as.some(hasL);if(!ok)return false;}
+  const nas=mlist(r,"na");if(nas.length&&nas.some(hasL))return false; /* "Not these lines": none of them may be on the item */
+   /* named lines: "any of them" by default, "all of them" with all=1 (shown in the game) */
   return true;
 }
 function matches(r,it){
@@ -864,7 +874,7 @@ function rollMods(tags,lvl,want,maxEach,tp){
   const add=(a,mode)=>{
     used.add(a.group);a.type==="P"?p++:s++;
     const tier=tierPick(a,lvl,mode);
-    mods.push({id:a.id,lineLabel:LINEN[a.id]||LINEN[a.id.replace(/^Idol(.+?)_/,(m,x)=>"idol_"+x.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase()+"_")]||"",group:a.group,tier,tiers:a.n,lines:LINEMAP[a.group]||[]});
+    mods.push({id:a.id,pre:a.type==="P"?1:2,lineLabel:LINEN[a.id]||LINEN[a.id.replace(/^Idol(.+?)_/,(m,x)=>"idol_"+x.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase()+"_")]||"",group:a.group,tier,tiers:a.n,lines:LINEMAP[a.group]||[]});
   };
   const full=a=>used.has(a.group)||(a.type==="P"?p>=maxEach:s>=maxEach);
   if(tp.top){ /* forced good lines first, from affixes that can reach T1 at this item level */
@@ -894,7 +904,7 @@ function genItem(f){
   if(rar==="U"){
     const u=pick(UNIQUES),b=u.base; /* every red is equally likely, so every named red can be tested */
     const sk=Math.random()<.06?4+rnd(3):rnd(4);
-    return{id:uid(),name:u.name,baseId:b.id,redId:u.id||redIdOf(u.name),kind:b.kind,sub:b.sub,rar:"U",lvl:u.lvl,mods:[],core:false,sock:sk,sockets4Plus:sk>=4,truesworn:false,runebase:false,grade:0,req:Math.max(1,Math.round(u.lvl*.8)),unsworn:Math.random()<.12,chase:CHASE.has(u.name),label:b.name+" · "+u.stats+(u.flag==="P"?" · primal":u.flag==="S"?" · signature":u.flag==="C"?" · chase":"")};
+    return{id:uid(),name:u.name,def:defOf(b.tags),baseId:b.id,redId:u.id||redIdOf(u.name),kind:b.kind,sub:b.sub,rar:"U",lvl:u.lvl,mods:[],core:false,sock:sk,sockets4Plus:sk>=4,truesworn:false,runebase:false,grade:0,req:Math.max(1,Math.round(u.lvl*.8)),unsworn:Math.random()<.12,chase:CHASE.has(u.name),label:b.name+" · "+u.stats+(u.flag==="P"?" · primal":u.flag==="S"?" · signature":u.flag==="C"?" · chase":"")};
   }
   const key=cl?(cl.rar==="I"?"idol:":pick(CATKEYS.filter(k=>k!=="idol:"))):pick(CATKEYS);
   let lvl=1+rnd(84);if(cl&&cl.hi)lvl=84;if(cl&&f.lvl)lvl=f.lvl; /* T1 and T2 of most affixes only roll at the top item level */
@@ -910,7 +920,7 @@ function genItem(f){
   if(rar==="R")mods=rollMods(b.tags,Math.max(lvl,b.lvl),Math.min(6,Math.max(3+rnd(3),tp&&tp.top||0)),3,tp);
   const nm={N:"Normal",M:"Magic",R:"Rare"}[rar];
   const sock=Math.random()<.06?4+rnd(3):rnd(4),tw=Math.random()<.05,il=Math.max(lvl,b.lvl);
-  return{id:uid(),name:nm+" "+b.name,baseId:b.id,kind:b.kind,sub:b.sub,rar,lvl:il,mods,core:b.variant==="ct"||Math.random()<.04,cls:cl?(cl.rar==='I'?'Idol size '+f.size:cl.label+(cl.top==='n'?' '+mods.filter(m=>m.tier===1).length+'×T1'+(mods.filter(m=>m.tier===1).length<f.n?' (asked '+f.n+')':''):'')):'',sock,sockets4Plus:sock>=4,truesworn:tw,grade:tw?90+rnd(11):1+rnd(89),req:Math.max(1,Math.round(il*.8)),unsworn:rar==="R"&&Math.random()<.12,runebase:rar==="N"&&Math.random()<.2,label:""};
+  return{id:uid(),name:nm+" "+b.name,def:defOf(b.tags),baseId:b.id,kind:b.kind,sub:b.sub,rar,lvl:il,mods,core:b.variant==="ct"||Math.random()<.04,cls:cl?(cl.rar==='I'?'Idol size '+f.size:cl.label+(cl.top==='n'?' '+mods.filter(m=>m.tier===1).length+'×T1'+(mods.filter(m=>m.tier===1).length<f.n?' (asked '+f.n+')':''):'')):'',sock,sockets4Plus:sock>=4,truesworn:tw,grade:tw?90+rnd(11):1+rnd(89),req:Math.max(1,Math.round(il*.8)),unsworn:rar==="R"&&Math.random()<.12,runebase:rar==="N"&&Math.random()<.2,label:""};
 }
 
 
@@ -1096,4 +1106,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,NAME_MAX};
+export {defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,NAME_MAX};

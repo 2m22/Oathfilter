@@ -1,6 +1,6 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
-import {MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY} from "../js/filter-engine.js";
+import {MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -61,6 +61,38 @@ for(const n of [1,40,41,100,199,200]){
   const rot=[...f.rules.slice(57),...f.rules.slice(0,57)];
   const split=c=>c.split("|").slice(1).sort().join("|");
   eq(split(encode({preset:"-1",rules:rot})),split(encode(f)),"reordering loses no rule");
+}
+
+/* ---- Patch 87 keys: d, k, na, nb, nr, an (strings as the game exported them) ---- */
+const P87=["1,0,4,0,0,3,0,0,0,255,3:d=4","1,0,4,0,0,3,0,0,0,255,3:t=1;k=1;n=2","1,0,4,0,0,3,0,0,0,255,3:k=2;n=1",
+ "1,0,4,0,0,2,1,0,0,255,3:a=life;na=fire_res+cast_speed","1,0,4,0,0,0,0,0,0,255,3:a=life+fire_res+req_reduce+evasion_local+cast_speed+Area;an=3",
+ "1,0,4,0,0,0,0,0,0,255,3:b=bow_1+bow_2;nb=1","1,0,1,0,0,0,0,0,0,255,3:nr=1;rn=windwhisper","1,0,4,0,0,3,0,0,0,255,3:a=vow_effect98","1,34,0,0,0,1,0,0,0,255","1,33,0,0,0,1,0,0,0,255","1,17,0,0,0,4,0,0,0,255"];
+P87.forEach(r=>{const c="BOFILTER:1,-1|"+r;eq(encode(decode(c).filter),c,"Patch 87 round trip: "+r.split(",3:")[1]);});
+ok(decode("BOFILTER:1,-1|"+P87[4]).notes.length===0,"6 named lines are fine");
+ok(decode("BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:a=life+fire_res+req_reduce+evasion_local+cast_speed+Area+mana").notes.some(x=>x.includes("list limit")),"7 named lines warn");
+ok(decode("BOFILTER:1,-1|1,0,4,0,0,0,0,0,0,255,3:b=bow_1;nb=1;an=2").notes.some(x=>x.includes("does not allow")),"nb with an warns");
+eq(T.type.find(o=>o[0]===34)[1],"Quivers","type 34 is Quivers");eq(T.type.find(o=>o[0]===33)[1],"Dwarven Runes","type 33 is Dwarven Runes");
+eq(defOf(["Chest","Armour","EnergyShield"]),5,"defence type Armour + ES");eq(defOf(["Ring"]),0,"no defence type");
+{
+  const mk=(o)=>Object.assign({id:"x",name:"t",kind:"helm",sub:"",rar:"R",lvl:80,def:4,baseId:"b1",redId:"",sock:0,grade:1,req:60,mods:[]},o);
+  const mod=(label,pre,tier)=>({lineLabel:label,pre,tier,lines:[],group:label});
+  const R=s=>decode("BOFILTER:1,-1|"+s).filter.rules[0];
+  const it=mk({mods:[mod(LINEN.life,1,1),mod(LINEN.fire_res,2,3)]});
+  ok(matches(R(P87[0]),it)&&!matches(R(P87[0]),mk({def:1})),"d: defence type must be equal");
+  ok(matches(R(P87[1].replace("n=2","n=1")),it),"k=1: one T1 prefix counts");
+  ok(!matches(R(P87[1]),it),"k=1 n=2: only one prefix, rule does not match");
+  ok(!matches(R("1,0,4,0,0,3,0,0,0,255,3:t=1;k=2;n=1"),it),"k=2 t=1: the only suffix is T3");
+  ok(matches(R("1,0,4,0,0,3,0,0,0,255,3:k=2;n=1"),it),"k=2: one suffix counts");
+  ok(matches(R("1,0,4,0,0,3,0,0,0,255,3:a=life;na=cast_speed"),it),"na: line not on the item");
+  ok(!matches(R("1,0,4,0,0,3,0,0,0,255,3:a=life;na=fire_res"),it),"na: line on the item blocks the rule");
+  ok(matches(R("1,0,4,0,0,3,0,0,0,255,3:a=life+fire_res+cast_speed;an=2"),it),"an=2: two of three");
+  ok(!matches(R("1,0,4,0,0,3,0,0,0,255,3:a=life+cast_speed+mana;an=2"),it),"an=2: only one of three");
+  ok(matches(R("1,0,4,0,0,3,0,0,0,255,3:b=bow_1+bow_2;nb=1"),it)&&!matches(R("1,0,4,0,0,3,0,0,0,255,3:b=bow_1+b1;nb=1"),it),"nb: none of these bases");
+  ok(matches(R("1,0,4,0,0,3,0,0,0,255,3:nr=1;rn=windwhisper"),mk({rar:"U",redId:"x"}))===false,"nr rule does not match a rare item");
+  ok(matches(R("1,0,5,0,0,3,0,0,0,255,3:nr=1;rn=windwhisper"),mk({rar:"U",redId:"x"})),"nr: a red that is not in the list");
+  ok(!matches(R("1,0,5,0,0,3,0,0,0,255,3:nr=1;rn=windwhisper"),mk({rar:"U",redId:"windwhisper"})),"nr: a red that is in the list");
+  ok(matches(R("1,34,0,0,0,1,0,0,0,255"),mk({kind:"quiver",rar:"R"}))&&matches(R("1,9,0,0,0,1,0,0,0,255"),mk({kind:"quiver",rar:"R"})),"types 34 and 9 catch quivers");
+  ok(!matches(R("1,0,0,0,0,1,0,0,0,255"),mk({kind:"rune",rar:"U"}))&&matches(R("1,33,0,0,0,1,0,0,0,255"),mk({kind:"rune",rar:"U"})),"Dwarven Runes only match type 33");
 }
 
 console.log(passed+" passed, "+failed+" failed");
