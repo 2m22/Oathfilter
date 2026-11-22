@@ -126,7 +126,9 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .tabs button[aria-selected="true"]{background:var(--accent-gold-soft);border-color:var(--accent-gold);color:var(--text-main)}
 
 /* rule list */
-@media (min-width:1100px){#rows{max-height:calc(100vh - 300px);overflow-y:auto;padding-right:4px}}
+@media (min-width:1100px){#rows{max-height:calc(100vh - 300px);overflow-y:auto;padding-right:4px}
+/* Advanced Mode: the RULES column stays in view while the rule editor scrolls (same 8px offset as the Drop Test bar; the header is not sticky). The column never grows past the viewport and scrolls on its own if its content does. */
+#edCols>.plate.l{position:sticky;top:8px;max-height:calc(100vh - 16px);overflow-y:auto}}
 #rows{display:flex;flex-direction:column;gap:6px;margin-top:12px}
 .rc{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 10px;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;transition:background-color .15s,border-color .15s}
 .rc:hover{background:var(--bg-card-hover);border-color:var(--border-strong)}
