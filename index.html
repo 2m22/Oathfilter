@@ -325,16 +325,16 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .ezgt{display:flex;align-items:center;gap:6px;margin:0 0 8px;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-gold)}
 .ezgl{display:block;margin:8px 0 4px}.ezgt+.ezgl{margin-top:0}
 .ezwant{gap:10px}.ezpk{margin-left:auto;font-size:.85rem;color:var(--text-muted)}.ezclr{min-height:30px;padding:0 12px;font-size:.85rem}.ezclr:disabled{opacity:.45;cursor:default}
-#ezCtl .cb2{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 10px}
-#ezCtl .cb2::before{content:"";flex:none;width:16px;height:16px;border:2px solid var(--border-strong);border-radius:50%;box-sizing:border-box;background:transparent}
-#ezCtl .cb2[aria-pressed="true"]{background:var(--accent-gold);border-color:var(--accent-gold);color:#15110a;font-weight:700;box-shadow:0 0 0 2px var(--bg-card),0 0 0 4px var(--accent-gold)}
-#ezCtl .cb2[aria-pressed="true"]::before{content:"\2713";display:flex;align-items:center;justify-content:center;border-color:#15110a;background:#15110a;color:var(--accent-gold);font-size:11px;line-height:1;font-weight:900}
-.ezfoot{position:sticky;bottom:0;z-index:5;margin:14px -4px 0;padding:10px 12px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-card);box-shadow:0 -6px 14px rgba(0,0,0,.25)}
+#ezCtl .cb2{display:inline-flex;align-items:center;gap:7px;padding:8px 14px 8px 11px}
+#ezCtl .cb2 .ezico{flex:none;opacity:.8}
+#ezCtl .cb2[aria-pressed="true"]{background:var(--accent-gold);border:2px solid #fff3cf;color:#15110a;font-weight:700;padding:7px 13px 7px 10px}
+#ezCtl .cb2[aria-pressed="true"] .ezico{opacity:1}
+.ezfoot{margin:18px 0 0;padding:10px 12px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-card);}
 .ezbrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.ezbrow .btn{margin-left:auto}
 .ezcnt b{font-size:1.1rem;color:var(--accent-gold)}.ezcnt.bad b{color:var(--hide-fg)}.ezmsg{margin:0;flex:1 1 220px}
 .ezfoot .ezerr,.ezfoot .ezbanner{margin:0 0 10px}.ezfoot .sub{margin-top:10px}
 .ezpair{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-@media (max-width:700px){.ezfoot{position:static;box-shadow:none;margin:14px 0 0}.ezbrow .btn{margin-left:0;flex:1 1 100%}}
+@media (max-width:700px){.ezbrow .btn{margin-left:0;flex:1 1 100%}}
 #rtip{max-height:calc(100vh - 16px);overflow:hidden}
 @media (max-width:560px){.ezbar{gap:10px}.ezbar .seg{flex:1 1 100%}.ezbar .ezact{margin-left:0;width:100%}.ezbar .ezact .btn{flex:1 1 130px}.eztk span:nth-child(even){display:none}}
 .updlog{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.8125rem;color:var(--text-main)}
@@ -3223,11 +3223,12 @@ function ezMode(m,quiet){
   if(EZ.m==="easy"&&!quiet)ezRefresh();
 }
 /* ---- controls ---- */
-const ezBtn=(d,label)=>`<button type="button" class="cb2" data-ez="${d}" aria-pressed="false">${esc(label)}</button>`;
+const EZ_CI={attack:'<path d="M4 20 15 9M13 5l6 6M15 9l5-5"/>',spell:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',minion:'<circle cx="12" cy="9" r="5"/><path d="M9 14v4h6v-4M10 8.500h.01M14 8.500h.01"/>',melee:'<path d="M5 19 17 7M14 4h6v6M4 16l4 4"/>',slam:'<path d="M12 3v10M8 9l4 4 4-4M5 20h14"/>',bow:'<path d="M6 4c8 2 8 14 0 16M6 12h14M16 8l4 4-4 4"/>',chain:'<path d="M3 12h4l3-6 4 12 3-6h4"/>',trap:'<path d="M12 4l8 14H4z"/><path d="M12 10v3"/>',totem:'<path d="M9 3h6v18H9zM9 8h6M9 14h6"/>',channel:'<path d="M5 12a7 7 0 0 1 14 0M8 12a4 4 0 0 1 8 0M12 12v8"/>',orbit:'<circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9" ry="4"/>',phys:'<path d="M12 3l8 5v8l-8 5-8-5V8z"/>',fire:'<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 3-6 .5 1.500 1.500 2 2 3 0-3-1-4 0-7z"/>',cold:'<path d="M12 3v18M4 7.500l16 9M20 7.500l-16 9"/>',light:'<path d="M13 2 5 14h6l-1 8 8-12h-6z"/>',pois:'<path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/>',holy:'<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',bleed:'<path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/>',ign:'<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 3-6"/><path d="M12 14v4"/>',life:'<path d="M12 20s-8-5-8-11a4.500 4.500 0 0 1 8-2 4.500 4.500 0 0 1 8 2c0 6-8 11-8 11z"/>',armour:'<path d="M12 3l7 3v6c0 4.500-3 7.500-7 9-4-1.500-7-4.500-7-9V6z"/>',evasion:'<path d="M4 8h10M2 12h14M4 16h10M18 6l4 6-4 6"/>',es:'<path d="M12 3l7 3v6c0 4.500-3 7.500-7 9-4-1.500-7-4.500-7-9V6z"/><path d="M13 8l-3 5h3l-1 3"/>',res:'<circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/>',aoe:'<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/>',curse:'<path d="M7 3h10v8a5 5 0 0 1-10 0zM9 21l3-4 3 4"/>',move:'<path d="M5 18l7-12 7 12M9 13h6"/>',mana:'<path d="M12 3l6 9-6 9-6-9z"/>',leech:'<path d="M12 4v10M8 10l4 4 4-4M5 20h14"/>'};
+const ezBtn=(d,label,ic)=>`<button type="button" class="cb2" data-ez="${d}" aria-pressed="false">${ic?ezIco(ic):""}<span>${esc(label)}</span></button>`;
 const ezSeg=(k,list,lab)=>`<div class="seg" role="group" aria-label="${esc(lab)}">${list.map(([v,l])=>`<button type="button" data-ez="${k},${v}" aria-pressed="false">${esc(l)}</button>`).join("")}</div>`;
 const EZ_ICO={play:'<path d="M5 19 19 5M14 5h5v5M7 17l-3 3"/>',dmg:'<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 3-6 .5 1.5 1.5 2 2 3 0-3-1-4 0-7z"/>',def:'<path d="M12 3l7 3v6c0 4.500-3 7.500-7 9-4-1.500-7-4.500-7-9V6z"/>',util:'<path d="M13 2 5 14h6l-1 8 8-12h-6z"/>'};
-const ezIco=k=>`<svg class="ezico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${EZ_ICO[k]||""}</svg>`;
-const ezChip=k=>{const a=EZ_ARCH.find(x=>x.k===k);return ezBtn("arch,"+a.k,a.n);};
+const ezIco=k=>`<svg class="ezico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${EZ_ICO[k]||EZ_CI[k]||""}</svg>`;
+const ezChip=k=>{const a=EZ_ARCH.find(x=>x.k===k);return ezBtn("arch,"+a.k,a.n,a.k);};
 function ezBuild(){
   $("#ezCtl").innerHTML=`
   <div class="ez2">
