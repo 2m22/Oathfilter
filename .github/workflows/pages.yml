@@ -46,9 +46,10 @@ jobs:
           # guard: a page that has the update check must have a real build id and a version.json
           for d in _site _site/test; do
             [ -f "$d/index.html" ] || continue
-            if grep -q 'const REL="__REL__"' "$d/index.html"; then echo "::error::$d still has the __REL__ placeholder"; exit 1; fi
-            if grep -q 'const BUILD=' "$d/index.html"; then
-              grep -q 'const BUILD="[0-9a-f]\{10\}"' "$d/index.html" && [ -f "$d/version.json" ] || { echo "::error::$d has no build id / version.json"; exit 1; }
+            if grep -q '__REL__\|__BUILD__' "$d/index.html"; then echo "::error::$d still has a __REL__ / __BUILD__ placeholder"; exit 1; fi
+            # old single-file layout: const BUILD="..." in index.html; new layout: window.__OF={build:"...",rel:"..."} in index.html
+            if grep -q 'const BUILD=\|window.__OF' "$d/index.html"; then
+              grep -q 'const BUILD="[0-9a-f]\{10\}"\|build:"[0-9a-f]\{10\}"' "$d/index.html" && [ -f "$d/version.json" ] || { echo "::error::$d has no build id / version.json"; exit 1; }
             fi
           done
           ls -R _site | head -30
