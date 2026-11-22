@@ -942,7 +942,7 @@ const LVSTEPS=[10,20,30,40,50,60,68,70,75,80,84,90];
 const rngText=(lo,hi,w)=>lo&&hi?w+" "+lo+"–"+hi:lo?w+" "+lo+"+":hi?w+" up to "+hi:"";
 /* ---- Easy Mode v1 ----
    Builds a whole filter from a few controls. Only uses things confirmed in the game data or the game's own exports:
-   named lines with a= (max 4 per rule), i= item level steps, type 14 for Idols (type 0 does not cover Idols).
+   named lines with a= (max 6 per rule), i= item level steps, type 14 for Idols (type 0 does not cover Idols).
    Named lines match by their text, so a gear line such as spell_inc also catches the Idol line with the same text.
    No Gems, no roll quality, no line 1..26 guesses. The state lives in its own storage key; the filter code carries nothing of it. */
 const EZ_KEY="oathfilter-easy";
@@ -1018,7 +1018,7 @@ function ezEff(a,s){
 const ezGearIds=(a,s)=>ezLines(ezEff(a,s));
 const ezIdolIds=(a,s)=>ezLines(ezEff(a,s).concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
 /* tier limit t for one gear line at Rupture Level rl: for each affix with this text, the best tier whose item level is <= rl, plus (keep-1) tiers; the loosest affix decides. 0 = no limit. */
-function ezTP(ids){const parts=[];[ids.filter(x=>x.t!==99),ids.filter(x=>x.t===99)].forEach(g=>{for(let i=0;i<g.length;i+=4){const c=g.slice(i,i+4),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}});return parts;} /* lines without a known tier limit get their own rules, so they never lift the limit of the other lines */
+function ezTP(ids){const parts=[];[ids.filter(x=>x.t!==99),ids.filter(x=>x.t===99)].forEach(g=>{for(let i=0;i<g.length;i+=MAXL.a){const c=g.slice(i,i+MAXL.a),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}});return parts;} /* lines without a known tier limit get their own rules, so they never lift the limit of the other lines */
 function ezThr(id,rl,keep){
   if(!rl)return 0;const t=LINEN[id];let thr=0,top=0;
   AFF.forEach(a=>{if(/^idol/i.test(a.id)||LINEN[a.id]!==t)return; /* Idol affixes (also the idol_grand_* ones) never drop on gear, so they must not loosen a gear rule */
@@ -1028,7 +1028,7 @@ function ezThr(id,rl,keep){
   if(thr&&top===1)return 1; /* a one-tier line is always T1, so it must not lift the limit of the rule it sits in */
   return thr&&thr<Math.min(top,EZ_TMAX)?thr:0;
 }
-const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=4)p.push(ids.slice(i,i+4));return p;};
+const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=MAXL.a)p.push(ids.slice(i,i+MAXL.a));return p;};
 function easyGen(s,pack){
   s=ezSane(s);
   const notes=[],R=[],rl=s.rl;
