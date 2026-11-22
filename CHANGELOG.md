@@ -2,6 +2,22 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-22 (4)
+
+### Added
+- Patch 87 filter options in the Editor (More conditions): Defence type (Armour, Evasion, Energy shield and the three mixes), Count lines of type (Prefix or Suffix lines only, for Tier and Lines), Not these lines (up to 6), None of these for bases and reds, and Any N of them for named lines.
+- Item types Dwarven Runes and Quivers. Type 9 is now "Shields, foci & quivers".
+- New named line: Vow effect (amulet suffix). Two missing lines, Adds Fire and Cold Attack Damage, were added too.
+- Drop Test: 34 new Core Touched armour bases, 52 new reds (including the chase reds Shard of the Fourth Spark and Mardoth's Last Pebble) from game build 87.
+
+### Changed
+- New list limits as in the game: 6 named lines, 12 bases, 12 reds and 6 not-these lines per rule. The rule limit is 200.
+- Easy Mode puts six lines into one rule instead of four, so the filter needs fewer rules.
+- Imported codes keep the key order they came with. Oathfilter writes new codes in the order the game uses.
+
+### Fixed
+- Ids that the game writes with a capital letter (Life, Mana, Bow_1) are now found. Before, their names were missing and the rule did not match in the Drop Test.
+
 ## 2026-11-22 (3)
 
 ### Changed
