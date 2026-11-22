@@ -48,7 +48,9 @@ function dItemName(it){
 const PRIMAL_IDS=new Set(["the_oath_unbroken", "signet_of_the_lost_order_chain_reaction", "signet_of_the_lost_order_iron_resolve", "signet_of_the_lost_order_blood_magic", "signet_of_the_lost_order_elemental_overload", "signet_of_the_lost_order_spellblade", "signet_of_the_lost_order_hollow_covenant", "kingbreaker_primal", "gravesong_primal", "gravecleaver_primal", "tidebreaker_maul_primal", "stormfang_primal", "rimecrown_staff_primal", "cinderwick_primal"]);
 const redIdOf=n=>{const base=n.replace(/ \(Primal\)$/,""),pr=base!==n,l=RED_IDS[base]||[];return l.find(i=>PRIMAL_IDS.has(i)===pr)||l[0]||"";};
 /* BOFILTER format: Broken Oath developer file loot_filter.md (build 73) and the community Broken Oath Builder. */
-const MAX_RULES=40;
+const MAX_RULES=200;
+/* Easy Mode keeps its own, smaller target: past this many rules the picks share rules (see easyGen). Kept at the old limit so Easy Mode output does not change. */
+const EASY_PACK_LIMIT=40;
 /* Shared copy: one wording for messages that appear in several places */
 const COPY={
  sell:"Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell.",
@@ -184,7 +186,7 @@ function matches(r,it){
   return moreMatch(r,it);
 }
 const NEVER_HIDDEN=it=>it.rar==="U"||it.kind==="misc";
-/* Drop Test source: in Easy Mode the Easy preview rules (when they fit the 40 rule limit), otherwise the active filter F. Cached per REV. */
+/* Drop Test source: in Easy Mode the Easy preview rules (when they fit the rule limit), otherwise the active filter F. Cached per REV. */
 const SIM={rev:-1,m:"",rules:null,easy:false,n:0};
 function simRules(){
   const em=typeof EZ!=="undefined"&&!!EZ&&EZ.m==="easy",k=em?"e":"a";
@@ -985,7 +987,7 @@ function easyGen(s,pack){
     mk({type:0,rarity:s.hn&&s.hm?4:0,action:0},"Everything else"); /* Normal and Magic are already hidden above, so only Rares are left to hide */
   }
   if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
-  if(!pack&&R.length>MAX_RULES&&act.length){const g=easyGen(s,true);if(g.rules.length<R.length){g.notes.push("Too many rules for the 40 limit, so the picks share rules and one colour: "+R.length+" rules became "+g.rules.length+".");return g;}}
+  if(!pack&&R.length>EASY_PACK_LIMIT&&act.length){const g=easyGen(s,true);if(g.rules.length<R.length){g.notes.push("Too many rules for Easy Mode ("+EASY_PACK_LIMIT+"), so the picks share rules and one colour: "+R.length+" rules became "+g.rules.length+".");return g;}}
   return{rules:R,mode:white?"white":"black",why,notes};
 }
 /* ---- state, hash and storage ---- */
