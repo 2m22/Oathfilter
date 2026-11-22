@@ -2,6 +2,12 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-22 (1)
+
+### Added
+- Modules can be shared as a link ("Share" on a module, Copy link or Copy for Discord). A shared link can be inserted into your own filter from the share preview ("Insert into my filter"), at the top, after the selected rule or at the end. An insert that would go over 40 rules is blocked.
+- Easy Mode: new AoE chip (under Other). It keeps gear and Idols with the "increased Area of Effect" line.
+
 ## 2026-11-21 (11)
 
 ### Added
