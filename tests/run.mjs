@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
+import {AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -310,6 +310,16 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
     eq(encode({preset:"-1",rules:easyGen(a).rules}),encode({preset:"-1",rules:easyGen(ezSane({...oldSave,hs:0})).rules}),"an old Easy Mode save builds the same filter");
     eq(ezSane({...oldSave,hs:1}).hs,1,"the Sell setting is kept"); }
 }
+
+/* ---- game files build 87: pen95 affixes, Thunderwake Maul; Easy Mode merges no-limit lines into a rule whose limit covers all their tiers ---- */
+{ const pen=AFF.filter(a=>/^(fire|cold|lightning)_pen95_(1h|2h)$|^elemental_pen95_amulet$/.test(a.id));
+  eq(pen.length,7,"seven pen95 affixes (game file affixes_pen95.json)");ok(pen.every(a=>a.n===4),"pen95 affixes have 4 tiers");
+  const tw=UNIQUES.find(u=>u.name==="Thunderwake Maul");ok(tw&&tw.base.id==="mace1h_2"&&tw.lvl===10,"Thunderwake Maul is mace1h_2, level 10 (game file and API build 86)");
+  const g=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0);
+  eq(g.length,2,"Easy Mode: attacks + cold at rl 60 is 2 rules, the penetration line joins the T4 rule");
+  ok(g.some(r=>mval(r,"a").includes("cold_pen95_2h")&&mval(r,"t")==="4"),"the penetration line sits in the rule with limit T4");
+  const h=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!mval(r,"t"));
+  eq(h.length,0,"no rule is left without a limit when every line is covered by T4"); }
 
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);

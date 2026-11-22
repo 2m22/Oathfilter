@@ -548,7 +548,14 @@ gloves_cast_speed|S|CastSpeedGloves|Gloves||50|4|56|20|56;44;32;20
 ring_attack_speed|S|AttackSpeedRing|Ring||40|3|70|44|70;56;44
 ring_cast_speed|S|CastSpeedRing|Ring||40|3|70|44|70;56;44
 poison_pen85_2h|S|PoisonPen85|TwoHand||35|4|84|44|84;70;56;44
-poison_pen85_1h|S|PoisonPen85|OneHand||35|4|84|44|84;70;56;44`;
+poison_pen85_1h|S|PoisonPen85|OneHand||35|4|84|44|84;70;56;44
+fire_pen95_2h|S|FirePen95|TwoHand||35|4|84|44|84;70;56;44
+fire_pen95_1h|S|FirePen95|OneHand||35|4|84|44|84;70;56;44
+cold_pen95_2h|S|ColdPen95|TwoHand||35|4|84|44|84;70;56;44
+cold_pen95_1h|S|ColdPen95|OneHand||35|4|84|44|84;70;56;44
+lightning_pen95_2h|S|LightningPen95|TwoHand||35|4|84|44|84;70;56;44
+lightning_pen95_1h|S|LightningPen95|OneHand||35|4|84|44|84;70;56;44
+elemental_pen95_amulet|S|ElementalPen95|Amulet||30|4|84|44|84;70;56;44`;
 const AFF=AFF_SRC.split("\n").map(l=>{const p=l.split("|");return{id:p[0],type:p[1],group:p[2],tags:p[3].split(";"),ex:p[4]?p[4].split(";"):[],w:+p[5],n:+p[6],hi:+p[7],lo:+p[8],lv:p[9]?p[9].split(";").map(Number):null};});
 /* idol affixes: group|P or S|sizes (s,m,l,x = Idol1-4)|tiers; "x" suffixes also fit grand idols */
 const IDOL_G="IdolLife|P|smlx|4;IdolMana|P|smlx|4;IdolEs|P|smlx|4;IdolArmour|P|smlx|4;IdolEvasion|P|smlx|4;IdolPhys|P|smlx|4;IdolElemental|P|smlx|4;IdolSpell|P|smlx|4;IdolMelee|P|smlx|4;IdolMinion|P|smlx|4;IdolFireRes|S|smlx|4;IdolColdRes|S|smlx|4;IdolLightningRes|S|smlx|4;IdolPoisonRes|S|smlx|4;IdolMove|S|smlx|3;IdolRegen|S|smlx|3;IdolAttackSpeed|S|smlx|3;IdolCastSpeed|S|smlx|3;IdolCrit|S|smlx|4;IdolCritMulti|S|smlx|4;IdolLifeKill|S|smlx|3;IdolManaRegen|S|smlx|4;IdolArea|S|smlx|3;IdolStr|S|smlx|4;IdolDex|S|smlx|4;IdolInt|S|smlx|4;IdolTotemSpeed|P|mlx|4;IdolTotemLife|S|mlx|4;IdolMinionLife|S|mlx|4;IdolMinionSpeed|S|mlx|4;IdolChannelArea|P|mlx|4;IdolChannelCost|S|mlx|4;IdolSlam|P|mlx|4;IdolSlamArea|S|mlx|4;IdolChain|P|mlx|4;IdolOrbit|P|mlx|4;IdolBowArea|S|mlx|4;IdolProjectile|P|mlx|4;IdolHoly|P|mlx|4;IdolPoison|P|mlx|4;IdolFire|P|mlx|4;IdolCold|P|mlx|4;IdolLightning|P|mlx|4;IdolMovement|P|mlx|4;IdolTrap|P|mlx|4;IdolShield|P|mlx|4;IdolBleed|P|mlx|4;IdolManaLeech|S|lx|4";
@@ -602,7 +609,7 @@ Siphoning Lattice|ritual_gloves_9|18|90||ChannelRamp.Flat, LifeLeech.Flat, ManaL
 Thrice-Sworn Sash|chain_belt|20|90||Reservation.Inc, Mana.Flat, Life.Flat
 Galeheart Greataxe|greataxe_3|24|80||Damage.Inc, DamageAsExtra.Flat, Area.Inc
 Lightsworn Reliquary|tome_3|30|40||MinionCap.Flat, MinionLife.Inc, MinionDamage.Inc
-Thunderwake Maul|mace1h_4|32|40||OrbitCount.Flat, OrbitMovingDamage.Flat, DamageAsExtra.Flat
+Thunderwake Maul|mace1h_2|10|40||OrbitCount.Flat, OrbitMovingDamage.Flat, DamageAsExtra.Flat
 Overload Coil|amethyst_ring|32|35||Keystone.Flag, CritChance.Inc, CritMulti.Flat
 Starcaller's Staff|staff_3|34|35||Damage.Inc, SkyfallRepeat.Flat, SkyfallDelay.Inc
 The Oath Unbroken|sunstone_amulet|72|6|P|Reservation.More, Keystone.Flag, Attributes.Flat
@@ -1026,7 +1033,12 @@ function ezEff(a,s){
 const ezGearIds=(a,s)=>ezLines(ezEff(a,s));
 const ezIdolIds=(a,s)=>ezLines(ezEff(a,s).concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
 /* tier limit t for one gear line at Rupture Level rl: for each affix with this text, the best tier whose item level is <= rl, plus (keep-1) tiers; the loosest affix decides. 0 = no limit. */
-function ezTP(ids){const parts=[];[ids.filter(x=>x.t!==99),ids.filter(x=>x.t===99)].forEach(g=>{for(let i=0;i<g.length;i+=MAXL.a){const c=g.slice(i,i+MAXL.a),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}});return parts;} /* lines without a known tier limit get their own rules, so they never lift the limit of the other lines */
+function ezTP(ids){const parts=[];[ids.filter(x=>x.t!==99),ids.filter(x=>x.t===99)].forEach(g=>{for(let i=0;i<g.length;i+=MAXL.a){const c=g.slice(i,i+MAXL.a),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}});
+  /* an unlimited line that has no more tiers than a limited rule's limit loses nothing there (a limit of T4 on a 4-tier line hides nothing), so it joins that rule instead of getting its own */
+  const free=ids.filter(x=>x.t===99);
+  free.forEach(x=>{if(!x.top)return;const host=parts.find(q=>q.t&&q.t>=x.top&&q.p.length<MAXL.a&&!q.own);if(!host)return;const own=parts.find(q=>!q.t&&q.p.includes(x.id));if(!own)return;own.p.splice(own.p.indexOf(x.id),1);host.p.push(x.id);});
+  return parts.filter(q=>q.p.length);}
+const ezTop=id=>{const t=LINEN[id];let top=0;AFF.forEach(a=>{if(!/^idol/i.test(a.id)&&LINEN[a.id]===t)top=Math.max(top,a.n);});return top;}; /* most tiers any gear affix of this line has (0 = unknown) */ /* lines without a known tier limit get their own rules, so they never lift the limit of the other lines */
 function ezThr(id,rl,keep){
   if(!rl)return 0;const t=LINEN[id];let thr=0,top=0;
   AFF.forEach(a=>{if(/^idol/i.test(a.id)||LINEN[a.id]!==t)return; /* Idol affixes (also the idol_grand_* ones) never drop on gear, so they must not loosen a gear rule */
@@ -1047,7 +1059,7 @@ function easyGen(s,pack){
   const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
   const og=own(),oi=own();
   /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 6 per rule. */
-  const gearA=act.map(a=>{const ids=ezGearIds(a,s).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99})).sort((x,y)=>x.t-y.t);
+  const gearA=act.map(a=>{const ids=ezGearIds(a,s).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99,top:ezTop(id)})).sort((x,y)=>x.t-y.t);
     const parts=pack?[]:ezTP(ids); /* same rule count as without a tier limit: sorted by limit, up to 6 per rule, the loosest line of a rule sets its limit */
     return{a,parts,ids};}).filter(x=>x.ids.length);
   let idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a,s).filter(oi))})).filter(x=>x.parts.length);
