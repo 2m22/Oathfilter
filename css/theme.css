@@ -340,7 +340,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .plrow{gap:8px;margin-bottom:10px}.plrow .btn{display:inline-flex;align-items:center;gap:6px}
 .li{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .pklist{border-color:transparent;background:var(--bg-card)}
-.mgrid+.grid2{margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.mgroups+.grid2{margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
 #rtip{max-height:calc(100vh - 16px);overflow:hidden}
 @media (max-width:560px){.ezbar{gap:10px}.ezbar .seg{flex:1 1 100%}.ezbar .ezact{margin-left:0;width:100%}.ezbar .ezact .btn{flex:1 1 130px}.eztk span:nth-child(even){display:none}}
 .updlog{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:.8125rem;color:var(--text-main)}
@@ -366,3 +366,29 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 
 /* Lucide icons */
 .xb .li{width:12px;height:12px}.chosen button .li{width:13px;height:13px}
+
+/* Advanced editor refinements */
+/* 1. the three pick columns share their rows (head, chips, saved lists, search, list), so the search boxes and scroll boxes line up */
+@supports (grid-template-rows:subgrid){
+  .mgroups+.grid2>.pk{display:grid;grid-template-rows:subgrid;grid-row:span 5;row-gap:0;min-width:0}
+  .mgroups+.grid2>.pk>.pkhead{grid-row:1}.mgroups+.grid2>.pk>.chosen{grid-row:2}.mgroups+.grid2>.pk>.plrow{grid-row:3}.mgroups+.grid2>.pk>.field{grid-row:4;align-self:start}.mgroups+.grid2>.pk>.pklist{grid-row:5;align-self:start}
+  .mgroups+.grid2>.pk>.chosen:empty{display:block;margin:0}
+}
+.pkhead{flex-wrap:wrap;align-items:flex-start;row-gap:4px}.pkhead .lab{flex:1 1 auto}.pkhead .lnk{margin-left:auto}
+.seg.sm{margin:0 0 6px;border-radius:7px}.seg.sm button{min-height:26px;padding:0 8px;font-size:.75rem;white-space:nowrap}
+/* 2. Roll quality / Lines needed do not apply to Normal items: dimmed, still usable */
+#qcGrid.dim{opacity:.42;filter:saturate(.5)}
+#qcNote{display:flex;align-items:center;gap:6px;margin:0 0 8px}#qcNote[hidden]{display:none}
+/* 3. grouped conditions, changed dropdowns lit like an active segment */
+.mgroups{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.mgroups>.mgrp:first-child{grid-column:1/-1}
+.mgrp{padding:10px 12px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
+.mgh{display:flex;align-items:center;gap:6px;margin:0 0 10px;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.mgrp .mgrid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 14px}
+.selwrap.chg select{border-color:var(--accent-gold);background:linear-gradient(180deg,rgba(240,180,50,.2),rgba(240,180,50,.1)),var(--bg-card);color:var(--accent-gold);font-weight:600;box-shadow:inset 0 0 0 1px var(--accent-gold)}
+/* 4. Lucide icons in editor headers and actions */
+.lab.ic,.sub.ic{display:flex;align-items:center;gap:6px}
+.lab.ic .li,.sub.ic .li,.mgh .li{width:14px;height:14px;flex:none;color:var(--accent-gold);opacity:.85}
+#editor .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+#editor .btn .li{width:14px;height:14px}
+#qcNote .li{width:14px;height:14px;flex:none}
