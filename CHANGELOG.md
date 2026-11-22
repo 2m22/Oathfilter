@@ -2,6 +2,11 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-22 (8)
+
+### Changed
+- Named line pickers: lines that roll on the weapon itself (Adds X to Y Damage, Increased Physical Damage) now say "(local)", for example on bows. The Adds Physical, Fire, Cold and Lightning Attack Damage lines show a "?" that explains they roll on quivers, gloves, rings, amulets and boots, not on the weapon.
+
 ## 2026-11-22 (7)
 
 ### Added
