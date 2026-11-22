@@ -2,6 +2,19 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-22 (5)
+
+### Added
+- Gems rules in the Editor and in Easy Mode: Hide gems or Sell gems (Type Gems, Rarity Any, no other condition, as the game allows). The Drop Test shows gems and support gems; currency, runes, gold, flasks and uniques are never hidden.
+- "Vow effect" in Has a line (group 27), linked to the named line.
+- Easy Mode: a Gems setting (off, Hide gems, Sell gems). Fire and Cold picks now include Adds Fire and Cold Attack Damage.
+
+### Changed
+- Any N of them only counts named lines. For bases and reds the game keeps it in the code but ignores it, so Oathfilter blocks it there. It needs at least 3 lines.
+- Oathfilter writes the conditions of a rule in the order the game exports them (Bases, Named lines, Not these lines, Tier, Count lines, Lines needed, Defence type, Item level, Quality, Gold, Max gold, Reroll, Not these reds, Reds, Unique, Rune tier). Codes you import keep their own order.
+- Easy Mode only shares rules between picks when the filter would pass the 200 rule limit, so every pick keeps its own rules and colour.
+- The Sources text now says: game files from build 87, public API checked at build 86.
+
 ## 2026-11-22 (4)
 
 ### Added
