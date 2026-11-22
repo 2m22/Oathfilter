@@ -3140,6 +3140,12 @@ function easyGen(s,pack){
     gearP=gi.length?[{a:{n:"Gear picks",col},parts:ezTP(gi.slice().sort((x,y)=>x.t-y.t))}]:[];
     idolA=ii.length?[{a:{n:"Idol picks",col},parts:ezChunks(ii)}]:[];
   }
+  /* picks with the same colour share rules (any-of lines with the same action, colour and tier limit behave exactly like one rule), so 4 lines fill a rule even across picks */
+  if(!pack){
+    const byCol=(list,get)=>{const m=new Map();list.forEach(x=>{const c=x.a.col;if(!m.has(c))m.set(c,{n:[],col:c,ids:[]});const g=m.get(c);g.n.push(x.a.n);g.ids.push(...get(x));});return[...m.values()];};
+    gearP=byCol(gearA,x=>x.ids).map(g=>({a:{n:g.n.join(" + "),col:g.col},parts:ezTP(g.ids.slice().sort((x,y)=>x.t-y.t))}));
+    idolA=byCol(idolA,x=>x.parts.flat()).map(g=>({a:{n:g.n.join(" + "),col:g.col},parts:ezChunks(g.ids)}));
+  }
   const rarHide=(s.hn||s.hm)?1:0;
   const white=gearA.length>0;
   const idolWhite=s.idol==="match"&&idolA.length>0;
