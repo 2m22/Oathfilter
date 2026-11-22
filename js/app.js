@@ -1,4 +1,4 @@
-import {MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -272,7 +272,7 @@ const PL={load(){try{return JSON.parse(localStorage.getItem("oathfilter-lists")|
 /* Patch 87: "Any of them / All of them / Any N of them" for named lines; "In this list / None of these" for bases and reds (nb, nr). nb/nr cannot be combined with All or Any N (game rule). */
 function anyAllHTML(r){
   const all=mval(r,"all")==="1",an=+mval(r,"an")||0,n=mlist(r,"a").length,mode=all?"all":an?"an":"any";
-  return `<div class="seg sm" role="group" aria-label="Named lines: any, all or any N"><button type="button" data-allm="" aria-pressed="${mode==="any"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mode==="all"}">All of them</button><button type="button" data-allm="n" aria-pressed="${mode==="an"}" title="Any N of the named lines, for example any 2 of 5">Any N</button></div>${mode==="an"?msel("m-an","data-m=\"an\" aria-label=\"How many of the named lines\"",String(an),[2,3,4,5,6].filter(x=>x<=Math.max(n,an)).map(x=>[x,"Any "+x+" of them"])):""}${mval(r,"nb")==="1"||mval(r,"nr")==="1"?'<small class="hint">Not available together with “None of these” bases or reds.</small>':""}`;
+  return `<div class="seg sm" role="group" aria-label="Named lines: any, all or any N"><button type="button" data-allm="" aria-pressed="${mode==="any"}">Any of them</button><button type="button" data-allm="1" aria-pressed="${mode==="all"}">All of them</button><button type="button" data-allm="n" aria-pressed="${mode==="an"}" ${n<3&&mode!=="an"?'disabled title="Needs at least 3 named lines"':'title="Any N of the named lines, for example any 2 of 5"'}>Any N</button></div>${mode==="an"?msel("m-an","data-m=\"an\" aria-label=\"How many of the named lines\"",String(an),[2,3,4,5].filter(x=>x<Math.max(n,an+1)).map(x=>[x,"Any "+x+" of them"])):""}${mval(r,"nb")==="1"||mval(r,"nr")==="1"?'<small class="hint">Not available together with “None of these” bases or reds.</small>':""}`;
 }
 function invHTML(r,k){
   const key=k==="b"?"nb":"nr",on=mval(r,key)==="1",blocked=!!(mval(r,"all")==="1"||mval(r,"an"));
@@ -484,14 +484,14 @@ document.addEventListener("click",e=>{
   if(d.plsave){const k=d.plsave,ids=mlist(r,k);if(!ids.length)return;const n=(prompt("Name for this list",PK[k].title+" list")||"").trim();if(!n)return;const o=PL.load();(o[k]=o[k]||[]).push({n:n.slice(0,40),ids:ids.slice()});PL.save(o);renderEditor();toast("List saved in this browser.");return;}
   if(d.pldel){const k=d.pldel,sel=$("#pls-"+k),o=PL.load();if(!sel||sel.value===""||!(o[k]||[])[+sel.value]){toast("Pick a saved list first.",true);return;}const n=o[k][+sel.value].n;o[k].splice(+sel.value,1);PL.save(o);renderEditor();toast("List \""+n+"\" deleted.");return;}
   if(d.allm!==undefined){
-    if(d.allm==="n"){mset(r,"all","");if(!mval(r,"an"))mset(r,"an",Math.min(6,Math.max(2,Math.min(mlist(r,"a").length,2))));}
+    if(d.allm==="n"){mset(r,"all","");if(!mval(r,"an"))mset(r,"an",2);}
     else{mset(r,"all",d.allm);mset(r,"an","");}
     if(d.allm!==""){mset(r,"nb","");mset(r,"nr","");}
     touch();renderEditor();return;}
   if(d.invm){const[key,v]=d.invm.split(",");if(v==="1"){mset(r,"all","");mset(r,"an","");}mset(r,key,v==="1"?"1":"");touch();renderEditor();return;}
-  if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<MAXL[k]&&!l.includes(id)){l.push(id);msetList(r,k,l);touch();renderEditor("#pl-"+k);if(window.matchMedia&&matchMedia("(pointer:fine)").matches){const i=$("#pk-"+k);if(i)i.focus({preventScroll:true});}}return;}
-  if(d.pclr){const k=d.pclr;msetList(r,k,[]);touch();renderEditor("#pl-"+k);return;}
-  if(d.prm){const[k,id]=d.prm.split(/,(.+)/);msetList(r,k,mlist(r,k).filter(x=>x!==id));touch();renderEditor("#pl-"+k);return;}
+  if(d.padd){const[k,id]=d.padd.split(/,(.+)/);const l=mlist(r,k);if(l.length<MAXL[k]&&!l.includes(id)){l.push(id);msetList(r,k,l);fixAn(r);touch();renderEditor("#pl-"+k);if(window.matchMedia&&matchMedia("(pointer:fine)").matches){const i=$("#pk-"+k);if(i)i.focus({preventScroll:true});}}return;}
+  if(d.pclr){const k=d.pclr;msetList(r,k,[]);fixAn(r);touch();renderEditor("#pl-"+k);return;}
+  if(d.prm){const[k,id]=d.prm.split(/,(.+)/);msetList(r,k,mlist(r,k).filter(x=>x!==id));fixAn(r);touch();renderEditor("#pl-"+k);return;}
   if(d.set){const[k,v]=d.set.split(",");r[k]=+v;touch();return;}
   if(d.col){r.colour=+d.col;touch();return;}
 });
@@ -516,7 +516,7 @@ document.addEventListener("change",e=>{
 document.addEventListener("change",e=>{
   const t=e.target,k=t.dataset&&t.dataset.pls;if(!k||t.value==="")return;
   const r=curRule(),l=(PL.load()[k]||[])[+t.value];if(!r||!l)return;
-  msetList(r,k,l.ids.slice(0,MAXL[k]));touch();renderEditor();toast("List applied: "+l.n);
+  msetList(r,k,l.ids.slice(0,MAXL[k]));fixAn(r);touch();renderEditor();toast("List applied: "+l.n);
 });
 let nameT=null,rqT=null;
 document.addEventListener("input",e=>{
@@ -1662,7 +1662,7 @@ function ezBuild(){
     <p class="hint" style="margin:8px 0 0">Picks also decide which Idols stay.</p>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
   <div class="ez2">
-  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div></div>
+  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div><span class="lab" style="margin-top:10px;display:block">Gems</span><div class="chips">${ezBtn("gems,1","Hide gems")}${ezBtn("gems,2","Sell gems")}</div><p class="hint" style="margin:6px 0 0">Neither: gems are not touched. A gem under a Sell rule is sold when it lands.</p></div>
   <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>
   </div>`;
 }
@@ -1674,7 +1674,7 @@ function ezSync(){
   $$("#ezCtl button[data-ez]").forEach(b=>{
     const[k,v]=b.dataset.ez.split(",");
     if(k==="clear")return;
-    const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="idol"?s.idol===v:String(s[k])===v;
+    const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm")?s[k]:k==="gems"?s.gems===+v:k==="idol"?s.idol===v:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
   $("#ez-ilv").textContent=s.rl?"Rupture Level "+s.rl+": only tiers up to item level "+s.rl+" can drop. Gear needs a picked line within the "+(s.tk===1?"best tier":"best "+s.tk+" tiers")+" that can drop; weaker lines are hidden. Pick at least one.":"Any: no tier limit. Set your Rupture Level to hide gear whose picked lines are too weak for what drops there.";
@@ -1734,6 +1734,7 @@ function ezTouched(){
     else if(k==="arch")s.arch[v]=s.arch[v]?0:1;
     else if(k==="keep")s.keep[v]=s.keep[v]?0:1;
     else if(k==="hn"||k==="hm")s[k]=s[k]?0:1;
+    else if(k==="gems")s.gems=s.gems===+v?0:+v;
     else if(k==="rl"||k==="tk"||k==="hl")s[k]=+v;
     else if(k==="idol")s.idol=v;
     EZ.s=ezSane(s);ezTouched();

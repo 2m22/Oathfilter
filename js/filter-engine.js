@@ -53,8 +53,8 @@ const MAX_RULES=200;
 const EASY_PACK_LIMIT=40;
 /* Shared copy: one wording for messages that appear in several places */
 const COPY={
- sell:"Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell.",
- never:"Uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks always stay visible, even when a Hide rule matches.",
+ sell:"Sell is known from the game files for gems: a gem under a Gems Sell rule is sold when it lands. For other items the exact behaviour is not confirmed. The Drop Test treats Sell like Hide and counts it as Sell.",
+ never:"Uniques, runes, Dwarven Runes, the Cube, currency, gold and flasks always stay visible, even when a Hide rule matches. Gems show unless a Gems rule hides or sells them.",
  undo:"Undo (Ctrl+Z) brings it back.",
  limit:"The game takes "+MAX_RULES+" rules.",
  blocked:"Copy is blocked here.",
@@ -67,7 +67,7 @@ const T={
  type:[[0,"Any gear"],[1,"Weapons"],[2,"Armour"],[3,"Jewellery"],[4,"Rune bases"],[5,"Helms"],[6,"Body armour"],[7,"Gloves"],[8,"Boots"],[9,"Shields, foci & quivers"],[10,"Rings"],[11,"Amulets"],[12,"Belts"],[13,"Core-touched"],[14,"Idols"],[15,"4+ sockets"],[16,"Truesworn"],[17,"Gems"],[18,"Bows"],[19,"Claws"],[20,"Daggers"],[21,"Dual blades"],[22,"Fist weapons"],[23,"2H swords"],[24,"2H axes"],[25,"2H maces"],[26,"Mace and shield"],[27,"1H axes"],[28,"1H maces"],[29,"1H swords"],[30,"Scythes"],[31,"Staves"],[32,"Wands"],[33,"Dwarven Runes"],[34,"Quivers"]],
  rarity:[[0,"Any rarity"],[1,"Normal"],[2,"Magic"],[3,"Normal and magic"],[4,"Rare"],[5,"Rare and unique"]],
  level:[[0,"Any level"],[1,"Below 20"],[2,"Below 40"],[3,"Below 60"],[4,"Below 75"],[5,"60 and up"],[6,"75 and up"],[7,"82 and up"]],
- line:[[0,"Any line"],[1,"Life"],[2,"Resistance"],[3,"Minion"],[4,"Move speed"],[5,"+Skill levels"],[6,"Spell"],[7,"Critical"],[8,"Attack speed"],[9,"Cast speed"],[10,"Mana"],[11,"Fire damage"],[12,"Cold damage"],[13,"Lightning damage"],[14,"Physical damage"],[15,"Poison and ignite"],[16,"Fire res"],[17,"Cold res"],[18,"Lightning res"],[19,"Poison res"],[20,"Attributes"],[21,"Defence"],[22,"Leech and recovery"],[23,"Area"],[24,"Bleed and DoT"],[25,"Curses"],[26,"Cooldown recovery"]],
+ line:[[0,"Any line"],[1,"Life"],[2,"Resistance"],[3,"Minion"],[4,"Move speed"],[5,"+Skill levels"],[6,"Spell"],[7,"Critical"],[8,"Attack speed"],[9,"Cast speed"],[10,"Mana"],[11,"Fire damage"],[12,"Cold damage"],[13,"Lightning damage"],[14,"Physical damage"],[15,"Poison and ignite"],[16,"Fire res"],[17,"Cold res"],[18,"Lightning res"],[19,"Poison res"],[20,"Attributes"],[21,"Defence"],[22,"Leech and recovery"],[23,"Area"],[24,"Bleed and DoT"],[25,"Curses"],[26,"Cooldown recovery"],[27,"Vow effect"]] /* 27: the game lists "Vow effect" right after "Cooldown recovery" in the HAS A LINE group names (exe, Patch 87); the number 27 follows that order and is not yet seen in an export */,
  quality:[[0,"Any roll"],[1,"Good roll"],[2,"Top roll"]],
  count:[[0,"1+ lines"],[1,"2+ lines"],[2,"3+ lines"]],
  action:[[0,"Hide"],[1,"Show"],[2,"Highlight"],[3,"Highlight + beam"],[4,"Sell"]],
@@ -87,6 +87,8 @@ const newRule=o=>Object.assign({extra:[],m:[]},NEW_RULE,o||{});
 /* MORE options: the part after the ten fields, written as ,3:key=value;key=value (3 = filter version 3). Several entries in one field are joined with + */
 /* key order as the game writes it (export of 22.11.2026: b;a;an;na;nb / t;k;n;d / nr;rn, lists before t k n d). Where all, s, i, q, g, gx, r, u and rt sit is a guess; readers use the key name */
 const MORE_ORDER=["b","a","an","na","nb","nr","rn","all","t","k","n","d","s","i","q","g","gx","r","u","rt"];
+/* data version of the item lists above */
+const DATA_BUILD={build:87,source:"local game files",read:"2026-11-22",apiChecked:85};
 const MAXL={a:6,b:12,rn:12,na:6}; /* list limits shown in the game (Patch 87) */
 const parseMore=s=>s.split(";").filter(x=>x!=="").map(seg=>{const i=seg.indexOf("=");return i<0?[seg,null]:[seg.slice(0,i),seg.slice(i+1)];});
 const moreStr=r=>r.m&&r.m.length?",3:"+r.m.map(p=>p[1]===null?p[0]:p[0]+"="+p[1]).join(";"):"";
@@ -104,6 +106,8 @@ const msetRng=(r,k,lo,hi)=>mset(r,k,lo||hi?lo+"-"+hi:"");
 /* the game writes some ids with a capital (Life, Mana, Area, Bow_1) even when they were entered in lower case; all ids in the data are lower case, so lists are read lower-cased (the stored code text stays as it was) */
 const mlist=(r,k)=>mval(r,k)?mval(r,k).split("+").filter(Boolean).map(x=>x.toLowerCase()):[];
 const msetList=(r,k,a)=>mset(r,k,a.join("+"));
+/* "Any N of them" belongs to named lines only (the game test and chip steps use lines: any -> any 2 -> ... -> all; an exported 6 lines gave an=2..5 and all=1, never an=6). Keep an between 2 and (lines - 1); with fewer than 3 lines there is no Any N. */
+function fixAn(r){const n=mlist(r,"a").length,an=+mval(r,"an")||0;if(!an)return;if(n<3)mset(r,"an","");else if(an>=n)mset(r,"an",n-1);}
 const hasRaw=r=>(r.m||[]).some(p=>p[1]===null||!MORE_ORDER.includes(p[0]));
 
 function encode(f){return "BOFILTER:1,"+f.preset+f.rules.map(r=>"|"+FIELDS.map(k=>r[k]).join(",")+moreStr(r)+(r.extra&&r.extra.length?","+r.extra.join(","):"")).join("");}
@@ -128,8 +132,10 @@ function decode(text){
   if(odd)notes.push(odd+" rule"+(odd>1?"s use":" uses")+" values this page does not know. They are kept as they are, but the drop test may read them wrongly.");
   if(f.rules.length>MAX_RULES)notes.push("The code has "+f.rules.length+" rules. "+COPY.limit);
   const wide=[];f.rules.forEach((r,i)=>{const over=Object.keys(MAXL).map(k=>mlist(r,k).length-MAXL[k]).some(x=>x>0),n=mlist(r,"a").length;if(over)wide.push((i+1)+" ("+n+")");});
+  const noAn=[];f.rules.forEach((r,i)=>{if(mval(r,"an")&&!mlist(r,"a").length)noAn.push(i+1);});
   const clash=[];f.rules.forEach((r,i)=>{if((mval(r,"nb")==="1"||mval(r,"nr")==="1")&&(mval(r,"all")==="1"||mval(r,"an")))clash.push(i+1);});
   if(wide.length)notes.push("Rule "+wide.slice(0,6).join(", ")+(wide.length>6?" …":"")+" goes over a list limit (6 named lines, 12 bases, 12 reds, 6 not-these lines). The Editor keeps to these limits, so check how the game reads the extra entries.");
+  if(noAn.length)notes.push("Rule "+noAn.slice(0,6).join(", ")+" has Any N but no named lines. Any N only works with named lines, so the game may ignore it.");
   if(clash.length)notes.push("Rule "+clash.slice(0,6).join(", ")+" combines a \"none of these\" bases or reds list with All or Any N of the lines. The game does not allow that.");
   if(f.rules.some(r=>r.extra.length||hasRaw(r)))notes.push("Some rules carry fields this page does not know. They are kept as they are.");
   const warn=[];if(f.rules.length>MAX_RULES)warn.push("Your saved filter has "+f.rules.length+" rules. "+COPY.limit);
@@ -143,7 +149,7 @@ const LINEMAP={Life:[1],FireRes:[2,16],ColdRes:[2,17],LightningRes:[2,18],Poison
  FireAdded:[11],FireSpellAdded:[11],FireInc:[11],ColdAdded:[12],ColdSpellAdded:[12],ColdInc:[12],LightningAdded:[13],LightningSpellAdded:[13],LightningInc:[13],AttackLightning:[13],
  PhysInc:[14],PhysAdded:[14],AttackAdded:[14],PhysAsElem:[14],PoisonSpellAdded:[15],PoisonInc:[15],PoisonDamage:[15],IgniteDamage:[15],IgniteChance:[15],
  Str:[20],Dex:[20],Int:[20],Attributes:[20],DefenceFlat:[21],DefenceFlatEvasion:[21],DefenceFlatEnergyShield:[21],DefenceInc:[21],EnergyShieldGlobal:[21],
- LifeLeech:[22],ManaLeech:[22],EnergyShieldLeech:[22],LifeRegen:[22],LifeOnKill:[22],ManaOnKill:[22],Area:[23],BleedChance:[24],BleedDamage:[24],DotMulti:[24],CurseEffect:[25],CurseLimit:[25],CooldownRecovery:[26],AttackSpeedRing:[8],CastSpeedRing:[9],CastSpeedGloves:[9],RingMove:[4]};
+ LifeLeech:[22],ManaLeech:[22],EnergyShieldLeech:[22],LifeRegen:[22],LifeOnKill:[22],ManaOnKill:[22],Area:[23],BleedChance:[24],BleedDamage:[24],DotMulti:[24],CurseEffect:[25],CurseLimit:[25],CooldownRecovery:[26],VowEffect98:[27],AttackSpeedRing:[8],CastSpeedRing:[9],CastSpeedGloves:[9],RingMove:[4]};
 const LEVEL={0:[0,1e9],1:[0,19],2:[0,39],3:[0,59],4:[0,74],5:[60,1e9],6:[75,1e9],7:[82,1e9]};
 const RAR={0:"NMRU",1:"N",2:"M",3:"NM",4:"R",5:"RU"};
 function typeMatch(t,it){
@@ -196,7 +202,8 @@ function matches(r,it){
   }
   return moreMatch(r,it);
 }
-const NEVER_HIDDEN=it=>it.rar==="U"||it.kind==="misc";
+/* game texts (exe, Patch 87): "Gems show unless a Gems rule hides them", and a gem under a Sell rule is sold on landing (SellGems113). Uniques, runes, Dwarven Runes, currency, gold and flasks are never hidden or sold. */
+const NEVER_HIDDEN=it=>it.rar==="U"||(it.kind==="misc"&&!it.gem);
 /* Drop Test source: in Easy Mode the Easy preview rules (when they fit the rule limit), otherwise the active filter F. Cached per REV. */
 const SIM={rev:-1,m:"",rules:null,easy:false,n:0};
 function simRules(){
@@ -222,7 +229,7 @@ function evaluate(it){
 let REV=0;
 const evalC=it=>{if(it._rv!==REV){it._e=evaluate(it);it._rv=REV;}return it._e;};
 
-/* sample drops: real names, levels, tags and affix groups from the Broken Oath public API (build 85, 20.11.2026).
+/* sample drops: real names, levels, tags and affix groups from the Broken Oath game files (build 87, a local install read on 22.11.2026; the public API had build 85 on 20.11.2026 and has not been checked for 87).
    What is NOT from the API: how often each base drops, how tiers are rolled, how many mods an item gets,
    which affix group belongs to which line group (LINEMAP) and whether unique mods count for line rules. */
 const ARM={
@@ -855,7 +862,7 @@ const rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
 function wpick(a,wf){let t=0;a.forEach(x=>t+=wf(x));let r=Math.random()*t;for(const x of a){r-=wf(x);if(r<=0)return x;}return a[a.length-1];}
 /* categories a drop can fall into, one pick per category before the base is chosen */
 const CATKEYS=[];BASES.forEach(b=>{const k=b.kind+":"+b.sub;if(!CATKEYS.includes(k))CATKEYS.push(k);});
-const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem","Skill Gem"];
+const MISC=["Rune of Reid","Gold","Currency","Flask","Skill Gem","Support Gem"];
 /* an affix tier needs an item level (the real levels per tier come from the game files) */
 function tierLvl(a,k){if(a.lv&&a.lv[k-1]!==undefined)return a.lv[k-1];return a.n===1?a.hi:Math.round(a.hi+(a.lo-a.hi)*(k-1)/(a.n-1));} /* real item levels from the game files; the even spread is only a fallback */
 /* tier choice for one affix; mode: any (lower tiers likelier, a guess), t1, t2 (T1-T2), bad (the two lowest tiers) */
@@ -900,7 +907,7 @@ const CLASSES={
 function genItem(f){
   f=f||{};const cl=f.cls?CLASSES[f.cls]:null;
   const x=Math.random()*100;
-  if(!cl&&x<10){const mn=pick(MISC),rune=mn==="Rune of Reid",rt=1+rnd(6);return{id:uid(),name:rune?"Rune of Reid (tier "+rt+")":mn,gem:mn==="Skill Gem",rune,rtier:rt,kind:"misc",rar:"X",lvl:1,mods:[],sub:"",core:false,sockets4Plus:false,truesworn:false,runebase:false,sock:0,grade:0,req:1,label:rune?"rune · tier "+rt:"never hidden"};}
+  if(!cl&&x<10){const mn=pick(MISC),rune=mn==="Rune of Reid",rt=1+rnd(6);return{id:uid(),name:rune?"Rune of Reid (tier "+rt+")":mn,gem:/ Gem$/.test(mn),rune,rtier:rt,kind:"misc",rar:"X",lvl:1,mods:[],sub:"",core:false,sockets4Plus:false,truesworn:false,runebase:false,sock:0,grade:0,req:1,label:rune?"rune · tier "+rt:"never hidden"};}
   const rar=cl?(cl.rar==="I"?(Math.random()<.5?"M":"R"):cl.rar):x<44?"N":x<72?"M":x<94?"R":"U";
   if(rar==="U"){
     const u=pick(UNIQUES),b=u.base; /* every red is equally likely, so every named red can be tested */
@@ -945,7 +952,7 @@ const rngText=(lo,hi,w)=>lo&&hi?w+" "+lo+"–"+hi:lo?w+" "+lo+"+":hi?w+" up to "
    Builds a whole filter from a few controls. Only uses things confirmed in the game data or the game's own exports:
    named lines with a= (max 6 per rule), i= item level steps, type 14 for Idols (type 0 does not cover Idols).
    Named lines match by their text, so a gear line such as spell_inc also catches the Idol line with the same text.
-   No Gems, no roll quality, no line 1..26 guesses. The state lives in its own storage key; the filter code carries nothing of it. */
+   Gems only through the optional Hide/Sell gems setting, no roll quality, no line 1..26 guesses. The state lives in its own storage key; the filter code carries nothing of it. */
 const EZ_KEY="oathfilter-easy";
 /* g: gear lines (type 0). Idol rules use the gear lines whose text also exists on Idols, plus the Idol-only lines in "idol". */
 const EZ_ARCH=[
@@ -988,13 +995,13 @@ const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,arch:{},keep:{core:1,runes:1,tsw:1}});
+const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,gems:0,arch:{},keep:{core:1,runes:1,tsw:1}}); /* gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
   const s={rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
-    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),arch:{},keep:{}};
+    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),gems:n(o.gems,0,2,d.gems),arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
   if(o.arch&&o.arch.dot){s.arch.pois=s.arch.bleed=s.arch.ign=1;} /* ... and one Damage over time pick */
@@ -1070,6 +1077,7 @@ function easyGen(s,pack){
   if(s.keep.core)mk({type:13,action:3,colour:0},"Core-touched");
   if(s.keep.runes&&anyHide)mk({type:4,rarity:1,action:1},"Rune bases");
   if(s.keep.tsw&&anyHide)mk({type:16,rarity:3,level:6,action:2,colour:0},"Truesworn bases");
+  if(s.gems)mk({type:17,action:s.gems===2?4:0},s.gems===2?"Sell gems":"Hide gems"); /* a Gems rule only catches gems, so its place in the list does not matter */
   /* 2 Idols: Type 0 does not cover Idols, so they get their own rules. Picks come first, the hide of the other Idols after them. */
   if(s.idol!=="none"&&(s.idol==="match"||s.hl))idolA.forEach(x=>x.parts.forEach((p,i)=>mk({type:14,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},"Idols: "+x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>msetList(r,"a",p))));
   if(s.idol==="none"){mk({type:14,action:0},"Idols");if(act.some(a=>!a.ids.length))notes.push("Idol-only picks do nothing while all Idols are hidden.");}
@@ -1107,4 +1115,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,NAME_MAX};
+export {DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,NAME_MAX};
