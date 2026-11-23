@@ -105,6 +105,7 @@ export const needsSellConfirm=rules=>sellCaution(rules).length>0;
 
 /* ---------- pre-insert check ---------- */
 export function placeAt(existing,pos,curId){
+  if(typeof pos==="number")return Math.max(0,Math.min(existing.length,Math.floor(pos)||0));
   if(pos==="top")return 0;
   if(pos==="after"){const i=existing.findIndex(r=>r.id===curId);if(i>=0)return i+1;}
   return existing.length;
@@ -200,18 +201,24 @@ export function moduleHay(m){
   const names=(m.n||[]).join(" ");
   return [m.name,m.desc,m.cat,(m.tags||[]).join(" "),names,rulesText(moduleRules(m))].join(" ").toLowerCase();
 }
-export function filterModules(list,query,cat){
+export function filterModules(list,query,cat,tag){
   const q=String(query||"").toLowerCase().split(/\s+/).filter(Boolean);
-  return list.filter(m=>(!cat||m.cat===cat)&&q.every(w=>moduleHay(m).includes(w)));
+  return list.filter(m=>(!cat||m.cat===cat)&&(!tag||(m.tags||[]).includes(tag))&&q.every(w=>moduleHay(m).includes(w)));
 }
 
 /* ---------- custom modules ---------- */
 export const CUSTOM_MAX=50;
+/* optional free tags of a custom module: up to 8, lower case, 20 characters each */
+export function cleanTags(v){
+  const a=Array.isArray(v)?v:typeof v==="string"?v.split(","):[];
+  return [...new Set(a.map(t=>String(t||"").trim().toLowerCase().slice(0,20)).filter(Boolean))].slice(0,8);
+}
 export function cleanModule(x){
   if(!x||typeof x.id!=="string"||typeof x.name!=="string"||typeof x.c!=="string")return null;
   const o={id:x.id,name:x.name.slice(0,40),c:x.c,n:Array.isArray(x.n)?x.n.map(v=>String(v||"").slice(0,NAME_MAX)):[],t:+x.t||0};
   if(typeof x.desc==="string"&&x.desc)o.desc=x.desc.slice(0,200);
   if(typeof x.cat==="string"&&x.cat)o.cat=x.cat.slice(0,30);
+  const tg=cleanTags(x.tags);if(tg.length)o.tags=tg;
   return o;
 }
 export function uniqueName(list,base){
@@ -226,11 +233,11 @@ export function duplicateModule(list,id){
 }
 /* share file: names live here and in storage, never in the in-game code */
 export const SHARE_TAG="oathfilter-module";
-export const moduleToShare=x=>JSON.stringify({[SHARE_TAG]:1,name:x.name,desc:x.desc||"",cat:x.cat||"",c:x.c,n:x.n||[]});
+export const moduleToShare=x=>JSON.stringify({[SHARE_TAG]:1,name:x.name,desc:x.desc||"",cat:x.cat||"",tags:x.tags||[],c:x.c,n:x.n||[]});
 export function moduleFromShare(text){
   let o;try{o=JSON.parse(String(text).trim());}catch(e){return {err:"This is not a module file."};}
   if(!o||o[SHARE_TAG]!==1||typeof o.c!=="string"||typeof o.name!=="string")return {err:"This is not a module file."};
   let d;try{d=decode(o.c);}catch(e){return {err:"The module code could not be read."};}
   if(!d.filter.rules.length)return {err:"The module has no rules."};
-  return {module:cleanModule({id:"m"+Date.now().toString(36)+uid().slice(0,3),name:o.name,desc:o.desc,cat:o.cat,c:o.c,n:o.n,t:Date.now()}),rules:d.filter.rules.length};
+  return {module:cleanModule({id:"m"+Date.now().toString(36)+uid().slice(0,3),name:o.name,desc:o.desc,cat:o.cat,tags:o.tags,c:o.c,n:o.n,t:Date.now()}),rules:d.filter.rules.length};
 }

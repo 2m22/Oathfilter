@@ -6,7 +6,7 @@ let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
 const LI={x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',save:'<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/>',trash:'<path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',"chevron-right":'<path d="m9 18 6-6-6-6"/>',check:'<path d="M20 6 9 17l-5-5"/>',info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',"layers":'<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>',"package":'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/>',"flag":'<path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/>',"sliders-horizontal":'<path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/>',"zap":'<path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"/>',"gem":'<path d="M10.5 3 8 9l4 13 4-13-2.5-6"/><path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/><path d="M2 9h20"/>',"palette":'<path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>',"copy":'<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',"plus":'<path d="M5 12h14"/><path d="M12 5v14"/>'};
 const li=(n,c="")=>window.lucide?`<i data-lucide="${n}" class="li ${c}" aria-hidden="true"></i>`:`<svg class="li ${c}" viewBox="0 0 24 24" aria-hidden="true">${LI[n]}</svg>`;
-const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. You can save one rule, several rules or your whole filter. Insert adds the rules at the chosen place and keeps their order. Replace filter starts a new filter from the module. Share makes a link, and whoever opens it can insert the rules into their own filter. If an insert would go over 200 rules, it is blocked. Ctrl+Z takes it back. Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to 6 named lines, 12 bases and 12 reds per rule (plus 6 not-these lines)."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."]};
+const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. You can save one rule, several rules or your whole filter. The Modules button opens the organizer: modules on the left, your rules on the right. Tick one or more modules and press the insert button, or drag them into the rule list. Several modules go in as one block in the order you ticked them, and you can drag rules to reorder them. Replace filter starts a new filter from one of your modules. Share makes a link, and whoever opens it can insert the rules into their own filter. If an insert would go over 200 rules, it is blocked. Ctrl+Z takes it back. Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to 6 named lines, 12 bases and 12 reds per rule (plus 6 not-these lines)."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."]};
 const hb=k=>`<button type="button" class="hlp" data-help="${k}" aria-label="Help: ${HELP[k][0]}" aria-expanded="false">?</button>`;
 (function(){
   const pop=document.createElement("div");pop.id="hlpPop";pop.setAttribute("role","tooltip");pop.hidden=true;document.body.appendChild(pop);
@@ -75,6 +75,12 @@ const WAVE='<path d="M16.5 8.5a5 5 0 0 1 0 7"/>';
 let Vue=null;try{Vue=await import("vue");}catch(e){console.warn("Vue could not be loaded, using the built-in fallback.");}
 /* Sell confirmation: a Vue dialog; without Vue the browser confirm is used. Resolves true only when the user confirms. */
 let askCaution=kinds=>Promise.resolve(window.confirm("Caution: Sell sells matching items automatically when they land. A broad or misordered rule can sell items you wanted. Use Sell?"));
+/* turn a rule on or off; switching a Sell rule on asks for the Caution confirmation first. Resolves true when the state changed. */
+async function setRuleOn(r,want){
+  if(!r||(!!r.on)===!!want)return false;
+  if(want){const k=sellKind(Object.assign({},r,{on:1}));if(k&&!(await askCaution([k]))){renderRows();return false;}}
+  r.on=want?1:0;if(r.id===S.cur&&$("#f-on"))$("#f-on").checked=!!r.on;touch();return true;
+}
 const _fx=new Set();
 const {reactive,watchEffect}=Vue?{reactive:Vue.reactive,watchEffect:f=>Vue.watchEffect(f,{flush:"sync"})}
   :{reactive:o=>new Proxy(o,{set(t,k,v){const ch=t[k]!==v;t[k]=v;if(ch)_fx.forEach(f=>f());return true;}}),watchEffect:f=>{_fx.add(f);f();}};
@@ -84,7 +90,7 @@ watchEffect(()=>{const v=V.view;$$(".panel").forEach(p=>p.hidden=p.id!=="p-"+v);
 watchEffect(()=>{const f=V.filter;$$("#rfilter button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rf===f));});
 watchEffect(()=>{const a=$("#rfAct");if(a)a.setAttribute("aria-pressed",V.act);});
 watchEffect(()=>{const m=ui.mode;$$("#ezMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ezm===m?"true":"false"));});
-watchEffect(()=>{const n=ui.count,mx=ui.max;$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${n>mx?"color:var(--hide-fg)":""}">${n} / ${mx}</b>`;});
+watchEffect(()=>{const n=ui.count,mx=ui.max;$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${n>mx?"color:var(--hide-fg)":""}">${n} / ${mx}</b>`;const mc=$("#mdCount");if(mc){mc.textContent=n+" / "+mx;mc.classList.toggle("bad",n>mx);}});
 function setView(v){V.view=v;
   if(v==="test"){renderDrops();}if(v==="io"){renderOut();}if(v==="edit"&&EZ.m==="easy"){ezRefresh();}}
 function shadowOf(i){for(let k=0;k<i;k++)if(covers(F.rules[k],F.rules[i]))return k;return -1;}
@@ -474,7 +480,7 @@ document.addEventListener("keydown",e=>{
 });
 document.addEventListener("change",e=>{
   const t=e.target;
-  if(t.dataset.on){const r=F.rules.find(x=>x.id===t.dataset.on);if(r){r.on=t.checked?1:0;if(r.id===S.cur&&$("#f-on"))$("#f-on").checked=!!r.on;touch();}return;}
+  if(t.dataset.on){const r=F.rules.find(x=>x.id===t.dataset.on);if(r){const want=t.checked;t.checked=!!r.on;setRuleOn(r,want);}return;}
   if(t.id==="f-on"){const r=curRule();if(r){r.on=t.checked?1:0;touch();}return;}
   if(t.id==="preset"){const p=PRESETS[+t.value];if(p){setFilter(p.build());toast("Loaded preset: "+p.label+".");}t.value="";return;}
   if(t.dataset.m&&t.tagName==="SELECT"){const r=curRule();if(r){mset(r,t.dataset.m,t.value);chgMark(t);touch();if(t.dataset.m==="rt")renderEditor();}return;}
@@ -502,7 +508,7 @@ const MD={key:"oathfilter-modules",max:50,
 let mdUi=null;
 function renderMD(){if(mdUi)mdUi.refresh();}
 /* insert rules into the filter at top / after the selected rule / end (the list and the pre-insert check are in module-ui.js; shared links use this too) */
-function mdPlace(rs,name,pos="after"){
+function mdPlace(rs,name,pos="after"){ /* pos: "top" | "after" | "end" | a rule index (0 = before the first rule) */
   if(typeof EZ!=="undefined"&&EZ.m==="easy")return false;
   const n=rs.length,tot=F.rules.length+n;
   if(tot>MAX_RULES){toast(F.rules.length+" + "+n+" = "+tot+" / "+MAX_RULES+". Delete "+(tot-MAX_RULES)+" rule"+(tot-MAX_RULES===1?"":"s")+" first.",true);return false;}
@@ -514,6 +520,17 @@ function mdPlace(rs,name,pos="after"){
   if(fit.notes.length)toast(fit.notes[0],true);
   return true;
 }
+/* move one rule to a new position (the organizer's drag and drop and arrow buttons) */
+function mdMove(from,to){
+  if(typeof EZ!=="undefined"&&EZ.m==="easy")return false;
+  const n=F.rules.length;if(!(from>=0&&from<n&&to>=0&&to<n)||from===to)return false;
+  F.preset="-1";const[r]=F.rules.splice(from,1);F.rules.splice(to,0,r);touch();return true;
+}
+/* one line per rule for the organizer: name or summary, plus the action word */
+function mdDescribe(r){
+  const nm=(r.name||"").trim(),sm=summary(r),AC=["hide","show","highlight","beam","sell"][r.action]||"show";
+  return {title:nm||sm,sub:nm?sm:"",act:r.on?actWord(r.action):"Off",cls:"action-badge action-badge--"+(r.on?AC:"off")};
+}
 /* share a module: same link service and offline fallback as the filter share. Returns {url,offline} or null. */
 async function mdShare(x){
   const pl={bofilter:x.c,ruleNames:(x.n||[]).map(v=>String(v||"").slice(0,NAME_MAX))};
@@ -524,12 +541,15 @@ async function mdShare(x){
 }
 if(Vue){
   mdUi=mountModuleUi(Vue,{F:()=>F,curId:()=>S.cur,easy:()=>typeof EZ!=="undefined"&&EZ.m==="easy",insert:(rs,pos,name)=>mdPlace(rs,name,pos),
+    move:mdMove,describe:mdDescribe,setOn:(id,on)=>setRuleOn(F.rules.find(x=>x.id===id),on),caution:kinds=>askCaution(kinds),icon:n=>li(n),opener:()=>$("#mdOpen"),
     replace:(rs,name)=>{setFilter({preset:"-1",rules:fitRules(rs).rules});toast("Started from “"+name+"” ("+rs.length+" rule"+(rs.length===1?"":"s")+"). "+COPY.undo);},
-    toast,share:mdShare,store:MD,storageMsg:COPY.storage,copyBlocked:COPY.blocked+" Select the text and press Ctrl+C."},$("#mdApp"));
+    toast,share:mdShare,store:MD,storageMsg:COPY.storage,copyBlocked:COPY.blocked+" Select the text and press Ctrl+C."},$("#mdHost"));
   askCaution=mountCaution(Vue,$("#cautionHost"));
+  $("#mdOpen").onclick=()=>mdUi.open();
 }else{
-  $("#mdApp").innerHTML='<p class="hint">The module library needs the Vue library, which could not be loaded. Check your connection and reload the page.</p>';
+  $("#mdOpen").onclick=()=>toast("The module organizer needs the Vue library, which could not be loaded. Check your connection and reload the page.",true);
 }
+$("#mdOpen .mdm-ei").innerHTML=li("layers");
 /* ---- old local filters: read-only, copied into modules once ---- */
 const LF={key:"oathfilter-saved",max:50,
   all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},

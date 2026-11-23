@@ -389,3 +389,91 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 #editor .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px}
 #editor .btn .li{width:14px;height:14px}
 #qcNote .li{width:14px;height:14px;flex:none}
+
+/* ---- Module & Rule Organizer (js/module-ui.js). Plain CSS on purpose: works without the Tailwind CDN. z-index: above #hlpPop (70), below the Sell caution (120). ---- */
+.mdm-entry{display:flex;gap:8px;align-items:center;margin:12px 0}
+.mdm-entry .btn{flex:1 1 auto;justify-content:flex-start}
+.mdm-ei{display:inline-flex;color:var(--accent-gold)}
+.mdm-ec{margin-left:auto;color:var(--accent-gold);font-variant-numeric:tabular-nums}
+.mdm-ec.bad,.mdm-count.bad{color:var(--hide-fg)}
+body.mdm-lock{overflow:hidden}
+.mdm-back{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:clamp(8px,2vw,28px);background:rgba(6,8,12,.78)}
+.mdm{display:flex;flex-direction:column;width:min(1440px,100%);height:min(920px,100%);padding:14px 16px 16px;border:1px solid var(--border-strong);border-radius:12px;background:var(--bg-page);box-shadow:0 24px 70px rgba(0,0,0,.65);outline:none}
+.mdm-head{display:flex;align-items:center;gap:14px;flex:none;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.mdm-title{margin:0;font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;color:var(--accent-gold);flex:1 1 auto}
+.mdm-count{font-weight:700;font-variant-numeric:tabular-nums;color:var(--text-main)}
+.mdm-note{margin:10px 0 0}
+.mdm-msg{flex:none;min-height:1.3em;margin:8px 0 0}
+.mdm-msg.bad,.mdm .bad{color:var(--hide-fg)}
+.mdm .warn{color:var(--warn-fg)}
+.mdm-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;flex:1 1 auto;min-height:0;margin-top:8px}
+.mdm-pane{display:flex;flex-direction:column;gap:10px;min-width:0;min-height:0;overflow:auto;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg-panel)}
+.mdm-ph{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.mdm-h{margin:0;font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-main)}
+.mdm-h .hint{text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px}
+.mdm-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.mdm-f2{flex:2 1 170px;min-width:0}.mdm-f1{flex:1 1 110px;min-width:0}
+.mdm-tags{display:flex;gap:6px;flex-wrap:wrap;max-height:76px;overflow:auto;padding:2px}
+.mdm-tag{padding:3px 10px;border:1px solid var(--border-strong);border-radius:999px;background:var(--bg-subtle);color:var(--text-muted);font-size:.75rem}
+.mdm-tag:hover{background:var(--bg-card-hover)}
+.mdm-tag[aria-pressed="true"]{border-color:var(--accent-gold);background:var(--accent-gold-soft);color:var(--accent-gold)}
+.mdm-sum{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
+.mdm-sp{flex:1 1 auto}
+.mdm .mdm-sm{min-height:32px;padding:0 10px;font-size:.8125rem}
+.mdm-list,.mdm-rules{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.mdm-rules{gap:0}
+.mdm-empty{padding:14px;border:1px dashed var(--border-strong);border-radius:8px;text-align:center}
+.mdm-card{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-card)}
+.mdm-card:hover{background:var(--bg-card-hover)}
+.mdm-card.sel{border-color:var(--accent-gold);background:var(--accent-gold-soft)}
+.mdm-card.dragging,.mdm-rule.dragging{opacity:.45}
+.mdm-ch{display:flex;align-items:center;gap:10px}
+.mdm-chk{width:18px;height:18px;flex:none;accent-color:var(--accent-gold)}
+.mdm-cm{display:grid;min-width:0;flex:1 1 auto}
+.mdm-cn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mdm-grip{flex:none;color:var(--text-dim);letter-spacing:-2px;cursor:grab;user-select:none}
+.mdm-desc{margin:0;overflow-wrap:anywhere}
+.mdm-badges{display:flex;gap:6px;flex-wrap:wrap}
+.mdm-badge{padding:1px 8px;border:1px solid var(--border-strong);border-radius:999px;font-size:.6875rem;color:var(--text-muted);background:var(--bg-subtle)}
+.mdm-badge.tag{border-style:dashed}
+.mdm-badge.warn{border-color:var(--warn-fg);color:var(--warn-fg)}
+.mdm-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.mdm-edit{display:grid;gap:8px}
+.mdm-more{border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);padding:8px 12px}
+.mdm-more summary{cursor:pointer;font-weight:600;font-size:.8125rem;letter-spacing:.06em;text-transform:uppercase}
+.mdm-more[open] summary{margin-bottom:8px}
+.mdm-ins{display:grid;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
+.mdm-where{color:var(--accent-gold)}
+.mdm-num{width:76px;height:32px;padding:0 8px}
+.mdm-batch{width:100%;min-height:44px}
+.mdm-checks{margin:0;padding:0 0 0 16px;display:grid;gap:3px}
+.mdm-rules{border:1px solid var(--border);border-radius:8px;background:var(--bg-card);padding:4px 6px}
+.mdm-rule{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg-panel)}
+.mdm-rule.cur{border-color:var(--border-strong);box-shadow:inset 3px 0 0 var(--accent-gold)}
+.mdm-rule.off{opacity:.6}
+.mdm-rule[draggable="true"]{cursor:grab}
+.mdm-no{flex:none;min-width:2.2ch;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text-muted)}
+.mdm-rt{display:grid;min-width:0;flex:1 1 auto}
+.mdm-rt b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.mdm-rt .hint{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mdm-act{flex:none}
+.mdm-ib{flex:none;width:28px;height:28px;border:1px solid var(--border-strong);border-radius:6px;background:var(--bg-card);color:var(--text-main)}
+.mdm-ib:hover:not(:disabled){background:var(--bg-card-hover)}
+.mdm-ib:disabled{opacity:.35;cursor:not-allowed}
+.mdm-on{flex:none;display:inline-flex}
+.mdm-on input{width:18px;height:18px;accent-color:var(--accent-gold)}
+/* the gap between two rules: invisible until it is the insert point (gold, dashed on hover) or the drop target while dragging (thick gold line) */
+.mdm-gap{height:10px;position:relative;list-style:none}
+.mdm-gapb{position:absolute;left:0;right:0;top:0;bottom:0;border:0;background:transparent;padding:0;cursor:pointer}
+.mdm-gapb::after{content:"";position:absolute;left:0;right:0;top:50%;height:0;border-top:2px dashed transparent}
+.mdm-gap:hover .mdm-gapb::after{border-top-color:var(--text-dim)}
+.mdm-gap.mark .mdm-gapb::after{border-top:2px solid var(--accent-gold)}
+.mdm-gap.drop{height:14px}
+.mdm-gap.drop .mdm-gapb::after{border-top:4px solid var(--accent-gold);border-radius:2px;box-shadow:0 0 0 3px var(--accent-gold-soft)}
+.mdm-empty.drop{border-color:var(--accent-gold);background:var(--accent-gold-soft)}
+.mdm-caut{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.6)}
+@media (max-width:900px){
+  .mdm-back{padding:0}.mdm{height:100%;border-radius:0}
+  .mdm-body{grid-template-columns:minmax(0,1fr);overflow:auto;align-content:start}
+  .mdm-pane{overflow:visible;flex:none}
+}

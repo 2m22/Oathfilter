@@ -83,9 +83,7 @@
     <div class="sub"><label class="lab" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div>
     <div class="sub" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
-    <details class="sub ezdet" id="mdBox"><summary style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.8rem;color:var(--text-main)">Modules</summary>
-      <div class="hrow" style="margin:8px 0"><p class="hint" style="margin:0">Built-in modules and your own. Check the result before you insert it.</p><button type="button" class="hlp" data-help="modules" aria-label="Help: Modules" aria-expanded="false">?</button></div>
-      <div id="mdApp"><p class="hint">Loading modules…</p></div></details>
+    <div class="sub mdm-entry"><button type="button" class="btn" id="mdOpen" aria-haspopup="dialog"><span class="mdm-ei" aria-hidden="true"></span><span>Modules</span><b id="mdCount" class="mdm-ec">0 / 200</b></button><button type="button" class="hlp" data-help="modules" aria-label="Help: Modules" aria-expanded="false">?</button></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:12px"><div class="seg" role="group" aria-label="Show rules" id="rfilter" style="flex:1 1 auto;margin:0"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button><button type="button" data-rf="sell" aria-pressed="false">Sell</button></div><button type="button" class="btn actonly" id="rfAct" data-rfact="1" aria-pressed="false" title="Show only rules that are switched on">Active only</button></div>
     <div class="sub" style="margin-top:12px"><button type="button" class="btn" id="chkOrder" style="width:100%">Check rule order</button><div id="chkOut" role="status" aria-live="polite"></div></div>
     <p class="hint" id="rhint" style="margin:12px 0 0"></p>
@@ -303,6 +301,7 @@
 <!-- the deploy workflow stamps the build id and the newest changelog heading into the two placeholders below -->
 <script>window.__OF={build:"__BUILD__",rel:"__REL__"};</script>
 <script type="module" src="js/app.js"></script>
+<div id="mdHost"></div>
 <div id="cautionHost"></div>
 </body>
 </html>

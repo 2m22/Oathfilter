@@ -1,191 +1,379 @@
-/* Module library UI (Vue 3). All logic lives in modules.js and filter-engine.js; this file only shows it and calls back into app.js through ctx.
-   ctx: {F(), curId(), easy(), insert(rules,pos,name), replace(rules,name), toast(msg,bad), share(module), store:{all(),put(list),max}, storageMsg, undoMsg} */
-import {encode,uid,MAX_RULES,NAME_MAX} from "./filter-engine.js";
-import {BUILTIN,BUILTIN_CATS,builtinRules,moduleRules,fitRules,filterModules,insertCheck,sellCaution,CAUTION,cleanModule,uniqueName,duplicateModule,moduleToShare,moduleFromShare,CUSTOM_MAX} from "./modules.js";
+/* Module & Rule Organizer (Vue 3): a dark two-pane modal opened by the Modules button.
+   Left pane = module library (built-in + own), right pane = the filter's rules in priority order.
+   All logic lives in modules.js and filter-engine.js; this file only shows it and calls back into app.js through ctx.
+   ctx: {F(), curId(), easy(), insert(rules,pos,name) pos = "top"|"after"|"end"|index, move(from,to), setOn(id,on) -> Promise, describe(rule) -> {title,sub,act,cls},
+         replace(rules,name), caution(kinds) -> Promise<boolean>, toast(msg,bad), share(module), store:{all(),put(list),max}, storageMsg, copyBlocked,
+         icon(name) -> html, opener() -> element to focus after closing}
+   The styles are plain classes (.mdm*) in css/theme.css, so the modal also works when the Tailwind CDN is not reachable. */
+import {encode,uid,MAX_RULES,mlist} from "./filter-engine.js";
+import {BUILTIN,BUILTIN_CATS,builtinRules,moduleRules,fitRules,filterModules,insertCheck,sellCaution,CAUTION,cleanModule,cleanTags,uniqueName,duplicateModule,moduleToShare,moduleFromShare,CUSTOM_MAX} from "./modules.js";
 
-const POS=[["after","After selected rule"],["top","Top"],["end","End"]];
+const FOCUSABLE='a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+const focusables=root=>[...root.querySelectorAll(FOCUSABLE)].filter(e=>e.offsetParent!==null||e===document.activeElement);
+const deep=o=>JSON.parse(JSON.stringify(o));
+/* number of list entries (bases, lines, runes) a rule set names: the "how big is this module" number next to the rule count */
+const entriesOf=rules=>rules.reduce((n,r)=>n+["b","rn","a","na"].reduce((m,k)=>m+mlist(r,k).length,0),0);
+
 const TPL=`
-<div class="grid gap-3" data-mdui>
-  <div class="flex gap-2 flex-wrap" role="tablist" aria-label="Module library">
-    <button type="button" class="btn" role="tab" :aria-selected="tab==='builtin'" :aria-pressed="tab==='builtin'" @click="setTab('builtin')">Built-in ({{ builtin.length }})</button>
-    <button type="button" class="btn" role="tab" :aria-selected="tab==='mine'" :aria-pressed="tab==='mine'" @click="setTab('mine')">My modules ({{ mine.length }})</button>
-  </div>
-  <div class="flex gap-2 flex-wrap items-end">
-    <div class="flex-1 min-w-36"><label class="lab" for="mdQ">Search modules</label><input id="mdQ" class="field" type="search" v-model="q" placeholder="Name, description, category, base, line" autocomplete="off"></div>
-    <div v-if="tab==='builtin'" class="min-w-40"><label class="lab" for="mdCat">Category</label><div class="selwrap"><select id="mdCat" v-model="cat"><option value="">All categories</option><option v-for="c in cats" :key="c" :value="c">{{ c }}</option></select></div></div>
-    <div v-else class="min-w-40"><label class="lab" for="mdCatMine">Category</label><div class="selwrap"><select id="mdCatMine" v-model="cat"><option value="">All categories</option><option v-for="c in mineCats" :key="c" :value="c">{{ c }}</option></select></div></div>
-  </div>
-  <p class="hint m-0 normal-case tracking-normal" role="status" aria-live="polite" :class="bad?'text-hide':''">{{ msg }}</p>
-  <p v-if="easy" class="hint m-0">Easy Mode builds its own rules. Switch to Advanced Mode to insert modules.</p>
+<div v-if="open" class="mdm-back" data-mdui @mousedown.self="close">
+ <div class="mdm" role="dialog" aria-modal="true" aria-labelledby="mdmT" tabindex="-1" ref="dlg" @keydown="onKey">
+  <header class="mdm-head">
+   <h2 id="mdmT" class="mdm-title">Module &amp; Rule Organizer</h2>
+   <span class="mdm-count" :class="over?'bad':''" aria-label="Rules in your filter">{{ rules.length }} / {{ max }} rules</span>
+   <button type="button" class="btn mdm-x" @click="close" aria-label="Close organizer (Escape)"><span v-html="icon('x')"></span><span>Close</span></button>
+  </header>
+  <p v-if="easy" class="callout mdm-note">Easy Mode builds its own rules. Switch to Advanced Mode to insert modules or move rules. You can still browse, save and share modules.</p>
+  <p class="hint mdm-msg" role="status" aria-live="polite" :class="bad?'bad':''">{{ msg }}</p>
+  <div class="mdm-body">
 
-  <div v-if="tab==='mine'" class="grid gap-2">
-    <div class="sub grid gap-2">
-      <span class="lab">Save rules as a module</span>
-      <div class="flex gap-2 flex-wrap items-end">
-        <div class="flex-[2_1_160px]"><label class="lab" for="mdName">Name</label><input id="mdName" class="field" type="text" maxlength="40" v-model="form.name" placeholder="e.g. Hide junk" autocomplete="off" @keydown.enter.prevent="save(false)"></div>
-        <div class="flex-[1_1_80px]"><label class="lab" for="mdFrom">From rule</label><input id="mdFrom" class="field" type="number" min="1" inputmode="numeric" v-model="form.from"></div>
-        <div class="flex-[1_1_80px]"><label class="lab" for="mdTo">To rule</label><input id="mdTo" class="field" type="number" min="1" inputmode="numeric" v-model="form.to"></div>
-      </div>
-      <div class="flex gap-2 flex-wrap items-end">
-        <div class="flex-[2_1_160px]"><label class="lab" for="mdDesc">Description (optional)</label><input id="mdDesc" class="field" type="text" maxlength="200" v-model="form.desc" autocomplete="off"></div>
-        <div class="flex-[1_1_120px]"><label class="lab" for="mdCatIn">Category (optional)</label><input id="mdCatIn" class="field" type="text" maxlength="30" v-model="form.cat" autocomplete="off"></div>
-      </div>
-      <div class="flex gap-2 flex-wrap"><button type="button" class="btn gold" id="mdSave" @click="save(false)">Save module</button><button type="button" class="btn" id="mdAll" @click="save(true)">Save all rules</button></div>
+   <section class="mdm-pane" aria-labelledby="mdmL">
+    <div class="mdm-ph"><h3 id="mdmL" class="mdm-h">Modules</h3>
+     <div class="seg" role="group" aria-label="Module source">
+      <button type="button" :aria-pressed="src==='all'" @click="src='all'">All ({{ all.length }})</button>
+      <button type="button" :aria-pressed="src==='builtin'" @click="src='builtin'">Built-in ({{ builtin.length }})</button>
+      <button type="button" :aria-pressed="src==='mine'" @click="src='mine'">Mine ({{ mine.length }})</button>
+     </div></div>
+    <div class="mdm-tools">
+     <div class="mdm-f2"><label class="lab" for="mdQ">Search</label><input id="mdQ" ref="search" class="field" type="search" v-model="q" placeholder="Name, description, category, tag, base, line" autocomplete="off"></div>
+     <div class="mdm-f1"><label class="lab" for="mdCat">Category</label><div class="selwrap"><select id="mdCat" v-model="cat"><option value="">All categories</option><option v-for="c in cats" :key="c" :value="c">{{ c }}</option></select></div></div>
     </div>
-    <div class="sub grid gap-2">
-      <span class="lab">Import a module</span>
-      <label class="sr" for="mdImp">Module file text</label><textarea id="mdImp" class="field" rows="2" v-model="imp" placeholder="Paste a copied module here"></textarea>
-      <div><button type="button" class="btn" @click="doImport">Import module</button></div>
+    <div v-if="tags.length" class="mdm-tags" role="group" aria-label="Filter by tag">
+     <button v-for="t in tags" :key="t" type="button" class="mdm-tag" :aria-pressed="tag===t" @click="tag=tag===t?'':t">{{ t }}</button>
     </div>
-  </div>
+    <div class="mdm-sum" role="status" aria-live="polite">
+     <b>{{ sel.length }} module{{ sel.length===1?'':'s' }} · {{ plan.rules.length }} rule{{ plan.rules.length===1?'':'s' }}</b>
+     <span class="mdm-sp"></span>
+     <button type="button" class="btn mdm-sm" @click="selectShown" :disabled="!shown.length">Select shown</button>
+     <button type="button" class="btn mdm-sm" @click="sel=[]" :disabled="!sel.length">Clear</button>
+    </div>
 
-  <ul class="lfl m-0" id="mdList">
-    <li v-if="!shown.length" class="hint" style="border-style:dashed">{{ tab==='mine' ? (mine.length ? 'No module matches your search.' : 'No modules yet. Save a few rules above.') : 'No module matches your search.' }}</li>
-    <li v-for="m in shown" :key="m.id" :data-md="m.id" class="grid gap-2">
-      <div class="lfi">
-        <b :title="m.name">{{ m.name }}</b>
+    <ul class="mdm-list" id="mdList">
+     <li v-if="!shown.length" class="hint mdm-empty">{{ all.length ? 'No module matches your search or filters.' : 'No modules yet.' }}</li>
+     <li v-for="m in shown" :key="m.id" :data-md="m.id" class="mdm-card" :class="{sel:isSel(m.id),dragging:drag&&drag.kind==='mods'&&drag.ids.includes(m.id)}"
+         :draggable="!easy&&!mode[m.id]" @dragstart="dragMods($event,m)" @dragend="dragEnd">
+      <div class="mdm-ch">
+       <input type="checkbox" class="mdm-chk" :checked="isSel(m.id)" @change="toggleSel(m.id)" :aria-label="'Select module '+m.name">
+       <div class="mdm-cm">
+        <b class="mdm-cn" :title="m.name">{{ m.name }}</b>
         <span class="hint">{{ info(m) }}</span>
-        <span v-if="m.cat" class="hint">{{ m.cat }}</span>
-        <span v-if="m.desc" class="hint normal-case tracking-normal line-clamp-3 [overflow-wrap:anywhere]">{{ m.desc }}</span>
-        <span v-if="sellOf(m).length" class="hint text-warn">Contains Sell rules</span>
+       </div>
+       <span v-if="!easy" class="mdm-grip" aria-hidden="true" title="Drag into the rule list">⋮⋮</span>
       </div>
+      <p v-if="m.desc" class="hint mdm-desc">{{ m.desc }}</p>
+      <div class="mdm-badges">
+       <span v-if="m.cat" class="mdm-badge">{{ m.cat }}</span>
+       <span v-for="t in (m.tags||[])" :key="t" class="mdm-badge tag">{{ t }}</span>
+       <span v-if="sellOf(m).length" class="mdm-badge warn">Contains Sell rules</span>
+      </div>
+
       <template v-if="mode[m.id]==='ren'">
-        <input class="field" type="text" maxlength="40" v-model="edit.name" aria-label="New name" @keydown.enter.prevent="saveEdit(m)" @keydown.esc="mode={}">
+       <div class="mdm-edit">
+        <input class="field" type="text" maxlength="40" v-model="edit.name" aria-label="Module name" @keydown.enter.prevent="saveEdit(m)">
         <input class="field" type="text" maxlength="200" v-model="edit.desc" aria-label="Description" placeholder="Description (optional)">
         <input class="field" type="text" maxlength="30" v-model="edit.cat" aria-label="Category" placeholder="Category (optional)">
-        <div class="lfb"><button type="button" class="btn gold" @click="saveEdit(m)">Save</button><button type="button" class="btn" @click="mode={}">Cancel</button></div>
+        <input class="field" type="text" v-model="edit.tags" aria-label="Tags, separated by commas" placeholder="Tags, separated by commas (optional)">
+        <div class="mdm-row"><button type="button" class="btn gold" @click="saveEdit(m)">Save</button><button type="button" class="btn" @click="mode={}">Cancel</button></div>
+       </div>
       </template>
-      <div v-else-if="mode[m.id]==='del'" class="lfb"><button type="button" class="btn danger" @click="del(m)">Delete</button><button type="button" class="btn" @click="mode={}">Cancel</button></div>
-      <div v-else-if="mode[m.id]==='rep'" class="grid gap-2">
-        <div v-if="sellOf(m).length" class="callout normal-case tracking-normal" role="alert"><b>Caution.</b> <span v-for="s in sellOf(m)" :key="s.kind">{{ s.text }} </span><label class="flex gap-2 items-center mt-2"><input type="checkbox" v-model="ack"> <span>I understand that matching items are sold.</span></label></div>
-        <div class="lfb"><button type="button" class="btn danger" :disabled="sellOf(m).length&&!ack" @click="replace(m)">Replace current filter</button><button type="button" class="btn" @click="mode={}">Cancel</button></div></div>
-      <div v-else-if="mode[m.id]==='shr'" class="grid gap-2">
-        <input class="field" type="text" readonly :value="shareUrl" aria-label="Share link" data-mdurl="1">
-        <div class="lfb"><button type="button" class="btn" @click="copy(shareUrl,'Link copied.')">Copy link</button><button type="button" class="btn" @click="copy('[Oathfilter module]('+shareUrl+')','Discord link copied.')">Copy for Discord</button><button type="button" class="btn" @click="mode={}">Close</button></div></div>
-      <div v-else class="lfb">
-        <button type="button" class="btn" :disabled="easy" :title="easy?'Easy Mode builds its own rules. Switch to Advanced Mode to insert modules.':''" @click="openInsert(m)">{{ easy ? 'Advanced Mode only' : 'Insert' }}</button>
-        <template v-if="!m.builtin">
-          <button type="button" class="btn" @click="askReplace(m)">Replace filter</button>
-          <button type="button" class="btn" @click="startEdit(m)">Edit info</button>
-          <button type="button" class="btn" @click="dup(m)">Duplicate</button>
-          <button type="button" class="btn" @click="share(m)">Share link</button>
-          <button type="button" class="btn" @click="copy(fileOf(m),'Module copied. Paste it into Import module.')">Copy module</button>
-          <button type="button" class="btn danger" @click="mode={};mode[m.id]='del'">Delete</button>
-        </template>
+      <div v-else-if="mode[m.id]==='del'" class="mdm-row"><span class="hint">Delete this module?</span><button type="button" class="btn danger" @click="del(m)">Delete</button><button type="button" class="btn" @click="mode={}">Cancel</button></div>
+      <div v-else-if="mode[m.id]==='rep'" class="mdm-row"><span class="hint">Replace all {{ rules.length }} rules of your filter?</span><button type="button" class="btn danger" @click="replace(m)">Replace filter</button><button type="button" class="btn" @click="mode={}">Cancel</button></div>
+      <div v-else-if="mode[m.id]==='shr'" class="mdm-edit">
+       <input class="field" type="text" readonly :value="shareUrl" aria-label="Share link" data-mdurl="1">
+       <div class="mdm-row"><button type="button" class="btn" @click="copy(shareUrl,'Link copied.')">Copy link</button><button type="button" class="btn" @click="copy('[Oathfilter module]('+shareUrl+')','Discord link copied.')">Copy for Discord</button><button type="button" class="btn" @click="mode={}">Close</button></div>
       </div>
-      <div v-if="pre&&pre.key===m.id" class="sub grid gap-2 normal-case tracking-normal" :data-precheck="m.id">
-        <p class="m-0"><b>{{ pre.check.added }}</b> rule{{ pre.check.added===1?'':'s' }} added, total <b :class="pre.check.over?'text-hide':''">{{ pre.check.total }} / {{ pre.check.max }}</b>.</p>
-        <div><label class="lab" :for="'pos-'+m.id">Insert at</label><div class="selwrap"><select :id="'pos-'+m.id" v-model="pre.pos"><option v-for="p in POS" :key="p[0]" :value="p[0]">{{ p[1] }}</option></select></div></div>
-        <p v-if="pre.check.over" class="m-0 text-hide" role="alert">{{ overText }}</p>
-        <ul class="m-0 pl-4 grid gap-1">
-          <li v-for="n in pre.notes" :key="n" class="hint">{{ n }}</li>
-          <li v-for="s in pre.check.shadowed" :key="'s'+s.rule" class="hint text-warn">Rule {{ s.rule+1 }}{{ pre.rules[s.rule].name?' ('+pre.rules[s.rule].name+')':'' }} would never be reached: {{ s.byNew?'an earlier rule of this module':'rule '+(s.by+1)+' of your filter' }} already catches everything it catches.</li>
-          <li v-for="s in pre.check.shadows" :key="'h'+s.rule" class="hint text-warn">Your rule {{ s.rule+1 }} would never be reached after this insert: a new rule catches everything it catches.</li>
-          <li v-for="s in pre.check.issues" :key="s.rule+s.code" class="hint text-warn">Rule {{ s.rule+1 }}: {{ s.text }}</li>
-        </ul>
-        <div v-if="pre.check.sell.length" class="callout normal-case tracking-normal" role="alert"><b>Caution.</b> {{ base }} <span v-for="s in pre.check.sell" :key="s.kind">{{ s.text }} </span>
-          <label class="flex gap-2 items-center mt-2"><input type="checkbox" v-model="ack"> <span>I understand that matching items are sold.</span></label></div>
-        <div class="lfb"><button type="button" class="btn gold" :disabled="blocked" @click="doInsert">Insert {{ pre.check.added }} rule{{ pre.check.added===1?'':'s' }}</button><button type="button" class="btn" @click="pre=null">Cancel</button></div>
+      <div v-else class="mdm-row">
+       <button type="button" class="btn mdm-sm" :disabled="easy" :title="easy?'Advanced Mode only':'Insert this module at the insert point'" @click="insertIds([m.id])"><span v-html="icon('plus')"></span><span>Insert</span></button>
+       <template v-if="!m.builtin">
+        <button type="button" class="btn mdm-sm" @click="startEdit(m)">Edit</button>
+        <button type="button" class="btn mdm-sm" @click="askReplace(m)">Replace filter</button>
+        <button type="button" class="btn mdm-sm" @click="dup(m)">Duplicate</button>
+        <button type="button" class="btn mdm-sm" @click="share(m)">Share</button>
+        <button type="button" class="btn mdm-sm" @click="copy(fileOf(m),'Module copied. Paste it into Import module.')">Copy</button>
+        <button type="button" class="btn mdm-sm danger" @click="mode={};mode[m.id]='del'">Delete</button>
+       </template>
       </div>
-    </li>
-  </ul>
+     </li>
+    </ul>
+
+    <details class="mdm-more">
+     <summary>Create or import a module</summary>
+     <div class="mdm-edit">
+      <span class="hint">Save rules of your filter ({{ rules.length }} now) as a module.</span>
+      <div class="mdm-tools">
+       <div class="mdm-f2"><label class="lab" for="mdName">Name</label><input id="mdName" class="field" type="text" maxlength="40" v-model="form.name" placeholder="e.g. Hide junk" autocomplete="off" @keydown.enter.prevent="save(false)"></div>
+       <div class="mdm-f1"><label class="lab" for="mdFrom">From rule</label><input id="mdFrom" class="field" type="number" min="1" inputmode="numeric" v-model="form.from"></div>
+       <div class="mdm-f1"><label class="lab" for="mdTo">To rule</label><input id="mdTo" class="field" type="number" min="1" inputmode="numeric" v-model="form.to"></div>
+      </div>
+      <div class="mdm-tools">
+       <div class="mdm-f2"><label class="lab" for="mdDesc">Description (optional)</label><input id="mdDesc" class="field" type="text" maxlength="200" v-model="form.desc" autocomplete="off"></div>
+       <div class="mdm-f1"><label class="lab" for="mdCatIn">Category (optional)</label><input id="mdCatIn" class="field" type="text" maxlength="30" v-model="form.cat" autocomplete="off"></div>
+       <div class="mdm-f1"><label class="lab" for="mdTagIn">Tags (optional)</label><input id="mdTagIn" class="field" type="text" v-model="form.tags" placeholder="a, b, c" autocomplete="off"></div>
+      </div>
+      <div class="mdm-row"><button type="button" class="btn gold" id="mdSave" @click="save(false)">Save module</button><button type="button" class="btn" id="mdAll" @click="save(true)">Save all rules</button></div>
+      <label class="lab" for="mdImp" style="margin-top:8px">Import a module</label>
+      <textarea id="mdImp" class="field" rows="2" v-model="imp" placeholder="Paste a copied module here"></textarea>
+      <div class="mdm-row"><button type="button" class="btn" @click="doImport">Import module</button></div>
+     </div>
+    </details>
+   </section>
+
+   <section class="mdm-pane" aria-labelledby="mdmR">
+    <div class="mdm-ph"><h3 id="mdmR" class="mdm-h">Filter rules <span class="hint">first match wins</span></h3></div>
+    <div class="mdm-ins">
+     <div class="mdm-row">
+      <span class="hint">Insert point:</span>
+      <b class="mdm-where">{{ whereText }}</b>
+      <span class="mdm-sp"></span>
+      <button type="button" class="btn mdm-sm" @click="at=0">Top</button>
+      <button type="button" class="btn mdm-sm" :disabled="curIdx<0" @click="at=curIdx+1">After selected</button>
+      <button type="button" class="btn mdm-sm" @click="at=null">End</button>
+      <label class="sr" for="mdAt">Insert before rule number</label>
+      <input id="mdAt" class="field mdm-num" type="number" min="1" :max="rules.length+1" inputmode="numeric" :value="eff+1" @change="setAtNum($event.target.value)">
+     </div>
+     <button type="button" class="btn gold mdm-batch" id="mdBatch" :disabled="blocked" @click="insertIds(sel)">
+      <span v-html="icon('layers')"></span><span>Insert {{ sel.length }} selected module{{ sel.length===1?'':'s' }} ({{ plan.rules.length }} rule{{ plan.rules.length===1?'':'s' }}) at insert point</span></button>
+     <ul v-if="sel.length||easy" class="mdm-checks">
+      <li v-if="easy" class="hint warn">Advanced Mode only.</li>
+      <template v-else>
+       <li class="hint" :class="over?'bad':''">Total after insert: <b>{{ check.total }} / {{ check.max }}</b>.<span v-if="over"> Delete {{ check.total-check.max }} rule{{ check.total-check.max===1?'':'s' }} first.</span></li>
+       <li v-for="n in plan.notes" :key="n" class="hint">{{ n }}</li>
+       <li v-for="s in check.issues" :key="s.rule+s.code" class="hint bad">Rule {{ s.rule+1 }} of the new block: {{ s.text }}</li>
+       <li v-for="s in check.shadowed" :key="'s'+s.rule" class="hint warn">New rule {{ s.rule+1 }} would never be reached: {{ s.byNew?'an earlier new rule':'your rule '+(s.by+1) }} already catches everything it catches.</li>
+       <li v-for="s in check.shadows" :key="'h'+s.rule" class="hint warn">Your rule {{ s.rule+1 }} would never be reached after this insert.</li>
+       <li v-if="check.sell.length" class="hint warn">Contains Sell rules. You will be asked to confirm.</li>
+      </template>
+     </ul>
+    </div>
+
+    <ol class="mdm-rules" id="mdRules" aria-label="Rules in priority order" @dragover="overRules" @dragleave="leaveRules" @drop="dropRules">
+     <li v-if="!rules.length" class="hint mdm-empty" :class="{drop:dropAt===0}">Your filter has no rules. Drag a module here or use the insert button.</li>
+     <template v-for="(r,i) in rules" :key="r.id">
+      <li class="mdm-gap" :class="{mark:eff===i&&!drag,drop:dropAt===i}" aria-hidden="true"><button type="button" tabindex="-1" class="mdm-gapb" @click="at=i" :title="'Insert before rule '+(i+1)"></button></li>
+      <li class="mdm-rule" :class="{cur:r.id===curId,off:!r.on,dragging:drag&&drag.kind==='rule'&&drag.from===i}" :data-i="i" :data-rid="r.id" :draggable="!easy" @dragstart="dragRule($event,i)" @dragend="dragEnd">
+       <span class="mdm-grip" aria-hidden="true">⋮⋮</span>
+       <span class="mdm-no">{{ i+1 }}</span>
+       <span class="mdm-rt"><b :title="r.title">{{ r.title }}</b><span class="hint">{{ r.sub }}</span></span>
+       <span class="mdm-act" :class="r.cls">{{ r.act }}</span>
+       <button type="button" class="mdm-ib" :disabled="easy||i===0" @click="moveRule(i,i-1)" :aria-label="'Move rule '+(i+1)+' up'">↑</button>
+       <button type="button" class="mdm-ib" :disabled="easy||i===rules.length-1" @click="moveRule(i,i+1)" :aria-label="'Move rule '+(i+1)+' down'">↓</button>
+       <label class="mdm-on" :title="r.on?'Rule is active':'Rule is off'"><input type="checkbox" :checked="r.on" :disabled="easy" @change="toggleOn(r,$event)" :aria-label="'Rule '+(i+1)+' active'"><span class="sr">active</span></label>
+      </li>
+     </template>
+     <li v-if="rules.length" class="mdm-gap end" :class="{mark:eff===rules.length&&!drag,drop:dropAt===rules.length}" aria-hidden="true"><button type="button" tabindex="-1" class="mdm-gapb" @click="at=null" title="Insert at the end"></button></li>
+    </ol>
+   </section>
+  </div>
+ </div>
 </div>`;
 
 export function mountModuleUi(Vue,ctx,el){
-  const {createApp,ref,reactive,computed,watch}=Vue;
+  const {createApp,ref,reactive,computed,watch,nextTick}=Vue;
+  let vmRef=null;
   const app=createApp({
     template:TPL,
     setup(){
-      const tab=ref("builtin"),q=ref(""),cat=ref(""),msg=ref(""),bad=ref(false),mode=ref({}),pre=ref(null),ack=ref(false),shareUrl=ref(""),imp=ref(""),tick=ref(0);
-      const form=reactive({name:"",from:"",to:"",desc:"",cat:""}),edit=reactive({name:"",desc:"",cat:""});
+      const open=ref(false),src=ref("all"),q=ref(""),cat=ref(""),tag=ref(""),msg=ref(""),bad=ref(false),mode=ref({}),shareUrl=ref(""),imp=ref(""),tick=ref(0);
+      const sel=ref([]),at=ref(null),drag=ref(null),dropAt=ref(-1),dlg=ref(null),search=ref(null);
+      const form=reactive({name:"",from:"",to:"",desc:"",cat:"",tags:"",over:""}),edit=reactive({name:"",desc:"",cat:"",tags:""});
+      let opener=null;
       const say=(m,b)=>{msg.value=m;bad.value=!!b;};
-      const mineAll=computed(()=>{tick.value;return ctx.store.all().map(cleanModule).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name));});
-      const mine=computed(()=>mineAll.value);
+      const icon=n=>ctx.icon?ctx.icon(n):"";
+      const mine=computed(()=>{tick.value;return ctx.store.all().map(cleanModule).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name));});
+      const all=computed(()=>BUILTIN.concat(mine.value));
       const easy=computed(()=>{tick.value;return ctx.easy();});
-      const list=computed(()=>tab.value==="builtin"?BUILTIN:mine.value);
-      const shown=computed(()=>filterModules(list.value,q.value,cat.value));
-      const mineCats=computed(()=>[...new Set(mine.value.map(m=>m.cat).filter(Boolean))].sort());
-      const rulesOf=m=>m.builtin?builtinRules(m):fitRules(moduleRules(m).map(r=>JSON.parse(JSON.stringify(r))));
+      const rules=computed(()=>{tick.value;return ctx.F().rules.map(r=>Object.assign({id:r.id,on:r.on!==0},ctx.describe(r)));});
+      const curId=computed(()=>{tick.value;return ctx.curId();});
+      const curIdx=computed(()=>rules.value.findIndex(r=>r.id===curId.value));
+      const list=computed(()=>src.value==="builtin"?BUILTIN:src.value==="mine"?mine.value:all.value);
+      const cats=computed(()=>{const s=new Set(list.value.map(m=>m.cat).filter(Boolean));return [...BUILTIN_CATS.filter(c=>s.has(c)),...[...s].filter(c=>!BUILTIN_CATS.includes(c)).sort()];});
+      const tags=computed(()=>[...new Set(list.value.flatMap(m=>m.tags||[]))].sort());
+      const shown=computed(()=>filterModules(list.value,q.value,cat.value,tag.value));
+      watch(src,()=>{cat.value="";tag.value="";mode.value={};});
+      const rulesOf=m=>m.builtin?builtinRules(m):fitRules(moduleRules(m).map(deep));
+      const stat=new Map();
+      const info=m=>{const k=m.id+"|"+(m.c||"");let s=stat.get(k);if(!s){const r=rulesOf(m).rules;s={n:r.length,e:entriesOf(r)};stat.set(k,s);}return s.n+" rule"+(s.n===1?"":"s")+(s.e?" · "+s.e+" list entr"+(s.e===1?"y":"ies"):"");};
       const sellOf=m=>sellCaution(moduleRules(m));
-      const info=m=>{const n=rulesOf(m).rules.length;return n+" rule"+(n===1?"":"s");};
-      const recheck=()=>{if(!pre.value)return;pre.value.check=insertCheck(ctx.F().rules,pre.value.rules,pre.value.pos,ctx.curId());};
-      watch(()=>pre.value&&pre.value.pos,recheck);
-      watch(tab,()=>{q.value="";cat.value="";pre.value=null;mode.value={};say("");});
-      const blocked=computed(()=>!pre.value||pre.value.check.over||(pre.value.check.sell.length>0&&!ack.value)||easy.value);
-      const overText=computed(()=>pre.value?"The filter would have "+pre.value.check.total+" rules. The limit is "+MAX_RULES+". Delete "+(pre.value.check.total-MAX_RULES)+" rule"+(pre.value.check.total-MAX_RULES===1?"":"s")+" first.":"");
-      const openInsert=m=>{
-        if(pre.value&&pre.value.key===m.id){pre.value=null;return;}
-        const r=rulesOf(m);if(!r.rules.length){say("This module could not be read.",true);return;}
-        const pos=m.builtin?m.pos:"after";
-        pre.value={key:m.id,mod:m,rules:r.rules,notes:r.notes,pos,check:insertCheck(ctx.F().rules,r.rules,pos,ctx.curId())};ack.value=false;mode.value={};say("");
+      /* the selected modules as one ordered block (selection order), split to the Patch 87 list limits */
+      const plan=computed(()=>{
+        const out=[],notes=[];
+        sel.value.forEach(id=>{const m=all.value.find(x=>x.id===id);if(!m)return;const r=rulesOf(m);out.push(...r.rules.map(deep));notes.push(...r.notes);});
+        return {rules:out,notes:[...new Set(notes)]};
+      });
+      const eff=computed(()=>{const n=rules.value.length;return at.value===null?n:Math.max(0,Math.min(n,at.value));});
+      const whereText=computed(()=>{const n=rules.value.length;return eff.value>=n?(n?"after the last rule (end)":"empty filter"):eff.value===0?"top, before rule 1":"before rule "+(eff.value+1);});
+      const check=computed(()=>{tick.value;return insertCheck(ctx.F().rules,plan.value.rules,eff.value,ctx.curId());});
+      const over=computed(()=>(sel.value.length?check.value.total:rules.value.length)>MAX_RULES);
+      /* nb / nr with all / an, or a list over its cap that cannot be cut (an = N) never goes into the filter */
+      const blocked=computed(()=>easy.value||!sel.value.length||!plan.value.rules.length||check.value.over||check.value.issues.length>0);
+      const isSel=id=>sel.value.includes(id);
+      const toggleSel=id=>{sel.value=isSel(id)?sel.value.filter(x=>x!==id):[...sel.value,id];};
+      const selectShown=()=>{const have=new Set(sel.value);sel.value=[...sel.value,...shown.value.map(m=>m.id).filter(id=>!have.has(id))];};
+      const setAtNum=v=>{const n=parseInt(v,10);if(!(n>=1)){return;}at.value=Math.min(n-1,rules.value.length);};
+      const refresh=()=>{tick.value++;if(!open.value)return;const n=rules.value.length;if(at.value!==null&&at.value>=n)at.value=null;sel.value=sel.value.filter(id=>all.value.some(m=>m.id===id));};
+
+      /* ---- insert (button, drag and drop) ---- */
+      const insertIds=async(ids,pos)=>{
+        if(easy.value){say("Easy Mode builds its own rules. Switch to Advanced Mode to insert modules.",true);return;}
+        const mods=ids.map(id=>all.value.find(m=>m.id===id)).filter(Boolean);
+        if(!mods.length){say("Select at least one module first.",true);return;}
+        const rs=[],notes=[];
+        for(const m of mods){const r=rulesOf(m);if(!r.rules.length){say("“"+m.name+"” could not be read.",true);return;}rs.push(...r.rules.map(deep));notes.push(...r.notes);}
+        const where=pos===undefined?eff.value:pos;
+        const ck=insertCheck(ctx.F().rules,rs,where,ctx.curId());
+        if(ck.over){say("The filter would have "+ck.total+" rules. The limit is "+MAX_RULES+". Delete "+(ck.total-MAX_RULES)+" rule"+(ck.total-MAX_RULES===1?"":"s")+" first.",true);return;}
+        if(ck.issues.length){say("Rule "+(ck.issues[0].rule+1)+" of the new block: "+ck.issues[0].text,true);return;}
+        if(ck.sell.length&&!(await ctx.caution(ck.sell.map(s=>s.kind))))return;
+        const label=mods.length===1?mods[0].name:mods.length+" modules";
+        if(ctx.insert(rs,where,label)){
+          say("Inserted "+rs.length+" rule"+(rs.length===1?"":"s")+" as one block"+(mods.length===1?" from “"+mods[0].name+"”":" from "+mods.length+" modules")+".");
+          at.value=at.value===null||where>=ctx.F().rules.length-rs.length?null:where+rs.length;
+          if(ids.length===sel.value.length&&ids.every(x=>sel.value.includes(x)))sel.value=[];
+          refresh();
+        }
       };
-      const doInsert=()=>{
-        if(blocked.value)return;
-        const p=pre.value,rs=JSON.parse(JSON.stringify(p.rules));
-        if(ctx.insert(rs,p.pos,p.mod.name)){pre.value=null;say("");}
+      /* ---- drag and drop ---- */
+      const dragMods=(e,m)=>{
+        if(easy.value||!e.dataTransfer){e.preventDefault();return;}
+        const ids=isSel(m.id)&&sel.value.length>1?sel.value.slice():[m.id];
+        drag.value={kind:"mods",ids};e.dataTransfer.effectAllowed="copy";try{e.dataTransfer.setData("text/plain",ids.join(","));}catch(x){}
       };
-      const askReplace=m=>{pre.value=null;ack.value=false;mode.value={};if(!ctx.F().rules.length){replace(m);return;}mode.value={[m.id]:"rep"};};
-      const replace=m=>{const r=rulesOf(m).rules;if(!r.length){say("This module could not be read.",true);return;}ctx.replace(JSON.parse(JSON.stringify(r)),m.name);mode.value={};say("");};
-      const save=all=>{
-        const rules=ctx.F().rules,n=rules.length,name=form.name.trim().slice(0,40);
+      const dragRule=(e,i)=>{
+        if(easy.value||!e.dataTransfer){e.preventDefault();return;}
+        drag.value={kind:"rule",from:i};e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",String(i+1));}catch(x){}
+      };
+      const dragEnd=()=>{drag.value=null;dropAt.value=-1;};
+      const overRules=e=>{
+        if(!drag.value||easy.value)return;
+        e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect=drag.value.kind==="rule"?"move":"copy";
+        const li=e.target.closest&&e.target.closest("li.mdm-rule");
+        if(li){const i=+li.dataset.i,b=li.getBoundingClientRect();dropAt.value=e.clientY<b.top+b.height/2?i:i+1;}
+        else{const gap=e.target.closest&&e.target.closest("li.mdm-gap");if(gap&&gap.classList.contains("end"))dropAt.value=rules.value.length;else if(e.target===e.currentTarget||!gap)dropAt.value=rules.value.length;}
+      };
+      const leaveRules=e=>{if(!e.currentTarget.contains(e.relatedTarget))dropAt.value=-1;};
+      const dropRules=e=>{
+        e.preventDefault();const d=drag.value,g=dropAt.value;dragEnd();
+        if(!d||g<0||easy.value)return;
+        if(d.kind==="rule"){const to=d.from<g?g-1:g;if(to!==d.from)moveRule(d.from,to);}
+        else insertIds(d.ids,g);
+      };
+      const moveRule=(from,to)=>{
+        if(easy.value||to<0||to>=rules.value.length||from===to)return;
+        if(ctx.move(from,to)){say("Moved rule "+(from+1)+" to position "+(to+1)+".");refresh();
+        nextTick(()=>{const li=dlg.value&&dlg.value.querySelector('li[data-i="'+to+'"]');if(!li)return;const bs=[...li.querySelectorAll(".mdm-ib")],b=(to<from?bs[0]:bs[1]);const t=b&&!b.disabled?b:bs.find(x=>!x.disabled);if(t)t.focus({preventScroll:true});});}
+      };
+      const toggleOn=async(r,e)=>{
+        const want=e.target.checked;e.target.checked=r.on;
+        const ok=await ctx.setOn(r.id,want);
+        if(ok)say("Rule "+(rules.value.findIndex(x=>x.id===r.id)+1)+(want?" is active.":" is off."));
+        refresh();
+      };
+
+      /* ---- custom module management ---- */
+      const askReplace=m=>{mode.value={};if(!ctx.F().rules.length){replace(m);return;}mode.value={[m.id]:"rep"};};
+      const replace=async m=>{
+        const r=rulesOf(m).rules;if(!r.length){say("This module could not be read.",true);return;}
+        const k=sellCaution(r);if(k.length&&!(await ctx.caution(k.map(s=>s.kind))))return;
+        ctx.replace(deep(r),m.name);mode.value={};say("Replaced your filter with “"+m.name+"”.");refresh();
+      };
+      const save=all0=>{
+        const rs=ctx.F().rules,n=rs.length,name=form.name.trim().slice(0,40);
         if(!name){say("Give the module a name first.",true);return;}
         if(!n){say("There are no rules to save.",true);return;}
         let a=parseInt(form.from,10),b=parseInt(form.to,10);
-        if(all){a=1;b=n;}else{const cur=rules.findIndex(r=>r.id===ctx.curId())+1;if(!a)a=cur;if(!b)b=a;}
+        if(all0){a=1;b=n;}else{const cur=rs.findIndex(r=>r.id===ctx.curId())+1;if(!a)a=cur;if(!b)b=a;}
         if(!(a>=1)||b<a||b>n){say("Choose rule numbers from 1 to "+n+", with “From” not above “To”.",true);return;}
-        const all0=ctx.store.all().map(cleanModule).filter(Boolean),i=all0.findIndex(x=>x.name.toLowerCase()===name.toLowerCase());
-        if(i>=0&&form.over!==name.toLowerCase()){form.over=name.toLowerCase();say("“"+all0[i].name+"” already exists. Save again to overwrite it.");return;}
-        if(i<0&&all0.length>=CUSTOM_MAX){say("You can keep up to "+CUSTOM_MAX+" modules. Delete one first.",true);return;}
-        const sel=rules.slice(a-1,b),old=i>=0?all0[i]:null;
-        const rec=cleanModule({id:old?old.id:"m"+Date.now().toString(36)+uid().slice(0,3),name:old?old.name:name,c:encode({preset:"-1",rules:sel}),n:sel.map(r=>r.name||""),t:Date.now(),desc:form.desc.trim()||(old&&old.desc)||"",cat:form.cat.trim()||(old&&old.cat)||""});
-        if(old)all0[i]=rec;else all0.unshift(rec);
-        if(!ctx.store.put(all0)){say(ctx.storageMsg,true);return;}
-        form.over="";say((old?"Updated “":"Saved “")+rec.name+"” ("+sel.length+" rule"+(sel.length===1?"":"s")+").");form.name=form.from=form.to=form.desc=form.cat="";tick.value++;
+        const list0=ctx.store.all().map(cleanModule).filter(Boolean),i=list0.findIndex(x=>x.name.toLowerCase()===name.toLowerCase());
+        if(i>=0&&form.over!==name.toLowerCase()){form.over=name.toLowerCase();say("“"+list0[i].name+"” already exists. Save again to overwrite it.");return;}
+        if(i<0&&list0.length>=CUSTOM_MAX){say("You can keep up to "+CUSTOM_MAX+" modules. Delete one first.",true);return;}
+        const sel0=rs.slice(a-1,b),old=i>=0?list0[i]:null;
+        const rec=cleanModule({id:old?old.id:"m"+Date.now().toString(36)+uid().slice(0,3),name:old?old.name:name,c:encode({preset:"-1",rules:sel0}),n:sel0.map(r=>r.name||""),t:Date.now(),desc:form.desc.trim()||(old&&old.desc)||"",cat:form.cat.trim()||(old&&old.cat)||"",tags:form.tags.trim()?cleanTags(form.tags):(old&&old.tags)||[]});
+        if(old)list0[i]=rec;else list0.unshift(rec);
+        if(!ctx.store.put(list0)){say(ctx.storageMsg,true);return;}
+        form.over="";say((old?"Updated “":"Saved “")+rec.name+"” ("+sel0.length+" rule"+(sel0.length===1?"":"s")+").");form.name=form.from=form.to=form.desc=form.cat=form.tags="";refresh();
       };
-      const startEdit=m=>{pre.value=null;mode.value={[m.id]:"ren"};edit.name=m.name;edit.desc=m.desc||"";edit.cat=m.cat||"";};
+      const startEdit=m=>{mode.value={[m.id]:"ren"};edit.name=m.name;edit.desc=m.desc||"";edit.cat=m.cat||"";edit.tags=(m.tags||[]).join(", ");};
       const saveEdit=m=>{
         const nn=edit.name.trim().slice(0,40);if(!nn){say("Give the module a name.",true);return;}
-        const all0=ctx.store.all().map(cleanModule).filter(Boolean);
-        if(all0.some(y=>y.id!==m.id&&y.name.toLowerCase()===nn.toLowerCase())){say("Another module is already called “"+nn+"”.",true);return;}
-        const x=all0.find(y=>y.id===m.id);if(!x)return;x.name=nn;x.desc=edit.desc.trim().slice(0,200);x.cat=edit.cat.trim().slice(0,30);
+        const list0=ctx.store.all().map(cleanModule).filter(Boolean);
+        if(list0.some(y=>y.id!==m.id&&y.name.toLowerCase()===nn.toLowerCase())){say("Another module is already called “"+nn+"”.",true);return;}
+        const x=list0.find(y=>y.id===m.id);if(!x)return;x.name=nn;x.desc=edit.desc.trim().slice(0,200);x.cat=edit.cat.trim().slice(0,30);
+        const tg=cleanTags(edit.tags);if(tg.length)x.tags=tg;else delete x.tags;
         if(!x.desc)delete x.desc;if(!x.cat)delete x.cat;
-        if(!ctx.store.put(all0)){say(ctx.storageMsg,true);return;}mode.value={};say("Saved.");tick.value++;
+        if(!ctx.store.put(list0)){say(ctx.storageMsg,true);return;}mode.value={};say("Saved.");refresh();
       };
-      const del=m=>{const r=ctx.store.all().filter(y=>y.id!==m.id);mode.value={};if(ctx.store.put(r)){say("Deleted “"+m.name+"”.");tick.value++;}else say("Could not delete (browser storage error).",true);};
-      const dup=m=>{const r=duplicateModule(ctx.store.all().map(cleanModule).filter(Boolean),m.id);if(r.err){say(r.err,true);return;}if(!ctx.store.put(r.list)){say(ctx.storageMsg,true);return;}say("Duplicated as “"+r.module.name+"”.");tick.value++;};
+      const del=m=>{const r=ctx.store.all().filter(y=>y.id!==m.id);mode.value={};if(ctx.store.put(r)){sel.value=sel.value.filter(x=>x!==m.id);say("Deleted “"+m.name+"”.");refresh();}else say("Could not delete (browser storage error).",true);};
+      const dup=m=>{const r=duplicateModule(ctx.store.all().map(cleanModule).filter(Boolean),m.id);if(r.err){say(r.err,true);return;}if(!ctx.store.put(r.list)){say(ctx.storageMsg,true);return;}say("Duplicated as “"+r.module.name+"”.");refresh();};
       const fileOf=m=>moduleToShare(m);
       const copy=async(txt,ok)=>{try{await navigator.clipboard.writeText(txt);say(ok);}catch(e){say(ctx.copyBlocked,true);}};
       const share=async m=>{say("Creating link…");const r=await ctx.share(m);if(!r){say("The link could not be created.",true);return;}shareUrl.value=r.url;mode.value={[m.id]:"shr"};say(r.offline?"Offline link created. It works without the service"+(r.url.length>1800?", but it is long and Discord may cut it.":"."):"Link created.");};
       const doImport=()=>{
         const r=moduleFromShare(imp.value);if(r.err){say(r.err,true);return;}
-        const all0=ctx.store.all().map(cleanModule).filter(Boolean);if(all0.length>=CUSTOM_MAX){say("You can keep up to "+CUSTOM_MAX+" modules. Delete one first.",true);return;}
-        r.module.name=uniqueName(all0,r.module.name);all0.unshift(r.module);
-        if(!ctx.store.put(all0)){say(ctx.storageMsg,true);return;}imp.value="";say("Imported “"+r.module.name+"” ("+r.rules+" rule"+(r.rules===1?"":"s")+").");tick.value++;
+        const list0=ctx.store.all().map(cleanModule).filter(Boolean);if(list0.length>=CUSTOM_MAX){say("You can keep up to "+CUSTOM_MAX+" modules. Delete one first.",true);return;}
+        r.module.name=uniqueName(list0,r.module.name);list0.unshift(r.module);
+        if(!ctx.store.put(list0)){say(ctx.storageMsg,true);return;}imp.value="";say("Imported “"+r.module.name+"” ("+r.rules+" rule"+(r.rules===1?"":"s")+").");refresh();
       };
-      const setTab=t=>{tab.value=t;};
-      return {tab,q,cat,msg,bad,mode,pre,ack,shareUrl,imp,form,edit,mine,builtin:BUILTIN,cats:BUILTIN_CATS,mineCats,shown,easy,POS,base:CAUTION.base,blocked,overText,
-        setTab,info,sellOf,openInsert,doInsert,askReplace,replace,save,startEdit,saveEdit,del,dup,fileOf,copy,share,doImport,
-        refresh(){tick.value++;recheck();}};
+
+      /* ---- open / close, focus ---- */
+      const doOpen=()=>{
+        if(open.value)return;
+        opener=document.activeElement&&document.activeElement!==document.body?document.activeElement:null;
+        refresh();mode.value={};say("");open.value=true;document.body.classList.add("mdm-lock");
+        nextTick(()=>{const t=search.value||dlg.value;if(t)t.focus({preventScroll:true});});
+      };
+      const close=()=>{
+        if(!open.value)return;
+        open.value=false;drag.value=null;dropAt.value=-1;document.body.classList.remove("mdm-lock");
+        const back=(ctx.opener&&ctx.opener())||opener;
+        nextTick(()=>{if(back&&back.focus)back.focus({preventScroll:true});});
+      };
+      const onKey=e=>{
+        e.stopPropagation(); /* the page's own shortcuts (Alt+Arrow, Ctrl+D, Escape in the rule search) must not act behind the modal */
+        if(e.key==="Escape"){
+          if(mode.value&&Object.keys(mode.value).length&&e.target.closest&&e.target.closest(".mdm-card")){mode.value={};e.preventDefault();return;}
+          e.preventDefault();close();return;
+        }
+        if(e.key==="Tab"&&dlg.value){
+          const f=focusables(dlg.value);if(!f.length){e.preventDefault();dlg.value.focus();return;}
+          const first=f[0],last=f[f.length-1],a=document.activeElement;
+          if(e.shiftKey&&(a===first||a===dlg.value)){e.preventDefault();last.focus();}
+          else if(!e.shiftKey&&a===last){e.preventDefault();first.focus();}
+          else if(!dlg.value.contains(a)){e.preventDefault();first.focus();}
+        }
+      };
+      vmRef={open:doOpen,close,refresh,isOpen:()=>open.value};
+      return {open,src,q,cat,tag,msg,bad,mode,shareUrl,imp,form,edit,sel,at,drag,dropAt,dlg,search,
+        max:MAX_RULES,builtin:BUILTIN,mine,all,easy,rules,curId,curIdx,cats,tags,shown,plan,eff,whereText,check,over,blocked,icon,
+        isSel,toggleSel,selectShown,setAtNum,info,sellOf,insertIds,dragMods,dragRule,dragEnd,overRules,leaveRules,dropRules,moveRule,toggleOn,
+        askReplace,replace,save,startEdit,saveEdit,del,dup,fileOf,copy,share,doImport,close,onKey};
     }
   });
-  const vm=app.mount(el);
-  return {refresh:()=>vm.refresh()};
+  app.mount(el);
+  return {open:()=>vmRef.open(),close:()=>vmRef.close(),refresh:()=>vmRef.refresh(),isOpen:()=>vmRef.isOpen()};
 }
 
-/* confirm dialog for Sell rules: returns a promise that resolves true only when the user confirms */
+/* confirm dialog for Sell rules: returns a promise that resolves true only when the user confirms. It layers above the organizer (z-index 120). */
 export function mountCaution(Vue,el){
-  const {createApp,ref}=Vue;
-  const state=ref(null);
+  const {createApp,ref,nextTick}=Vue;
+  const state=ref(null),ok=ref(false);
   const app=createApp({
-    template:`<div v-if="s" class="fixed inset-0 z-[80] grid place-items-center p-4" style="background:rgb(0 0 0 / .6)" @keydown.esc="no" role="presentation">
-      <div class="sub grid gap-3 max-w-md w-full" role="alertdialog" aria-modal="true" aria-labelledby="cautT" aria-describedby="cautD" style="background:var(--bg-panel,#161b22)">
+    template:`<div v-if="s" class="mdm-caut" @keydown.stop="key" role="presentation">
+      <div class="sub grid gap-3 max-w-md w-full" role="alertdialog" aria-modal="true" aria-labelledby="cautT" aria-describedby="cautD" ref="box" tabindex="-1" style="background:var(--bg-panel,#161b22);display:grid;gap:12px;max-width:28rem;width:100%">
         <h3 id="cautT" class="subtitle m-0">Caution: Sell</h3>
-        <div id="cautD" class="grid gap-2"><p class="m-0">{{ base }}</p><p v-for="t in s.texts" :key="t" class="m-0 hint">{{ t }}</p></div>
-        <label class="flex gap-2 items-center"><input type="checkbox" v-model="ok" ref="box"> <span>I understand that matching items are sold.</span></label>
-        <div class="flex gap-2 flex-wrap justify-end"><button type="button" class="btn" @click="no">Cancel</button><button type="button" class="btn danger" :disabled="!ok" @click="yes">Use Sell</button></div>
+        <div id="cautD" style="display:grid;gap:8px"><p style="margin:0">{{ base }}</p><p v-for="t in s.texts" :key="t" class="hint" style="margin:0">{{ t }}</p></div>
+        <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" v-model="ok" ref="chk"> <span>I understand that matching items are sold.</span></label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button type="button" class="btn" @click="no">Cancel</button><button type="button" class="btn danger" :disabled="!ok" @click="yes">Use Sell</button></div>
       </div></div>`,
-    setup(){const ok=ref(false);return {s:state,ok,base:CAUTION.base,yes(){const r=state.value.res;state.value=null;r(true);},no(){const r=state.value&&state.value.res;state.value=null;if(r)r(false);}};}
+    setup(){
+      const box=ref(null),chk=ref(null);
+      const done=v=>{const r=state.value&&state.value.res,back=state.value&&state.value.back;state.value=null;if(back&&back.focus&&document.contains(back))back.focus({preventScroll:true});if(r)r(v);};
+      const key=e=>{
+        if(e.key==="Escape"){e.preventDefault();done(false);return;}
+        if(e.key==="Tab"&&box.value){const f=focusables(box.value);if(!f.length)return;const a=document.activeElement,first=f[0],last=f[f.length-1];
+          if(e.shiftKey&&(a===first||a===box.value)){e.preventDefault();last.focus();}else if(!e.shiftKey&&a===last){e.preventDefault();first.focus();}else if(!box.value.contains(a)){e.preventDefault();first.focus();}}
+      };
+      return {s:state,ok,box,chk,base:CAUTION.base,key,yes(){done(true);},no(){done(false);}};
+    }
   });
   app.mount(el);
-  return kinds=>new Promise(res=>{state.value={texts:kinds.map(k=>CAUTION[k]).filter(Boolean),res};});
+  return kinds=>new Promise(res=>{ok.value=false;state.value={texts:kinds.map(k=>CAUTION[k]).filter(Boolean),res,back:document.activeElement};nextTick(()=>{const t=el.querySelector("[role=alertdialog]");if(t)t.focus({preventScroll:true});});});
 }
