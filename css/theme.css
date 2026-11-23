@@ -411,13 +411,13 @@ body.mdm-lock{overflow:hidden}
 .mdm-ph{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .mdm-h{margin:0;font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-main)}
 .mdm-h .hint{text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px}
-.mdm-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.mdm-tools{flex:none;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .mdm-f2{flex:2 1 170px;min-width:0}.mdm-f1{flex:1 1 110px;min-width:0}
-.mdm-tags{display:flex;gap:6px;flex-wrap:wrap;max-height:76px;overflow:auto;padding:2px}
+.mdm-tags{flex:none;display:flex;gap:6px;flex-wrap:wrap;max-height:76px;overflow:auto;padding:2px}
 .mdm-tag{padding:3px 10px;border:1px solid var(--border-strong);border-radius:999px;background:var(--bg-subtle);color:var(--text-muted);font-size:.75rem}
 .mdm-tag:hover{background:var(--bg-card-hover)}
 .mdm-tag[aria-pressed="true"]{border-color:var(--accent-gold);background:var(--accent-gold-soft);color:var(--accent-gold)}
-.mdm-sum{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
+.mdm-sum{flex:none;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
 .mdm-sp{flex:1 1 auto}
 .mdm .mdm-sm{min-height:32px;padding:0 10px;font-size:.8125rem}
 .mdm-list,.mdm-rules{margin:0;padding:0;list-style:none;display:grid;gap:8px}
