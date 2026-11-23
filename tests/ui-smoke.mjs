@@ -5,10 +5,10 @@
    Offline / sandbox: point it at local copies of the CDN files, e.g.
      OF_VUE_FILE=/path/vue.esm-browser.prod.js OF_LUCIDE_FILE=/path/lucide.min.js node tests/ui-smoke.mjs
    Without these variables the real CDN files are used. If Playwright is installed outside the project, OF_PLAYWRIGHT=/path/to/playwright/index.js.
-   It runs three passes: with Lucide, without Lucide (the built-in SVG icons) and with a Lucide that throws.
+   It runs four passes: with Lucide, without Lucide (the built-in SVG icons), with a Lucide that throws, and a 420px-wide pass for the top bar and the Organizer modal.
    Checked per pass: no script errors, no icon placeholders or empty icons, no leftover text arrows,
    fold toggling by mouse and keyboard (Advanced folds, "More conditions", Easy Mode "Details", Guide and About cards),
-   fold chevrons turning with the state, and the Module Organizer (fold chevrons, re-render, Esc, focus return). */
+   fold chevrons turning with the state, the Module Organizer (fold chevrons, re-render, Esc, focus return), the inline notes (game code vs share link, SHOW*, Sell not confirmed), the separate Clear filter button and the 420px layout. */
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
@@ -54,15 +54,15 @@ async function icons(page,label){
   return s;
 }
 
-async function run(name,mode){
-  pass=name;
+async function openPage(mode,width=1400){
   const browser=await chromium.launch();
-  const page=await (await browser.newContext({viewport:{width:1400,height:1000}})).newPage();
+  const page=await (await browser.newContext({viewport:{width,height:width<600?860:1000}})).newPage();
   const errors=[];
   page.on("pageerror",e=>errors.push(String(e).slice(0,160)));
   page.on("console",m=>{if(m.type()==="error"&&!/Failed to load|ERR_|net::/.test(m.text()))errors.push(m.text().slice(0,160));});
   await page.route("**/*",async route=>{
     const u=route.request().url();
+    if(/version\.json/.test(u))return route.abort(); /* no update window: a local copy has no build id */
     if(u.startsWith("http://127.0.0.1"))return route.continue();
     try{
       if(/vue\.esm-browser/.test(u)){return route.fulfill({body:await cdnBody(route,"OF_VUE_FILE"),contentType:"application/javascript"});}
@@ -76,8 +76,29 @@ async function run(name,mode){
     return route.abort(); /* Tailwind, Sortable and fonts are not needed for these checks */
   });
   await page.goto(BASE);await page.waitForTimeout(900);
+  return {browser,page,errors};
+}
+const box=(page,sel)=>page.$eval(sel,e=>{const r=e.getBoundingClientRect();return {l:r.left,r:r.right,t:r.top,b:r.bottom,w:r.width,h:r.height};});
+
+async function run(name,mode){
+  pass=name;
+  const {browser,page,errors}=await openPage(mode);
   await page.click("[data-view=edit]");await page.waitForTimeout(300);
   await icons(page,"editor, first load");
+
+  /* warnings and the Clear filter button where they matter */
+  ok(await page.isVisible("#exNote")&&/no names/.test(await page.textContent("#exNote"))&&/rule names/.test(await page.textContent("#exNote")),"a visible note tells game code (no names) from the share link (rule names)");
+  {const sh=await box(page,"#shMake"),cl=await box(page,"#clearF");
+   ok(cl.l-sh.r>=60,"Clear filter sits well apart from Copy and Share ("+Math.round(cl.l-sh.r)+"px)");
+   ok(await page.$eval("#clearF",e=>e.classList.contains("danger")),"Clear filter has the danger style");}
+  await page.click('details.fold[data-fold=act]>summary').catch(()=>{});await page.waitForTimeout(100);
+  if(!(await page.$eval("details.fold[data-fold=act]",d=>d.open)))await page.click('details.fold[data-fold=act]>summary');
+  await page.click('#rows .pickb');await page.waitForTimeout(200); /* make sure a rule is selected */
+  await page.click('button[data-set="action,4"]');await page.waitForTimeout(300);
+  ok(await page.isVisible("#cautionHost [role=alertdialog]"),"choosing Sell opens the caution dialog");
+  ok(/Not confirmed/.test(await page.textContent("#cautionHost [role=alertdialog]")),"the Sell caution says the in-game behaviour is not confirmed");
+  await page.click("#cautionHost [role=alertdialog] button:has-text('Cancel')");await page.waitForTimeout(250);
+  ok(!(await page.isVisible("#cautionHost [role=alertdialog]")),"Cancel closes the Sell caution");
 
   /* Advanced folds: mouse, keyboard, remembered state */
   const sum="details.fold[data-fold=preset]>summary",det="details.fold[data-fold=preset]";
@@ -107,6 +128,16 @@ async function run(name,mode){
   await page.keyboard.press("Space").catch(()=>{});await page.waitForTimeout(150);
   await icons(page,"editor, after More conditions");
   ok((await page.$$(more+" svg.li")).length>=2,"More conditions shows its icon and chevron");
+
+  /* Drop Test: the SHOW* legend is shown whenever a SHOW* sample is on screen; the Sell tile says unconfirmed */
+  await page.click("[data-view=test]");await page.waitForTimeout(300);
+  for(let i=0;i<8;i++){await page.click("button:has-text('Drop 25')");await page.waitForTimeout(120);}
+  const guarded=await page.$$eval(".vd",v=>v.some(x=>x.textContent.trim()==="SHOW*"));
+  ok(!guarded||await page.isVisible("#guardNote"),"SHOW* samples are explained by a visible note");
+  ok(await page.$eval("#guardNote",e=>e.hidden)===!guarded||guarded,"the SHOW* note stays hidden when no SHOW* sample exists");
+  ok(/unconfirmed/.test(await page.$eval("#stSell",e=>e.textContent)),"the Sell result tile says unconfirmed");
+  await icons(page,"Drop Test");
+  await page.click("[data-view=edit]");await page.waitForTimeout(300);
 
   /* Easy Mode "Details" keeps its chevron when its text is updated */
   await page.click("#ezMode button:first-child");await page.waitForTimeout(400);
@@ -141,6 +172,7 @@ async function run(name,mode){
   await page.click("#ezMode button:last-child");await page.waitForTimeout(400); /* Advanced Mode: the Modules button lives there */
   await page.click("#mdOpen");await page.waitForTimeout(600);
   const state=await icons(page,"organizer, opened");
+  ok(await page.isVisible(".mdm-dndhint")&&/press and hold/.test(await page.textContent(".mdm-dndhint")),"the organizer explains touch reordering");
   ok(state.chevrons>=1||(await page.$$(".mdm-chev svg")).length>=1,"organizer shows fold chevrons");
   ok((await page.$$(".mdm .mdm-fold .mdm-chev svg")).length>=1,"organizer cards have a chevron icon");
   const allBtn=".mdm button:has-text('ollapse all'),.mdm button:has-text('xpand all')";
@@ -168,10 +200,38 @@ async function run(name,mode){
   await browser.close();
 }
 
+
+async function runNarrow(){
+  pass="420px";
+  const {browser,page,errors}=await openPage("on",420);
+  await page.click("[data-view=edit]");await page.waitForTimeout(300);
+  {const sh=await box(page,"#shMake"),cl=await box(page,"#clearF");
+   ok(cl.t>=sh.b,"Clear filter sits on its own row below Copy and Share");
+   ok(cl.r<=420,"Clear filter is inside the viewport");}
+  ok(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1),"editor: no horizontal scroll");
+  await page.click("#mdOpen");await page.waitForTimeout(600);
+  await icons(page,"organizer at 420px");
+  ok(await page.evaluate(()=>document.querySelector(".mdm").scrollWidth<=document.querySelector(".mdm").clientWidth+1),"organizer: no horizontal scroll");
+  const over=await page.evaluate(()=>{const m=document.querySelector(".mdm").getBoundingClientRect(),o=[];document.querySelectorAll(".mdm *").forEach(e=>{const q=e.getBoundingClientRect();if(!q.width||getComputedStyle(e).visibility==="hidden")return;if(q.right>m.right+1){let p=e.parentElement,clip=false;while(p&&p.className!==document.querySelector(".mdm").className){if(/(auto|scroll|hidden)/.test(getComputedStyle(p).overflowX)){clip=true;break;}p=p.parentElement;}if(!clip)o.push((e.id||e.className||e.tagName).toString().slice(0,30));}});return o;});
+  ok(over.length===0,"organizer: nothing sticks out on the right ("+over.slice(0,4).join(", ")+")");
+  const panes=await page.$$eval(".mdm-pane",p=>p.map(x=>{const r=x.getBoundingClientRect();return {t:r.top+scrollY,b:r.bottom+scrollY};}));
+  ok(panes.length===2&&panes[0].b<=panes[1].t+1,"organizer: the module list and the rules do not overlap");
+  const lst=await page.evaluate(()=>{const l=document.querySelector("#mdList").getBoundingClientRect(),p=document.querySelector(".mdm-pane").getBoundingClientRect();return l.bottom<=p.bottom+1&&l.top>=p.top;});
+  ok(lst,"organizer: the module list stays inside its own pane");
+  await page.locator("#mdRules").scrollIntoViewIfNeeded();await page.waitForTimeout(200);
+  ok(await page.isVisible(".mdm-dndhint"),"organizer: the reorder hint is visible");
+  const arrow=await page.$eval(".mdm-rules .mdm-ib",e=>{const r=e.getBoundingClientRect();return Math.min(r.width,r.height);});
+  ok(arrow>=24,"organizer: arrow buttons are at least 24px ("+Math.round(arrow)+"px)");
+  await page.keyboard.press("Escape");await page.waitForTimeout(250);
+  ok(errors.length===0,"script errors: "+errors.join(" | "));
+  await browser.close();
+}
+
 try{
   await run("lucide","on");
   await run("no lucide (built-in icons)","nolucide");
   await run("lucide throws","throwing");
+  await runNarrow();
 }finally{server.close();}
 console.log(`${passed} passed, ${failed} failed`);
 process.exit(failed?1:0);

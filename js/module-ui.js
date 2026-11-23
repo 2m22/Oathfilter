@@ -122,6 +122,7 @@ const TPL=`
 
    <section class="mdm-pane mdm-drop" aria-labelledby="mdmR" @dragover="overRules" @dragleave="leaveRules" @drop="dropRules">
     <div class="mdm-ph"><h3 id="mdmR" class="mdm-h">Filter rules <span class="hint">first match wins</span></h3></div>
+    <p v-if="!easy && rules.length>1" class="hint mdm-dndhint">Reorder: drag a row (on touch: press and hold), or use the arrow buttons.</p>
     <div class="mdm-ins">
      <div class="mdm-row">
       <span class="hint">Insert point:</span>
@@ -372,7 +373,7 @@ export function mountCaution(Vue,el){
     template:`<div v-if="s" class="mdm-caut" @keydown.stop="key" role="presentation">
       <div class="sub grid gap-3 max-w-md w-full" role="alertdialog" aria-modal="true" aria-labelledby="cautT" aria-describedby="cautD" ref="box" tabindex="-1" style="background:var(--bg-panel,#161b22);display:grid;gap:12px;max-width:28rem;width:100%">
         <h3 id="cautT" class="subtitle m-0">Caution: Sell</h3>
-        <div id="cautD" style="display:grid;gap:8px"><p style="margin:0">{{ base }}</p><p v-for="t in s.texts" :key="t" class="hint" style="margin:0">{{ t }}</p></div>
+        <div id="cautD" style="display:grid;gap:8px"><p style="margin:0">{{ base }}</p><p v-for="t in s.texts" :key="t" class="hint" style="margin:0">{{ t }}</p><p class="hint" style="margin:0"><b>Not confirmed:</b> the exact in-game Sell behaviour is known only for gems. For other items it is unconfirmed, and the Drop Test treats Sell like Hide.</p></div>
         <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" v-model="ok" ref="chk"> <span>I understand that matching items are sold.</span></label>
         <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button type="button" class="btn" @click="no">Cancel</button><button type="button" class="btn danger" :disabled="!ok" @click="yes">Use Sell</button></div>
       </div></div>`,

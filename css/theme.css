@@ -535,3 +535,17 @@ body.mdm-lock{overflow:hidden}
 .plrow select:focus-visible,#editor select:focus-visible,.langsel select:focus-visible{outline:2px solid var(--accent-gold);outline-offset:2px}
 .seg button{white-space:nowrap}
 .fold .hrow{flex-wrap:wrap}
+
+/* Quick wins: separated Clear filter, notes next to the controls, narrow organizer */
+.ezbar .ezact{flex:1 1 auto}
+.ezbar #clearF{margin-left:auto}
+.ezbar #clearF:focus-visible{outline:2px solid var(--hide-fg);outline-offset:2px}
+.exnote,.guardnote{margin:-6px 2px 14px;font-size:.8125rem}
+.guardnote{margin:0 0 10px;padding:6px 10px;border-left:3px solid var(--accent-gold);background:var(--bg-subtle);border-radius:4px}
+.exnote b,.guardnote b{color:var(--text-main)}
+.stat small{font-size:.65rem;font-weight:600;opacity:.8}
+.mdm-dndhint{margin:0 0 8px}
+@media (max-width:560px){.ezbar .ezact #clearF{flex:1 1 100%;margin:6px 0 0}}
+@media (pointer:coarse){.mdm-ib{width:40px;height:40px}.mdm-fold{width:40px;height:40px}}
+/* one column (<= 900px): the module list gets its own height, so it can no longer run underneath the rules column */
+@media (max-width:900px){.mdm-body{display:flex;flex-direction:column;overflow:auto}.mdm-pane{flex:none;min-height:0;overflow:visible}.mdm-list{max-height:min(60vh,460px);overflow:auto;padding-right:2px}}

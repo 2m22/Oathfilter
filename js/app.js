@@ -404,7 +404,7 @@ function renderDrops(animId){
   $("#scene").innerHTML=dps||`<p class="empty">${S.items.length?"No highlights or beams in the latest drops.":"Press “Drop 1”, “Drop 25” or a Quick spawn button."}</p>`;
   $$("#sceneMode button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.sm==="hl")===S.hlOnly));
   const n=t.all||1;
-  $("#nAll").textContent=t.all;$("#nHl").textContent=t.hl;$("#nShow").textContent=t.show;$("#nHide").textContent=t.hide;$("#nSell").textContent=t.sell;$("#stSell").classList.toggle("zero",!t.sell);{const sr=sellRel(t.sell);$("#stSell").hidden=!sr;$("#stats").classList.toggle("has-sell",sr);}
+  $("#nAll").textContent=t.all;$("#nHl").textContent=t.hl;$("#nShow").textContent=t.show;$("#nHide").textContent=t.hide;$("#nSell").textContent=t.sell;$("#stSell").classList.toggle("zero",!t.sell);{const g=$("#guardNote");if(g)g.hidden=!ev.some(e=>e.guard);}{const sr=sellRel(t.sell);$("#stSell").hidden=!sr;$("#stats").classList.toggle("has-sell",sr);}
   $("#bHl").style.width=t.hl/n*100+"%";$("#bShow").style.width=t.show/n*100+"%";$("#bHide").style.width=t.hide/n*100+"%";$("#bSell").style.width=t.sell/n*100+"%";
 }
 function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genItem();const sl=(S.slot=(S.slot||0)+1)*7%15;last.x=10+(sl%5)*20+(Math.random()*6-3);last.y=6+Math.floor(sl/5)*30+(Math.random()*6-3);S.items.unshift(last);}S.items=S.items.slice(0,60);renderDrops(n===1?last.id:null);}
