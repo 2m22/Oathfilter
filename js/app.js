@@ -342,7 +342,7 @@ function renderEditorRaw(){
    ${foldOpen("look","Look and sound","palette")}
    <p class="hint lknote" id="lkNote" hidden>Not used: hidden and sold items show no label and play no sound.</p>
    <div class="grid2" id="lookWrap" style="align-items:start"><div><div id="lookBox"><span class="lab">Highlight colour</span><div class="swatches">${COLOURS.map(c=>`<button type="button" class="swc" style="--c:${c[2]}" data-col="${c[0]}" aria-pressed="${r.colour===c[0]}" aria-label="${c[1]}" title="${c[1]}"></button>`).join("")}</div></div>
-   <div style="margin-top:10px"><label class="lab" for="f-sound">Sound</label>${sel("sound",r)}</div></div>
+   <div style="margin-top:10px"><label class="lab" for="f-sound">Sound</label><div style="display:flex;gap:8px;align-items:center"><div style="flex:1 1 auto">${sel("sound",r)}</div><button type="button" class="btn" id="sndPlay" title="Play this sound">&#9654; Play</button></div><p class="hint" id="sndMsg" role="status" aria-live="polite" style="margin:4px 0 0"></p></div></div>
    <div><span class="lab">Ground preview</span><div class="ground" id="ground"></div></div></div>
    ${foldClose}
    ${(r.extra&&r.extra.length)||hasRaw(r)?`<div class="flag">This rule has fields this page does not know. They stay in the export as they are.</div>`:""}`;
@@ -458,6 +458,7 @@ document.addEventListener("click",e=>{
   if(d.rm){const i=F.rules.findIndex(x=>x.id===d.rm);if(i>=0){F.preset="-1";F.rules.splice(i,1);if(S.cur===d.rm){const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;}fullRender();toast("Rule removed. "+COPY.undo);}return;}
   if(t.id==="newRule"||t.id==="addRule"){if(F.rules.length<MAX_RULES){F.preset="-1";const r=newRule();r.id=uid();F.rules.push(r);S.cur=r.id;V.filter="all";V.q="";$("#rq").value="";V.view==="edit"||setView("edit");fullRender();}else toast(COPY.limit,true);return;}
   const r=curRule();
+  if(t.id==="sndPlay"&&r){playRuleSound(r.sound);return;}
   if(t.id==="dupRule"&&r){if(F.rules.length<MAX_RULES){F.preset="-1";const c=JSON.parse(JSON.stringify(r));c.id=uid();F.rules.splice(F.rules.indexOf(r)+1,0,c);S.cur=c.id;fullRender();toast("Rule duplicated.");}return;}
   if(t.id==="delRule"&&r){F.preset="-1";const i=F.rules.indexOf(r);F.rules.splice(i,1);const n=F.rules[Math.min(i,F.rules.length-1)];S.cur=n?n.id:null;fullRender();toast("Rule removed. "+COPY.undo);return;}
   if(!r)return;
@@ -509,6 +510,18 @@ document.addEventListener("input",e=>{
 });
 $("#clearF").onclick=()=>{if(!F.rules.length){toast("The filter is already empty.");return;}F.preset="-1";F.rules=[];S.cur=null;fullRender();toast("Filter cleared. "+COPY.undo);};
 $("#copyAdv").onclick=()=>{if(EZ.m==="easy"&&V.view==="edit")ezCopy();else copyCode();};
+/* Sound preview: plays the file assets/sounds/<name>.ogg (or .mp3 / .wav) for the chosen sound. The game's own audio is not part of this repository; copy the files there to hear them. */
+const SND_FILE={1:"chime",2:"soft",3:"jewel",4:"wind"};
+function playRuleSound(v){
+  const msg=$("#sndMsg"),say=t=>{if(msg)msg.textContent=t;};
+  if(v===255){say("Auto uses the game's default sound for the action. Pick a named sound to hear it here.");return;}
+  if(v===0){say("Silent plays nothing.");return;}
+  const n=SND_FILE[v];if(!n){say("No preview for this sound.");return;}
+  const ex=["ogg","mp3","wav"];let i=0;
+  const next=()=>{if(i>=ex.length){say("No sound file found. Put the game's “"+n+"” sound at assets/sounds/"+n+".ogg to hear it here.");return;}
+    const a=new Audio("assets/sounds/"+n+"."+ex[i++]);a.onerror=next;a.oncanplaythrough=()=>{say("");a.play().catch(()=>say("The browser blocked playback. Click Play again."));};a.load();};
+  next();
+}
 /* ---- modules: reusable groups of rules (localStorage only, same code format as local filters) ---- */
 const MD={key:"oathfilter-modules",max:50,
   all(){try{const a=JSON.parse(localStorage.getItem(this.key)||"[]");return Array.isArray(a)?a.filter(x=>x&&typeof x.id==="string"&&typeof x.name==="string"&&typeof x.c==="string"):[];}catch(e){return [];}},
