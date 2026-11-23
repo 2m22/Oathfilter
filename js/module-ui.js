@@ -33,6 +33,26 @@ const TPL=`
       <button type="button" :aria-pressed="src==='builtin'" @click="src='builtin'">Built-in ({{ builtin.length }})</button>
       <button type="button" :aria-pressed="src==='mine'" @click="src='mine'">Mine ({{ mine.length }})</button>
      </div></div>
+    <details class="mdm-more">
+     <summary>Create or import a module</summary>
+     <div class="mdm-edit">
+      <span class="hint">Save rules of your filter ({{ rules.length }} now) as a module.</span>
+      <div class="mdm-tools">
+       <div class="mdm-f2"><label class="lab" for="mdName">Name</label><input id="mdName" class="field" type="text" maxlength="40" v-model="form.name" placeholder="e.g. Hide junk" autocomplete="off" @keydown.enter.prevent="save(false)"></div>
+       <div class="mdm-f1"><label class="lab" for="mdFrom">From rule</label><input id="mdFrom" class="field" type="number" min="1" inputmode="numeric" v-model="form.from"></div>
+       <div class="mdm-f1"><label class="lab" for="mdTo">To rule</label><input id="mdTo" class="field" type="number" min="1" inputmode="numeric" v-model="form.to"></div>
+      </div>
+      <div class="mdm-tools">
+       <div class="mdm-f2"><label class="lab" for="mdDesc">Description (optional)</label><input id="mdDesc" class="field" type="text" maxlength="200" v-model="form.desc" autocomplete="off"></div>
+       <div class="mdm-f1"><label class="lab" for="mdCatIn">Category (optional)</label><input id="mdCatIn" class="field" type="text" maxlength="30" v-model="form.cat" autocomplete="off"></div>
+       <div class="mdm-f1"><label class="lab" for="mdTagIn">Tags (optional)</label><input id="mdTagIn" class="field" type="text" v-model="form.tags" placeholder="a, b, c" autocomplete="off"></div>
+      </div>
+      <div class="mdm-row"><button type="button" class="btn gold" id="mdSave" @click="save(false)">Save module</button><button type="button" class="btn" id="mdAll" @click="save(true)">Save all rules</button></div>
+      <label class="lab" for="mdImp" style="margin-top:8px">Import a module</label>
+      <textarea id="mdImp" class="field" rows="2" v-model="imp" placeholder="Paste a copied module here"></textarea>
+      <div class="mdm-row"><button type="button" class="btn" @click="doImport">Import module</button></div>
+     </div>
+    </details>
     <div class="mdm-tools">
      <div class="mdm-f2"><label class="lab" for="mdQ">Search</label><input id="mdQ" ref="search" class="field" type="search" v-model="q" placeholder="Name, description, category, tag, base, line" autocomplete="off"></div>
      <div class="mdm-f1"><label class="lab" for="mdCat">Category</label><div class="selwrap"><select id="mdCat" v-model="cat"><option value="">All categories</option><option v-for="c in cats" :key="c" :value="c">{{ c }}</option></select></div></div>
@@ -43,6 +63,7 @@ const TPL=`
     <div class="mdm-sum" role="status" aria-live="polite">
      <b>{{ sel.length }} module{{ sel.length===1?'':'s' }} · {{ plan.rules.length }} rule{{ plan.rules.length===1?'':'s' }}</b>
      <span class="mdm-sp"></span>
+     <button type="button" class="btn mdm-sm" @click="toggleAll" :disabled="!shown.length" :aria-label="allFolded?'Expand all modules':'Collapse all modules'"><span aria-hidden="true">{{ allFolded ? '▸' : '▾' }}</span><span>{{ allFolded ? 'Expand all' : 'Collapse all' }}</span></button>
      <button type="button" class="btn mdm-sm" @click="selectShown" :disabled="!shown.length">Select shown</button>
      <button type="button" class="btn mdm-sm" @click="sel=[]" :disabled="!sel.length">Clear</button>
     </div>
@@ -52,12 +73,14 @@ const TPL=`
      <li v-for="m in shown" :key="m.id" :data-md="m.id" class="mdm-card" :class="{sel:isSel(m.id),dragging:drag&&drag.kind==='mods'&&drag.ids.includes(m.id)}"
          @click="cardClick($event,m)" :draggable="!easy&&!mode[m.id]" @dragstart="dragMods($event,m)" @dragend="dragEnd">
       <div class="mdm-ch">
+       <button type="button" class="mdm-ib mdm-fold" @click.stop="toggleFold(m.id)" :aria-expanded="!isFolded(m)" :aria-label="(isFolded(m)?'Expand ':'Collapse ')+m.name"><span aria-hidden="true">{{ isFolded(m) ? '▸' : '▾' }}</span></button>
        <input type="checkbox" class="mdm-chk" :checked="isSel(m.id)" @change="toggleSel(m.id)" :aria-label="'Select module '+m.name">
        <div class="mdm-cm">
         <b class="mdm-cn" :title="m.name">{{ m.name }}</b>
         <span class="hint">{{ info(m) }}</span>
        </div>
       </div>
+      <template v-if="!isFolded(m)">
       <p v-if="m.desc" class="hint mdm-desc">{{ m.desc }}</p>
       <div class="mdm-badges">
        <span v-if="m.cat" class="mdm-badge">{{ m.cat }}</span>
@@ -91,29 +114,10 @@ const TPL=`
         <button type="button" class="btn mdm-sm danger" @click="mode={};mode[m.id]='del'">Delete</button>
        </template>
       </div>
+      </template>
      </li>
     </ul>
 
-    <details class="mdm-more">
-     <summary>Create or import a module</summary>
-     <div class="mdm-edit">
-      <span class="hint">Save rules of your filter ({{ rules.length }} now) as a module.</span>
-      <div class="mdm-tools">
-       <div class="mdm-f2"><label class="lab" for="mdName">Name</label><input id="mdName" class="field" type="text" maxlength="40" v-model="form.name" placeholder="e.g. Hide junk" autocomplete="off" @keydown.enter.prevent="save(false)"></div>
-       <div class="mdm-f1"><label class="lab" for="mdFrom">From rule</label><input id="mdFrom" class="field" type="number" min="1" inputmode="numeric" v-model="form.from"></div>
-       <div class="mdm-f1"><label class="lab" for="mdTo">To rule</label><input id="mdTo" class="field" type="number" min="1" inputmode="numeric" v-model="form.to"></div>
-      </div>
-      <div class="mdm-tools">
-       <div class="mdm-f2"><label class="lab" for="mdDesc">Description (optional)</label><input id="mdDesc" class="field" type="text" maxlength="200" v-model="form.desc" autocomplete="off"></div>
-       <div class="mdm-f1"><label class="lab" for="mdCatIn">Category (optional)</label><input id="mdCatIn" class="field" type="text" maxlength="30" v-model="form.cat" autocomplete="off"></div>
-       <div class="mdm-f1"><label class="lab" for="mdTagIn">Tags (optional)</label><input id="mdTagIn" class="field" type="text" v-model="form.tags" placeholder="a, b, c" autocomplete="off"></div>
-      </div>
-      <div class="mdm-row"><button type="button" class="btn gold" id="mdSave" @click="save(false)">Save module</button><button type="button" class="btn" id="mdAll" @click="save(true)">Save all rules</button></div>
-      <label class="lab" for="mdImp" style="margin-top:8px">Import a module</label>
-      <textarea id="mdImp" class="field" rows="2" v-model="imp" placeholder="Paste a copied module here"></textarea>
-      <div class="mdm-row"><button type="button" class="btn" @click="doImport">Import module</button></div>
-     </div>
-    </details>
    </section>
 
    <section class="mdm-pane mdm-drop" aria-labelledby="mdmR" @dragover="overRules" @dragleave="leaveRules" @drop="dropRules">
@@ -207,6 +211,12 @@ export function mountModuleUi(Vue,ctx,el){
       const toggleSel=id=>{sel.value=isSel(id)?sel.value.filter(x=>x!==id):[...sel.value,id];};
       /* a click anywhere on the card (not on its buttons or fields) ticks or unticks the module */
       const cardClick=(e,m)=>{if(e.target.closest&&e.target.closest("button,input,select,textarea,a,label,.mdm-edit"))return;if(mode.value[m.id])return;toggleSel(m.id);};
+      /* fold state: ids of folded cards; a card with an open edit/delete/share form is always shown */
+      const folded=ref([]);
+      const isFolded=m=>folded.value.includes(m.id)&&!mode.value[m.id];
+      const toggleFold=id=>{folded.value=folded.value.includes(id)?folded.value.filter(x=>x!==id):[...folded.value,id];};
+      const allFolded=computed(()=>shown.value.length>0&&shown.value.every(m=>folded.value.includes(m.id)));
+      const toggleAll=()=>{const ids=shown.value.map(m=>m.id);folded.value=allFolded.value?folded.value.filter(x=>!ids.includes(x)):[...new Set([...folded.value,...ids])];};
       const selectShown=()=>{const have=new Set(sel.value);sel.value=[...sel.value,...shown.value.map(m=>m.id).filter(id=>!have.has(id))];};
       const setAtNum=v=>{const n=parseInt(v,10);if(!(n>=1)){return;}at.value=Math.min(n-1,rules.value.length);};
       const refresh=()=>{tick.value++;if(!open.value)return;const n=rules.value.length;if(at.value!==null&&at.value>=n)at.value=null;sel.value=sel.value.filter(id=>all.value.some(m=>m.id===id));};
@@ -343,7 +353,7 @@ export function mountModuleUi(Vue,ctx,el){
       vmRef={open:doOpen,close,refresh,isOpen:()=>open.value};
       return {open,src,q,cat,tag,msg,bad,mode,shareUrl,imp,form,edit,sel,at,drag,dropAt,dlg,search,
         max:MAX_RULES,builtin:BUILTIN,mine,all,easy,rules,curId,curIdx,cats,tags,shown,plan,eff,whereText,check,over,blocked,icon,
-        isSel,toggleSel,cardClick,selectShown,setAtNum,info,sellOf,insertIds,dragMods,dragRule,dragEnd,overRules,leaveRules,dropRules,moveRule,toggleOn,
+        isSel,toggleSel,cardClick,isFolded,toggleFold,allFolded,toggleAll,selectShown,setAtNum,info,sellOf,insertIds,dragMods,dragRule,dragEnd,overRules,leaveRules,dropRules,moveRule,toggleOn,
         askReplace,replace,save,startEdit,saveEdit,del,dup,fileOf,copy,share,doImport,close,onKey};
     }
   });

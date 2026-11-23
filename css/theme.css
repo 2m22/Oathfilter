@@ -481,3 +481,5 @@ body.mdm-lock{overflow:hidden}
 
 .mdm-rules .mdm-empty{display:grid;place-items:center;min-height:200px;margin:4px}
 .mdm-drop{transition:box-shadow .12s}
+.mdm-chev{display:inline-flex;transition:transform .12s}.mdm-chev.open{transform:rotate(90deg)}
+.mdm-fold{width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;padding:0}
