@@ -1,0 +1,7940 @@
+{
+ "_doc": "Affix database of Oathfilter. Generated from js/filter-engine.js (AFF_SRC, EZ_ARCH). Data: local game files, build 87 (read 2026-11-22). Not official.",
+ "build": 87,
+ "count": 306,
+ "affixes": [
+  {
+   "id": "life_large",
+   "text": "+X to maximum Life",
+   "type": "Prefix",
+   "group": "Life",
+   "slots": [
+    "Chest",
+    "Belt"
+   ],
+   "excludes": [],
+   "weight": 120,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "life"
+   ]
+  },
+  {
+   "id": "life",
+   "text": "+X to maximum Life",
+   "type": "Prefix",
+   "group": "Life",
+   "slots": [
+    "Helm",
+    "Gloves",
+    "Boots",
+    "Ring",
+    "Amulet",
+    "Quiver",
+    "Shield",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 110,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "life"
+   ]
+  },
+  {
+   "id": "mana",
+   "text": "+X to maximum Mana",
+   "type": "Prefix",
+   "group": "Mana",
+   "slots": [
+    "Ring",
+    "Amulet",
+    "Helm",
+    "Gloves",
+    "Caster",
+    "RuneDagger",
+    "Chest",
+    "Boots"
+   ],
+   "excludes": [],
+   "weight": 80,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "mana"
+   ]
+  },
+  {
+   "id": "es_global",
+   "text": "+X to maximum Energy Shield",
+   "type": "Prefix",
+   "group": "EnergyShieldGlobal",
+   "slots": [
+    "Ring",
+    "Amulet",
+    "Belt",
+    "Chest",
+    "Boots",
+    "Gloves"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "es"
+   ]
+  },
+  {
+   "id": "armour_local",
+   "text": "+X to Armour",
+   "type": "Prefix",
+   "group": "DefenceFlat",
+   "slots": [
+    "Armour"
+   ],
+   "excludes": [
+    "Helm",
+    "Gloves",
+    "Boots",
+    "Shield",
+    "Tome"
+   ],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "armour"
+   ]
+  },
+  {
+   "id": "armour_local_small",
+   "text": "+X to Armour",
+   "type": "Prefix",
+   "group": "DefenceFlat",
+   "slots": [
+    "Armour",
+    "Shield"
+   ],
+   "excludes": [
+    "Chest"
+   ],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "armour"
+   ]
+  },
+  {
+   "id": "evasion_local",
+   "text": "+X to Evasion Rating",
+   "type": "Prefix",
+   "group": "DefenceFlatEvasion",
+   "slots": [
+    "Evasion"
+   ],
+   "excludes": [
+    "Helm",
+    "Gloves",
+    "Boots",
+    "Shield",
+    "Tome"
+   ],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "evasion"
+   ]
+  },
+  {
+   "id": "evasion_local_small",
+   "text": "+X to Evasion Rating",
+   "type": "Prefix",
+   "group": "DefenceFlatEvasion",
+   "slots": [
+    "Evasion",
+    "Shield"
+   ],
+   "excludes": [
+    "Chest"
+   ],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "evasion"
+   ]
+  },
+  {
+   "id": "es_local",
+   "text": "+X to maximum Energy Shield",
+   "type": "Prefix",
+   "group": "DefenceFlatEnergyShield",
+   "slots": [
+    "EnergyShield"
+   ],
+   "excludes": [
+    "Helm",
+    "Gloves",
+    "Boots",
+    "Shield",
+    "Tome"
+   ],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "es"
+   ]
+  },
+  {
+   "id": "es_local_small",
+   "text": "+X to maximum Energy Shield",
+   "type": "Prefix",
+   "group": "DefenceFlatEnergyShield",
+   "slots": [
+    "EnergyShield",
+    "Shield"
+   ],
+   "excludes": [
+    "Chest"
+   ],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "es"
+   ]
+  },
+  {
+   "id": "defence_inc",
+   "text": "X% increased Defences",
+   "type": "Prefix",
+   "group": "DefenceInc",
+   "slots": [
+    "Defences",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "armour",
+    "es",
+    "evasion"
+   ]
+  },
+  {
+   "id": "phys_inc_local",
+   "text": "X% increased Physical Damage",
+   "type": "Prefix",
+   "group": "PhysInc",
+   "slots": [
+    "Melee",
+    "Bow"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "bow",
+    "phys"
+   ]
+  },
+  {
+   "id": "phys_added_local",
+   "text": "Adds X to Y Physical Damage",
+   "type": "Prefix",
+   "group": "PhysAdded",
+   "slots": [
+    "Melee",
+    "Bow"
+   ],
+   "excludes": [],
+   "weight": 90,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "bow",
+    "phys"
+   ]
+  },
+  {
+   "id": "fire_added_local",
+   "text": "Adds X to Y Fire Damage",
+   "type": "Prefix",
+   "group": "FireAdded",
+   "slots": [
+    "Melee",
+    "Bow"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "fire_spell_added",
+   "text": "Adds X to Y Fire Spell Damage",
+   "type": "Prefix",
+   "group": "FireSpellAdded",
+   "slots": [
+    "Caster",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "spell",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "fire_dmg_inc",
+   "text": "X% increased Fire Damage",
+   "type": "Prefix",
+   "group": "FireInc",
+   "slots": [
+    "Caster",
+    "Amulet",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "fire_spell_added_2h",
+   "text": "Adds X to Y Fire Spell Damage",
+   "type": "Prefix",
+   "group": "FireSpellAdded",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "fire_dmg_inc_2h",
+   "text": "X% increased Fire Damage",
+   "type": "Prefix",
+   "group": "FireInc",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "cold_added_local",
+   "text": "Adds X to Y Cold Damage",
+   "type": "Prefix",
+   "group": "ColdAdded",
+   "slots": [
+    "Melee",
+    "Bow"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "cold_spell_added",
+   "text": "Adds X to Y Cold Spell Damage",
+   "type": "Prefix",
+   "group": "ColdSpellAdded",
+   "slots": [
+    "Caster",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "spell",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "cold_dmg_inc",
+   "text": "X% increased Cold Damage",
+   "type": "Prefix",
+   "group": "ColdInc",
+   "slots": [
+    "Caster",
+    "Amulet",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "cold_spell_added_2h",
+   "text": "Adds X to Y Cold Spell Damage",
+   "type": "Prefix",
+   "group": "ColdSpellAdded",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "cold_dmg_inc_2h",
+   "text": "X% increased Cold Damage",
+   "type": "Prefix",
+   "group": "ColdInc",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "lightning_added_local",
+   "text": "Adds X to Y Lightning Damage",
+   "type": "Prefix",
+   "group": "LightningAdded",
+   "slots": [
+    "Melee",
+    "Bow"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "lightning_spell_added",
+   "text": "Adds X to Y Lightning Spell Damage",
+   "type": "Prefix",
+   "group": "LightningSpellAdded",
+   "slots": [
+    "Caster",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "spell",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "lightning_dmg_inc",
+   "text": "X% increased Lightning Damage",
+   "type": "Prefix",
+   "group": "LightningInc",
+   "slots": [
+    "Caster",
+    "Amulet",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "lightning_spell_added_2h",
+   "text": "Adds X to Y Lightning Spell Damage",
+   "type": "Prefix",
+   "group": "LightningSpellAdded",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "lightning_dmg_inc_2h",
+   "text": "X% increased Lightning Damage",
+   "type": "Prefix",
+   "group": "LightningInc",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "poison_spell_added",
+   "text": "Adds X to Y Poison Spell Damage",
+   "type": "Prefix",
+   "group": "PoisonSpellAdded",
+   "slots": [
+    "Caster",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "spell",
+   "easy_mode": [
+    "pois"
+   ]
+  },
+  {
+   "id": "poison_dmg_inc",
+   "text": "X% increased Poison Damage",
+   "type": "Prefix",
+   "group": "PoisonInc",
+   "slots": [
+    "Caster",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff",
+    "Tome"
+   ],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "pois"
+   ]
+  },
+  {
+   "id": "poison_spell_added_2h",
+   "text": "Adds X to Y Poison Spell Damage",
+   "type": "Prefix",
+   "group": "PoisonSpellAdded",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "pois"
+   ]
+  },
+  {
+   "id": "poison_dmg_inc_2h",
+   "text": "X% increased Poison Damage",
+   "type": "Prefix",
+   "group": "PoisonInc",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "pois"
+   ]
+  },
+  {
+   "id": "spell_inc",
+   "text": "X% increased Spell Damage",
+   "type": "Prefix",
+   "group": "SpellInc",
+   "slots": [
+    "Caster",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  },
+  {
+   "id": "spell_inc_2h",
+   "text": "X% increased Spell Damage",
+   "type": "Prefix",
+   "group": "SpellInc",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  },
+  {
+   "id": "skill_level",
+   "text": "+X to Level of all Skill Gems",
+   "type": "Prefix",
+   "group": "SkillLevel",
+   "slots": [
+    "Amulet",
+    "Caster",
+    "Melee",
+    "Helm",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 18,
+   "tiers": 2,
+   "ilvl_top": 68,
+   "ilvl_low": 46,
+   "tier_ilvls": [
+    68,
+    46
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "bow",
+    "spell"
+   ]
+  },
+  {
+   "id": "skill_level_bow",
+   "text": "+X to Level of all Skill Gems",
+   "type": "Prefix",
+   "group": "SkillLevel",
+   "slots": [
+    "Bow"
+   ],
+   "excludes": [],
+   "weight": 18,
+   "tiers": 2,
+   "ilvl_top": 75,
+   "ilvl_low": 46,
+   "tier_ilvls": [
+    75,
+    46
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "bow",
+    "spell"
+   ]
+  },
+  {
+   "id": "skill_level_2h",
+   "text": "+X to Level of all Skill Gems",
+   "type": "Prefix",
+   "group": "SkillLevel",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 18,
+   "tiers": 3,
+   "ilvl_top": 80,
+   "ilvl_low": 46,
+   "tier_ilvls": [
+    80,
+    60,
+    46
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "bow",
+    "spell"
+   ]
+  },
+  {
+   "id": "attack_added_phys",
+   "text": "Adds X to Y Physical Attack Damage",
+   "type": "Prefix",
+   "group": "AttackAdded",
+   "slots": [
+    "Ring",
+    "Amulet",
+    "Gloves",
+    "Quiver",
+    "Chest"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "bow",
+    "phys"
+   ]
+  },
+  {
+   "id": "attack_added_fire",
+   "text": "Adds X to Y Fire Attack Damage",
+   "type": "Prefix",
+   "group": "AttackFire",
+   "slots": [
+    "Gloves",
+    "Quiver",
+    "Ring",
+    "Amulet",
+    "Boots"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "bow",
+    "fire"
+   ]
+  },
+  {
+   "id": "attack_added_cold",
+   "text": "Adds X to Y Cold Attack Damage",
+   "type": "Prefix",
+   "group": "AttackCold",
+   "slots": [
+    "Gloves",
+    "Quiver",
+    "Ring",
+    "Amulet",
+    "Boots"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "bow",
+    "cold"
+   ]
+  },
+  {
+   "id": "vow_effect98",
+   "text": "X% increased effect of your Vows",
+   "type": "Suffix",
+   "group": "VowEffect98",
+   "slots": [
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 4,
+   "ilvl_top": 70,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    70,
+    52,
+    36,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": true,
+   "style": "",
+   "easy_mode": [
+    "curse"
+   ]
+  },
+  {
+   "id": "attack_added_lightning",
+   "text": "Adds X to Y Lightning Attack Damage",
+   "type": "Prefix",
+   "group": "AttackLightning",
+   "slots": [
+    "Gloves",
+    "Quiver",
+    "Ring",
+    "Amulet",
+    "Boots"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "attack",
+   "easy_mode": [
+    "bow",
+    "light"
+   ]
+  },
+  {
+   "id": "fire_res",
+   "text": "+X% to Fire Resistance",
+   "type": "Suffix",
+   "group": "FireRes",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Gloves",
+    "Boots",
+    "Belt",
+    "Ring",
+    "Amulet",
+    "Quiver",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 110,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "res"
+   ]
+  },
+  {
+   "id": "cold_res",
+   "text": "+X% to Cold Resistance",
+   "type": "Suffix",
+   "group": "ColdRes",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Gloves",
+    "Boots",
+    "Belt",
+    "Ring",
+    "Amulet",
+    "Quiver",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 110,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "res"
+   ]
+  },
+  {
+   "id": "lightning_res",
+   "text": "+X% to Lightning Resistance",
+   "type": "Suffix",
+   "group": "LightningRes",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Gloves",
+    "Boots",
+    "Belt",
+    "Ring",
+    "Amulet",
+    "Quiver",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 110,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "res"
+   ]
+  },
+  {
+   "id": "poison_res",
+   "text": "+X% to Poison Resistance",
+   "type": "Suffix",
+   "group": "PoisonRes",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Gloves",
+    "Boots",
+    "Belt",
+    "Ring",
+    "Amulet",
+    "Quiver",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 110,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "res"
+   ]
+  },
+  {
+   "id": "all_res",
+   "text": "+X% to all Elemental Resistances",
+   "type": "Suffix",
+   "group": "AllRes",
+   "slots": [
+    "Ring",
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 6,
+   "ilvl_top": 70,
+   "ilvl_low": 10,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "res"
+   ]
+  },
+  {
+   "id": "phys_as_elem",
+   "text": "X% of Physical Damage taken as Fire, Cold and Lightning",
+   "type": "Suffix",
+   "group": "PhysAsElem",
+   "slots": [
+    "Chest",
+    "Shield",
+    "Helm"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "str_flat",
+   "text": "+X to Strength",
+   "type": "Suffix",
+   "group": "Str",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Gloves",
+    "Boots",
+    "Belt",
+    "Ring",
+    "Amulet",
+    "Weapon",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 90,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "dex_flat",
+   "text": "+X to Dexterity",
+   "type": "Suffix",
+   "group": "Dex",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Gloves",
+    "Boots",
+    "Belt",
+    "Ring",
+    "Amulet",
+    "Weapon",
+    "Quiver",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 90,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "int_flat",
+   "text": "+X to Intelligence",
+   "type": "Suffix",
+   "group": "Int",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Gloves",
+    "Boots",
+    "Belt",
+    "Ring",
+    "Amulet",
+    "Weapon",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 90,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "all_attr",
+   "text": "+X to all Attributes",
+   "type": "Suffix",
+   "group": "Attributes",
+   "slots": [
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "attack_speed_local",
+   "text": "X% increased Attack Speed",
+   "type": "Suffix",
+   "group": "AttackSpeed",
+   "slots": [
+    "Melee",
+    "Wand",
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 90,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "attack",
+    "bow"
+   ]
+  },
+  {
+   "id": "attack_speed",
+   "text": "X% increased Attack Speed",
+   "type": "Suffix",
+   "group": "AttackSpeed",
+   "slots": [
+    "Gloves",
+    "Quiver"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "attack",
+    "bow"
+   ]
+  },
+  {
+   "id": "cast_speed",
+   "text": "X% increased Cast Speed",
+   "type": "Suffix",
+   "group": "CastSpeed",
+   "slots": [
+    "Caster",
+    "RuneDagger"
+   ],
+   "excludes": [
+    "Staff"
+   ],
+   "weight": 90,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  },
+  {
+   "id": "cast_speed_2h",
+   "text": "X% increased Cast Speed",
+   "type": "Suffix",
+   "group": "CastSpeed",
+   "slots": [
+    "Staff"
+   ],
+   "excludes": [],
+   "weight": 90,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  },
+  {
+   "id": "cast_speed_jewel",
+   "text": "X% increased Cast Speed",
+   "type": "Suffix",
+   "group": "CastSpeed",
+   "slots": [
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  },
+  {
+   "id": "cooldown_recovery",
+   "text": "X% increased Cooldown Recovery Rate",
+   "type": "Suffix",
+   "group": "CooldownRecovery",
+   "slots": [
+    "Amulet",
+    "Weapon"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 3,
+   "ilvl_top": 70,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "crit_local",
+   "text": "X% increased Critical Strike Chance",
+   "type": "Suffix",
+   "group": "Crit",
+   "slots": [
+    "Weapon"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 6,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
+  },
+  {
+   "id": "crit_global",
+   "text": "X% increased Critical Strike Chance",
+   "type": "Suffix",
+   "group": "Crit",
+   "slots": [
+    "Amulet",
+    "Quiver"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 6,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
+  },
+  {
+   "id": "crit_multi",
+   "text": "+X% to Critical Strike Multiplier",
+   "type": "Suffix",
+   "group": "CritMulti",
+   "slots": [
+    "Weapon",
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 6,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
+  },
+  {
+   "id": "move_speed",
+   "text": "X% increased Movement Speed",
+   "type": "Suffix",
+   "group": "MoveSpeed",
+   "slots": [
+    "Boots"
+   ],
+   "excludes": [],
+   "weight": 80,
+   "tiers": 6,
+   "ilvl_top": 56,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "move"
+   ]
+  },
+  {
+   "id": "life_regen",
+   "text": "Regenerate X Life per second",
+   "type": "Suffix",
+   "group": "LifeRegen",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Belt",
+    "Ring",
+    "Amulet",
+    "Boots",
+    "Gloves",
+    "Shield"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "leech"
+   ]
+  },
+  {
+   "id": "mana_regen",
+   "text": "X% increased Mana Regeneration Rate",
+   "type": "Suffix",
+   "group": "ManaRegen",
+   "slots": [
+    "Ring",
+    "Amulet",
+    "Caster",
+    "Helm",
+    "RuneDagger"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "mana"
+   ]
+  },
+  {
+   "id": "life_on_kill",
+   "text": "Gain X Life per Enemy Killed",
+   "type": "Suffix",
+   "group": "LifeOnKill",
+   "slots": [
+    "Weapon",
+    "Gloves"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 6,
+   "ilvl_top": 56,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "ring_life_on_kill",
+   "text": "Gain X Life per Enemy Killed",
+   "type": "Prefix",
+   "group": "LifeOnKill",
+   "slots": [
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 6,
+   "ilvl_top": 56,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "mana_on_kill",
+   "text": "+X Mana gained on Kill",
+   "type": "Suffix",
+   "group": "ManaOnKill",
+   "slots": [
+    "Weapon"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 6,
+   "ilvl_top": 56,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "ring_mana_on_kill",
+   "text": "+X Mana gained on Kill",
+   "type": "Prefix",
+   "group": "ManaOnKill",
+   "slots": [
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 6,
+   "ilvl_top": 56,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "mana_leech",
+   "text": "X% of Damage Leeched as Mana",
+   "type": "Suffix",
+   "group": "ManaLeech",
+   "slots": [
+    "Gloves",
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 3,
+   "ilvl_top": 44,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "leech"
+   ]
+  },
+  {
+   "id": "ring_mana_leech",
+   "text": "X% of Damage Leeched as Mana",
+   "type": "Prefix",
+   "group": "ManaLeech",
+   "slots": [
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 3,
+   "ilvl_top": 44,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "leech"
+   ]
+  },
+  {
+   "id": "es_leech",
+   "text": "X% of Damage Leeched as Energy Shield",
+   "type": "Suffix",
+   "group": "EnergyShieldLeech",
+   "slots": [
+    "Gloves",
+    "Amulet",
+    "EnergyShield"
+   ],
+   "excludes": [
+    "Chest",
+    "Boots",
+    "Shield"
+   ],
+   "weight": 30,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "leech"
+   ]
+  },
+  {
+   "id": "ring_es_leech",
+   "text": "X% of Damage Leeched as Energy Shield",
+   "type": "Prefix",
+   "group": "EnergyShieldLeech",
+   "slots": [
+    "Ring"
+   ],
+   "excludes": [
+    "Chest",
+    "Boots",
+    "Shield"
+   ],
+   "weight": 30,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "leech"
+   ]
+  },
+  {
+   "id": "life_leech",
+   "text": "X% of Damage Leeched as Life",
+   "type": "Suffix",
+   "group": "LifeLeech",
+   "slots": [
+    "Weapon",
+    "Gloves"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 44,
+   "ilvl_low": 10,
+   "tier_ilvls": [
+    44,
+    32,
+    20,
+    10
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "leech"
+   ]
+  },
+  {
+   "id": "ring_life_leech",
+   "text": "X% of Damage Leeched as Life",
+   "type": "Prefix",
+   "group": "LifeLeech",
+   "slots": [
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 44,
+   "ilvl_low": 10,
+   "tier_ilvls": [
+    44,
+    32,
+    20,
+    10
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "leech"
+   ]
+  },
+  {
+   "id": "area",
+   "text": "X% increased Area of Effect",
+   "type": "Suffix",
+   "group": "Area",
+   "slots": [
+    "Amulet",
+    "Helm"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 5,
+   "ilvl_top": 84,
+   "ilvl_low": 32,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "aoe"
+   ]
+  },
+  {
+   "id": "ignite_chance",
+   "text": "+X% chance to Ignite with Fire hits",
+   "type": "Suffix",
+   "group": "IgniteChance",
+   "slots": [
+    "Weapon",
+    "Gloves",
+    "Quiver",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "ign"
+   ]
+  },
+  {
+   "id": "shock_chance",
+   "text": "+X% chance to Shock with Lightning hits",
+   "type": "Suffix",
+   "group": "ShockChance",
+   "slots": [
+    "Weapon",
+    "Gloves",
+    "Quiver",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "ignite_effect",
+   "text": "X% increased Burning damage (your Ignites)",
+   "type": "Prefix",
+   "group": "IgniteDamage",
+   "slots": [
+    "Weapon",
+    "Amulet",
+    "Belt"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "ign"
+   ]
+  },
+  {
+   "id": "poison_effect",
+   "text": "X% increased Poison damage over time (your Poisons)",
+   "type": "Prefix",
+   "group": "PoisonDamage",
+   "slots": [
+    "Weapon",
+    "Amulet",
+    "Belt"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "pois"
+   ]
+  },
+  {
+   "id": "shock_effect",
+   "text": "X% increased effect of Shock",
+   "type": "Prefix",
+   "group": "ShockEffect",
+   "slots": [
+    "Weapon",
+    "Amulet",
+    "Belt"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "freeze_duration",
+   "text": "X% increased Freeze duration",
+   "type": "Suffix",
+   "group": "FreezeDuration",
+   "slots": [
+    "Weapon",
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "bleed_chance",
+   "text": "+X% chance to cause Bleeding with Physical hits",
+   "type": "Suffix",
+   "group": "BleedChance",
+   "slots": [
+    "Weapon",
+    "Gloves",
+    "Quiver"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "bleed"
+   ]
+  },
+  {
+   "id": "bleed_effect",
+   "text": "X% increased Bleeding damage (your Bleeds)",
+   "type": "Prefix",
+   "group": "BleedDamage",
+   "slots": [
+    "Weapon",
+    "Amulet",
+    "Belt",
+    "Quiver"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "bleed"
+   ]
+  },
+  {
+   "id": "dot_multi",
+   "text": "+X% to Damage over Time Multiplier (Burning, Poison and Bleeding)",
+   "type": "Prefix",
+   "group": "DotMulti",
+   "slots": [
+    "Weapon",
+    "Amulet",
+    "Quiver",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 4,
+   "ilvl_top": 70,
+   "ilvl_low": 32,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "bleed",
+    "ign",
+    "pois"
+   ]
+  },
+  {
+   "id": "chill_effect",
+   "text": "X% increased effect of Chill",
+   "type": "Suffix",
+   "group": "ChillEffect",
+   "slots": [
+    "Weapon",
+    "Ring",
+    "Quiver",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "minion_dmg",
+   "text": "Minions deal X% increased Damage",
+   "type": "Prefix",
+   "group": "MinionDamage",
+   "slots": [
+    "Wand",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "minion_dmg_2h",
+   "text": "Minions deal X% increased Damage",
+   "type": "Prefix",
+   "group": "MinionDamage",
+   "slots": [
+    "Staff",
+    "Scythe"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 8,
+   "ilvl_top": 84,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "minion_dmg_jewel",
+   "text": "Minions deal X% increased Damage",
+   "type": "Prefix",
+   "group": "MinionDamage",
+   "slots": [
+    "Amulet",
+    "Helm"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 7,
+   "ilvl_top": 84,
+   "ilvl_low": 10,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20,
+    10
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "minion_life",
+   "text": "Minions have X% increased maximum Life",
+   "type": "Suffix",
+   "group": "MinionLife",
+   "slots": [
+    "Helm",
+    "Chest",
+    "Belt",
+    "Shield",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 7,
+   "ilvl_top": 70,
+   "ilvl_low": 1,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10,
+    1
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "minion_speed",
+   "text": "Minions have X% increased Attack and Movement Speed",
+   "type": "Suffix",
+   "group": "MinionSpeed",
+   "slots": [
+    "Gloves",
+    "Amulet",
+    "Boots"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "minion_crit",
+   "text": "Your Minions have X% increased Critical Strike Chance",
+   "type": "Suffix",
+   "group": "MinionCrit",
+   "slots": [
+    "Wand",
+    "Tome",
+    "Staff",
+    "Scythe",
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 6,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "minion_crit_multi",
+   "text": "Your Minions have +X% to Critical Strike Multiplier",
+   "type": "Suffix",
+   "group": "MinionCritMulti",
+   "slots": [
+    "Wand",
+    "Tome",
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 5,
+   "ilvl_top": 70,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "curse_effect",
+   "text": "X% increased effect of your Curses",
+   "type": "Suffix",
+   "group": "CurseEffect",
+   "slots": [
+    "Amulet",
+    "Helm",
+    "Wand",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "curse"
+   ]
+  },
+  {
+   "id": "curse_limit",
+   "text": "You can lay +X more Woe(s) on each enemy",
+   "type": "Prefix",
+   "group": "CurseLimit",
+   "slots": [
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 8,
+   "tiers": 1,
+   "ilvl_top": 44,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    44
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "curse"
+   ]
+  },
+  {
+   "id": "max_fire_res91",
+   "text": "+X% to maximum Fire Resistance",
+   "type": "Suffix",
+   "group": "MaxFireRes91",
+   "slots": [
+    "Shield",
+    "Chest"
+   ],
+   "excludes": [],
+   "weight": 12,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "tier_ilvls": [
+    84,
+    70
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "max_cold_res91",
+   "text": "+X% to maximum Cold Resistance",
+   "type": "Suffix",
+   "group": "MaxColdRes91",
+   "slots": [
+    "Shield",
+    "Chest"
+   ],
+   "excludes": [],
+   "weight": 12,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "tier_ilvls": [
+    84,
+    70
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "max_lightning_res91",
+   "text": "+X% to maximum Lightning Resistance",
+   "type": "Suffix",
+   "group": "MaxLightningRes91",
+   "slots": [
+    "Shield",
+    "Chest"
+   ],
+   "excludes": [],
+   "weight": 12,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "tier_ilvls": [
+    84,
+    70
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "max_poison_res91",
+   "text": "+X% to maximum Poison Resistance",
+   "type": "Suffix",
+   "group": "MaxPoisonRes91",
+   "slots": [
+    "Shield",
+    "Chest"
+   ],
+   "excludes": [],
+   "weight": 12,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "tier_ilvls": [
+    84,
+    70
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "req_reduce",
+   "text": "Attribute Requirements Reduced by X%",
+   "type": "Suffix",
+   "group": "ReqReduce93",
+   "slots": [
+    "Weapon",
+    "Chest",
+    "Helm",
+    "Gloves",
+    "Boots",
+    "Shield",
+    "Tome"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 6,
+   "ilvl_top": 70,
+   "ilvl_low": 10,
+   "tier_ilvls": [
+    70,
+    56,
+    44,
+    32,
+    20,
+    10
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "ring_move_speed",
+   "text": "X% increased Movement Speed",
+   "type": "Suffix",
+   "group": "RingMove",
+   "slots": [
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "move"
+   ]
+  },
+  {
+   "id": "gloves_cast_speed",
+   "text": "X% increased Cast Speed",
+   "type": "Suffix",
+   "group": "CastSpeedGloves",
+   "slots": [
+    "Gloves"
+   ],
+   "excludes": [],
+   "weight": 50,
+   "tiers": 4,
+   "ilvl_top": 56,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    56,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  },
+  {
+   "id": "ring_attack_speed",
+   "text": "X% increased Attack Speed",
+   "type": "Suffix",
+   "group": "AttackSpeedRing",
+   "slots": [
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 3,
+   "ilvl_top": 70,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "attack",
+    "bow"
+   ]
+  },
+  {
+   "id": "ring_cast_speed",
+   "text": "X% increased Cast Speed",
+   "type": "Suffix",
+   "group": "CastSpeedRing",
+   "slots": [
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 3,
+   "ilvl_top": 70,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  },
+  {
+   "id": "poison_pen85_2h",
+   "text": "Penetrates X% Poison Resistance",
+   "type": "Suffix",
+   "group": "PoisonPen85",
+   "slots": [
+    "TwoHand"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "pois"
+   ]
+  },
+  {
+   "id": "poison_pen85_1h",
+   "text": "Penetrates X% Poison Resistance",
+   "type": "Suffix",
+   "group": "PoisonPen85",
+   "slots": [
+    "OneHand"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "pois"
+   ]
+  },
+  {
+   "id": "fire_pen95_2h",
+   "text": "Penetrates X% Fire Resistance",
+   "type": "Suffix",
+   "group": "FirePen95",
+   "slots": [
+    "TwoHand"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": true,
+   "style": "",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "fire_pen95_1h",
+   "text": "Penetrates X% Fire Resistance",
+   "type": "Suffix",
+   "group": "FirePen95",
+   "slots": [
+    "OneHand"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": true,
+   "style": "",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "cold_pen95_2h",
+   "text": "Penetrates X% Cold Resistance",
+   "type": "Suffix",
+   "group": "ColdPen95",
+   "slots": [
+    "TwoHand"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": true,
+   "style": "",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "cold_pen95_1h",
+   "text": "Penetrates X% Cold Resistance",
+   "type": "Suffix",
+   "group": "ColdPen95",
+   "slots": [
+    "OneHand"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": true,
+   "style": "",
+   "easy_mode": [
+    "cold"
+   ]
+  },
+  {
+   "id": "lightning_pen95_2h",
+   "text": "Penetrates X% Lightning Resistance",
+   "type": "Suffix",
+   "group": "LightningPen95",
+   "slots": [
+    "TwoHand"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": true,
+   "style": "",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "lightning_pen95_1h",
+   "text": "Penetrates X% Lightning Resistance",
+   "type": "Suffix",
+   "group": "LightningPen95",
+   "slots": [
+    "OneHand"
+   ],
+   "excludes": [],
+   "weight": 35,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": true,
+   "style": "",
+   "easy_mode": [
+    "light"
+   ]
+  },
+  {
+   "id": "elemental_pen95_amulet",
+   "text": "Damage Penetrates X% Elemental Resistances",
+   "type": "Suffix",
+   "group": "ElementalPen95",
+   "slots": [
+    "Amulet"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    44
+   ],
+   "idol": false,
+   "switch_dependent": true,
+   "style": "",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "IdolLife_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolLife",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLife_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolLife",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLife_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolLife",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLife_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolLife",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMana_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMana",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMana_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMana",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMana_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMana",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMana_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMana",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEs_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolEs",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEs_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolEs",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEs_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolEs",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEs_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolEs",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolArmour_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolArmour",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolArmour_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolArmour",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolArmour_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolArmour",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolArmour_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolArmour",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEvasion_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolEvasion",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEvasion_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolEvasion",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEvasion_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolEvasion",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEvasion_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolEvasion",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPhys_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolPhys",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPhys_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolPhys",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPhys_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolPhys",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPhys_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolPhys",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolElemental_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolElemental",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolElemental_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolElemental",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolElemental_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolElemental",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolElemental_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolElemental",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSpell_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolSpell",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSpell_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolSpell",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSpell_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolSpell",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSpell_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolSpell",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMelee_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMelee",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMelee_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMelee",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMelee_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMelee",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMelee_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMelee",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinion_s",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMinion",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinion_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMinion",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinion_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMinion",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinion_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMinion",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolFireRes_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolFireRes",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolFireRes_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolFireRes",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolFireRes_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolFireRes",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolFireRes_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolFireRes",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolColdRes_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolColdRes",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolColdRes_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolColdRes",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolColdRes_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolColdRes",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolColdRes_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolColdRes",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLightningRes_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolLightningRes",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLightningRes_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolLightningRes",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLightningRes_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolLightningRes",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLightningRes_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolLightningRes",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPoisonRes_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolPoisonRes",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPoisonRes_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolPoisonRes",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPoisonRes_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolPoisonRes",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPoisonRes_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolPoisonRes",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMove_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMove",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMove_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMove",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMove_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMove",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMove_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMove",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolRegen_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolRegen",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolRegen_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolRegen",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolRegen_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolRegen",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolRegen_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolRegen",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolAttackSpeed_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolAttackSpeed",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolAttackSpeed_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolAttackSpeed",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolAttackSpeed_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolAttackSpeed",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolAttackSpeed_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolAttackSpeed",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCastSpeed_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCastSpeed",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCastSpeed_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCastSpeed",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCastSpeed_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCastSpeed",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCastSpeed_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCastSpeed",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCrit_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCrit",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCrit_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCrit",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCrit_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCrit",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCrit_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCrit",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCritMulti_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCritMulti",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCritMulti_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCritMulti",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCritMulti_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCritMulti",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCritMulti_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolCritMulti",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLifeKill_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolLifeKill",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLifeKill_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolLifeKill",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLifeKill_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolLifeKill",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLifeKill_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolLifeKill",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolManaRegen_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolManaRegen",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolManaRegen_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolManaRegen",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolManaRegen_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolManaRegen",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolManaRegen_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolManaRegen",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolArea_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolArea",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolArea_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolArea",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolArea_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolArea",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolArea_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolArea",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolStr_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolStr",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolStr_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolStr",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolStr_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolStr",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolStr_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolStr",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolDex_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolDex",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolDex_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolDex",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolDex_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolDex",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolDex_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolDex",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolInt_s",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolInt",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolInt_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolInt",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolInt_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolInt",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolInt_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolInt",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTotemSpeed_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolTotemSpeed",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTotemSpeed_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolTotemSpeed",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTotemSpeed_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolTotemSpeed",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTotemLife_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolTotemLife",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTotemLife_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolTotemLife",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTotemLife_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolTotemLife",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinionLife_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMinionLife",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinionLife_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMinionLife",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinionLife_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMinionLife",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinionSpeed_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMinionSpeed",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinionSpeed_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMinionSpeed",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMinionSpeed_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolMinionSpeed",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChannelArea_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolChannelArea",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChannelArea_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolChannelArea",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChannelArea_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolChannelArea",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChannelCost_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolChannelCost",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChannelCost_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolChannelCost",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChannelCost_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolChannelCost",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSlam_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolSlam",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSlam_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolSlam",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSlam_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolSlam",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSlamArea_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolSlamArea",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSlamArea_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolSlamArea",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolSlamArea_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolSlamArea",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChain_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolChain",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChain_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolChain",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChain_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolChain",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolOrbit_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolOrbit",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolOrbit_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolOrbit",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolOrbit_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolOrbit",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolBowArea_m",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolBowArea",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolBowArea_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolBowArea",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolBowArea_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolBowArea",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolProjectile_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolProjectile",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolProjectile_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolProjectile",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolProjectile_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolProjectile",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolHoly_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolHoly",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolHoly_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolHoly",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolHoly_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolHoly",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPoison_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolPoison",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPoison_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolPoison",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolPoison_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolPoison",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolFire_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolFire",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolFire_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolFire",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolFire_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolFire",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCold_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolCold",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCold_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolCold",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolCold_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolCold",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLightning_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolLightning",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLightning_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolLightning",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolLightning_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolLightning",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMovement_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMovement",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMovement_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMovement",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolMovement_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolMovement",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTrap_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolTrap",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTrap_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolTrap",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolTrap_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolTrap",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolShield_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolShield",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolShield_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolShield",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolShield_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolShield",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolBleed_m",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolBleed",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolBleed_l",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolBleed",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolBleed_x",
+   "text": "",
+   "type": "Prefix",
+   "group": "IdolBleed",
+   "slots": [
+    "Idol4"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolManaLeech_l",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolManaLeech",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolManaLeech_x",
+   "text": "",
+   "type": "Suffix",
+   "group": "IdolManaLeech",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    70,
+    56,
+    20
+   ],
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "idol_grand_chain_plus",
+   "text": "Chains X additional time(s)",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "chain"
+   ]
+  },
+  {
+   "id": "idol_grand_ballista_plus",
+   "text": "+X to the maximum number of Ballistas and Totems (adds to your bow engines and Totems from all sources; at most 7 Ballistas and 11 Totems in all, and each bow engine count past 7 gives 5% more damage instead)",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 1,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "totem"
+   ]
+  },
+  {
+   "id": "idol_grand_orbit_plus",
+   "text": "+X orbiting projectile(s) per cast (Blade Vortex, Orbiting Hammers and the Orbit support; a Blade Vortex ring holds at least 8)",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "orbit"
+   ]
+  },
+  {
+   "id": "idol_grand_skeleton_plus",
+   "text": "+X to maximum Skeleton Warriors (Summon Skeletons, Gravereap) (adds to your Minions from all sources; army max 28 minions in all)",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "idol_grand_slam_spike",
+   "text": "Ground Slam, Earthshatter and Rending Slam: their spike lines run X step(s) further",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "slam"
+   ]
+  },
+  {
+   "id": "idol_grand_bow_projectile",
+   "text": "Fires X additional Projectile(s)",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "bow"
+   ]
+  },
+  {
+   "id": "idol_grand_channel_ramp",
+   "text": "Up to X% more Damage over the first second of Channelling",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 2,
+   "ilvl_top": 70,
+   "ilvl_low": 56,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "channel"
+   ]
+  },
+  {
+   "id": "idol_grand_phys_as_fire",
+   "text": "Gain X% of Y Damage as Extra Z Damage",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 2,
+   "ilvl_top": 70,
+   "ilvl_low": 56,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "phys"
+   ]
+  },
+  {
+   "id": "idol_grand_phys_as_cold",
+   "text": "Gain X% of Y Damage as Extra Z Damage",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 2,
+   "ilvl_top": 70,
+   "ilvl_low": 56,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "phys"
+   ]
+  },
+  {
+   "id": "idol_grand_phys_as_lightning",
+   "text": "Gain X% of Y Damage as Extra Z Damage",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 2,
+   "ilvl_top": 70,
+   "ilvl_low": 56,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "phys"
+   ]
+  },
+  {
+   "id": "idol_grand_elemental_pen",
+   "text": "Damage Penetrates X% Elemental Resistances",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 60,
+   "tiers": 2,
+   "ilvl_top": 70,
+   "ilvl_low": 56,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "fire"
+   ]
+  },
+  {
+   "id": "idol_grand_life_inc",
+   "text": "X% increased maximum Life",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 70,
+   "tiers": 2,
+   "ilvl_top": 70,
+   "ilvl_low": 56,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "life"
+   ]
+  },
+  {
+   "id": "idol_grand_max_res",
+   "text": "+X% to all maximum Elemental Resistances",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 1,
+   "ilvl_top": 56,
+   "ilvl_low": 56,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "res"
+   ]
+  },
+  {
+   "id": "idol_grand_max_poison_res",
+   "text": "+X% to maximum Poison Resistance",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 1,
+   "ilvl_top": 56,
+   "ilvl_low": 56,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "idol_grand_melee_afterimage",
+   "text": "+X Afterimage(s) on Melee Attacks (each repeats the blow for 40% of its damage; past 3 from all sources, each adds 10% instead)",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "melee"
+   ]
+  },
+  {
+   "id": "idol_grand_skeleton_wizard_plus",
+   "text": "+X to the maximum number of Skeletal Mages (adds to your Minions from all sources; army max 28 minions in all)",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "idol_grand_eng_totem",
+   "text": "X% increased Totem Damage",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "totem"
+   ]
+  },
+  {
+   "id": "idol_grand_eng_afterimage",
+   "text": "Afterimages deal X% increased Damage",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "melee"
+   ]
+  },
+  {
+   "id": "idol_grand_eng_orbit",
+   "text": "Orbiting blades and hammers turn X% faster",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "orbit"
+   ]
+  },
+  {
+   "id": "idol_grand_eng_trap",
+   "text": "Traps re-arm X% faster",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "trap"
+   ]
+  },
+  {
+   "id": "idol_grand_eng_minion",
+   "text": "Minions have X% increased Attack and Movement Speed",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "minion"
+   ]
+  },
+  {
+   "id": "idol_grand_eng_brand",
+   "text": "X% increased Damage with Sparks",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  },
+  {
+   "id": "idol_grand_eng_slam",
+   "text": "X% increased Area of Effect",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "aoe"
+   ]
+  },
+  {
+   "id": "idol_grand_trap_plus",
+   "text": "+X to the maximum number of Traps",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "trap"
+   ]
+  },
+  {
+   "id": "idol_grand_spark_plus",
+   "text": "+X to the maximum number of Sparks (adds to your Sparks from all sources; at most 27 Sparks)",
+   "type": "Prefix",
+   "group": "IdolGrand",
+   "slots": [
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 4,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "idol": true,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "spell"
+   ]
+  }
+ ]
+}
