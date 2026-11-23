@@ -241,7 +241,7 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 pre.out{margin:0;max-height:260px;overflow:auto;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-family:ui-monospace,Consolas,monospace;font-size:12.5px;white-space:pre-wrap;word-break:break-all}
 .toast{min-height:20px;margin-top:8px;font-size:.8125rem;color:var(--show-fg)}
 .toast.bad{color:var(--hide-fg)}
-.gt{position:fixed;z-index:90;left:50%;bottom:24px;transform:translateX(-50%);padding:10px 16px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-card);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--show-fg);font-weight:600;z-index:9}
+.gt{position:fixed;z-index:140;left:50%;bottom:24px;transform:translateX(-50%);padding:10px 16px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-card);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--show-fg);font-weight:600;z-index:9}
 .gt.bad{color:var(--hide-fg)}
 ul.pl{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}ul.pl li{margin:0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-size:.875rem;line-height:1.5;color:var(--text-muted)}ul.pl li b{color:var(--text-main)}
 ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)}
@@ -284,7 +284,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .drop[data-v="0"] .meta,.drop[data-v="0"] .rn,.drop[data-v="4"] .meta,.drop[data-v="4"] .rn{color:#9aa3b2}.drop[data-v="0"] .rn,.drop[data-v="4"] .rn{border-color:#3a4150}
 .tf{color:var(--text-dim);font-style:italic}
 /* update banner */
-.upd{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(8,10,14,.45);font-size:.875rem;color:var(--text-main)}
+.upd{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(8,10,14,.45);font-size:.875rem;color:var(--text-main)}
 .upd[hidden]{display:none}
 .upd .updbox{display:flex;flex-direction:column;align-items:flex-start;gap:14px;width:min(460px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:18px 20px;border:1px solid var(--accent-gold);border-radius:12px;background:var(--bg-panel);box-shadow:0 12px 40px rgba(0,0,0,.55)}
 .upd b{display:block;font-size:1rem;color:var(--accent-gold)}.upd span{color:var(--text-muted);font-size:.8125rem}
