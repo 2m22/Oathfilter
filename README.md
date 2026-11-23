@@ -17,6 +17,7 @@ Open `index.html` in any modern browser — no build step, no installation requi
 * **Drop Test:** Simulate random drops against your active filter to see which rule matches each item, or check a drop screenshot directly against your rules.
 * **Import, Copy & Share:** Paste a `BOFILTER:1,...` code, load a saved/shared filter, or copy and share your setup from the top editor bar.
 * **Modules:** Insert built-in modules (armour base tiers, defence types, chase reds, caster affix control, Dwarven Runes and Quivers, gems, cleanup) or your own. Before inserting, the check shows the new rule count out of 200, the position and rules that would be shadowed. Oversized lists are split into several rules at the game limits (`an=N` rules are never split). **Sell** needs a confirmation for Hide Magic, Hide Normal and custom rules. Module, rule and author names stay in the browser and in share files, never in the game code.
+* **Data files:** `data/easy-mode-groups.json` holds which affix lines each Easy Mode group uses (edit it on GitHub; unknown ids are ignored with a console warning). `node tools/export-affix-db.mjs` writes `data/affix-db.json`, `data/affix-db.csv` and `data/easy-mode-matrix.md` from the code. Run `node tests/run.mjs` after changing the groups.
 * **Game Presets:** Load the five built-in game filters (*All loot*, *Tidy*, *Strict*, *Very strict*, *End Game*) from the preset menu above the rule list.
 
 ---

@@ -1,0 +1,383 @@
+{
+ "_doc": "Easy Mode groups. Edit here: k = id, n = label, el = 1 for element groups, col = column, ids = gear line ids (matched by text, so a line also covers every line with the same text), idol = Idol line ids. st = style-bound lines: a line tagged attack or spell only stays when that style is picked (or none is). Unknown ids are ignored with a console warning. Run node tests/run.mjs after changes.",
+ "groups": [
+  {
+   "k": "attack",
+   "n": "Attacks",
+   "col": 7,
+   "ids": [
+    "attack_speed_local",
+    "crit_local",
+    "crit_multi"
+   ],
+   "idol": []
+  },
+  {
+   "k": "spell",
+   "n": "Spells",
+   "col": 7,
+   "ids": [
+    "spell_inc",
+    "cast_speed",
+    "skill_level",
+    "crit_local",
+    "crit_multi"
+   ],
+   "idol": [
+    "idol_grand_eng_brand",
+    "idol_grand_spark_plus"
+   ]
+  },
+  {
+   "k": "minion",
+   "n": "Minions",
+   "col": 7,
+   "ids": [
+    "minion_dmg",
+    "minion_life",
+    "minion_speed",
+    "minion_crit",
+    "minion_crit_multi"
+   ],
+   "idol": [
+    "idol_grand_skeleton_plus",
+    "idol_grand_skeleton_wizard_plus"
+   ]
+  },
+  {
+   "k": "phys",
+   "n": "Physical",
+   "el": 1,
+   "col": 7,
+   "ids": [
+    "phys_inc_local",
+    "phys_added_local",
+    "attack_added_phys"
+   ],
+   "idol": [
+    "idol_grand_phys_as_fire"
+   ]
+  },
+  {
+   "k": "fire",
+   "n": "Fire",
+   "el": 1,
+   "col": 7,
+   "ids": [
+    "fire_dmg_inc",
+    "fire_pen95_2h",
+    "fire_spell_added",
+    "fire_added_local",
+    "attack_added_fire"
+   ],
+   "idol": [
+    "idol_elemental_s",
+    "idol_grand_elemental_pen"
+   ]
+  },
+  {
+   "k": "cold",
+   "n": "Cold",
+   "el": 1,
+   "col": 7,
+   "ids": [
+    "cold_dmg_inc",
+    "cold_pen95_2h",
+    "chill_effect",
+    "freeze_duration",
+    "cold_spell_added",
+    "cold_added_local",
+    "attack_added_cold"
+   ],
+   "idol": []
+  },
+  {
+   "k": "light",
+   "n": "Lightning",
+   "el": 1,
+   "col": 7,
+   "ids": [
+    "lightning_dmg_inc",
+    "lightning_pen95_2h",
+    "shock_chance",
+    "shock_effect",
+    "lightning_spell_added",
+    "lightning_added_local",
+    "attack_added_lightning"
+   ],
+   "idol": []
+  },
+  {
+   "k": "holy",
+   "n": "Holy (Idols)",
+   "el": 1,
+   "col": 7,
+   "ids": [],
+   "idol": [
+    "idol_holy_damage_m"
+   ]
+  },
+  {
+   "k": "pois",
+   "n": "Poison",
+   "el": 1,
+   "col": 7,
+   "ids": [
+    "poison_dmg_inc",
+    "poison_effect",
+    "poison_pen85_2h",
+    "dot_multi",
+    "poison_spell_added"
+   ],
+   "idol": []
+  },
+  {
+   "k": "bleed",
+   "n": "Bleed",
+   "el": 1,
+   "col": 7,
+   "ids": [
+    "bleed_chance",
+    "bleed_effect",
+    "dot_multi"
+   ],
+   "idol": []
+  },
+  {
+   "k": "ign",
+   "n": "Ignite",
+   "el": 1,
+   "col": 7,
+   "ids": [
+    "ignite_chance",
+    "ignite_effect",
+    "dot_multi"
+   ],
+   "idol": []
+  },
+  {
+   "k": "curse",
+   "n": "Curse / Vow",
+   "col": 7,
+   "ids": [
+    "curse_effect",
+    "curse_limit",
+    "vow_effect98"
+   ],
+   "idol": []
+  },
+  {
+   "k": "aoe",
+   "n": "AoE",
+   "col": 7,
+   "ids": [
+    "area"
+   ],
+   "idol": []
+  },
+  {
+   "k": "move",
+   "n": "Move Speed",
+   "col": 7,
+   "ids": [
+    "move_speed"
+   ],
+   "idol": [
+    "idol_movement_damage_m"
+   ]
+  },
+  {
+   "k": "melee",
+   "n": "Melee",
+   "col": 7,
+   "ids": [],
+   "idol": [
+    "idol_melee_s",
+    "idol_grand_melee_afterimage",
+    "idol_grand_eng_afterimage"
+   ]
+  },
+  {
+   "k": "slam",
+   "n": "Slam",
+   "col": 7,
+   "ids": [],
+   "idol": [
+    "idol_slam_damage_m",
+    "idol_grand_slam_spike"
+   ]
+  },
+  {
+   "k": "bow",
+   "n": "Bow / Projectile",
+   "col": 7,
+   "ids": [
+    "attack_speed_local",
+    "crit_local",
+    "crit_multi",
+    "skill_level",
+    "phys_inc_local",
+    "phys_added_local",
+    "attack_added_phys",
+    "attack_added_fire",
+    "attack_added_cold",
+    "attack_added_lightning"
+   ],
+   "idol": [
+    "idol_projectile_damage_m",
+    "idol_grand_bow_projectile"
+   ]
+  },
+  {
+   "k": "chain",
+   "n": "Chain",
+   "col": 7,
+   "ids": [],
+   "idol": [
+    "idol_chain_damage_m",
+    "idol_grand_chain_plus"
+   ]
+  },
+  {
+   "k": "trap",
+   "n": "Trap",
+   "col": 7,
+   "ids": [],
+   "idol": [
+    "idol_trap_damage_m",
+    "idol_grand_trap_plus",
+    "idol_grand_eng_trap"
+   ]
+  },
+  {
+   "k": "totem",
+   "n": "Totem / Ballista",
+   "col": 7,
+   "ids": [],
+   "idol": [
+    "idol_ballista_speed_m",
+    "idol_ballista_life_m",
+    "idol_grand_ballista_plus",
+    "idol_grand_eng_totem"
+   ]
+  },
+  {
+   "k": "channel",
+   "n": "Channelling",
+   "col": 7,
+   "ids": [],
+   "idol": [
+    "idol_channel_cost_m",
+    "idol_grand_channel_ramp"
+   ]
+  },
+  {
+   "k": "orbit",
+   "n": "Orbiting",
+   "col": 7,
+   "ids": [],
+   "idol": [
+    "idol_orbit_damage_m",
+    "idol_grand_orbit_plus",
+    "idol_grand_eng_orbit"
+   ]
+  },
+  {
+   "k": "life",
+   "n": "Life",
+   "col": 7,
+   "ids": [
+    "life_large"
+   ],
+   "idol": [
+    "idol_grand_life_inc"
+   ]
+  },
+  {
+   "k": "mana",
+   "n": "Mana",
+   "col": 7,
+   "ids": [
+    "mana",
+    "mana_regen"
+   ],
+   "idol": []
+  },
+  {
+   "k": "leech",
+   "n": "Leech & Regen",
+   "col": 7,
+   "ids": [
+    "life_leech",
+    "mana_leech",
+    "es_leech",
+    "life_regen"
+   ],
+   "idol": []
+  },
+  {
+   "k": "res",
+   "n": "Resists",
+   "col": 7,
+   "ids": [
+    "fire_res",
+    "cold_res",
+    "lightning_res",
+    "poison_res",
+    "all_res"
+   ],
+   "idol": [
+    "idol_grand_max_res"
+   ]
+  },
+  {
+   "k": "armour",
+   "n": "Armour",
+   "col": 7,
+   "ids": [
+    "armour_local",
+    "defence_inc"
+   ],
+   "idol": [
+    "idol_armour_s"
+   ]
+  },
+  {
+   "k": "evasion",
+   "n": "Evasion",
+   "col": 7,
+   "ids": [
+    "evasion_local",
+    "defence_inc"
+   ],
+   "idol": [
+    "idol_evasion_s"
+   ]
+  },
+  {
+   "k": "es",
+   "n": "Energy Shield",
+   "col": 7,
+   "ids": [
+    "es_global",
+    "defence_inc"
+   ],
+   "idol": []
+  }
+ ],
+ "st": {
+  "phys_inc_local": "attack",
+  "phys_added_local": "attack",
+  "attack_added_phys": "attack",
+  "fire_added_local": "attack",
+  "cold_added_local": "attack",
+  "lightning_added_local": "attack",
+  "attack_added_lightning": "attack",
+  "attack_added_fire": "attack",
+  "attack_added_cold": "attack",
+  "fire_spell_added": "spell",
+  "cold_spell_added": "spell",
+  "lightning_spell_added": "spell",
+  "poison_spell_added": "spell"
+ }
+}

@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
+import {EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -342,6 +342,16 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(/const LOCAL_LINE=/.test(app)&&app.includes('" (local)"'),"picker marks local lines with (local)");
   ok(app.includes("ATTACK_LINE=")&&app.includes('class="qm"'),"picker shows a ? for the Attack Damage variants");
   ok(/quivers/.test(lw)&&/bow/.test(lw),"the hints mention bows and quivers"); }
+
+{ const fsx=await import("node:fs"),g=JSON.parse(fsx.readFileSync(new URL("../data/easy-mode-groups.json",import.meta.url),"utf8"));
+  const known=new Set(DATA.lines.map(x=>x[1]));
+  eq(g.groups.length,EZ_ARCH.length,"Easy Mode groups: none dropped on load");
+  ok(g.groups.every(a=>a.k&&a.n&&Array.isArray(a.ids)&&Array.isArray(a.idol)),"Easy Mode groups: every group has k, n, ids, idol");
+  eq(new Set(g.groups.map(a=>a.k)).size,g.groups.length,"Easy Mode groups: keys are unique");
+  ok(g.groups.every(a=>a.ids.every(id=>known.has(id))),"Easy Mode groups: every gear id exists in the game data");
+  ok(g.groups.every(a=>a.idol.every(id=>/^idol_/.test(id))),"Easy Mode groups: every Idol id starts with idol_");
+  ok(Object.keys(g.st).every(id=>known.has(id))&&Object.values(g.st).every(v=>v==="attack"||v==="spell"),"Easy Mode groups: style lines are known and attack or spell");
+  ok(EZ_GRP.flatMap(x=>x[2].flatMap(y=>y[1])).every(k=>g.groups.some(a=>a.k===k)),"Easy Mode groups: every group the picker shows exists"); }
 
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
