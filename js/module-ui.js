@@ -63,7 +63,7 @@ const TPL=`
         <input class="field" type="text" readonly :value="shareUrl" aria-label="Share link" data-mdurl="1">
         <div class="lfb"><button type="button" class="btn" @click="copy(shareUrl,'Link copied.')">Copy link</button><button type="button" class="btn" @click="copy('[Oathfilter module]('+shareUrl+')','Discord link copied.')">Copy for Discord</button><button type="button" class="btn" @click="mode={}">Close</button></div></div>
       <div v-else class="lfb">
-        <button type="button" class="btn" :disabled="easy" @click="openInsert(m)">Insert</button>
+        <button type="button" class="btn" :disabled="easy" :title="easy?'Easy Mode builds its own rules. Switch to Advanced Mode to insert modules.':''" @click="openInsert(m)">{{ easy ? 'Advanced Mode only' : 'Insert' }}</button>
         <template v-if="!m.builtin">
           <button type="button" class="btn" @click="askReplace(m)">Replace filter</button>
           <button type="button" class="btn" @click="startEdit(m)">Edit info</button>
