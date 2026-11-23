@@ -50,7 +50,7 @@ const TPL=`
     <ul class="mdm-list" id="mdList">
      <li v-if="!shown.length" class="hint mdm-empty">{{ all.length ? 'No module matches your search or filters.' : 'No modules yet.' }}</li>
      <li v-for="m in shown" :key="m.id" :data-md="m.id" class="mdm-card" :class="{sel:isSel(m.id),dragging:drag&&drag.kind==='mods'&&drag.ids.includes(m.id)}"
-         :draggable="!easy&&!mode[m.id]" @dragstart="dragMods($event,m)" @dragend="dragEnd">
+         @click="cardClick($event,m)" :draggable="!easy&&!mode[m.id]" @dragstart="dragMods($event,m)" @dragend="dragEnd">
       <div class="mdm-ch">
        <input type="checkbox" class="mdm-chk" :checked="isSel(m.id)" @change="toggleSel(m.id)" :aria-label="'Select module '+m.name">
        <div class="mdm-cm">
@@ -207,6 +207,8 @@ export function mountModuleUi(Vue,ctx,el){
       const blocked=computed(()=>easy.value||!sel.value.length||!plan.value.rules.length||check.value.over||check.value.issues.length>0);
       const isSel=id=>sel.value.includes(id);
       const toggleSel=id=>{sel.value=isSel(id)?sel.value.filter(x=>x!==id):[...sel.value,id];};
+      /* a click anywhere on the card (not on its buttons or fields) ticks or unticks the module */
+      const cardClick=(e,m)=>{if(e.target.closest&&e.target.closest("button,input,select,textarea,a,label,.mdm-edit"))return;if(mode.value[m.id])return;toggleSel(m.id);};
       const selectShown=()=>{const have=new Set(sel.value);sel.value=[...sel.value,...shown.value.map(m=>m.id).filter(id=>!have.has(id))];};
       const setAtNum=v=>{const n=parseInt(v,10);if(!(n>=1)){return;}at.value=Math.min(n-1,rules.value.length);};
       const refresh=()=>{tick.value++;if(!open.value)return;const n=rules.value.length;if(at.value!==null&&at.value>=n)at.value=null;sel.value=sel.value.filter(id=>all.value.some(m=>m.id===id));};
@@ -343,7 +345,7 @@ export function mountModuleUi(Vue,ctx,el){
       vmRef={open:doOpen,close,refresh,isOpen:()=>open.value};
       return {open,src,q,cat,tag,msg,bad,mode,shareUrl,imp,form,edit,sel,at,drag,dropAt,dlg,search,
         max:MAX_RULES,builtin:BUILTIN,mine,all,easy,rules,curId,curIdx,cats,tags,shown,plan,eff,whereText,check,over,blocked,icon,
-        isSel,toggleSel,selectShown,setAtNum,info,sellOf,insertIds,dragMods,dragRule,dragEnd,overRules,leaveRules,dropRules,moveRule,toggleOn,
+        isSel,toggleSel,cardClick,selectShown,setAtNum,info,sellOf,insertIds,dragMods,dragRule,dragEnd,overRules,leaveRules,dropRules,moveRule,toggleOn,
         askReplace,replace,save,startEdit,saveEdit,del,dup,fileOf,copy,share,doImport,close,onKey};
     }
   });

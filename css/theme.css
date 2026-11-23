@@ -424,6 +424,7 @@ body.mdm-lock{overflow:hidden}
 .mdm-rules{gap:0}
 .mdm-empty{padding:14px;border:1px dashed var(--border-strong);border-radius:8px;text-align:center}
 .mdm-card{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-card)}
+.mdm-card{cursor:pointer}
 .mdm-card:hover{background:var(--bg-card-hover)}
 .mdm-card.sel{border-color:var(--accent-gold);background:var(--accent-gold-soft)}
 .mdm-card.dragging,.mdm-rule.dragging{opacity:.45}
