@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
+import {EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -352,6 +352,23 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(g.groups.every(a=>a.idol.every(id=>/^idol_/.test(id))),"Easy Mode groups: every Idol id starts with idol_");
   ok(Object.keys(g.st).every(id=>known.has(id))&&Object.values(g.st).every(v=>v==="attack"||v==="spell"),"Easy Mode groups: style lines are known and attack or spell");
   ok(EZ_GRP.flatMap(x=>x[2].flatMap(y=>y[1])).every(k=>g.groups.some(a=>a.k===k)),"Easy Mode groups: every group the picker shows exists"); }
+
+{ const G=k=>EZ_ARCH.find(a=>a.k===k),txt=i=>LINEN_[i];
+  const pick=ks=>easyGen(ezSane({arch:Object.fromEntries(ks.map(k=>[k,1]))})).rules.map(r=>mval(r,"a")||"").join("+").split("+");
+  ok(G("armour").ids.includes("str_flat")&&G("evasion").ids.includes("dex_flat")&&G("es").ids.includes("int_flat"),"Easy Mode: Strength is under Armour, Dexterity under Evasion, Intelligence under Energy Shield");
+  ok(["armour","evasion","es"].every(k=>G(k).ids.includes("all_attr")),"Easy Mode: all Attributes sits in all three defence groups");
+  ok(!["dex_flat","int_flat"].some(i=>G("armour").ids.includes(i))&&!["str_flat","int_flat"].some(i=>G("evasion").ids.includes(i))&&!["str_flat","dex_flat"].some(i=>G("es").ids.includes(i)),"Easy Mode: each attribute only sits in its own defence group");
+  for(const [c,want] of [[["armour","evasion"],["str_flat","dex_flat"]],[["evasion","es"],["dex_flat","int_flat"]],[["armour","es"],["str_flat","int_flat"]]]){
+    const l=pick(c);ok(want.every(i=>l.includes(i)),"Easy Mode: hybrid pick "+c.join("+")+" keeps "+want.join(" and "));
+    eq(l.filter(i=>i==="all_attr").length,1,"Easy Mode: hybrid pick "+c.join("+")+" lists all Attributes once"); }
+  ok(["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91","phys_as_elem"].every(i=>G("res").ids.includes(i))&&G("res").idol.includes("idol_grand_max_poison_res"),"Easy Mode: maximum resistances and Physical taken as are under Resists");
+  { const l=pick(["res"]);ok(["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91","phys_as_elem"].every(i=>l.includes(i)),"Easy Mode: a Resists pick writes the maximum resistance lines"); }
+  const ex=EZ_EXCLUDED,exT=new Set(ex.map(txt).filter(Boolean));
+  ok(["life_on_kill","ring_life_on_kill","mana_on_kill","ring_mana_on_kill","cooldown_recovery","req_reduce"].every(i=>ex.includes(i)),"Easy Mode: on-kill, cooldown recovery and attribute requirements are excluded");
+  ok(EZ_ARCH.every(a=>a.ids.concat(a.idol).every(i=>!ex.includes(i)&&!exT.has(txt(i)))),"Easy Mode: no group uses an excluded line or a line with the same text");
+  ok(EZ_ARCH.every(a=>new Set(a.ids).size===a.ids.length&&new Set(a.idol).size===a.idol.length&&(a.ids.length||a.idol.length)),"Easy Mode: no group is empty or lists a line twice");
+  const tags=new Set(AFF.flatMap(a=>a.tags));
+  ok(AFF.every(a=>a.tags.length&&a.tags.every(Boolean)&&a.ex.every(x=>tags.has(x)&&!a.tags.includes(x))),"Affix table: no empty slot tag, no unknown exclude, no exclude that is also a slot of the same line"); }
 
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);

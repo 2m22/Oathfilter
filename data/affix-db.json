@@ -28,6 +28,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -64,6 +65,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -100,6 +102,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -134,6 +137,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -170,6 +174,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -203,6 +208,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -239,6 +245,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -272,6 +279,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -308,6 +316,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -341,6 +350,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -372,6 +382,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -405,6 +416,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -437,6 +449,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -469,6 +482,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -502,6 +516,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "spell",
    "easy_mode": [
@@ -536,6 +551,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -566,6 +582,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -596,6 +613,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -627,6 +645,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -660,6 +679,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "spell",
    "easy_mode": [
@@ -694,6 +714,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -724,6 +745,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -754,6 +776,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -785,6 +808,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -818,6 +842,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "spell",
    "easy_mode": [
@@ -852,6 +877,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -882,6 +908,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -912,6 +939,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -945,6 +973,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "spell",
    "easy_mode": [
@@ -979,6 +1008,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1009,6 +1039,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1039,6 +1070,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1072,6 +1104,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1102,6 +1135,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1132,6 +1166,7 @@
     46
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1157,6 +1192,7 @@
     46
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1183,6 +1219,7 @@
     46
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1217,6 +1254,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -1251,6 +1289,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -1285,6 +1324,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -1312,6 +1352,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": true,
    "style": "",
    "easy_mode": [
@@ -1345,6 +1386,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "attack",
    "easy_mode": [
@@ -1384,6 +1426,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1422,6 +1465,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1460,6 +1504,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1498,6 +1543,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1527,6 +1573,7 @@
     10
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1555,9 +1602,12 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "str_flat",
@@ -1591,9 +1641,12 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "dex_flat",
@@ -1628,9 +1681,12 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "int_flat",
@@ -1664,9 +1720,12 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "all_attr",
@@ -1691,9 +1750,14 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour",
+    "es",
+    "evasion"
+   ]
   },
   {
    "id": "attack_speed_local",
@@ -1721,6 +1785,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1749,6 +1814,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1783,6 +1849,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1813,6 +1880,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1839,6 +1907,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1865,6 +1934,7 @@
     44
    ],
    "idol": false,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
@@ -1891,6 +1961,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1922,6 +1993,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1953,6 +2025,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -1983,6 +2056,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2020,6 +2094,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2053,6 +2128,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2082,6 +2158,7 @@
     1
    ],
    "idol": false,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
@@ -2108,6 +2185,7 @@
     1
    ],
    "idol": false,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
@@ -2134,6 +2212,7 @@
     1
    ],
    "idol": false,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
@@ -2160,6 +2239,7 @@
     1
    ],
    "idol": false,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
@@ -2184,6 +2264,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2209,6 +2290,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2241,6 +2323,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2271,6 +2354,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2298,6 +2382,7 @@
     10
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2324,6 +2409,7 @@
     10
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2352,6 +2438,7 @@
     32
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2381,6 +2468,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2410,6 +2498,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2438,6 +2527,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2466,6 +2556,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2494,6 +2585,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2521,6 +2613,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2549,6 +2642,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2578,6 +2672,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2607,6 +2702,7 @@
     32
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2638,6 +2734,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2669,6 +2766,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2700,6 +2798,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2730,6 +2829,7 @@
     10
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2763,6 +2863,7 @@
     1
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2791,6 +2892,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2823,6 +2925,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2852,6 +2955,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2881,6 +2985,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2904,6 +3009,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -2929,9 +3035,12 @@
     70
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "max_cold_res91",
@@ -2952,9 +3061,12 @@
     70
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "max_lightning_res91",
@@ -2975,9 +3087,12 @@
     70
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "max_poison_res91",
@@ -2998,9 +3113,12 @@
     70
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "req_reduce",
@@ -3030,6 +3148,7 @@
     10
    ],
    "idol": false,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
@@ -3053,6 +3172,7 @@
     56
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -3079,6 +3199,7 @@
     20
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -3104,6 +3225,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -3130,6 +3252,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -3156,6 +3279,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -3182,6 +3306,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -3208,6 +3333,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": true,
    "style": "",
    "easy_mode": [
@@ -3234,6 +3360,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": true,
    "style": "",
    "easy_mode": [
@@ -3260,6 +3387,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": true,
    "style": "",
    "easy_mode": [
@@ -3286,6 +3414,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": true,
    "style": "",
    "easy_mode": [
@@ -3312,6 +3441,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": true,
    "style": "",
    "easy_mode": [
@@ -3338,6 +3468,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": true,
    "style": "",
    "easy_mode": [
@@ -3364,6 +3495,7 @@
     44
    ],
    "idol": false,
+   "excluded": false,
    "switch_dependent": true,
    "style": "",
    "easy_mode": [
@@ -3372,7 +3504,7 @@
   },
   {
    "id": "IdolLife_s",
-   "text": "",
+   "text": "+X to maximum Life",
    "type": "Prefix",
    "group": "IdolLife",
    "slots": [
@@ -3390,13 +3522,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "life"
+   ]
   },
   {
    "id": "IdolLife_m",
-   "text": "",
+   "text": "+X to maximum Life",
    "type": "Prefix",
    "group": "IdolLife",
    "slots": [
@@ -3414,13 +3549,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "life"
+   ]
   },
   {
    "id": "IdolLife_l",
-   "text": "",
+   "text": "+X to maximum Life",
    "type": "Prefix",
    "group": "IdolLife",
    "slots": [
@@ -3438,13 +3576,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "life"
+   ]
   },
   {
    "id": "IdolLife_x",
-   "text": "",
+   "text": "+X to maximum Life",
    "type": "Prefix",
    "group": "IdolLife",
    "slots": [
@@ -3462,13 +3603,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "life"
+   ]
   },
   {
    "id": "IdolMana_s",
-   "text": "",
+   "text": "+X to maximum Mana",
    "type": "Prefix",
    "group": "IdolMana",
    "slots": [
@@ -3486,13 +3630,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "mana"
+   ]
   },
   {
    "id": "IdolMana_m",
-   "text": "",
+   "text": "+X to maximum Mana",
    "type": "Prefix",
    "group": "IdolMana",
    "slots": [
@@ -3510,13 +3657,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "mana"
+   ]
   },
   {
    "id": "IdolMana_l",
-   "text": "",
+   "text": "+X to maximum Mana",
    "type": "Prefix",
    "group": "IdolMana",
    "slots": [
@@ -3534,13 +3684,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "mana"
+   ]
   },
   {
    "id": "IdolMana_x",
-   "text": "",
+   "text": "+X to maximum Mana",
    "type": "Prefix",
    "group": "IdolMana",
    "slots": [
@@ -3558,13 +3711,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "mana"
+   ]
   },
   {
    "id": "IdolEs_s",
-   "text": "",
+   "text": "+X to maximum Energy Shield",
    "type": "Prefix",
    "group": "IdolEs",
    "slots": [
@@ -3582,13 +3738,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "IdolEs_m",
-   "text": "",
+   "text": "+X to maximum Energy Shield",
    "type": "Prefix",
    "group": "IdolEs",
    "slots": [
@@ -3606,13 +3765,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "IdolEs_l",
-   "text": "",
+   "text": "+X to maximum Energy Shield",
    "type": "Prefix",
    "group": "IdolEs",
    "slots": [
@@ -3630,13 +3792,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "IdolEs_x",
-   "text": "",
+   "text": "+X to maximum Energy Shield",
    "type": "Prefix",
    "group": "IdolEs",
    "slots": [
@@ -3654,13 +3819,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "IdolArmour_s",
-   "text": "",
+   "text": "X% increased Armour",
    "type": "Prefix",
    "group": "IdolArmour",
    "slots": [
@@ -3678,13 +3846,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "IdolArmour_m",
-   "text": "",
+   "text": "X% increased Armour",
    "type": "Prefix",
    "group": "IdolArmour",
    "slots": [
@@ -3702,13 +3873,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "IdolArmour_l",
-   "text": "",
+   "text": "X% increased Armour",
    "type": "Prefix",
    "group": "IdolArmour",
    "slots": [
@@ -3726,13 +3900,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "IdolArmour_x",
-   "text": "",
+   "text": "X% increased Armour",
    "type": "Prefix",
    "group": "IdolArmour",
    "slots": [
@@ -3750,13 +3927,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "IdolEvasion_s",
-   "text": "",
+   "text": "X% increased Evasion Rating",
    "type": "Prefix",
    "group": "IdolEvasion",
    "slots": [
@@ -3774,13 +3954,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "IdolEvasion_m",
-   "text": "",
+   "text": "X% increased Evasion Rating",
    "type": "Prefix",
    "group": "IdolEvasion",
    "slots": [
@@ -3798,13 +3981,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "IdolEvasion_l",
-   "text": "",
+   "text": "X% increased Evasion Rating",
    "type": "Prefix",
    "group": "IdolEvasion",
    "slots": [
@@ -3822,13 +4008,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "IdolEvasion_x",
-   "text": "",
+   "text": "X% increased Evasion Rating",
    "type": "Prefix",
    "group": "IdolEvasion",
    "slots": [
@@ -3846,13 +4035,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "IdolPhys_s",
-   "text": "",
+   "text": "X% increased Physical Damage",
    "type": "Prefix",
    "group": "IdolPhys",
    "slots": [
@@ -3870,13 +4062,17 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bow",
+    "phys"
+   ]
   },
   {
    "id": "IdolPhys_m",
-   "text": "",
+   "text": "X% increased Physical Damage",
    "type": "Prefix",
    "group": "IdolPhys",
    "slots": [
@@ -3894,13 +4090,17 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bow",
+    "phys"
+   ]
   },
   {
    "id": "IdolPhys_l",
-   "text": "",
+   "text": "X% increased Physical Damage",
    "type": "Prefix",
    "group": "IdolPhys",
    "slots": [
@@ -3918,13 +4118,17 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bow",
+    "phys"
+   ]
   },
   {
    "id": "IdolPhys_x",
-   "text": "",
+   "text": "X% increased Physical Damage",
    "type": "Prefix",
    "group": "IdolPhys",
    "slots": [
@@ -3942,13 +4146,17 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bow",
+    "phys"
+   ]
   },
   {
    "id": "IdolElemental_s",
-   "text": "",
+   "text": "X% increased Elemental Damage",
    "type": "Prefix",
    "group": "IdolElemental",
    "slots": [
@@ -3966,13 +4174,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "fire"
+   ]
   },
   {
    "id": "IdolElemental_m",
-   "text": "",
+   "text": "X% increased Elemental Damage",
    "type": "Prefix",
    "group": "IdolElemental",
    "slots": [
@@ -3990,13 +4201,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "fire"
+   ]
   },
   {
    "id": "IdolElemental_l",
-   "text": "",
+   "text": "X% increased Elemental Damage",
    "type": "Prefix",
    "group": "IdolElemental",
    "slots": [
@@ -4014,13 +4228,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "fire"
+   ]
   },
   {
    "id": "IdolElemental_x",
-   "text": "",
+   "text": "X% increased Elemental Damage",
    "type": "Prefix",
    "group": "IdolElemental",
    "slots": [
@@ -4038,13 +4255,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "fire"
+   ]
   },
   {
    "id": "IdolSpell_s",
-   "text": "",
+   "text": "X% increased Spell Damage",
    "type": "Prefix",
    "group": "IdolSpell",
    "slots": [
@@ -4062,13 +4282,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "spell"
+   ]
   },
   {
    "id": "IdolSpell_m",
-   "text": "",
+   "text": "X% increased Spell Damage",
    "type": "Prefix",
    "group": "IdolSpell",
    "slots": [
@@ -4086,13 +4309,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "spell"
+   ]
   },
   {
    "id": "IdolSpell_l",
-   "text": "",
+   "text": "X% increased Spell Damage",
    "type": "Prefix",
    "group": "IdolSpell",
    "slots": [
@@ -4110,13 +4336,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "spell"
+   ]
   },
   {
    "id": "IdolSpell_x",
-   "text": "",
+   "text": "X% increased Spell Damage",
    "type": "Prefix",
    "group": "IdolSpell",
    "slots": [
@@ -4134,13 +4363,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "spell"
+   ]
   },
   {
    "id": "IdolMelee_s",
-   "text": "",
+   "text": "X% increased Melee Damage",
    "type": "Prefix",
    "group": "IdolMelee",
    "slots": [
@@ -4158,13 +4390,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "melee"
+   ]
   },
   {
    "id": "IdolMelee_m",
-   "text": "",
+   "text": "X% increased Melee Damage",
    "type": "Prefix",
    "group": "IdolMelee",
    "slots": [
@@ -4182,13 +4417,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "melee"
+   ]
   },
   {
    "id": "IdolMelee_l",
-   "text": "",
+   "text": "X% increased Melee Damage",
    "type": "Prefix",
    "group": "IdolMelee",
    "slots": [
@@ -4206,13 +4444,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "melee"
+   ]
   },
   {
    "id": "IdolMelee_x",
-   "text": "",
+   "text": "X% increased Melee Damage",
    "type": "Prefix",
    "group": "IdolMelee",
    "slots": [
@@ -4230,13 +4471,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "melee"
+   ]
   },
   {
    "id": "IdolMinion_s",
-   "text": "",
+   "text": "Minions deal X% increased Damage",
    "type": "Prefix",
    "group": "IdolMinion",
    "slots": [
@@ -4254,13 +4498,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolMinion_m",
-   "text": "",
+   "text": "Minions deal X% increased Damage",
    "type": "Prefix",
    "group": "IdolMinion",
    "slots": [
@@ -4278,13 +4525,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolMinion_l",
-   "text": "",
+   "text": "Minions deal X% increased Damage",
    "type": "Prefix",
    "group": "IdolMinion",
    "slots": [
@@ -4302,13 +4552,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolMinion_x",
-   "text": "",
+   "text": "Minions deal X% increased Damage",
    "type": "Prefix",
    "group": "IdolMinion",
    "slots": [
@@ -4326,13 +4579,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolFireRes_s",
-   "text": "",
+   "text": "+X% to Fire Resistance",
    "type": "Suffix",
    "group": "IdolFireRes",
    "slots": [
@@ -4350,13 +4606,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolFireRes_m",
-   "text": "",
+   "text": "+X% to Fire Resistance",
    "type": "Suffix",
    "group": "IdolFireRes",
    "slots": [
@@ -4374,13 +4633,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolFireRes_l",
-   "text": "",
+   "text": "+X% to Fire Resistance",
    "type": "Suffix",
    "group": "IdolFireRes",
    "slots": [
@@ -4398,13 +4660,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolFireRes_x",
-   "text": "",
+   "text": "+X% to Fire Resistance",
    "type": "Suffix",
    "group": "IdolFireRes",
    "slots": [
@@ -4423,13 +4688,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolColdRes_s",
-   "text": "",
+   "text": "+X% to Cold Resistance",
    "type": "Suffix",
    "group": "IdolColdRes",
    "slots": [
@@ -4447,13 +4715,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolColdRes_m",
-   "text": "",
+   "text": "+X% to Cold Resistance",
    "type": "Suffix",
    "group": "IdolColdRes",
    "slots": [
@@ -4471,13 +4742,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolColdRes_l",
-   "text": "",
+   "text": "+X% to Cold Resistance",
    "type": "Suffix",
    "group": "IdolColdRes",
    "slots": [
@@ -4495,13 +4769,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolColdRes_x",
-   "text": "",
+   "text": "+X% to Cold Resistance",
    "type": "Suffix",
    "group": "IdolColdRes",
    "slots": [
@@ -4520,13 +4797,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolLightningRes_s",
-   "text": "",
+   "text": "+X% to Lightning Resistance",
    "type": "Suffix",
    "group": "IdolLightningRes",
    "slots": [
@@ -4544,13 +4824,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolLightningRes_m",
-   "text": "",
+   "text": "+X% to Lightning Resistance",
    "type": "Suffix",
    "group": "IdolLightningRes",
    "slots": [
@@ -4568,13 +4851,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolLightningRes_l",
-   "text": "",
+   "text": "+X% to Lightning Resistance",
    "type": "Suffix",
    "group": "IdolLightningRes",
    "slots": [
@@ -4592,13 +4878,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolLightningRes_x",
-   "text": "",
+   "text": "+X% to Lightning Resistance",
    "type": "Suffix",
    "group": "IdolLightningRes",
    "slots": [
@@ -4617,13 +4906,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolPoisonRes_s",
-   "text": "",
+   "text": "+X% to Poison Resistance",
    "type": "Suffix",
    "group": "IdolPoisonRes",
    "slots": [
@@ -4641,13 +4933,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolPoisonRes_m",
-   "text": "",
+   "text": "+X% to Poison Resistance",
    "type": "Suffix",
    "group": "IdolPoisonRes",
    "slots": [
@@ -4665,13 +4960,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolPoisonRes_l",
-   "text": "",
+   "text": "+X% to Poison Resistance",
    "type": "Suffix",
    "group": "IdolPoisonRes",
    "slots": [
@@ -4689,13 +4987,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolPoisonRes_x",
-   "text": "",
+   "text": "+X% to Poison Resistance",
    "type": "Suffix",
    "group": "IdolPoisonRes",
    "slots": [
@@ -4714,13 +5015,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "IdolMove_s",
-   "text": "",
+   "text": "X% increased Movement Speed",
    "type": "Suffix",
    "group": "IdolMove",
    "slots": [
@@ -4737,13 +5041,16 @@
     56
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "move"
+   ]
   },
   {
    "id": "IdolMove_m",
-   "text": "",
+   "text": "X% increased Movement Speed",
    "type": "Suffix",
    "group": "IdolMove",
    "slots": [
@@ -4761,13 +5068,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "move"
+   ]
   },
   {
    "id": "IdolMove_l",
-   "text": "",
+   "text": "X% increased Movement Speed",
    "type": "Suffix",
    "group": "IdolMove",
    "slots": [
@@ -4785,13 +5095,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "move"
+   ]
   },
   {
    "id": "IdolMove_x",
-   "text": "",
+   "text": "X% increased Movement Speed",
    "type": "Suffix",
    "group": "IdolMove",
    "slots": [
@@ -4810,13 +5123,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "move"
+   ]
   },
   {
    "id": "IdolRegen_s",
-   "text": "",
+   "text": "Regenerate X Life per second",
    "type": "Suffix",
    "group": "IdolRegen",
    "slots": [
@@ -4833,13 +5149,16 @@
     56
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "leech"
+   ]
   },
   {
    "id": "IdolRegen_m",
-   "text": "",
+   "text": "Regenerate X Life per second",
    "type": "Suffix",
    "group": "IdolRegen",
    "slots": [
@@ -4857,13 +5176,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "leech"
+   ]
   },
   {
    "id": "IdolRegen_l",
-   "text": "",
+   "text": "Regenerate X Life per second",
    "type": "Suffix",
    "group": "IdolRegen",
    "slots": [
@@ -4881,13 +5203,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "leech"
+   ]
   },
   {
    "id": "IdolRegen_x",
-   "text": "",
+   "text": "Regenerate X Life per second",
    "type": "Suffix",
    "group": "IdolRegen",
    "slots": [
@@ -4906,13 +5231,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "leech"
+   ]
   },
   {
    "id": "IdolAttackSpeed_s",
-   "text": "",
+   "text": "X% increased Attack Speed",
    "type": "Suffix",
    "group": "IdolAttackSpeed",
    "slots": [
@@ -4929,13 +5257,17 @@
     56
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow"
+   ]
   },
   {
    "id": "IdolAttackSpeed_m",
-   "text": "",
+   "text": "X% increased Attack Speed",
    "type": "Suffix",
    "group": "IdolAttackSpeed",
    "slots": [
@@ -4953,13 +5285,17 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow"
+   ]
   },
   {
    "id": "IdolAttackSpeed_l",
-   "text": "",
+   "text": "X% increased Attack Speed",
    "type": "Suffix",
    "group": "IdolAttackSpeed",
    "slots": [
@@ -4977,13 +5313,17 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow"
+   ]
   },
   {
    "id": "IdolAttackSpeed_x",
-   "text": "",
+   "text": "X% increased Attack Speed",
    "type": "Suffix",
    "group": "IdolAttackSpeed",
    "slots": [
@@ -5002,13 +5342,17 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow"
+   ]
   },
   {
    "id": "IdolCastSpeed_s",
-   "text": "",
+   "text": "X% increased Cast Speed",
    "type": "Suffix",
    "group": "IdolCastSpeed",
    "slots": [
@@ -5025,13 +5369,16 @@
     56
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "spell"
+   ]
   },
   {
    "id": "IdolCastSpeed_m",
-   "text": "",
+   "text": "X% increased Cast Speed",
    "type": "Suffix",
    "group": "IdolCastSpeed",
    "slots": [
@@ -5049,13 +5396,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "spell"
+   ]
   },
   {
    "id": "IdolCastSpeed_l",
-   "text": "",
+   "text": "X% increased Cast Speed",
    "type": "Suffix",
    "group": "IdolCastSpeed",
    "slots": [
@@ -5073,13 +5423,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "spell"
+   ]
   },
   {
    "id": "IdolCastSpeed_x",
-   "text": "",
+   "text": "X% increased Cast Speed",
    "type": "Suffix",
    "group": "IdolCastSpeed",
    "slots": [
@@ -5098,13 +5451,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "spell"
+   ]
   },
   {
    "id": "IdolCrit_s",
-   "text": "",
+   "text": "X% increased Critical Strike Chance",
    "type": "Suffix",
    "group": "IdolCrit",
    "slots": [
@@ -5122,13 +5478,18 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
   },
   {
    "id": "IdolCrit_m",
-   "text": "",
+   "text": "X% increased Critical Strike Chance",
    "type": "Suffix",
    "group": "IdolCrit",
    "slots": [
@@ -5146,13 +5507,18 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
   },
   {
    "id": "IdolCrit_l",
-   "text": "",
+   "text": "X% increased Critical Strike Chance",
    "type": "Suffix",
    "group": "IdolCrit",
    "slots": [
@@ -5170,13 +5536,18 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
   },
   {
    "id": "IdolCrit_x",
-   "text": "",
+   "text": "X% increased Critical Strike Chance",
    "type": "Suffix",
    "group": "IdolCrit",
    "slots": [
@@ -5195,13 +5566,18 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
   },
   {
    "id": "IdolCritMulti_s",
-   "text": "",
+   "text": "+X% to Critical Strike Multiplier",
    "type": "Suffix",
    "group": "IdolCritMulti",
    "slots": [
@@ -5219,13 +5595,18 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
   },
   {
    "id": "IdolCritMulti_m",
-   "text": "",
+   "text": "+X% to Critical Strike Multiplier",
    "type": "Suffix",
    "group": "IdolCritMulti",
    "slots": [
@@ -5243,13 +5624,18 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
   },
   {
    "id": "IdolCritMulti_l",
-   "text": "",
+   "text": "+X% to Critical Strike Multiplier",
    "type": "Suffix",
    "group": "IdolCritMulti",
    "slots": [
@@ -5267,13 +5653,18 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
   },
   {
    "id": "IdolCritMulti_x",
-   "text": "",
+   "text": "+X% to Critical Strike Multiplier",
    "type": "Suffix",
    "group": "IdolCritMulti",
    "slots": [
@@ -5292,13 +5683,18 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "attack",
+    "bow",
+    "spell"
+   ]
   },
   {
    "id": "IdolLifeKill_s",
-   "text": "",
+   "text": "Gain X Life per Enemy Killed",
    "type": "Suffix",
    "group": "IdolLifeKill",
    "slots": [
@@ -5315,13 +5711,14 @@
     56
    ],
    "idol": true,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
   },
   {
    "id": "IdolLifeKill_m",
-   "text": "",
+   "text": "Gain X Life per Enemy Killed",
    "type": "Suffix",
    "group": "IdolLifeKill",
    "slots": [
@@ -5339,13 +5736,14 @@
     20
    ],
    "idol": true,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
   },
   {
    "id": "IdolLifeKill_l",
-   "text": "",
+   "text": "Gain X Life per Enemy Killed",
    "type": "Suffix",
    "group": "IdolLifeKill",
    "slots": [
@@ -5363,13 +5761,14 @@
     20
    ],
    "idol": true,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
   },
   {
    "id": "IdolLifeKill_x",
-   "text": "",
+   "text": "Gain X Life per Enemy Killed",
    "type": "Suffix",
    "group": "IdolLifeKill",
    "slots": [
@@ -5388,13 +5787,14 @@
     20
    ],
    "idol": true,
+   "excluded": true,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
   },
   {
    "id": "IdolManaRegen_s",
-   "text": "",
+   "text": "X% increased Mana Regeneration Rate",
    "type": "Suffix",
    "group": "IdolManaRegen",
    "slots": [
@@ -5412,13 +5812,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "mana"
+   ]
   },
   {
    "id": "IdolManaRegen_m",
-   "text": "",
+   "text": "X% increased Mana Regeneration Rate",
    "type": "Suffix",
    "group": "IdolManaRegen",
    "slots": [
@@ -5436,13 +5839,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "mana"
+   ]
   },
   {
    "id": "IdolManaRegen_l",
-   "text": "",
+   "text": "X% increased Mana Regeneration Rate",
    "type": "Suffix",
    "group": "IdolManaRegen",
    "slots": [
@@ -5460,13 +5866,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "mana"
+   ]
   },
   {
    "id": "IdolManaRegen_x",
-   "text": "",
+   "text": "X% increased Mana Regeneration Rate",
    "type": "Suffix",
    "group": "IdolManaRegen",
    "slots": [
@@ -5485,13 +5894,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "mana"
+   ]
   },
   {
    "id": "IdolArea_s",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolArea",
    "slots": [
@@ -5508,13 +5920,16 @@
     56
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolArea_m",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolArea",
    "slots": [
@@ -5532,13 +5947,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolArea_l",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolArea",
    "slots": [
@@ -5556,13 +5974,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolArea_x",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolArea",
    "slots": [
@@ -5581,13 +6002,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolStr_s",
-   "text": "",
+   "text": "+X to Strength",
    "type": "Suffix",
    "group": "IdolStr",
    "slots": [
@@ -5605,13 +6029,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "IdolStr_m",
-   "text": "",
+   "text": "+X to Strength",
    "type": "Suffix",
    "group": "IdolStr",
    "slots": [
@@ -5629,13 +6056,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "IdolStr_l",
-   "text": "",
+   "text": "+X to Strength",
    "type": "Suffix",
    "group": "IdolStr",
    "slots": [
@@ -5653,13 +6083,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "IdolStr_x",
-   "text": "",
+   "text": "+X to Strength",
    "type": "Suffix",
    "group": "IdolStr",
    "slots": [
@@ -5678,13 +6111,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "armour"
+   ]
   },
   {
    "id": "IdolDex_s",
-   "text": "",
+   "text": "+X to Dexterity",
    "type": "Suffix",
    "group": "IdolDex",
    "slots": [
@@ -5702,13 +6138,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "IdolDex_m",
-   "text": "",
+   "text": "+X to Dexterity",
    "type": "Suffix",
    "group": "IdolDex",
    "slots": [
@@ -5726,13 +6165,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "IdolDex_l",
-   "text": "",
+   "text": "+X to Dexterity",
    "type": "Suffix",
    "group": "IdolDex",
    "slots": [
@@ -5750,13 +6192,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "IdolDex_x",
-   "text": "",
+   "text": "+X to Dexterity",
    "type": "Suffix",
    "group": "IdolDex",
    "slots": [
@@ -5775,13 +6220,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "evasion"
+   ]
   },
   {
    "id": "IdolInt_s",
-   "text": "",
+   "text": "+X to Intelligence",
    "type": "Suffix",
    "group": "IdolInt",
    "slots": [
@@ -5799,13 +6247,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "IdolInt_m",
-   "text": "",
+   "text": "+X to Intelligence",
    "type": "Suffix",
    "group": "IdolInt",
    "slots": [
@@ -5823,13 +6274,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "IdolInt_l",
-   "text": "",
+   "text": "+X to Intelligence",
    "type": "Suffix",
    "group": "IdolInt",
    "slots": [
@@ -5847,13 +6301,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "IdolInt_x",
-   "text": "",
+   "text": "+X to Intelligence",
    "type": "Suffix",
    "group": "IdolInt",
    "slots": [
@@ -5872,13 +6329,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "es"
+   ]
   },
   {
    "id": "IdolTotemSpeed_m",
-   "text": "",
+   "text": "Ballistas and Totems fire X% faster",
    "type": "Prefix",
    "group": "IdolTotemSpeed",
    "slots": [
@@ -5896,13 +6356,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "totem"
+   ]
   },
   {
    "id": "IdolTotemSpeed_l",
-   "text": "",
+   "text": "Ballistas and Totems fire X% faster",
    "type": "Prefix",
    "group": "IdolTotemSpeed",
    "slots": [
@@ -5920,13 +6383,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "totem"
+   ]
   },
   {
    "id": "IdolTotemSpeed_x",
-   "text": "",
+   "text": "Ballistas and Totems fire X% faster",
    "type": "Prefix",
    "group": "IdolTotemSpeed",
    "slots": [
@@ -5944,13 +6410,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "totem"
+   ]
   },
   {
    "id": "IdolTotemLife_m",
-   "text": "",
+   "text": "Ballistas and Totems have X% increased Life",
    "type": "Suffix",
    "group": "IdolTotemLife",
    "slots": [
@@ -5968,13 +6437,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "totem"
+   ]
   },
   {
    "id": "IdolTotemLife_l",
-   "text": "",
+   "text": "Ballistas and Totems have X% increased Life",
    "type": "Suffix",
    "group": "IdolTotemLife",
    "slots": [
@@ -5992,13 +6464,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "totem"
+   ]
   },
   {
    "id": "IdolTotemLife_x",
-   "text": "",
+   "text": "Ballistas and Totems have X% increased Life",
    "type": "Suffix",
    "group": "IdolTotemLife",
    "slots": [
@@ -6017,13 +6492,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "totem"
+   ]
   },
   {
    "id": "IdolMinionLife_m",
-   "text": "",
+   "text": "Minions have X% increased maximum Life",
    "type": "Suffix",
    "group": "IdolMinionLife",
    "slots": [
@@ -6041,13 +6519,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolMinionLife_l",
-   "text": "",
+   "text": "Minions have X% increased maximum Life",
    "type": "Suffix",
    "group": "IdolMinionLife",
    "slots": [
@@ -6065,13 +6546,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolMinionLife_x",
-   "text": "",
+   "text": "Minions have X% increased maximum Life",
    "type": "Suffix",
    "group": "IdolMinionLife",
    "slots": [
@@ -6089,13 +6573,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolMinionSpeed_m",
-   "text": "",
+   "text": "Minions have X% increased Attack and Movement Speed",
    "type": "Suffix",
    "group": "IdolMinionSpeed",
    "slots": [
@@ -6113,13 +6600,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolMinionSpeed_l",
-   "text": "",
+   "text": "Minions have X% increased Attack and Movement Speed",
    "type": "Suffix",
    "group": "IdolMinionSpeed",
    "slots": [
@@ -6137,13 +6627,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolMinionSpeed_x",
-   "text": "",
+   "text": "Minions have X% increased Attack and Movement Speed",
    "type": "Suffix",
    "group": "IdolMinionSpeed",
    "slots": [
@@ -6161,13 +6654,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "minion"
+   ]
   },
   {
    "id": "IdolChannelArea_m",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Prefix",
    "group": "IdolChannelArea",
    "slots": [
@@ -6185,13 +6681,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolChannelArea_l",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Prefix",
    "group": "IdolChannelArea",
    "slots": [
@@ -6209,13 +6708,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolChannelArea_x",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Prefix",
    "group": "IdolChannelArea",
    "slots": [
@@ -6233,13 +6735,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolChannelCost_m",
-   "text": "",
+   "text": "X% less Channelling Cost",
    "type": "Suffix",
    "group": "IdolChannelCost",
    "slots": [
@@ -6257,13 +6762,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "channel"
+   ]
   },
   {
    "id": "IdolChannelCost_l",
-   "text": "",
+   "text": "X% less Channelling Cost",
    "type": "Suffix",
    "group": "IdolChannelCost",
    "slots": [
@@ -6281,13 +6789,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "channel"
+   ]
   },
   {
    "id": "IdolChannelCost_x",
-   "text": "",
+   "text": "X% less Channelling Cost",
    "type": "Suffix",
    "group": "IdolChannelCost",
    "slots": [
@@ -6305,13 +6816,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "channel"
+   ]
   },
   {
    "id": "IdolSlam_m",
-   "text": "",
+   "text": "X% increased Slam Damage with Slam Skills",
    "type": "Prefix",
    "group": "IdolSlam",
    "slots": [
@@ -6329,13 +6843,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "slam"
+   ]
   },
   {
    "id": "IdolSlam_l",
-   "text": "",
+   "text": "X% increased Slam Damage with Slam Skills",
    "type": "Prefix",
    "group": "IdolSlam",
    "slots": [
@@ -6353,13 +6870,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "slam"
+   ]
   },
   {
    "id": "IdolSlam_x",
-   "text": "",
+   "text": "X% increased Slam Damage with Slam Skills",
    "type": "Prefix",
    "group": "IdolSlam",
    "slots": [
@@ -6377,13 +6897,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "slam"
+   ]
   },
   {
    "id": "IdolSlamArea_m",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolSlamArea",
    "slots": [
@@ -6401,13 +6924,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolSlamArea_l",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolSlamArea",
    "slots": [
@@ -6425,13 +6951,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolSlamArea_x",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolSlamArea",
    "slots": [
@@ -6449,13 +6978,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolChain_m",
-   "text": "",
+   "text": "X% increased Chain Damage with Chain Skills",
    "type": "Prefix",
    "group": "IdolChain",
    "slots": [
@@ -6473,13 +7005,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chain"
+   ]
   },
   {
    "id": "IdolChain_l",
-   "text": "",
+   "text": "X% increased Chain Damage with Chain Skills",
    "type": "Prefix",
    "group": "IdolChain",
    "slots": [
@@ -6497,13 +7032,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chain"
+   ]
   },
   {
    "id": "IdolChain_x",
-   "text": "",
+   "text": "X% increased Chain Damage with Chain Skills",
    "type": "Prefix",
    "group": "IdolChain",
    "slots": [
@@ -6521,13 +7059,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chain"
+   ]
   },
   {
    "id": "IdolOrbit_m",
-   "text": "",
+   "text": "X% increased Orbit Damage",
    "type": "Prefix",
    "group": "IdolOrbit",
    "slots": [
@@ -6545,13 +7086,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "orbit"
+   ]
   },
   {
    "id": "IdolOrbit_l",
-   "text": "",
+   "text": "X% increased Orbit Damage",
    "type": "Prefix",
    "group": "IdolOrbit",
    "slots": [
@@ -6569,13 +7113,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "orbit"
+   ]
   },
   {
    "id": "IdolOrbit_x",
-   "text": "",
+   "text": "X% increased Orbit Damage",
    "type": "Prefix",
    "group": "IdolOrbit",
    "slots": [
@@ -6593,13 +7140,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "orbit"
+   ]
   },
   {
    "id": "IdolBowArea_m",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolBowArea",
    "slots": [
@@ -6617,13 +7167,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolBowArea_l",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolBowArea",
    "slots": [
@@ -6641,13 +7194,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolBowArea_x",
-   "text": "",
+   "text": "X% increased Area of Effect",
    "type": "Suffix",
    "group": "IdolBowArea",
    "slots": [
@@ -6665,13 +7221,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "aoe"
+   ]
   },
   {
    "id": "IdolProjectile_m",
-   "text": "",
+   "text": "X% increased Projectile Damage",
    "type": "Prefix",
    "group": "IdolProjectile",
    "slots": [
@@ -6689,13 +7248,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bow"
+   ]
   },
   {
    "id": "IdolProjectile_l",
-   "text": "",
+   "text": "X% increased Projectile Damage",
    "type": "Prefix",
    "group": "IdolProjectile",
    "slots": [
@@ -6713,13 +7275,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bow"
+   ]
   },
   {
    "id": "IdolProjectile_x",
-   "text": "",
+   "text": "X% increased Projectile Damage",
    "type": "Prefix",
    "group": "IdolProjectile",
    "slots": [
@@ -6737,13 +7302,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bow"
+   ]
   },
   {
    "id": "IdolHoly_m",
-   "text": "",
+   "text": "X% increased Holy Damage",
    "type": "Prefix",
    "group": "IdolHoly",
    "slots": [
@@ -6761,13 +7329,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "holy"
+   ]
   },
   {
    "id": "IdolHoly_l",
-   "text": "",
+   "text": "X% increased Holy Damage",
    "type": "Prefix",
    "group": "IdolHoly",
    "slots": [
@@ -6785,13 +7356,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "holy"
+   ]
   },
   {
    "id": "IdolHoly_x",
-   "text": "",
+   "text": "X% increased Holy Damage",
    "type": "Prefix",
    "group": "IdolHoly",
    "slots": [
@@ -6809,13 +7383,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "holy"
+   ]
   },
   {
    "id": "IdolPoison_m",
-   "text": "",
+   "text": "X% increased Poison Damage",
    "type": "Prefix",
    "group": "IdolPoison",
    "slots": [
@@ -6833,13 +7410,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "pois"
+   ]
   },
   {
    "id": "IdolPoison_l",
-   "text": "",
+   "text": "X% increased Poison Damage",
    "type": "Prefix",
    "group": "IdolPoison",
    "slots": [
@@ -6857,13 +7437,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "pois"
+   ]
   },
   {
    "id": "IdolPoison_x",
-   "text": "",
+   "text": "X% increased Poison Damage",
    "type": "Prefix",
    "group": "IdolPoison",
    "slots": [
@@ -6881,13 +7464,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "pois"
+   ]
   },
   {
    "id": "IdolFire_m",
-   "text": "",
+   "text": "X% increased Fire Damage",
    "type": "Prefix",
    "group": "IdolFire",
    "slots": [
@@ -6905,13 +7491,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "fire"
+   ]
   },
   {
    "id": "IdolFire_l",
-   "text": "",
+   "text": "X% increased Fire Damage",
    "type": "Prefix",
    "group": "IdolFire",
    "slots": [
@@ -6929,13 +7518,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "fire"
+   ]
   },
   {
    "id": "IdolFire_x",
-   "text": "",
+   "text": "X% increased Fire Damage",
    "type": "Prefix",
    "group": "IdolFire",
    "slots": [
@@ -6953,13 +7545,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "fire"
+   ]
   },
   {
    "id": "IdolCold_m",
-   "text": "",
+   "text": "X% increased Cold Damage",
    "type": "Prefix",
    "group": "IdolCold",
    "slots": [
@@ -6977,13 +7572,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "cold"
+   ]
   },
   {
    "id": "IdolCold_l",
-   "text": "",
+   "text": "X% increased Cold Damage",
    "type": "Prefix",
    "group": "IdolCold",
    "slots": [
@@ -7001,13 +7599,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "cold"
+   ]
   },
   {
    "id": "IdolCold_x",
-   "text": "",
+   "text": "X% increased Cold Damage",
    "type": "Prefix",
    "group": "IdolCold",
    "slots": [
@@ -7025,13 +7626,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "cold"
+   ]
   },
   {
    "id": "IdolLightning_m",
-   "text": "",
+   "text": "X% increased Lightning Damage",
    "type": "Prefix",
    "group": "IdolLightning",
    "slots": [
@@ -7049,13 +7653,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "light"
+   ]
   },
   {
    "id": "IdolLightning_l",
-   "text": "",
+   "text": "X% increased Lightning Damage",
    "type": "Prefix",
    "group": "IdolLightning",
    "slots": [
@@ -7073,13 +7680,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "light"
+   ]
   },
   {
    "id": "IdolLightning_x",
-   "text": "",
+   "text": "X% increased Lightning Damage",
    "type": "Prefix",
    "group": "IdolLightning",
    "slots": [
@@ -7097,13 +7707,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "light"
+   ]
   },
   {
    "id": "IdolMovement_m",
-   "text": "",
+   "text": "X% more Damage with Movement Skills",
    "type": "Prefix",
    "group": "IdolMovement",
    "slots": [
@@ -7121,13 +7734,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "move"
+   ]
   },
   {
    "id": "IdolMovement_l",
-   "text": "",
+   "text": "X% more Damage with Movement Skills",
    "type": "Prefix",
    "group": "IdolMovement",
    "slots": [
@@ -7145,13 +7761,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "move"
+   ]
   },
   {
    "id": "IdolMovement_x",
-   "text": "",
+   "text": "X% more Damage with Movement Skills",
    "type": "Prefix",
    "group": "IdolMovement",
    "slots": [
@@ -7169,13 +7788,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "move"
+   ]
   },
   {
    "id": "IdolTrap_m",
-   "text": "",
+   "text": "X% increased Trap Damage",
    "type": "Prefix",
    "group": "IdolTrap",
    "slots": [
@@ -7193,13 +7815,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "trap"
+   ]
   },
   {
    "id": "IdolTrap_l",
-   "text": "",
+   "text": "X% increased Trap Damage",
    "type": "Prefix",
    "group": "IdolTrap",
    "slots": [
@@ -7217,13 +7842,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "trap"
+   ]
   },
   {
    "id": "IdolTrap_x",
-   "text": "",
+   "text": "X% increased Trap Damage",
    "type": "Prefix",
    "group": "IdolTrap",
    "slots": [
@@ -7241,13 +7869,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "trap"
+   ]
   },
   {
    "id": "IdolShield_m",
-   "text": "",
+   "text": "X% increased Damage with Shield Skills",
    "type": "Prefix",
    "group": "IdolShield",
    "slots": [
@@ -7265,13 +7896,14 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
   },
   {
    "id": "IdolShield_l",
-   "text": "",
+   "text": "X% increased Damage with Shield Skills",
    "type": "Prefix",
    "group": "IdolShield",
    "slots": [
@@ -7289,13 +7921,14 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
   },
   {
    "id": "IdolShield_x",
-   "text": "",
+   "text": "X% increased Damage with Shield Skills",
    "type": "Prefix",
    "group": "IdolShield",
    "slots": [
@@ -7313,13 +7946,14 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": []
   },
   {
    "id": "IdolBleed_m",
-   "text": "",
+   "text": "X% increased Bleeding damage (your Bleeds)",
    "type": "Prefix",
    "group": "IdolBleed",
    "slots": [
@@ -7337,13 +7971,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bleed"
+   ]
   },
   {
    "id": "IdolBleed_l",
-   "text": "",
+   "text": "X% increased Bleeding damage (your Bleeds)",
    "type": "Prefix",
    "group": "IdolBleed",
    "slots": [
@@ -7361,13 +7998,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bleed"
+   ]
   },
   {
    "id": "IdolBleed_x",
-   "text": "",
+   "text": "X% increased Bleeding damage (your Bleeds)",
    "type": "Prefix",
    "group": "IdolBleed",
    "slots": [
@@ -7385,13 +8025,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "bleed"
+   ]
   },
   {
    "id": "IdolManaLeech_l",
-   "text": "",
+   "text": "X% of Damage Leeched as Mana",
    "type": "Suffix",
    "group": "IdolManaLeech",
    "slots": [
@@ -7409,13 +8052,16 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "leech"
+   ]
   },
   {
    "id": "IdolManaLeech_x",
-   "text": "",
+   "text": "X% of Damage Leeched as Mana",
    "type": "Suffix",
    "group": "IdolManaLeech",
    "slots": [
@@ -7434,9 +8080,12 @@
     20
    ],
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "leech"
+   ]
   },
   {
    "id": "idol_grand_chain_plus",
@@ -7452,6 +8101,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7472,6 +8122,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7492,6 +8143,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7512,6 +8164,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7532,6 +8185,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7552,6 +8206,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7572,6 +8227,7 @@
    "ilvl_top": 70,
    "ilvl_low": 56,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7592,6 +8248,7 @@
    "ilvl_top": 70,
    "ilvl_low": 56,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7612,6 +8269,7 @@
    "ilvl_top": 70,
    "ilvl_low": 56,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7632,6 +8290,7 @@
    "ilvl_top": 70,
    "ilvl_low": 56,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7652,6 +8311,7 @@
    "ilvl_top": 70,
    "ilvl_low": 56,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7672,6 +8332,7 @@
    "ilvl_top": 70,
    "ilvl_low": 56,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7692,6 +8353,7 @@
    "ilvl_top": 56,
    "ilvl_low": 56,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7712,9 +8374,12 @@
    "ilvl_top": 56,
    "ilvl_low": 56,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "res"
+   ]
   },
   {
    "id": "idol_grand_melee_afterimage",
@@ -7730,6 +8395,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7750,6 +8416,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7770,6 +8437,7 @@
    "ilvl_top": 84,
    "ilvl_low": 70,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7790,6 +8458,7 @@
    "ilvl_top": 84,
    "ilvl_low": 70,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7810,6 +8479,7 @@
    "ilvl_top": 84,
    "ilvl_low": 70,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7830,6 +8500,7 @@
    "ilvl_top": 84,
    "ilvl_low": 70,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7850,6 +8521,7 @@
    "ilvl_top": 84,
    "ilvl_low": 70,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7870,6 +8542,7 @@
    "ilvl_top": 84,
    "ilvl_low": 70,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7890,6 +8563,7 @@
    "ilvl_top": 84,
    "ilvl_low": 70,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7910,6 +8584,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [
@@ -7930,6 +8605,7 @@
    "ilvl_top": 84,
    "ilvl_low": 84,
    "idol": true,
+   "excluded": false,
    "switch_dependent": false,
    "style": "",
    "easy_mode": [

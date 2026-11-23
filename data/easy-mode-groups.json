@@ -1,5 +1,5 @@
 {
- "_doc": "Easy Mode groups. Edit here: k = id, n = label, el = 1 for element groups, col = column, ids = gear line ids (matched by text, so a line also covers every line with the same text), idol = Idol line ids. st = style-bound lines: a line tagged attack or spell only stays when that style is picked (or none is). Unknown ids are ignored with a console warning. Run node tests/run.mjs after changes.",
+ "_doc": "Easy Mode groups. Edit here: k = id, n = label, el = 1 for element groups, col = column, ids = gear line ids, idol = Idol line ids. Lines match by their text, so a line also covers every line with the same text (variants such as _2h or ring_, and the same line on Idols). A line that several groups list (Increased Defences, all Attributes) is used once, under the first picked group. st = style-bound lines: a line tagged attack or spell only stays when that style is picked (or none is). excluded = lines that are deliberately in no group (on-kill, cooldown recovery, attribute requirements); they are dropped from every group even if someone adds them. Unknown ids are ignored with a console warning. Run node tests/run.mjs after changes.",
  "groups": [
   {
    "k": "attack",
@@ -324,10 +324,16 @@
     "cold_res",
     "lightning_res",
     "poison_res",
-    "all_res"
+    "all_res",
+    "max_fire_res91",
+    "max_cold_res91",
+    "max_lightning_res91",
+    "max_poison_res91",
+    "phys_as_elem"
    ],
    "idol": [
-    "idol_grand_max_res"
+    "idol_grand_max_res",
+    "idol_grand_max_poison_res"
    ]
   },
   {
@@ -336,7 +342,9 @@
    "col": 7,
    "ids": [
     "armour_local",
-    "defence_inc"
+    "defence_inc",
+    "str_flat",
+    "all_attr"
    ],
    "idol": [
     "idol_armour_s"
@@ -348,7 +356,9 @@
    "col": 7,
    "ids": [
     "evasion_local",
-    "defence_inc"
+    "defence_inc",
+    "dex_flat",
+    "all_attr"
    ],
    "idol": [
     "idol_evasion_s"
@@ -360,7 +370,9 @@
    "col": 7,
    "ids": [
     "es_global",
-    "defence_inc"
+    "defence_inc",
+    "int_flat",
+    "all_attr"
    ],
    "idol": []
   }
@@ -379,5 +391,14 @@
   "cold_spell_added": "spell",
   "lightning_spell_added": "spell",
   "poison_spell_added": "spell"
- }
+ },
+ "excluded": [
+  "life_on_kill",
+  "ring_life_on_kill",
+  "mana_on_kill",
+  "ring_mana_on_kill",
+  "idol_life_kill_s",
+  "cooldown_recovery",
+  "req_reduce"
+ ]
 }
