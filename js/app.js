@@ -1836,6 +1836,10 @@ async function setLang(code,quiet){
   }
   window.__dragEnd=end;
   /* Lucide: swap the placeholders after every render */
-  if(window.lucide){let q=0;const go=()=>{q=0;if(document.querySelector("i[data-lucide]"))lucide.createIcons();};
+  if(window.lucide){let q=0;
+    /* If Lucide throws, the placeholders that are left get the built-in SVG, so an icon library error never leaves a control without an icon or stops later updates. */
+    const go=()=>{q=0;if(!document.querySelector("i[data-lucide]"))return;
+      try{lucide.createIcons();}catch(e){console.warn("Lucide could not draw the icons, using the built-in ones.",e);
+        document.querySelectorAll("i[data-lucide]").forEach(i=>{const n=i.getAttribute("data-lucide");if(LI[n])i.outerHTML=`<svg class="${i.getAttribute("class")||"li"}" viewBox="0 0 24 24" aria-hidden="true">${LI[n]}</svg>`;});}};
     new MutationObserver(()=>{if(!q)q=requestAnimationFrame(go);}).observe(document.body,{childList:true,subtree:true});go();}
 })();

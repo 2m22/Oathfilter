@@ -10,7 +10,7 @@ A single-page loot filter builder and drop simulator for **Broken Oath**. Import
 
 ## Features & Usage
 
-Open `index.html` in any modern browser — no build step, no installation required. The UI uses Vue 3 (module library), Tailwind CSS (utilities) and Lucide (icons) from a CDN; the filter logic (`js/filter-engine.js`, `js/modules.js`) has no DOM or framework dependency, and `node tests/run.mjs` runs without a browser.
+Open `index.html` in any modern browser — no build step, no installation required. The UI uses Vue 3 (module library), Tailwind CSS (utilities) and Lucide (icons) from a CDN; the filter logic (`js/filter-engine.js`, `js/modules.js`) has no DOM or framework dependency, and `node tests/run.mjs` runs without a browser. `node tests/ui-smoke.mjs` is an optional browser check of folds, keyboard use and icons (needs Playwright, see the header of the file).
 
 * **Editor:** Create and organize rule cards with action, rarity, item type, level, line, quality, count, colour, and sound. Search and filter across your rule list.
 * **Easy / Advanced Mode:** Toggle **Easy Mode** at the top to generate a complete filter from a Rupture Level floor and a few clicks, or switch to **Advanced** for full rule-level control.
