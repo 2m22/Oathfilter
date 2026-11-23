@@ -2,6 +2,29 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-23
+
+### Added
+- Game data of Build 88: 42 more red uniques (16 normal reds, 7 chase reds and 19 Primal versions) in the pickers and the Drop Test.
+- Module & Rule Organizer: the Modules button opens a two-pane window with your modules on one side and your rules on the other. Reorder by dragging a row (on touch: press and hold) or with the arrow buttons, tick several modules at once, use tags, and collapse or expand all cards. Create and Import sit at the top of the library.
+- Advanced Mode: the preset, order check, rule list, What happens, Item conditions and Look and sound areas can be folded, and the page remembers which ones you closed.
+- Sound select: a Play button previews the chosen sound (the sound files are not included yet, so it shows a short message for now).
+- Affix database export (JSON and CSV) and an Easy Mode matrix, generated from the code.
+- Notes next to the controls: SHOW* lines in the Drop Test, "Sell is not confirmed in the game", and the difference between the game code and a share link.
+
+### Changed
+- Easy Mode groups are reorganised: attributes sit under their defence group, max resistances and Physical taken are under Resists, and some lines are excluded. Separate rules per pick are now the default.
+- Idol tiers were checked against the game files (Grand tier item levels, two wrong Grand tags, one line alias). Idol rules in Easy Mode never carry a tier limit.
+- All fold and arrow controls use the same chevron icons with a gold hover. Clear filter is set apart from the other buttons, and the language select looks like the other selects.
+- "The Ninefold Wound" is now called "The Ninth Cut", as in the game.
+- Drop weights of existing reds follow Build 88 (24 reds can no longer drop in the Drop Test, a few drop less often or more often).
+
+### Fixed
+- Easy Mode: Hide magic no longer limits Idol rules to Rare. Idol rules match any rarity.
+- Module Insert stayed disabled after switching from Easy Mode to Advanced Mode.
+- Update message and toasts were hidden behind the organizer window.
+- In the Organizer, the module list overlapped the rules column on narrow screens.
+
 ## 2026-11-22 (8)
 
 ### Changed
