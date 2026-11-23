@@ -508,12 +508,25 @@ body.mdm-lock{overflow:hidden}
 .fold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-main)}
 .fold>summary::-webkit-details-marker{display:none}
 .fold>summary .li{color:var(--accent-gold);opacity:.85}
-.fold>summary .fold-chev{margin-left:auto;width:16px;height:16px;color:var(--text-dim);opacity:1;transition:transform .15s}
-.fold[open]>summary .fold-chev{transform:rotate(90deg)}
-.fold>summary:hover .fold-chev{color:var(--accent-gold)}
-.fold>summary:focus-visible{outline:2px solid var(--accent-gold);outline-offset:3px;border-radius:4px}
+.fold-chev{flex:none;width:16px;height:16px;margin-left:auto;color:var(--text-dim);opacity:1;transition:transform .15s,color .15s}
+.fold>summary .fold-chev{color:var(--text-dim);opacity:1}
+.fold[open]>summary .fold-chev,.ezdet[open]>summary .fold-chev,.fold:not(.shut)>.coltitle .fold-chev,.moreb[aria-expanded="true"] .fold-chev{transform:rotate(90deg)}
+.fold>summary:hover .fold-chev,.ezdet>summary:hover .fold-chev,.fold>.coltitle:hover .fold-chev,.moreb:hover .fold-chev{color:var(--accent-gold)}
+.fold>summary:focus-visible,.ezdet>summary:focus-visible,.fold>.coltitle:focus-visible,.moreb:focus-visible{outline:2px solid var(--accent-gold);outline-offset:3px;border-radius:4px}
+/* Guide / About cards (the heading is the toggle, see "collapsible cards" in app.js) */
+.plate.fold>.coltitle{cursor:pointer;user-select:none;margin-bottom:0}
+.plate.fold>.coltitle:hover{color:var(--text-main)}
+.plate.fold:not(.shut)>.coltitle{margin-bottom:10px}
+.plate.fold.shut>:not(.coltitle){display:none}
+/* Easy Mode "Details" */
+.ezdet>summary{list-style:none;display:flex;align-items:center;gap:8px}.ezdet>summary::-webkit-details-marker{display:none}
+/* "More conditions" header button */
+.moreb{display:flex;align-items:center;gap:8px;flex:1;min-width:0;margin:0 0 12px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);color:var(--text-muted);font:inherit;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-align:left;cursor:pointer;transition:border-color .15s,color .15s}
+.moreb:hover{border-color:var(--accent-gold);color:var(--text-main)}
+.moreb>.li:first-child{color:var(--accent-gold);opacity:.85}
+.moreb .mtxt{flex:1;min-width:0}
 .mdm-ib .li,.mdm-sm .li{width:14px;height:14px}
-@media (prefers-reduced-motion:reduce){.fold>summary .fold-chev,.mdm-chev,.mdm-mchev{transition:none}}
+@media (prefers-reduced-motion:reduce){.fold-chev,.mdm-chev,.mdm-mchev{transition:none}}
 .fold[open]>summary{margin-bottom:8px}
 .fold.sub{padding-top:8px;padding-bottom:8px}
 
