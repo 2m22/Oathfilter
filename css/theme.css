@@ -448,7 +448,7 @@ body.mdm-lock{overflow:hidden}
 .mdm-num{width:76px;height:32px;padding:0 8px}
 .mdm-batch{width:100%;min-height:44px}
 .mdm-checks{margin:0;padding:0 0 0 16px;display:grid;gap:3px}
-.mdm-rules{border:1px solid var(--border);border-radius:8px;background:var(--bg-card);padding:4px 6px}
+.mdm-rules{flex:1 0 auto;align-content:start;min-height:220px;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);padding:4px 6px}
 .mdm-rule{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg-panel)}
 .mdm-rule.cur{border-color:var(--border-strong);box-shadow:inset 3px 0 0 var(--accent-gold)}
 .mdm-rule.off{opacity:.6}
@@ -478,3 +478,6 @@ body.mdm-lock{overflow:hidden}
   .mdm-body{grid-template-columns:minmax(0,1fr);overflow:auto;align-content:start}
   .mdm-pane{overflow:visible;flex:none}
 }
+
+.mdm-rules .mdm-empty{display:grid;place-items:center;min-height:200px;margin:4px}
+.mdm-drop{transition:box-shadow .12s}

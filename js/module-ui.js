@@ -117,7 +117,7 @@ const TPL=`
     </details>
    </section>
 
-   <section class="mdm-pane" aria-labelledby="mdmR">
+   <section class="mdm-pane mdm-drop" aria-labelledby="mdmR" @dragover="overRules" @dragleave="leaveRules" @drop="dropRules">
     <div class="mdm-ph"><h3 id="mdmR" class="mdm-h">Filter rules <span class="hint">first match wins</span></h3></div>
     <div class="mdm-ins">
      <div class="mdm-row">
@@ -145,7 +145,7 @@ const TPL=`
      </ul>
     </div>
 
-    <ol class="mdm-rules" id="mdRules" aria-label="Rules in priority order" @dragover="overRules" @dragleave="leaveRules" @drop="dropRules">
+    <ol class="mdm-rules" id="mdRules" aria-label="Rules in priority order">
      <li v-if="!rules.length" class="hint mdm-empty" :class="{drop:dropAt===0}">Your filter has no rules. Drag a module here or use the insert button.</li>
      <template v-for="(r,i) in rules" :key="r.id">
       <li class="mdm-gap" :class="{mark:eff===i&&!drag,drop:dropAt===i}" aria-hidden="true"><button type="button" tabindex="-1" class="mdm-gapb" @click="at=i" :title="'Insert before rule '+(i+1)"></button></li>
