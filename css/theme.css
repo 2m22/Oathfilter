@@ -53,7 +53,11 @@ button{cursor:pointer}
 .brand-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
 .brand-title{margin:0;font-family:var(--font-display);font-weight:700;font-size:1.4rem;letter-spacing:.14em;color:var(--accent-gold)}
 .brand-sub{margin-top:2px;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
-.langsel{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)}.langsel select{max-width:170px;font-size:12px;padding:3px 6px}
+.langsel{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)}
+.langsel select{max-width:170px;height:30px;padding:0 8px;border:1px solid var(--border-strong);border-radius:6px;background:var(--bg-card);color:var(--text-main);font-size:12px}
+.langsel select:hover{border-color:var(--accent-gold)}
+/* the open list of any select: without this the browser draws its own light list under our light text, and the options look empty */
+select option,select optgroup{background:var(--bg-card);color:var(--text-main)}
 .header-right{grid-column:3;justify-self:end;display:inline-flex;flex-wrap:wrap;align-items:center;gap:10px}
 .count{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-variant-numeric:tabular-nums}
 
@@ -512,3 +516,9 @@ body.mdm-lock{overflow:hidden}
 .fold>summary .li{color:var(--accent-gold);opacity:.85}
 .fold[open]>summary{margin-bottom:8px}
 .fold.sub{padding-top:8px;padding-bottom:8px}
+
+/* UI audit: consistent selects, no-wrap segmented buttons, help-button row */
+.plrow select,#editor select,.langsel select{background:var(--bg-card);color:var(--text-main);border:1px solid var(--border-strong);border-radius:6px}
+.plrow select:focus-visible,#editor select:focus-visible,.langsel select:focus-visible{outline:2px solid var(--accent-gold);outline-offset:2px}
+.seg button{white-space:nowrap}
+.fold .hrow{flex-wrap:wrap}
