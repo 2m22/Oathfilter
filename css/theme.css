@@ -1,4 +1,15 @@
 :root{
+  /* stacking ladder: ten fixed layers with gaps, so a new overlay can slot in between without renumbering. Use var(--z-N) only, no bare numbers. */
+  --z-1:10;   /* raised cards, sticky bits */
+  --z-2:20;
+  --z-3:30;   /* a rule row while it is dragged */
+  --z-4:40;   /* rule tooltip */
+  --z-5:70;   /* help pop-ups */
+  --z-6:100;  /* full-screen panels (Module & Rule Organizer) */
+  --z-7:120;  /* confirmation dialogs (Sell caution), above panels */
+  --z-8:130;  /* app notices (update window) */
+  --z-9:140;  /* toasts */
+  --z-10:200; /* reserved: always on top */
   --bg-page:#0f1217;--bg-panel:#161b22;--bg-card:#1c222b;--bg-card-hover:#222934;--bg-subtle:#12161c;
   --border:#2b3340;--border-strong:#3d4859;
   --text-main:#e6edf3;--text-muted:#9aa7b8;--text-dim:#6e7b8b;
@@ -68,7 +79,7 @@ main{padding:10px 16px 6px}
 .hlp{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;padding:0;border:1px solid var(--border-strong);border-radius:50%;background:var(--bg-subtle);color:var(--text-muted);font-size:.75rem;font-weight:700;line-height:1;cursor:help;vertical-align:middle;text-transform:none;letter-spacing:0}
 .hlp:hover,.hlp[aria-expanded="true"]{color:var(--accent-gold);border-color:var(--accent-gold)}
 @media (pointer:coarse){.hlp{width:32px;height:32px;font-size:.9rem}}
-#hlpPop{position:fixed;pointer-events:none;z-index:70;max-width:min(320px,calc(100vw - 16px));padding:10px 12px;border:1px solid var(--accent-gold);border-radius:8px;background:var(--bg-card);color:var(--text-main);font-size:.8125rem;line-height:1.45;box-shadow:0 8px 28px rgba(0,0,0,.5);text-transform:none;letter-spacing:0;font-weight:400}
+#hlpPop{position:fixed;pointer-events:none;z-index:var(--z-5);max-width:min(320px,calc(100vw - 16px));padding:10px 12px;border:1px solid var(--accent-gold);border-radius:8px;background:var(--bg-card);color:var(--text-main);font-size:.8125rem;line-height:1.45;box-shadow:0 8px 28px rgba(0,0,0,.5);text-transform:none;letter-spacing:0;font-weight:400}
 #hlpPop b{display:block;margin-bottom:3px;color:var(--accent-gold)}
 #actCount{font-variant-numeric:tabular-nums}
 .divider{height:1px;margin:18px 0;background:var(--border)}
@@ -134,7 +145,7 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 #rows{display:flex;flex-direction:column;gap:6px;margin-top:12px}
 .rc{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 10px;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;transition:background-color .15s,border-color .15s}
 .rc:hover{background:var(--bg-card-hover);border-color:var(--border-strong)}
-#rtip{position:fixed;left:0;top:0;z-index:40;width:max-content;max-width:min(380px,calc(100vw - 16px));pointer-events:none;visibility:hidden;background:var(--bg-panel);border:1px solid var(--border-strong);border-radius:8px;padding:10px 12px;box-shadow:0 10px 26px rgba(0,0,0,.55);font-size:.8125rem;line-height:1.35;color:var(--text-main)}
+#rtip{position:fixed;left:0;top:0;z-index:var(--z-4);width:max-content;max-width:min(380px,calc(100vw - 16px));pointer-events:none;visibility:hidden;background:var(--bg-panel);border:1px solid var(--border-strong);border-radius:8px;padding:10px 12px;box-shadow:0 10px 26px rgba(0,0,0,.55);font-size:.8125rem;line-height:1.35;color:var(--text-main)}
 #rtip.on{visibility:visible}
 #rtip .tt{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;margin-bottom:6px}
 #rtip .tt b{font-family:var(--font-display);color:var(--accent-gold)}
@@ -153,7 +164,7 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 #rows.canmove .rc{cursor:grab}
 #rows.canmove .rc *{-webkit-user-select:none;user-select:none}
 #rows.canmove .rc .xb,#rows.canmove .rc .sw{cursor:pointer}
-.rc.drag{z-index:30;transition:none;pointer-events:none;border-color:var(--accent-gold);background:var(--bg-card-hover);box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 1px var(--accent-gold);opacity:.97}
+.rc.drag{z-index:var(--z-3);transition:none;pointer-events:none;border-color:var(--accent-gold);background:var(--bg-card-hover);box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 1px var(--accent-gold);opacity:.97}
 .rc.shift{transition:transform .16s ease;will-change:transform}
 body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 .rc.sel{border-color:var(--accent-gold);background:var(--bg-card-hover)}
@@ -241,7 +252,7 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 pre.out{margin:0;max-height:260px;overflow:auto;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-family:ui-monospace,Consolas,monospace;font-size:12.5px;white-space:pre-wrap;word-break:break-all}
 .toast{min-height:20px;margin-top:8px;font-size:.8125rem;color:var(--show-fg)}
 .toast.bad{color:var(--hide-fg)}
-.gt{position:fixed;z-index:140;left:50%;bottom:24px;transform:translateX(-50%);padding:10px 16px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-card);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--show-fg);font-weight:600;z-index:9}
+.gt{position:fixed;z-index:var(--z-9);left:50%;bottom:24px;transform:translateX(-50%);padding:10px 16px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-card);box-shadow:0 8px 24px rgba(0,0,0,.5);color:var(--show-fg);font-weight:600}
 .gt.bad{color:var(--hide-fg)}
 ul.pl{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}ul.pl li{margin:0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);font-size:.875rem;line-height:1.5;color:var(--text-muted)}ul.pl li b{color:var(--text-main)}
 ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)}
@@ -284,7 +295,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .drop[data-v="0"] .meta,.drop[data-v="0"] .rn,.drop[data-v="4"] .meta,.drop[data-v="4"] .rn{color:#9aa3b2}.drop[data-v="0"] .rn,.drop[data-v="4"] .rn{border-color:#3a4150}
 .tf{color:var(--text-dim);font-style:italic}
 /* update banner */
-.upd{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(8,10,14,.45);font-size:.875rem;color:var(--text-main)}
+.upd{position:fixed;inset:0;z-index:var(--z-8);display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(8,10,14,.45);font-size:.875rem;color:var(--text-main)}
 .upd[hidden]{display:none}
 .upd .updbox{display:flex;flex-direction:column;align-items:flex-start;gap:14px;width:min(460px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:18px 20px;border:1px solid var(--accent-gold);border-radius:12px;background:var(--bg-panel);box-shadow:0 12px 40px rgba(0,0,0,.55)}
 .upd b{display:block;font-size:1rem;color:var(--accent-gold)}.upd span{color:var(--text-muted);font-size:.8125rem}
@@ -359,7 +370,7 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 
 /* SortableJS rule list: the dropped-in-place row (ghost), and the row that follows the pointer (fallback clone) */
 #rows .sort-ghost{opacity:.35;border-style:dashed;border-color:var(--accent-gold)}
-#rows .sort-fallback,.rc.sort-fallback{z-index:30;box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 1px var(--accent-gold);border-color:var(--accent-gold);background:var(--bg-card-hover);opacity:.97!important;cursor:grabbing}
+#rows .sort-fallback,.rc.sort-fallback{z-index:var(--z-3);box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 1px var(--accent-gold);border-color:var(--accent-gold);background:var(--bg-card-hover);opacity:.97!important;cursor:grabbing}
 
 /* Lucide icons */
 .xb .li{width:12px;height:12px}.chosen button .li{width:13px;height:13px}
@@ -390,14 +401,14 @@ ul.bl{margin:0 0 4px;padding:0;list-style:none}ul.bl li{padding:6px 0;border-bot
 #editor .btn .li{width:14px;height:14px}
 #qcNote .li{width:14px;height:14px;flex:none}
 
-/* ---- Module & Rule Organizer (js/module-ui.js). Plain CSS on purpose: works without the Tailwind CDN. z-index: above #hlpPop (70), below the Sell caution (120). ---- */
+/* ---- Module & Rule Organizer (js/module-ui.js). Plain CSS on purpose: works without the Tailwind CDN. layered with var(--z-6), below the Sell caution (--z-7). ---- */
 .mdm-entry{display:flex;gap:8px;align-items:center;margin:12px 0}
 .mdm-entry .btn{flex:1 1 auto;justify-content:flex-start}
 .mdm-ei{display:inline-flex;color:var(--accent-gold)}
 .mdm-ec{margin-left:auto;color:var(--accent-gold);font-variant-numeric:tabular-nums}
 .mdm-ec.bad,.mdm-count.bad{color:var(--hide-fg)}
 body.mdm-lock{overflow:hidden}
-.mdm-back{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:clamp(8px,2vw,28px);background:rgba(6,8,12,.78)}
+.mdm-back{position:fixed;inset:0;z-index:var(--z-6);display:flex;align-items:center;justify-content:center;padding:clamp(8px,2vw,28px);background:rgba(6,8,12,.78)}
 .mdm{display:flex;flex-direction:column;width:min(1440px,100%);height:min(920px,100%);padding:14px 16px 16px;border:1px solid var(--border-strong);border-radius:12px;background:var(--bg-page);box-shadow:0 24px 70px rgba(0,0,0,.65);outline:none}
 .mdm-head{display:flex;align-items:center;gap:14px;flex:none;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .mdm-title{margin:0;font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;color:var(--accent-gold);flex:1 1 auto}
@@ -472,7 +483,7 @@ body.mdm-lock{overflow:hidden}
 .mdm-gap.drop{height:14px}
 .mdm-gap.drop .mdm-gapb::after{border-top:4px solid var(--accent-gold);border-radius:2px;box-shadow:0 0 0 3px var(--accent-gold-soft)}
 .mdm-empty.drop{border-color:var(--accent-gold);background:var(--accent-gold-soft)}
-.mdm-caut{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.6)}
+.mdm-caut{position:fixed;inset:0;z-index:var(--z-7);display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.6)}
 @media (max-width:900px){
   .mdm-back{padding:0}.mdm{height:100%;border-radius:0}
   .mdm-body{grid-template-columns:minmax(0,1fr);overflow:auto;align-content:start}
