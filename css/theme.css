@@ -504,3 +504,11 @@ body.mdm-lock{overflow:hidden}
 .mdm-drop{transition:box-shadow .12s}
 .mdm-chev{display:inline-flex;transition:transform .12s}.mdm-chev.open{transform:rotate(90deg)}
 .mdm-fold{width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;padding:0}
+/* collapsible areas of the Advanced Mode (see foldOpen in app.js) */
+.fold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-main)}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary::after{content:"▾";margin-left:auto;color:var(--text-dim)}
+.fold:not([open])>summary::after{content:"▸"}
+.fold>summary .li{color:var(--accent-gold);opacity:.85}
+.fold[open]>summary{margin-bottom:8px}
+.fold.sub{padding-top:8px;padding-bottom:8px}

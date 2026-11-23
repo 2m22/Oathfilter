@@ -80,15 +80,16 @@
 <div class="cols" id="edCols">
   <section class="plate l" aria-labelledby="h-rules">
     <div class="hrow" style="margin-bottom:10px"><h2 id="h-rules" class="coltitle" style="margin:0">Rules</h2><button type="button" class="hlp" data-help="order" aria-label="Help: Rule order" aria-expanded="false">?</button></div>
-    <div class="sub"><label class="lab" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div>
+    <details class="sub fold" data-fold="preset" open><summary>Game preset</summary><div class="foldb"><label class="sr" for="preset">Game preset</label><div class="selwrap"><select id="preset"></select></div></div></details>
     <div class="sub" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end"><button type="button" class="btn gold" id="newRule" style="min-width:130px">+ New Rule</button><button type="button" class="btn" id="undo" disabled>Undo</button>
       <div style="flex:1 1 150px"><label class="sr" for="rq">Search rules</label><input id="rq" class="field" type="search" placeholder="Search rules"></div></div>
     <div class="sub mdm-entry"><button type="button" class="btn" id="mdOpen" aria-haspopup="dialog"><span class="mdm-ei" aria-hidden="true"></span><span>Modules</span></button><button type="button" class="hlp" data-help="modules" aria-label="Help: Modules" aria-expanded="false">?</button></div>
+    <details class="sub fold" data-fold="check" open style="margin-top:12px"><summary>Rule order check</summary><div class="foldb"><button type="button" class="btn" id="chkOrder" style="width:100%">Check rule order</button><div id="chkOut" role="status" aria-live="polite"></div></div></details>
+    <details class="fold" data-fold="list" open style="margin-top:12px"><summary>Rule list</summary><div class="foldb">
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin-top:12px"><div class="seg" role="group" aria-label="Show rules" id="rfilter" style="flex:1 1 auto;margin:0"><button type="button" data-rf="all" aria-pressed="true">All</button><button type="button" data-rf="mark" aria-pressed="false">Highlights</button><button type="button" data-rf="show" aria-pressed="false">Show</button><button type="button" data-rf="hide" aria-pressed="false">Hide</button><button type="button" data-rf="sell" aria-pressed="false">Sell</button></div><button type="button" class="btn actonly" id="rfAct" data-rfact="1" aria-pressed="false" title="Show only rules that are switched on">Active only</button></div>
-    <div class="sub" style="margin-top:12px"><button type="button" class="btn" id="chkOrder" style="width:100%">Check rule order</button><div id="chkOut" role="status" aria-live="polite"></div></div>
     <p class="hint" id="rhint" style="margin:12px 0 0"></p>
     <div id="rows"></div>
-    <div class="hint" id="actCount" style="margin-top:20px"></div></section>
+    <div class="hint" id="actCount" style="margin-top:20px"></div></div></details></section>
   <section class="plate r" aria-labelledby="h-edit"><h2 id="h-edit" class="coltitle"><span id="edTitle">Rule editor</span></h2>
          <div id="editor"></div></section>
 </div></div>
