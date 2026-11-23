@@ -1551,7 +1551,7 @@ function ezMode(m,quiet){
   EZ.m=m==="easy"?"easy":"adv";
   $("#clearF").style.display=EZ.m==="easy"?"none":"";$("#ezBox").hidden=EZ.m!=="easy";$("#edCols").hidden=EZ.m==="easy";
   ui.mode=EZ.m;
-  bumpRev();renderAdvExport();
+  bumpRev();renderAdvExport();renderMD(); /* the module list reads the mode, so it needs a refresh when the mode flips */
   if(EZ.m==="easy"&&!quiet)ezRefresh();
 }
 /* ---- controls ---- */

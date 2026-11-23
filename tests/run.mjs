@@ -389,5 +389,9 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   const ok_=[0,40,60,84].every(rl=>[1,2,3].every(tk=>{const idr=easyGen(ezSane({rl,tk,arch:all})).rules.filter(r=>r.type===14);return idr.length>0&&idr.every(r=>!/(^|;)t=/.test(encode({preset:"-1",rules:[r]})));}));
   ok(ok_,"Easy Mode: Idol rules never carry a tier limit, at any Rupture Level or keep setting"); }
 
+{ const app=(await import("node:fs")).readFileSync(new URL("../js/app.js",import.meta.url),"utf8");
+  const fn=app.slice(app.indexOf("function ezMode("),app.indexOf("function ezMode(")+500);
+  ok(/renderMD\(\)/.test(fn),"Mode switch refreshes the module list (Insert was stuck disabled after leaving Easy Mode)"); }
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
