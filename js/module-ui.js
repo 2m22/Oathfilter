@@ -57,7 +57,6 @@ const TPL=`
         <b class="mdm-cn" :title="m.name">{{ m.name }}</b>
         <span class="hint">{{ info(m) }}</span>
        </div>
-       <span v-if="!easy" class="mdm-grip" aria-hidden="true" title="Drag into the rule list">⋮⋮</span>
       </div>
       <p v-if="m.desc" class="hint mdm-desc">{{ m.desc }}</p>
       <div class="mdm-badges">
@@ -150,7 +149,6 @@ const TPL=`
      <template v-for="(r,i) in rules" :key="r.id">
       <li class="mdm-gap" :class="{mark:eff===i&&!drag,drop:dropAt===i}" aria-hidden="true"><button type="button" tabindex="-1" class="mdm-gapb" @click="at=i" :title="'Insert before rule '+(i+1)"></button></li>
       <li class="mdm-rule" :class="{cur:r.id===curId,off:!r.on,dragging:drag&&drag.kind==='rule'&&drag.from===i}" :data-i="i" :data-rid="r.id" :draggable="!easy" @dragstart="dragRule($event,i)" @dragend="dragEnd">
-       <span class="mdm-grip" aria-hidden="true">⋮⋮</span>
        <span class="mdm-no">{{ i+1 }}</span>
        <span class="mdm-rt"><b :title="r.title">{{ r.title }}</b><span class="hint">{{ r.sub }}</span></span>
        <span class="mdm-act" :class="r.cls">{{ r.act }}</span>
