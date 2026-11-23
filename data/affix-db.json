@@ -28,6 +28,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -65,6 +66,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -102,6 +104,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -137,6 +140,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -174,6 +178,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -208,6 +213,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -245,6 +251,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -279,6 +286,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -316,6 +324,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -350,6 +359,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -382,6 +392,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -416,6 +427,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -449,6 +461,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -482,6 +495,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -516,6 +530,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "spell",
@@ -551,6 +566,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -582,6 +598,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -613,6 +630,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -645,6 +663,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -679,6 +698,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "spell",
@@ -714,6 +734,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -745,6 +766,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -776,6 +798,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -808,6 +831,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -842,6 +866,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "spell",
@@ -877,6 +902,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -908,6 +934,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -939,6 +966,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -973,6 +1001,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "spell",
@@ -1008,6 +1037,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1039,6 +1069,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1070,6 +1101,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1104,6 +1136,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1135,6 +1168,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1166,6 +1200,7 @@
     46
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1192,6 +1227,7 @@
     46
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1219,6 +1255,7 @@
     46
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1254,6 +1291,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -1289,6 +1327,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -1324,6 +1363,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -1352,6 +1392,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": true,
    "style": "",
@@ -1386,6 +1427,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "attack",
@@ -1426,6 +1468,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1465,6 +1508,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1504,6 +1548,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1543,6 +1588,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1573,6 +1619,7 @@
     10
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1602,6 +1649,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1641,6 +1689,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1681,6 +1730,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1720,6 +1770,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1750,6 +1801,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1785,6 +1837,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1814,6 +1867,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1849,6 +1903,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1880,6 +1935,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1907,6 +1963,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1934,6 +1991,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -1961,6 +2019,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -1993,6 +2052,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2025,6 +2085,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2056,6 +2117,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2094,6 +2156,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2128,6 +2191,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2158,6 +2222,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -2185,6 +2250,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -2212,6 +2278,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -2239,6 +2306,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -2264,6 +2332,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2290,6 +2359,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2323,6 +2393,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2354,6 +2425,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2382,6 +2454,7 @@
     10
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2409,6 +2482,7 @@
     10
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2438,6 +2512,7 @@
     32
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2468,6 +2543,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2498,6 +2574,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2527,6 +2604,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2556,6 +2634,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2585,6 +2664,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2613,6 +2693,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2642,6 +2723,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2672,6 +2754,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2702,6 +2785,7 @@
     32
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2734,6 +2818,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2766,6 +2851,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2798,6 +2884,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2829,6 +2916,7 @@
     10
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2863,6 +2951,7 @@
     1
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2892,6 +2981,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2925,6 +3015,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2955,6 +3046,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -2985,6 +3077,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3009,6 +3102,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3035,6 +3129,7 @@
     70
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3061,6 +3156,7 @@
     70
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3087,6 +3183,7 @@
     70
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3113,6 +3210,7 @@
     70
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3148,6 +3246,7 @@
     10
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -3172,6 +3271,7 @@
     56
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3199,6 +3299,7 @@
     20
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3225,6 +3326,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3252,6 +3354,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3279,6 +3382,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3306,6 +3410,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3333,6 +3438,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": true,
    "style": "",
@@ -3360,6 +3466,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": true,
    "style": "",
@@ -3387,6 +3494,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": true,
    "style": "",
@@ -3414,6 +3522,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": true,
    "style": "",
@@ -3441,6 +3550,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": true,
    "style": "",
@@ -3468,6 +3578,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": true,
    "style": "",
@@ -3495,6 +3606,7 @@
     44
    ],
    "idol": false,
+   "tier_in_filter": true,
    "excluded": false,
    "switch_dependent": true,
    "style": "",
@@ -3522,6 +3634,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3549,6 +3662,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3576,6 +3690,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3603,6 +3718,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3630,6 +3746,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3657,6 +3774,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3684,6 +3802,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3711,6 +3830,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3738,6 +3858,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3765,6 +3886,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3792,6 +3914,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3819,6 +3942,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3846,6 +3970,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3873,6 +3998,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3900,6 +4026,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3927,6 +4054,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3954,6 +4082,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -3981,6 +4110,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4008,6 +4138,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4035,6 +4166,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4062,6 +4194,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4090,6 +4223,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4118,6 +4252,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4146,6 +4281,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4174,6 +4310,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4201,6 +4338,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4228,6 +4366,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4255,6 +4394,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4282,6 +4422,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4309,6 +4450,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4336,6 +4478,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4363,6 +4506,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4390,6 +4534,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4417,6 +4562,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4444,6 +4590,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4471,6 +4618,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4498,6 +4646,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4525,6 +4674,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4552,6 +4702,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4579,6 +4730,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4606,6 +4758,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4633,6 +4786,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4660,6 +4814,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4688,6 +4843,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4715,6 +4871,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4742,6 +4899,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4769,6 +4927,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4797,6 +4956,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4824,6 +4984,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4851,6 +5012,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4878,6 +5040,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4906,6 +5069,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4933,6 +5097,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4960,6 +5125,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -4987,6 +5153,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5015,6 +5182,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5041,6 +5209,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5068,6 +5237,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5095,6 +5265,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5123,6 +5294,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5149,6 +5321,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5176,6 +5349,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5203,6 +5377,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5231,6 +5406,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5257,6 +5433,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5285,6 +5462,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5313,6 +5491,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5342,6 +5521,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5369,6 +5549,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5396,6 +5577,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5423,6 +5605,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5451,6 +5634,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5478,6 +5662,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5507,6 +5692,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5536,6 +5722,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5566,6 +5753,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5595,6 +5783,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5624,6 +5813,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5653,6 +5843,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5683,6 +5874,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5711,6 +5903,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -5736,6 +5929,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -5761,6 +5955,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -5787,6 +5982,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": true,
    "switch_dependent": false,
    "style": "",
@@ -5812,6 +6008,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5839,6 +6036,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5866,6 +6064,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5894,6 +6093,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5920,6 +6120,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5947,6 +6148,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -5974,6 +6176,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6002,6 +6205,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6029,6 +6233,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6056,6 +6261,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6083,6 +6289,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6111,6 +6318,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6138,6 +6346,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6165,6 +6374,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6192,6 +6402,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6220,6 +6431,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6247,6 +6459,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6274,6 +6487,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6301,6 +6515,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6329,6 +6544,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6356,6 +6572,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6383,6 +6600,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6410,6 +6628,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6437,6 +6656,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6464,6 +6684,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6491,6 +6712,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6518,6 +6740,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6545,6 +6768,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6572,6 +6796,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6599,6 +6824,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6626,6 +6852,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6653,6 +6880,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6680,6 +6908,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6707,6 +6936,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6734,6 +6964,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6761,6 +6992,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6788,6 +7020,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6815,6 +7048,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6842,6 +7076,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6869,6 +7104,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6896,6 +7132,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6923,6 +7160,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6950,6 +7188,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -6977,6 +7216,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7004,6 +7244,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7031,6 +7272,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7058,6 +7300,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7085,6 +7328,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7112,6 +7356,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7139,6 +7384,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7166,6 +7412,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7193,6 +7440,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7220,6 +7468,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7247,6 +7496,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7274,6 +7524,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7301,6 +7552,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7328,6 +7580,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7355,6 +7608,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7382,6 +7636,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7409,6 +7664,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7436,6 +7692,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7463,6 +7720,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7490,6 +7748,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7517,6 +7776,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7544,6 +7804,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7571,6 +7832,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7598,6 +7860,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7625,6 +7888,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7652,6 +7916,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7679,6 +7944,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7706,6 +7972,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7733,6 +8000,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7760,6 +8028,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7787,6 +8056,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7814,6 +8084,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7841,6 +8112,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7868,6 +8140,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7895,6 +8168,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7920,6 +8194,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7945,6 +8220,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7970,6 +8246,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -7997,6 +8274,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8024,6 +8302,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8051,6 +8330,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8078,6 +8358,7 @@
     20
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8102,6 +8383,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8126,6 +8408,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8150,6 +8433,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8174,6 +8458,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8198,6 +8483,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8222,6 +8508,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8247,6 +8534,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8272,6 +8560,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8297,6 +8586,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8322,6 +8612,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8347,6 +8638,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8372,6 +8664,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8396,6 +8689,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8420,6 +8714,7 @@
     56
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8444,6 +8739,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8468,6 +8764,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8493,6 +8790,7 @@
     70
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8518,6 +8816,7 @@
     70
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8543,6 +8842,7 @@
     70
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8568,6 +8868,7 @@
     70
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8593,6 +8894,7 @@
     70
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8618,6 +8920,7 @@
     70
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8643,6 +8946,7 @@
     70
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8667,6 +8971,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",
@@ -8691,6 +8996,7 @@
     84
    ],
    "idol": true,
+   "tier_in_filter": false,
    "excluded": false,
    "switch_dependent": false,
    "style": "",

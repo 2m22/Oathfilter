@@ -385,5 +385,9 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(!AFF.find(a=>a.id==="IdolTotemLife_x").tags.includes("IdolGrand")&&!AFF.find(a=>a.id==="IdolManaLeech_x").tags.includes("IdolGrand"),"Idol affixes: Ballista Life and Mana Leech X-Large are not Grand idol lines");
   ok(AFF.filter(a=>/^Idol[A-Z]/.test(a.id)).every(a=>LINEN_[idolLineId(a.id)]),"Idol affixes: every size tier resolves to a line text"); }
 
+{ const all=Object.fromEntries(EZ_ARCH.map(a=>[a.k,1]));
+  const ok_=[0,40,60,84].every(rl=>[1,2,3].every(tk=>{const idr=easyGen(ezSane({rl,tk,arch:all})).rules.filter(r=>r.type===14);return idr.length>0&&idr.every(r=>!/(^|;)t=/.test(encode({preset:"-1",rules:[r]})));}));
+  ok(ok_,"Easy Mode: Idol rules never carry a tier limit, at any Rupture Level or keep setting"); }
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
