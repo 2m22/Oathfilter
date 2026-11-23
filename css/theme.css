@@ -80,13 +80,6 @@ main{padding:10px 16px 6px}
 .subtitle{margin:0 0 8px;font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .stack{display:flex;flex-direction:column;gap:12px;flex:1 1 560px;min-width:320px}
 .coltitle{display:flex;align-items:center;gap:12px;margin:0 0 10px;font-weight:700;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
-.fold .coltitle{cursor:pointer;user-select:none;margin-bottom:0;justify-content:space-between}
-.fold .coltitle::after{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin:-4px 4px 0 0;transition:transform .15s;flex:none}
-.fold .coltitle:hover{color:var(--text-main)}
-.fold .coltitle:focus-visible{outline:2px solid var(--accent-gold);outline-offset:3px;border-radius:4px}
-.fold:not(.shut)>.coltitle{margin-bottom:10px}
-.fold.shut>.coltitle::after{transform:rotate(-45deg);margin:0 6px 0 0}
-.fold.shut>:not(.coltitle){display:none}
 .lab{display:block;margin:0 0 6px;font-size:.8125rem;font-weight:600;color:var(--text-muted)}
 .hint{font-size:.8125rem;color:var(--text-muted)}
 .hrow{display:flex;align-items:center;gap:6px}.hrow>.lab,.hrow>h2,.hrow>h3{margin:0}
@@ -466,7 +459,10 @@ body.mdm-lock{overflow:hidden}
 .mdm-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .mdm-edit{display:grid;gap:8px}
 .mdm-more{border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);padding:8px 12px}
-.mdm-more summary{cursor:pointer;font-weight:600;font-size:.8125rem;letter-spacing:.06em;text-transform:uppercase}
+.mdm-more summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:600;font-size:.8125rem;letter-spacing:.06em;text-transform:uppercase}
+.mdm-more summary::-webkit-details-marker{display:none}
+.mdm-mchev{display:inline-flex;color:var(--text-dim);transition:transform .15s}.mdm-more[open] .mdm-mchev{transform:rotate(90deg)}.mdm-more summary:hover .mdm-mchev{color:var(--accent-gold)}
+.mdm-more summary:focus-visible{outline:2px solid var(--accent-gold);outline-offset:3px;border-radius:4px}
 .mdm-more[open] summary{margin-bottom:8px}
 .mdm-ins{display:grid;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle)}
 .mdm-where{color:var(--accent-gold)}
@@ -511,9 +507,13 @@ body.mdm-lock{overflow:hidden}
 /* collapsible areas of the Advanced Mode (see foldOpen in app.js) */
 .fold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-main)}
 .fold>summary::-webkit-details-marker{display:none}
-.fold>summary::after{content:"▾";margin-left:auto;color:var(--text-dim)}
-.fold:not([open])>summary::after{content:"▸"}
 .fold>summary .li{color:var(--accent-gold);opacity:.85}
+.fold>summary .fold-chev{margin-left:auto;width:16px;height:16px;color:var(--text-dim);opacity:1;transition:transform .15s}
+.fold[open]>summary .fold-chev{transform:rotate(90deg)}
+.fold>summary:hover .fold-chev{color:var(--accent-gold)}
+.fold>summary:focus-visible{outline:2px solid var(--accent-gold);outline-offset:3px;border-radius:4px}
+.mdm-ib .li,.mdm-sm .li{width:14px;height:14px}
+@media (prefers-reduced-motion:reduce){.fold>summary .fold-chev,.mdm-chev,.mdm-mchev{transition:none}}
 .fold[open]>summary{margin-bottom:8px}
 .fold.sub{padding-top:8px;padding-bottom:8px}
 

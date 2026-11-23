@@ -34,7 +34,7 @@ const TPL=`
       <button type="button" :aria-pressed="src==='mine'" @click="src='mine'">Mine ({{ mine.length }})</button>
      </div></div>
     <details class="mdm-more">
-     <summary>Create or import a module</summary>
+     <summary><span>Create or import a module</span><span class="mdm-mchev" aria-hidden="true" v-html="icon('chevron-right')"></span></summary>
      <div class="mdm-edit">
       <span class="hint">Save rules of your filter ({{ rules.length }} now) as a module.</span>
       <div class="mdm-tools">
@@ -63,7 +63,7 @@ const TPL=`
     <div class="mdm-sum" role="status" aria-live="polite">
      <b>{{ sel.length }} module{{ sel.length===1?'':'s' }} · {{ plan.rules.length }} rule{{ plan.rules.length===1?'':'s' }}</b>
      <span class="mdm-sp"></span>
-     <button type="button" class="btn mdm-sm" @click="toggleAll" :disabled="!shown.length" :aria-label="allFolded?'Expand all modules':'Collapse all modules'"><span aria-hidden="true">{{ allFolded ? '▸' : '▾' }}</span><span>{{ allFolded ? 'Expand all' : 'Collapse all' }}</span></button>
+     <button type="button" class="btn mdm-sm" @click="toggleAll" :disabled="!shown.length" :aria-label="allFolded?'Expand all modules':'Collapse all modules'"><span class="mdm-chev" :class="{open:!allFolded}" aria-hidden="true" v-html="icon('chevron-right')"></span><span>{{ allFolded ? 'Expand all' : 'Collapse all' }}</span></button>
      <button type="button" class="btn mdm-sm" @click="selectShown" :disabled="!shown.length">Select shown</button>
      <button type="button" class="btn mdm-sm" @click="sel=[]" :disabled="!sel.length">Clear</button>
     </div>
@@ -73,7 +73,7 @@ const TPL=`
      <li v-for="m in shown" :key="m.id" :data-md="m.id" class="mdm-card" :class="{sel:isSel(m.id),dragging:drag&&drag.kind==='mods'&&drag.ids.includes(m.id)}"
          @click="cardClick($event,m)" :draggable="!easy&&!mode[m.id]" @dragstart="dragMods($event,m)" @dragend="dragEnd">
       <div class="mdm-ch">
-       <button type="button" class="mdm-ib mdm-fold" @click.stop="toggleFold(m.id)" :aria-expanded="!isFolded(m)" :aria-label="(isFolded(m)?'Expand ':'Collapse ')+m.name"><span aria-hidden="true">{{ isFolded(m) ? '▸' : '▾' }}</span></button>
+       <button type="button" class="mdm-ib mdm-fold" @click.stop="toggleFold(m.id)" :aria-expanded="!isFolded(m)" :aria-label="(isFolded(m)?'Expand ':'Collapse ')+m.name"><span class="mdm-chev" :class="{open:!isFolded(m)}" aria-hidden="true" v-html="icon('chevron-right')"></span></button>
        <input type="checkbox" class="mdm-chk" :checked="isSel(m.id)" @change="toggleSel(m.id)" :aria-label="'Select module '+m.name">
        <div class="mdm-cm">
         <b class="mdm-cn" :title="m.name">{{ m.name }}</b>
@@ -156,8 +156,8 @@ const TPL=`
        <span class="mdm-no">{{ i+1 }}</span>
        <span class="mdm-rt"><b :title="r.title">{{ r.title }}</b><span class="hint">{{ r.sub }}</span></span>
        <span class="mdm-act" :class="r.cls">{{ r.act }}</span>
-       <button type="button" class="mdm-ib" :disabled="easy||i===0" @click="moveRule(i,i-1)" :aria-label="'Move rule '+(i+1)+' up'">↑</button>
-       <button type="button" class="mdm-ib" :disabled="easy||i===rules.length-1" @click="moveRule(i,i+1)" :aria-label="'Move rule '+(i+1)+' down'">↓</button>
+       <button type="button" class="mdm-ib" :disabled="easy||i===0" @click="moveRule(i,i-1)" :aria-label="'Move rule '+(i+1)+' up'"><span aria-hidden="true" v-html="icon('arrow-up')"></span></button>
+       <button type="button" class="mdm-ib" :disabled="easy||i===rules.length-1" @click="moveRule(i,i+1)" :aria-label="'Move rule '+(i+1)+' down'"><span aria-hidden="true" v-html="icon('arrow-down')"></span></button>
        <label class="mdm-on" :title="r.on?'Rule is active':'Rule is off'"><input type="checkbox" :checked="r.on" :disabled="easy" @change="toggleOn(r,$event)" :aria-label="'Rule '+(i+1)+' active'"><span class="sr">active</span></label>
       </li>
      </template>
@@ -169,8 +169,10 @@ const TPL=`
 </div>`;
 
 export function mountModuleUi(Vue,ctx,el){
-  const {createApp,ref,reactive,computed,watch,nextTick}=Vue;
+  const {createApp,ref,reactive,computed,watch,nextTick,onMounted,onUpdated}=Vue;
   let vmRef=null;
+  /* Icons come from v-html as <i data-lucide> placeholders. Swap them right after every render (not a frame later) so no placeholder is ever visible, empty or stale. The icon strings stay constant (chevrons are rotated by CSS), so Vue never rewrites an already converted icon. */
+  const swapIcons=()=>{try{if(window.lucide&&el.querySelector("i[data-lucide]"))window.lucide.createIcons();}catch(e){}};
   const app=createApp({
     template:TPL,
     setup(){
@@ -178,6 +180,7 @@ export function mountModuleUi(Vue,ctx,el){
       const sel=ref([]),at=ref(null),drag=ref(null),dropAt=ref(-1),dlg=ref(null),search=ref(null);
       const form=reactive({name:"",from:"",to:"",desc:"",cat:"",tags:"",over:""}),edit=reactive({name:"",desc:"",cat:"",tags:""});
       let opener=null;
+      onMounted(swapIcons);onUpdated(swapIcons);
       const say=(m,b)=>{msg.value=m;bad.value=!!b;};
       const icon=n=>ctx.icon?ctx.icon(n):"";
       const mine=computed(()=>{tick.value;return ctx.store.all().map(cleanModule).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name));});
