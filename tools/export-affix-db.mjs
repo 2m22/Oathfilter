@@ -15,9 +15,7 @@ const byText=new Map();
 for(const [id,ks] of archOf){const t=E.LINEN[id];if(!t)continue;const s=byText.get(t)||byText.set(t,new Set()).get(t);ks.forEach(k=>s.add(k));}
 for(const [id,ks] of idolArch){const t=E.LINEN[id];if(!t)continue;const s=byText.get(t)||byText.set(t,new Set()).get(t);ks.forEach(k=>s.add(k));}
 /* the size tiers of Idol lines are stored as IdolFireRes_s in the affix table and as idol_fire_res_s in the line list; same affix, so the text comes from the line list */
-const idolKey=id=>/^Idol[A-Z]/.test(id)?id.replace(/([a-z0-9])([A-Z])/g,"$1_$2").toLowerCase():id;
-const idolAlt=id=>{const k=idolKey(id);return[k,k.replace(/^idol_totem_/,"idol_ballista_"),k.replace(/^idol_(\w+?)_([smlx])$/,"idol_$1_damage_$2")];};
-const textOf=id=>E.LINEN[id]||idolAlt(id).map(k=>E.LINEN[k]).find(Boolean)||"";
+const textOf=id=>E.LINEN[id]||E.LINEN[E.idolLineId(id)]||"";
 const excl=new Set(E.EZ_EXCLUDED),exclText=new Set([...excl].map(i=>E.LINEN[i]).filter(Boolean));
 const rows=E.AFF.map(a=>{
   const t=textOf(a.id);

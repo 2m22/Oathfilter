@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
+import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -369,6 +369,21 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(EZ_ARCH.every(a=>new Set(a.ids).size===a.ids.length&&new Set(a.idol).size===a.idol.length&&(a.ids.length||a.idol.length)),"Easy Mode: no group is empty or lists a line twice");
   const tags=new Set(AFF.flatMap(a=>a.tags));
   ok(AFF.every(a=>a.tags.length&&a.tags.every(Boolean)&&a.ex.every(x=>tags.has(x)&&!a.tags.includes(x))),"Affix table: no empty slot tag, no unknown exclude, no exclude that is also a slot of the same line"); }
+
+{ const A=r=>(mval(r,"a")||"").split("+").filter(Boolean);
+  const sep=easyGen(ezSane({arch:{fire:1,cold:1}})),mer=easyGen(ezSane({arch:{fire:1,cold:1}}),false,true);
+  ok(!sep.rules.some(r=>A(r).includes("fire_dmg_inc")&&A(r).includes("cold_dmg_inc")),"Easy Mode: picks keep their own rules by default (Fire and Cold lines are not mixed)");
+  ok(sep.rules.length>=mer.rules.length&&mer.rules.length>0,"Easy Mode: merging is only ever a way to save rules");
+  const u=g=>[...new Set(g.rules.flatMap(A))].sort().join(",");
+  eq(u(mer),u(sep),"Easy Mode: merged rules keep exactly the same lines as separate rules");
+  const all=easyGen(ezSane({arch:Object.fromEntries(EZ_ARCH.map(a=>[a.k,1]))}));
+  ok(all.rules.length<=200&&!all.notes.some(n=>/share rules/.test(n)),"Easy Mode: every pick on at once fits the 200 rules without merging");
+  /* Idol tiers are real game tiers: item level per tier from the game files */
+  const idl=AFF.filter(a=>/^idol/i.test(a.id));
+  ok(idl.length===194&&idl.every(a=>a.lv&&a.lv.length===a.n&&a.lv.every((v,i,l)=>i===0||v<l[i-1])),"Idol affixes: every one has its real tier item levels, highest first");
+  ok(idl.filter(a=>a.group==="IdolGrand").every(a=>a.n<=2&&a.lv.length===a.n),"Idol affixes: Grand idol lines have 1 or 2 tiers");
+  ok(!AFF.find(a=>a.id==="IdolTotemLife_x").tags.includes("IdolGrand")&&!AFF.find(a=>a.id==="IdolManaLeech_x").tags.includes("IdolGrand"),"Idol affixes: Ballista Life and Mana Leech X-Large are not Grand idol lines");
+  ok(AFF.filter(a=>/^Idol[A-Z]/.test(a.id)).every(a=>LINEN_[idolLineId(a.id)]),"Idol affixes: every size tier resolves to a line text"); }
 
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
