@@ -2,6 +2,16 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-24
+
+### Added
+- Game data of Build 89: 106 more red uniques (including 12 new chase reds) in the pickers and the Drop Test, plus the new Entropy affixes (Entropy Multiplier, Entropy implodes sooner, Implosions ignore Chaos Resistance).
+- Easy Mode: new Chaos button under Ailments with the Entropy lines.
+
+### Changed
+- Drop weights and flags of a few existing uniques follow Build 89 (for example Kimono, three uniques that no longer count as sold-only).
+- Red labels no longer show internal ids for the new Afterimage uniques.
+
 ## 2026-11-23
 
 ### Added
