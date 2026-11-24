@@ -45,7 +45,7 @@ for(const n of [1,40,41,100,199,200]){
   eq(f.rules.length,200,"200 rules for matching");
   const items=[];for(let i=0;i<600;i++)items.push(genItem());
   /* gems, runes, idols and other misc drops are not "any gear" (type 0): no such rule decides them */
-  const notGear=it=>!!(it.gem||it.rune||it.kind==="misc"||it.kind==="idol");
+  const notGear=it=>!!(it.gem||it.rune||it.kind==="rune"||it.kind==="misc"||it.kind==="idol");
   let decided=new Array(200).fill(0),open=0;
   items.forEach(it=>{const k=f.rules.findIndex(r=>r.on&&matches(r,it));
     if(k>=0){decided[k]++;}else{open++;ok(notGear(it),"only non-gear drops are left without a rule: "+it.name);}});
@@ -151,7 +151,7 @@ eq(defOf(["Chest","Armour","EnergyShield"]),5,"defence type Armour + ES");eq(def
   ["BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:s=4;g=70;r=1","BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:q=0-75;u=1;rt=2","BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:gx=90;i=60-75;s=2"].forEach(c=>eq(encode(decode(c).filter),c,"unverified-position keys round trip: "+c.split(",3:")[1]));
 }
 /* ---- data version ---- */
-eq(DATA_BUILD.build,88,"data build is 88");eq(DATA_BUILD.apiChecked,86,"public API was last checked at build 86");
+eq(DATA_BUILD.build,89,"data build is 89");eq(DATA_BUILD.apiChecked,88,"public API was last checked at build 88");
 /* ---- Easy Mode gems setting ---- */
 {
   const off=easyGen(ezSane({arch:{fire:1}})),hide=easyGen(ezSane({gems:1,arch:{fire:1}})),sell=easyGen(ezSane({gems:2,arch:{fire:1}}));
