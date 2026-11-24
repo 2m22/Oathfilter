@@ -380,7 +380,7 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(all.rules.length<=200&&!all.notes.some(n=>/share rules/.test(n)),"Easy Mode: every pick on at once fits the 200 rules without merging");
   /* Idol tiers are real game tiers: item level per tier from the game files */
   const idl=AFF.filter(a=>/^idol/i.test(a.id));
-  ok(idl.length===194&&idl.every(a=>a.lv&&a.lv.length===a.n&&a.lv.every((v,i,l)=>i===0||v<l[i-1])),"Idol affixes: every one has its real tier item levels, highest first");
+  ok(idl.length===198&&idl.every(a=>a.lv&&a.lv.length===a.n&&a.lv.every((v,i,l)=>i===0||v<l[i-1])),"Idol affixes: every one has its real tier item levels, highest first");
   ok(idl.filter(a=>a.group==="IdolGrand").every(a=>a.n<=2&&a.lv.length===a.n),"Idol affixes: Grand idol lines have 1 or 2 tiers");
   ok(!AFF.find(a=>a.id==="IdolTotemLife_x").tags.includes("IdolGrand")&&!AFF.find(a=>a.id==="IdolManaLeech_x").tags.includes("IdolGrand"),"Idol affixes: Ballista Life and Mana Leech X-Large are not Grand idol lines");
   ok(AFF.filter(a=>/^Idol[A-Z]/.test(a.id)).every(a=>LINEN_[idolLineId(a.id)]),"Idol affixes: every size tier resolves to a line text"); }

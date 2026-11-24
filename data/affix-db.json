@@ -1,7 +1,7 @@
 {
  "_doc": "Affix database of Oathfilter. Generated from js/filter-engine.js (AFF_SRC, EZ_ARCH). Data: local game files, build 89 (read 2026-11-24). Not official.",
  "build": 89,
- "count": 306,
+ "count": 312,
  "affixes": [
   {
    "id": "life_large",
@@ -1819,7 +1819,8 @@
    "slots": [
     "Melee",
     "Wand",
-    "Staff"
+    "Staff",
+    "Bow"
    ],
    "excludes": [],
    "weight": 90,
@@ -3613,6 +3614,60 @@
    "easy_mode": [
     "fire"
    ]
+  },
+  {
+   "id": "entropy_multi_wpn",
+   "text": "+X% Entropy Multiplier",
+   "type": "Prefix",
+   "group": "EntropyMulti",
+   "slots": [
+    "Weapon",
+    "Tome",
+    "Quiver"
+   ],
+   "excludes": [],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 32,
+   "tier_ilvls": [
+    84,
+    60,
+    44,
+    32
+   ],
+   "idol": false,
+   "tier_in_filter": true,
+   "excluded": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "entropy_multi_jwl",
+   "text": "+X% Entropy Multiplier",
+   "type": "Suffix",
+   "group": "EntropyMulti",
+   "slots": [
+    "Amulet",
+    "Ring"
+   ],
+   "excludes": [],
+   "weight": 30,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 44,
+   "tier_ilvls": [
+    84,
+    60,
+    44
+   ],
+   "idol": false,
+   "tier_in_filter": true,
+   "excluded": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
   },
   {
    "id": "IdolLife_s",
@@ -8365,6 +8420,104 @@
    "easy_mode": [
     "leech"
    ]
+  },
+  {
+   "id": "IdolEntropyMulti_s",
+   "text": "+X% Entropy Multiplier",
+   "type": "Suffix",
+   "group": "IdolEntropyMulti",
+   "slots": [
+    "Idol1"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": true,
+   "tier_in_filter": false,
+   "excluded": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEntropyMulti_m",
+   "text": "+X% Entropy Multiplier",
+   "type": "Suffix",
+   "group": "IdolEntropyMulti",
+   "slots": [
+    "Idol2"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 3,
+   "ilvl_top": 84,
+   "ilvl_low": 56,
+   "tier_ilvls": [
+    84,
+    70,
+    56
+   ],
+   "idol": true,
+   "tier_in_filter": false,
+   "excluded": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolEntropySooner_l",
+   "text": "Entropy implodes X seconds sooner",
+   "type": "Suffix",
+   "group": "IdolEntropySooner",
+   "slots": [
+    "Idol3"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 2,
+   "ilvl_top": 84,
+   "ilvl_low": 70,
+   "tier_ilvls": [
+    84,
+    70
+   ],
+   "idol": true,
+   "tier_in_filter": false,
+   "excluded": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
+  },
+  {
+   "id": "IdolChaospen_x",
+   "text": "Implosions ignore X% Chaos Resistance",
+   "type": "Suffix",
+   "group": "IdolChaospen",
+   "slots": [
+    "Idol4",
+    "IdolGrand"
+   ],
+   "excludes": [],
+   "weight": 100,
+   "tiers": 1,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
+   "tier_ilvls": [
+    84
+   ],
+   "idol": true,
+   "tier_in_filter": false,
+   "excluded": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": []
   },
   {
    "id": "idol_grand_chain_plus",

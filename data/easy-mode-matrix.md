@@ -140,6 +140,7 @@ Idol tiers exist in the game data, but Easy Mode puts no tier limit on Idol rule
 | +X% chance to cause Bleeding with Physical hits | bleed_chance | bleed | Weapon, Gloves, Quiver | 4 |
 | +X% chance to Ignite with Fire hits | ignite_chance | ign | Weapon, Gloves, Quiver, Tome | 4 |
 | +X% chance to Shock with Lightning hits | shock_chance | light | Weapon, Gloves, Quiver, Tome | 4 |
+| +X% Entropy Multiplier | entropy_multi_wpn, entropy_multi_jwl | **none** | Weapon, Tome, Quiver, Amulet, Ring | 4 |
 | +X% to all Elemental Resistances | all_res | res | Ring, Amulet | 6 |
 | +X% to Cold Resistance | cold_res | res | Helm, Chest, Gloves, Boots, Belt, Ring, Amulet, Quiver, Shield | 8 |
 | +X% to Critical Strike Multiplier | crit_multi | attack, bow, spell | Weapon, Amulet | 6 |
@@ -175,7 +176,7 @@ Idol tiers exist in the game data, but Easy Mode puts no tier limit on Idol rule
 | Penetrates X% Poison Resistance | poison_pen85_2h, poison_pen85_1h | pois | TwoHand, OneHand | 4 |
 | Regenerate X Life per second | life_regen | leech | Helm, Chest, Belt, Ring, Amulet, Boots, Gloves, Shield | 8 |
 | X% increased Area of Effect | area | aoe | Amulet, Helm | 5 |
-| X% increased Attack Speed | attack_speed_local, attack_speed, ring_attack_speed | attack, bow | Melee, Wand, Staff, Gloves, Quiver, Ring | 8 |
+| X% increased Attack Speed | attack_speed_local, attack_speed, ring_attack_speed | attack, bow | Melee, Wand, Staff, Bow, Gloves, Quiver, Ring | 8 |
 | X% increased Bleeding damage (your Bleeds) | bleed_effect | bleed | Weapon, Amulet, Belt, Quiver | 4 |
 | X% increased Burning damage (your Ignites) | ignite_effect | ign | Weapon, Amulet, Belt | 4 |
 | X% increased Cast Speed | cast_speed, cast_speed_2h, cast_speed_jewel, gloves_cast_speed, ring_cast_speed | spell | Caster, RuneDagger, Staff, Amulet, Gloves, Ring | 8 |
@@ -204,9 +205,9 @@ Idol tiers exist in the game data, but Easy Mode puts no tier limit on Idol rule
 | Your Minions have +X% to Critical Strike Multiplier | minion_crit_multi | minion | Wand, Tome, Amulet | 5 |
 | Your Minions have X% increased Critical Strike Chance | minion_crit | minion | Wand, Tome, Staff, Scythe, Amulet | 6 |
 
-## Not in any group (0)
+## Not in any group (1)
 
-- none
+- +X% Entropy Multiplier
 
 ## Deliberately excluded (4)
 
