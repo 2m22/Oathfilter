@@ -1128,7 +1128,7 @@ const EZ_ARCH=EZ_DATA.groups.map(g=>{const ok=id=>(EZ_KNOWN.has(id)||/^idol_/.te
 /* Style-bound element lines. A line tagged "spell" or "attack" only stays when that style is picked (or no style is picked). Everything else of a picked element stays. */
 const EZ_ST=EZ_DATA.st;
 const EZ_ATK=["attack","melee","slam","bow"];
-const EZ_GRP=[["Playstyle","play",[["",["attack","spell","minion","melee","slam","bow","trap","totem"]]]],["Damage & Ailments","dmg",[["Damage types",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign"]]]],["Defences","def",[["",["life","armour","evasion","es","res"]]]],["Utility","util",[["",["aoe","chain","channel","orbit","curse","move","mana","leech"]]]]]; /* every chip id stays; only the grouping changed */
+const EZ_GRP=[["Playstyle","play",[["",["attack","spell","minion","melee","slam","bow","trap","totem"]]]],["Damage & Ailments","dmg",[["Damage types",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign","chaos"]]]],["Defences","def",[["",["life","armour","evasion","es","res"]]]],["Utility","util",[["",["aoe","chain","channel","orbit","curse","move","mana","leech"]]]]]; /* every chip id stays; only the grouping changed */
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.filter(v=>v<=84).map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */

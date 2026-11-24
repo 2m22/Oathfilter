@@ -3641,7 +3641,9 @@
    "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chaos"
+   ]
   },
   {
    "id": "entropy_multi_jwl",
@@ -3667,7 +3669,9 @@
    "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chaos"
+   ]
   },
   {
    "id": "IdolLife_s",
@@ -8444,7 +8448,9 @@
    "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chaos"
+   ]
   },
   {
    "id": "IdolEntropyMulti_m",
@@ -8469,7 +8475,9 @@
    "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chaos"
+   ]
   },
   {
    "id": "IdolEntropySooner_l",
@@ -8493,7 +8501,9 @@
    "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chaos"
+   ]
   },
   {
    "id": "IdolChaospen_x",
@@ -8517,7 +8527,9 @@
    "excluded": false,
    "switch_dependent": false,
    "style": "",
-   "easy_mode": []
+   "easy_mode": [
+    "chaos"
+   ]
   },
   {
    "id": "idol_grand_chain_plus",

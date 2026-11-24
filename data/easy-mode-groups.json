@@ -156,6 +156,17 @@
    "idol": []
   },
   {
+   "k": "chaos",
+   "n": "Chaos",
+   "col": 7,
+   "ids": [
+    "entropy_multi_wpn",
+    "idol_entropy_sooner_l",
+    "idol_chaospen_x"
+   ],
+   "idol": []
+  },
+  {
    "k": "curse",
    "n": "Curse / Vow",
    "col": 7,

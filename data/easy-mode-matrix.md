@@ -50,6 +50,10 @@ Idol tiers exist in the game data, but Easy Mode puts no tier limit on Idol rule
 - Gear: +X% chance to Ignite with Fire hits; X% increased Burning damage (your Ignites); +X% to Damage over Time Multiplier (Burning, Poison and Bleeding)
 - Idols: none
 
+### Chaos (`chaos`)
+- Gear: +X% Entropy Multiplier; Entropy implodes X seconds sooner; Implosions ignore X% Chaos Resistance
+- Idols: none
+
 ### Curse / Vow (`curse`)
 - Gear: X% increased effect of your Curses; You can lay +X more Woe(s) on each enemy; X% increased effect of your Vows
 - Idols: none
@@ -140,7 +144,7 @@ Idol tiers exist in the game data, but Easy Mode puts no tier limit on Idol rule
 | +X% chance to cause Bleeding with Physical hits | bleed_chance | bleed | Weapon, Gloves, Quiver | 4 |
 | +X% chance to Ignite with Fire hits | ignite_chance | ign | Weapon, Gloves, Quiver, Tome | 4 |
 | +X% chance to Shock with Lightning hits | shock_chance | light | Weapon, Gloves, Quiver, Tome | 4 |
-| +X% Entropy Multiplier | entropy_multi_wpn, entropy_multi_jwl | **none** | Weapon, Tome, Quiver, Amulet, Ring | 4 |
+| +X% Entropy Multiplier | entropy_multi_wpn, entropy_multi_jwl | chaos | Weapon, Tome, Quiver, Amulet, Ring | 4 |
 | +X% to all Elemental Resistances | all_res | res | Ring, Amulet | 6 |
 | +X% to Cold Resistance | cold_res | res | Helm, Chest, Gloves, Boots, Belt, Ring, Amulet, Quiver, Shield | 8 |
 | +X% to Critical Strike Multiplier | crit_multi | attack, bow, spell | Weapon, Amulet | 6 |
@@ -205,9 +209,9 @@ Idol tiers exist in the game data, but Easy Mode puts no tier limit on Idol rule
 | Your Minions have +X% to Critical Strike Multiplier | minion_crit_multi | minion | Wand, Tome, Amulet | 5 |
 | Your Minions have X% increased Critical Strike Chance | minion_crit | minion | Wand, Tome, Staff, Scythe, Amulet | 6 |
 
-## Not in any group (1)
+## Not in any group (0)
 
-- +X% Entropy Multiplier
+- none
 
 ## Deliberately excluded (4)
 
