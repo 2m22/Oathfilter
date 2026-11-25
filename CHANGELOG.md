@@ -6,6 +6,8 @@ All notable changes for players. Newest first.
 
 ### Added
 - Game data of Patch 90 (local game files): 49 more bases, 14 more uniques, updated drop weights, the Hewing Axe and the Signet names.
+- New affix "X% faster Energy Shield Recharge" (amulets, belts and Energy Shield armour), also in the Easy Mode Energy Shield group.
+- Easy Mode: new "Chaos" button under Ailments.
 - Easy Mode: 9 rules keep every Rare Ashen and Gnome-made base highlighted in Ash colour. They sit below your tier highlights and above every hide. Switch: "Highlight Rare Ashen and Gnome-made" (on by default).
 - Easy Mode: optional "Hide Normal and Magic Dwarven Runes" (off by default). Sell does not work on Dwarven Runes in the game, so it hides them.
 - Copy filter code and Share Filter Link check the 200 rule limit when the filter leaves the page. Over 200, the page offers a safe merge of neighbouring rules (nothing is copied until you confirm) or tells you it cannot fit. The game cuts a pasted filter at rule 200 and drops the rules after it. Editing is never blocked.
@@ -22,6 +24,8 @@ All notable changes for players. Newest first.
 - Advanced editor: with bases picked, the mod lists hide mods that cannot roll on those bases, and the red list shows only reds on them. Two switches in the column headers turn this off.
 
 ### Changed
+- Patch 90 affixes: the top tier of 26 affixes (attack, cast and move speed, leech, on-kill, ailment chance and effect, minion speed, curse effect and limit) now needs item level 84. New Added Damage ranges. Curse limit is rarer.
+- Patch 90 uniques: Halo of the Restless Saint and Quarrybreaker Fists drop far less often; the Ashen-style Rotfang Cleaver, Codex, Quiver, Claw and Fist uniques now sit on their normal bases.
 - New layout: centred 1280px page, calmer top bars, equal cards and one slim status bar with the rule count (X / 200) on all tabs.
 - Leveling keeps 2 tiers (was 3). Lines without any tier limit, such as the Max Resistance lines, stop showing from item level 75 in Leveling.
 - The Easy Mode rarity-0 catch-all no longer hides Normal and Magic gear when only one of them is hidden; it now has separate Hide rules for each.
