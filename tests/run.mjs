@@ -618,7 +618,7 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   const rd=c=>JSON.parse(fsx.readFileSync(new URL("../lang/"+c+".json",import.meta.url),"utf8")).ui3||{};
   const de=rd("de"),keys=Object.keys(de);
   ok(keys.length>=120,"German has a page translation table ("+keys.length+" strings)");
-  ["fr","es-ES","es-419","it","pt-BR","nl","pl"].forEach(c=>{const d=rd(c);
+  ["fr","es-ES","es-419","it","pt-BR","nl","pl","ru","uk","zh-Hans","ja","ko","tr","sv"].forEach(c=>{const d=rd(c);
     ok(keys.every(k=>d[k]),c+" covers every string German covers");
     ok(keys.every(k=>(k.match(/\{\w+\}/g)||[]).sort().join()===((d[k]||"").match(/\{\w+\}/g)||[]).sort().join()),c+" keeps the {n}/{m} placeholders");});
   let dict=de;const I=createI18n(()=>dict);
