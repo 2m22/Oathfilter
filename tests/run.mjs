@@ -151,7 +151,7 @@ eq(defOf(["Chest","Armour","EnergyShield"]),5,"defence type Armour + ES");eq(def
   ["BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:s=4;g=70;r=1","BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:q=0-75;u=1;rt=2","BOFILTER:1,-1|1,0,4,0,0,3,0,0,0,255,3:gx=90;i=60-75;s=2"].forEach(c=>eq(encode(decode(c).filter),c,"unverified-position keys round trip: "+c.split(",3:")[1]));
 }
 /* ---- data version ---- */
-eq(DATA_BUILD.build,89,"data build is 89");eq(DATA_BUILD.apiChecked,88,"public API was last checked at build 88");
+eq(DATA_BUILD.build,90,"data build is 90");eq(DATA_BUILD.apiChecked,88,"public API was last checked at build 88");
 /* ---- Easy Mode gems setting ---- */
 {
   const off=easyGen(ezSane({arch:{fire:1}})),hide=easyGen(ezSane({gems:1,arch:{fire:1}})),sell=easyGen(ezSane({gems:2,arch:{fire:1}}));
