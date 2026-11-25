@@ -561,5 +561,26 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   eq(ezSane({ga:undefined}).ga,1,"the Ashen block is on by default");eq(ezSane({hr:undefined}).hr,0,"Hide Dwarven Runes is off by default");
 }
 
+/* ---- Easy Mode never writes Hide or Sell with Any rarity on gear ---- */
+{ const all=Object.fromEntries(EZ_ARCH.map(a=>[a.k,1]));
+  const combos=[];[0,1].forEach(hn=>[0,1].forEach(hm=>[0,1].forEach(hs=>[{},{attack:1},{attack:1,cold:1},all].forEach(arch=>combos.push({hn,hm,hs,arch,rl:0})))));
+  let n=0;
+  combos.forEach(c=>{const g=easyGen(ezSane(c)).rules;n++;
+    ok(g.every(r=>!((r.action===0||r.action===4)&&r.rarity===0&&![14,17].includes(r.type))),"Easy Mode hn="+c.hn+" hm="+c.hm+" hs="+c.hs+" picks="+Object.keys(c.arch).length+": no gear Hide or Sell with Any rarity");
+    ok(rulesIssues(g).every(x=>x.code!=="rarity0"),"Easy Mode: the order check finds no rarity0 warning");
+    /* same decisions as one Any-rarity catch-all: replace the split rules by it and compare on a sample */
+    const old=[];let put=false;g.forEach(r=>{if(/^Everything else/.test(r.name)){if(!put){const o=newRule({type:0,rarity:0,action:0});old.push(o);put=true;}}else old.push(r);});
+    const items=[];for(let i=0;i<150;i++)items.push(genItem());
+    const run=rs=>{setF({preset:"-1",rules:rs});bumpRev();return items.map(it=>{const e=evaluate({...it,_rv:-1});return e.v;}).join("");};
+    if(put)eq(run(g),run(old),"Easy Mode hn="+c.hn+" hm="+c.hm+" hs="+c.hs+" picks="+Object.keys(c.arch).length+": the split catch-all decides every item like the Any-rarity rule did");
+  });
+  setF({preset:"-1",rules:[]});bumpRev();
+  const g=easyGen(ezSane({hn:0,hm:0,arch:{attack:1}})).rules.filter(r=>/^Everything else/.test(r.name));
+  eq(g.map(r=>r.rarity).join(","),"3,4","neither hidden: Normal and magic (3), then Rare (4)");
+  eq(easyGen(ezSane({hn:1,hm:0,arch:{attack:1}})).rules.filter(r=>/^Everything else/.test(r.name)).map(r=>r.rarity).join(","),"2,4","Normal hidden above: Magic (2), then Rare (4)");
+  eq(easyGen(ezSane({hn:0,hm:1,arch:{attack:1}})).rules.filter(r=>/^Everything else/.test(r.name)).map(r=>r.rarity).join(","),"1,4","Magic hidden above: Normal (1), then Rare (4)");
+  eq(easyGen(ezSane({hn:1,hm:1,arch:{attack:1}})).rules.filter(r=>/^Everything else/.test(r.name)).map(r=>r.rarity).join(","),"4","both hidden above: only Rare (4)");
+}
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);

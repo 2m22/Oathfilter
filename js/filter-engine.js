@@ -1313,7 +1313,9 @@ function easyGen(s,pack,merge){
   if(white){
     gearP.forEach(x=>x.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);})));
     if(gearA.length){ga();hideR();} /* below the tier highlights of the picks, above the hides */
-    mk({type:0,rarity:s.hn&&s.hm?4:0,action:0},"Everything else"); /* Normal and Magic are already hidden above, so only Rares are left to hide */
+    /* the catch-all hide never uses Any rarity: it is written per rarity. Normal and Magic that the hide above did not take, then Rare. */
+    if(s.hn&&s.hm)mk({type:0,rarity:4,action:0},"Everything else"); /* Normal and Magic are already hidden above, so only Rares are left to hide */
+    else{const rest=s.hn?2:s.hm?1:3;mk({type:0,rarity:rest,action:0},"Everything else: "+(rest===3?"Normal and magic":rest===1?"Normal":"Magic")+" gear");mk({type:0,rarity:4,action:0},"Everything else: Rare gear");}
   }
   if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
   if(!pack&&R.length>EASY_PACK_LIMIT&&act.length){
