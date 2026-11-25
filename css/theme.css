@@ -617,3 +617,4 @@ body.mdm-lock{overflow:hidden}
 .pkfitrow{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 8px}
 .pkfitrow:empty{display:none}
 .pkfitrow .lab{margin:0}
+.pkchk{display:inline-flex;align-items:center;gap:8px;font-size:.8125rem;cursor:pointer}

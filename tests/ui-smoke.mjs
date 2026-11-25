@@ -111,6 +111,19 @@ async function run(name,mode){
     ok(!fit.some(t=>/to Armour/.test(t))&&fit.some(t=>/Life/.test(t)),"Rings: no Armour line, Life is there");
     await page.selectOption("#f-type","0");await page.waitForTimeout(200);
     ok((await list()).length===all,"back on Any gear the full list returns");
+    /* bases picked: the list hides the mods that cannot roll on them */
+    await page.selectOption("#f-type","0");await page.waitForTimeout(150);
+    const full=(await list()).length;
+    await page.fill("#pk-b","Hunter");await page.waitForTimeout(150);
+    await page.click('#pl-b button[data-padd]');await page.waitForTimeout(300);
+    ok(!!(await page.$("#pkfit-a input[data-pkbase]")),"a checkbox appears once a base is picked");
+    const some=await list();
+    ok(some.length>0&&some.length<full&&!some.some(t=>/to Armour/.test(t)),"with a bow picked, mods it cannot roll are hidden ("+some.length+" of "+full+")");
+    await page.uncheck("#pkfit-a input[data-pkbase]");await page.waitForTimeout(150);
+    ok((await list()).length===full,"unchecking shows every mod again");
+    await page.check("#pkfit-a input[data-pkbase]");await page.waitForTimeout(100);
+    await page.click('[data-pclr="b"]');await page.waitForTimeout(250);
+    ok(!(await page.$("#pkfit-a input[data-pkbase]")),"no bases: no checkbox");
     await page.selectOption("#f-type","10");await page.selectOption("#pkfitsel-a","0").catch(()=>{});await page.waitForTimeout(100);
   }
 
