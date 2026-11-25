@@ -233,7 +233,7 @@
     <ul class="pl">
      <li><b>Counters and bar.</b> How many samples are shown, highlighted, hidden or sold. Hidden and sold samples stay in the log with a dashed border.</li>
      <li><b>Ground view and log.</b> The ground view shows what you would see in the game. Each log entry names the rule that caught the item, or says that no rule matched.</li>
-     <li><b>What the samples are.</b> They use real bases, affixes and uniques from the game files (build 87). How they are rolled (mods per item, tiers) only needs to be varied enough to exercise your rules. It is not the game’s roll logic.</li>
+     <li><b>What the samples are.</b> They use real bases, affixes and uniques from the Broken Oath data (patch 90). How they are rolled (mods per item, tiers) only needs to be varied enough to exercise your rules. It is not the game’s roll logic.</li>
     </ul></section>
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g8"><h2 id="h-g8" class="coltitle">Import and export</h2>
     <h3 class="subtitle">Import</h3>
@@ -278,14 +278,13 @@
      <li><b>Crater Studios:</b> the developer file <code>loot_filter.md</code> (code format).</li></ul>
     <h3 class="subtitle">Data</h3>
     <ul class="bl">
-     <li><b>Broken Oath game files</b> (patch 90, read from a local install on 25.11.2026): item bases, affixes, uniques, loot filter texts. The Broken Oath public API was last checked at build 88 (25.11.2026), so the sample drops rely on the local files, not on the API.</li>
-     <li><b>Game files:</b> lists of bases, named reds and named lines.</li>
+     <li><b>Broken Oath data</b> (patch 90): item bases, affixes, uniques, loot filter texts, lists of bases, named reds and named lines.</li>
      <li>Data: Broken Oath public API (<a href="https://api.playbrokenoath.com/v1/" target="_blank" rel="noopener noreferrer">api.playbrokenoath.com</a>), cached in this page, not fetched live.</li>
      <li>A fan project, not official data.</li></ul></section>
   <section class="plate" aria-labelledby="h-rg"><h2 id="h-rg" class="coltitle">Real vs. guessed</h2>
     <h3 class="subtitle">Real</h3>
-    <ul class="bl"><li>BOFILTER 1 code format.</li><li>Rule order: the first match wins.</li><li>Limit of 200 rules.</li><li>The five game presets.</li><li>Bases, levels and tags; affix groups; unique names and bases (game files, build 87).</li></ul>
-    <h3 class="subtitle">From game files</h3>
+    <ul class="bl"><li>BOFILTER 1 code format.</li><li>Rule order: the first match wins.</li><li>Limit of 200 rules.</li><li>The five game presets.</li><li>Bases, levels and tags; affix groups; unique names and bases (patch 90).</li></ul>
+    <h3 class="subtitle">From Broken Oath data</h3>
     <ul class="bl"><li>MORE options and their keys (read from exported codes).</li><li>Lists of bases, named reds and named lines.</li><li>Item level of each affix tier.</li></ul>
     <h3 class="subtitle">Drop Test samples</h3>
     <ul class="bl"><li>Sample items are made up on purpose: they cover many rarities, bases and tiers to exercise your rules.</li><li>Drop rates are not simulated and not tested. The Drop Test checks rule matching and order only.</li><li>Mods per item and tier rolls are varied for coverage. They are not the game’s roll logic.</li></ul>

@@ -273,7 +273,7 @@ function renderPickList(k){
   const tag=x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);
     if(on)return "<small>picked</small>";
     if((k==="a"||k==="na")&&ATTACK_LINE(x[0]))return `<small class="qm" title="${esc(lineWhere(x[0]))}" aria-label="${esc(lineWhere(x[0]))}">?</small>`;
-    if(k==="a"||k==="na"){const li=LINE_IDS[x[1]]||[];if(li.length&&li.every(i=>COND_LINE.has(i)))return '<small title="This line comes from game files that load only while a game switch is on. It may not be live yet.">switch-dependent</small>';return "";}
+    if(k==="a"||k==="na"){const li=LINE_IDS[x[1]]||[];if(li.length&&li.every(i=>COND_LINE.has(i)))return '<small title="This line comes from game data that loads only while a game switch is on. It may not be live yet.">switch-dependent</small>';return "";}
     return SAMPLE[k]&&!SAMPLE[k].has(x[0])?"<small>no test drop</small>":"";};
   const tip=x=>{if(k!=="a"&&k!=="na")return shw(x)+(shw(x)!==String(x[1])?"\n"+x[1]:"");const li=LINE_IDS[x[1]]||[x[0]];const wh=lineWhere(x[0]);return (wh?wh+"\n":"")+(shw(x)!==x[1]?shw(x)+"\n":"")+x[1]+"\nGame ids ("+li.length+"): "+li.slice(0,10).join(", ")+(li.length>10?", …":"");};
   box.innerHTML=res.length?res.map(x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);return `<button type="button" data-padd="${k},${esc(x[0])}" title="${esc(tip(x))}" ${on||full?"disabled":""}><span>${esc(shw(x))}</span>${tag(x)}</button>`;}).join(""):`<div class="hint" style="padding:12px">Nothing reads like that</div>`;
