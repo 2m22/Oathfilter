@@ -1208,13 +1208,13 @@ const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1}}); /* st: strictness extras for a filter without picks, 0 none, 1 hide Rare gear under item level 75, 2 keep only top-roll Rares from item level 82. gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
+const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:0,band:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1}}); /* band: Leveling level band, 0 Any, 1 = 1-31, 2 = 32-55, 3 = 56-74 (see EZ_BANDS); st: strictness extras for a filter without picks, 0 none, 1 hide Rare gear under item level 75, 2 keep only top-roll Rares from item level 82. gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
   const s={rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
-    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),ga:on(o.ga,d.ga),hr:on(o.hr,d.hr),st:n(o.st,0,2,d.st),pre:typeof o.pre==="string"?o.pre.slice(0,24):d.pre,arch:{},keep:{}};
+    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),ga:on(o.ga,d.ga),hr:on(o.hr,d.hr),st:n(o.st,0,2,d.st),band:n(o.band,0,3,d.band),pre:typeof o.pre==="string"?o.pre.slice(0,24):d.pre,arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
   if(o.arch&&o.arch.dot){s.arch.pois=s.arch.bleed=s.arch.ign=1;} /* ... and one Damage over time pick */
@@ -1257,7 +1257,9 @@ function ezThr(id,rl,keep){
 const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=MAXL.a)p.push(ids.slice(i,i+MAXL.a));return p;};
 function easyGen(s,pack,merge){
   s=ezSane(s);
-  const notes=[],R=[],rl=s.rl;
+  const notes=[],R=[];
+  const band=s.pre==="leveling"?EZ_BANDS[s.band]:null; /* Leveling level band: the tier cap comes from the band's lower limit, 2 tiers kept */
+  const rl=band&&band.rl?band.rl:s.rl;if(band&&band.rl)s=Object.assign({},s,{tk:2});
   const mk=(o,name,fn)=>{const r=newRule(o);r.name=name.slice(0,NAME_MAX);if(fn)fn(r);R.push(r);return r;};
   const act=EZ_ARCH.filter(a=>s.arch[a.k]);
   act.forEach(a=>{[a.ids,a.idol].forEach(l=>l.forEach(id=>{if(!EZ_LINEIDS.has(id)||!LINEN[id])notes.push("Line "+id+" is not in the game data of this page and was skipped.");}));});
@@ -1349,9 +1351,11 @@ const EZ_PRESETS={
   uber:{name:"Uber Strict",short:"Hides almost everything except absolute best-in-slot bases and top tier rolls.",vals:{rl:84,tk:1,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:1,st:2}}
 };
 const EZ_PRE_IDS=Object.keys(EZ_PRESETS);
+/* Leveling level bands: pill label, tier-cap level (the band's LOWER limit, so the best droppable tier at the start of the band stays). Any and 1-31 add no cap (T8 is still droppable). Not in EZ_OWNED: a band never makes the state Custom. */
+const EZ_BANDS=[{label:"Any",rl:0},{label:"1–31",rl:0},{label:"32–55",rl:32},{label:"56–74",rl:56}];
 const EZ_OWNED=["rl","tk","hl","idol","hn","hm","hs","gems","ga","hr","st"];
 /* the state after choosing a preset: everything the preset owns is reset, the build picks stay */
-const ezPreset=(id,s)=>ezSane(Object.assign({},s,EZ_PRESETS[id].vals,{keep:{core:1,runes:1,tsw:1},pre:id,arch:s.arch}));
+const ezPreset=(id,s)=>ezSane(Object.assign({},s,EZ_PRESETS[id].vals,{keep:{core:1,runes:1,tsw:1},band:0,pre:id,arch:s.arch}));
 const ezOwnedChanged=(a,b)=>EZ_OWNED.some(k=>a[k]!==b[k])||["core","runes","tsw"].some(k=>a.keep[k]!==b.keep[k]);
 function ezBadge(s,linked,hasHash){
   const builds=EZ_ARCH.filter(a=>s.arch[a.k]).length;
@@ -1368,4 +1372,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};
+export {idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_BANDS,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};

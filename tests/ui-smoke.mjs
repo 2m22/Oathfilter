@@ -174,6 +174,23 @@ async function run(name,mode){
   ok(!await bb()&&JSON.stringify(await pressed())==='["Leveling"]',"Clear all removes + builds and keeps the strictness");
   ok(/\d+ \/ 200/.test(await page.$eval("#cap",e=>e.textContent)),"the header shows the one rule counter, X / 200");
   ok(/\d+ \/ 200 rules/.test(await page.$eval("#ezOut",e=>e.textContent)),"the Easy Mode status bar shows the rule count");
+  { /* Leveling level bands */
+    const vis=()=>page.$eval("#ezBand",e=>!e.hidden),pr=async v=>await page.$eval(`#ezCtl [data-ez="band,${v}"]`,b=>b.getAttribute("aria-pressed"));
+    const cnt=()=>page.$eval("#ezOut",e=>(e.textContent.match(/(\d+) \/ 200 rules/)||[])[1]);
+    ok(await vis(),"the level pills show while Leveling is active");
+    ok(JSON.stringify(await page.$$eval("#ezBand .cb2",b=>b.map(x=>x.textContent.trim())))==='["Any","1–31","32–55","56–74"]',"the pills read Any, 1–31, 32–55, 56–74");
+    ok(await pr(0)==="true","the band starts on Any");
+    await page.click('#ezCtl [data-ez="arch,fire"]');await page.waitForTimeout(100);const n0=await cnt();
+    await page.click('#ezCtl [data-ez="band,3"]');await page.waitForTimeout(150);
+    ok(await pr(3)==="true"&&await pr(0)==="false","clicking 56–74 selects it");
+    ok(JSON.stringify(await pressed())==='["Leveling"]'&&await st()==="","a band keeps the Leveling badge and never shows Custom");
+    ok(await cnt()===n0,"a band adds no rules ("+n0+")");
+    await page.click('#ezCtl [data-ez="pre,endgame"]');await page.waitForTimeout(150);
+    ok(!await vis(),"the level pills hide for other strictness cards");
+    await page.click('#ezCtl [data-ez="pre,leveling"]');await page.waitForTimeout(150);
+    ok(await pr(0)==="true","choosing Leveling again resets the band to Any");
+    await page.click('#ezCtl [data-ez="clear,all"]');await page.waitForTimeout(100);
+  }
   ok(!/\d+ \/ 200/.test(await page.$eval("#ezDetS",e=>e.textContent)),"the collapsed details do not repeat it");
 
   /* Language selector translates the page, also text the app renders later, and restores English */

@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset} from "../js/filter-engine.js";
+import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,EZ_BANDS,ezThr,tierLvl} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -627,6 +627,36 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(I.tx("3 picked")==="3 gewählt"&&I.tx("{n} picked",{n:5})==="5 gewählt","tx fills {n} templates");
   ok(I.tx("Ashen Rares 2/8")==="Ashen-Seltene 2/8","tx matches templates with two placeholders");
   dict={};ok(I.tx("Filter strictness")==="Filter strictness","an empty table returns English");
+}
+
+/* ---- Leveling level bands: Any / 1-31 / 32-55 / 56-74, tier cap from the band's LOWER limit ---- */
+{
+  eq(EZ_BANDS.length,4,"four level bands");
+  eq(JSON.stringify(EZ_BANDS.map(b=>b.rl)),"[0,0,32,56]","band tier-cap levels are 0 / 0 / 32 / 56 (lower limits)");
+  eq(ezSane({}).band,0,"band defaults to Any");eq(ezSane({band:9}).band,3,"band is clamped");eq(ezSane({band:"x"}).band,0,"a bad band falls back to Any");
+  const lv=(band,pre)=>Object.assign(ezPreset(pre||"leveling",ezSane({arch:{attack:1,fire:1,cold:1}})),{band});
+  const gen=s=>easyGen(s,false,false);
+  const code=s=>encode({preset:"-1",rules:gen(s).rules});
+  eq(code(lv(1)),code(lv(0)),"band 1-31 changes nothing (T8 is still the best droppable tier)");
+  ok(code(lv(2))!==code(lv(0)),"band 32-55 changes the output");
+  ok(code(lv(3))!==code(lv(0)),"band 56-74 changes the output");
+  ok(code(lv(2))!==code(lv(3)),"the bands differ from each other");
+  [0,1,2,3].forEach(b=>{const n=gen(lv(b)).rules.length;ok(n<=MAX_RULES,"band "+b+" stays within 200 rules ("+n+")");});
+  eq(gen(lv(2)).rules.length,gen(lv(0)).rules.length,"a band adds no rules");
+  eq(gen(lv(3)).rules.length,gen(lv(0)).rules.length,"band 56-74 adds no rules");
+  eq(code(lv(3,"endgame")),code(lv(0,"endgame")),"the band is ignored outside Leveling");
+  eq(ezPreset("endgame",lv(3)).band,0,"choosing another preset resets the band");
+  eq(ezPreset("leveling",lv(2)).band,0,"choosing Leveling again resets the band");
+  const sb=lv(3);const base=ezPreset("leveling",ezSane({}));
+  ok(!ezOwnedChanged(sb,base),"a band does not make the state Custom");
+  eq(ezBadge(sb,true,true).label,"Leveling","the badge stays Leveling with a band");
+  /* property: at the band's lower limit the best droppable tier of every gear line survives the cap */
+  let checked=0,capped=0;const gearA=AFF.filter(a=>!/^idol/i.test(a.id));
+  gearA.forEach(a=>{[32,56].forEach(rl=>{let kb=0;for(let k=1;k<=a.n;k++)if(tierLvl(a,k)<=rl){kb=k;break;}
+    const thr=ezThr(a.id,rl,2);checked++;if(thr){capped++;ok(!kb||thr>=kb,"cap T"+thr+" keeps the best droppable tier T"+kb+" of "+a.id+" at "+rl);}});});
+  ok(gearA.length>=114,"the page data holds all gear affixes ("+gearA.length+" in the built-in data)");
+  ok(checked>=114*2,"property check covers every gear affix at both band limits ("+checked+")");
+  ok(capped>0,"the bands cap at least some lines");
 }
 
 console.log(passed+" passed, "+failed+" failed");
