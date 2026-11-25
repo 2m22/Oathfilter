@@ -115,6 +115,14 @@ async function run(name,mode){
     await page.selectOption("#pkfitsel-a","1");await page.waitForTimeout(100);
     await page.selectOption("#f-type","0");await page.waitForTimeout(200);
     ok((await list()).length===all&&(await baseList()).length===allB,"back on Any gear the full lists return");
+    /* item type + defence type combine for the base list */
+    await page.selectOption("#f-type","6");await page.waitForTimeout(200);
+    const body=(await baseList()).length;
+    await page.selectOption("#m-d","1");await page.waitForTimeout(250);
+    const bodyPlate=await baseList();
+    ok(bodyPlate.length>0&&bodyPlate.length<body&&body>bodyPlate.length,"body armour + defence type Armour: fewer bases ("+bodyPlate.length+" of "+body+")");
+    ok(!bodyPlate.some(t=>/Silk|Leather|Helm|Gloves|Boots/.test(t)),"only plate body armours are listed");
+    await page.selectOption("#m-d","");await page.selectOption("#f-type","0");await page.waitForTimeout(200);
     /* type 9 is split into shields, foci and quivers for the mod check */
     await page.selectOption("#f-type","9");await page.waitForTimeout(200);
     ok(!!(await page.$("#pkscope-a")),"shields/foci/quivers: an item-kind select shows");

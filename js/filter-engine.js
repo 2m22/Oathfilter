@@ -177,13 +177,14 @@ function typeMatch(t,it){
 /* Advanced editor: which named lines can roll on the item type of a rule. A line is one text (grouped ids), so "only here" means no id of that line rolls on any other base. Read from the base tags and the affix tags (BaseTags any, ExcludeTags none), like the game data; not checked in the game. */
 const LF_CACHE=new Map();
 /* type 9 is one game type for shields, foci and quivers: sc ("shield" | "tome" | "quiver") narrows the mod check to one of them, judged by that base's own tags */
-function lineFit(t,sc){
-  if(!t||t===17)return null;
+function lineFit(t,sc,d){
+  d=+d||0;
+  if((!t&&!d)||t===17)return null;
   if(t!==9)sc="";
-  const ck=t+":"+(sc||"");
+  const ck=t+":"+(sc||"")+":"+d;
   if(LF_CACHE.has(ck))return LF_CACHE.get(ck);
   const bySig=new Map();
-  BASES.forEach(b=>{const k=b.tags.join(",");if(!bySig.has(k))bySig.set(k,{tags:b.tags,hit:false,miss:false});const e=bySig.get(k);if(typeMatch(t,b)&&(!sc||b.kind===sc))e.hit=true;else e.miss=true;});
+  BASES.forEach(b=>{const k=b.tags.join(",");if(!bySig.has(k))bySig.set(k,{tags:b.tags,hit:false,miss:false});const e=bySig.get(k);if(typeMatch(t,b)&&(!sc||b.kind===sc)&&(!d||defOf(b.tags)===d))e.hit=true;else e.miss=true;});
   const fits=new Set(),elsewhere=new Set();
   bySig.forEach(e=>AFF.forEach(a=>{if(!a.tags.some(x=>e.tags.includes(x))||a.ex.some(x=>e.tags.includes(x)))return;const l=LINEN[a.id];if(!l)return;if(e.hit)fits.add(l);if(e.miss)elsewhere.add(l);}));
   const only=new Set([...fits].filter(l=>!elsewhere.has(l)));
@@ -191,7 +192,7 @@ function lineFit(t,sc){
 }
 /* the lines that can roll on a given set of base tags / on the picked bases of a rule (Advanced named-line list) */
 /* a base can only match a rule when it belongs to the rule's item type (type 9: optionally one of shield / focus / quiver) */
-function baseInType(t,id,sc){const b=BASE_BY_ID[id];if(!b)return true;if(t===13)return b.tags.includes("CoreTouched");if(t===33)return b.kind==="rune";return !lineFit(t)||(typeMatch(t,b)&&(t!==9||!sc||b.kind===sc));}
+function baseInType(t,id,sc,d){const b=BASE_BY_ID[id];if(!b)return true;d=+d||0;if(d&&defOf(b.tags)!==d)return false;if(t===13)return b.tags.includes("CoreTouched");if(t===33)return b.kind==="rune";return !t||t===17||!lineFit(t)||(typeMatch(t,b)&&(t!==9||!sc||b.kind===sc));}
 const TL_CACHE=new Map();
 function tagLines(tags){const k=tags.join(",");let r=TL_CACHE.get(k);if(!r){r=new Set();AFF.forEach(a=>{if(a.tags.some(x=>tags.includes(x))&&!a.ex.some(x=>tags.includes(x))){const l=LINEN[a.id];if(l)r.add(l);}});TL_CACHE.set(k,r);}return r;}
 function baseLines(ids){const bs=(ids||[]).map(i=>BASE_BY_ID[i]).filter(Boolean);if(!bs.length)return null;const out=new Set();bs.forEach(b=>tagLines(b.tags).forEach(l=>out.add(l)));return out;}

@@ -266,7 +266,7 @@ function pickHTML(r,k){
 }
 /* named lines: show all mods, or only those that can roll on the rule's item type, or only those found nowhere else (needs a specific item type) */
 function fitHTML(r,k){
-  const lf=lineFit(r.type,S.sc),bl=baseLines(mlist(r,"b"));let h="";
+  const lf=lineFit(r.type,S.sc,mval(r,"d")),bl=baseLines(mlist(r,"b"));let h="";
   if(r.type===9)h+=`<label class="lab" for="pkscope-${k}">Item kind</label><div class="selwrap"><select id="pkscope-${k}" data-pkscope="${k}">${[["","Shields, foci & quivers"],["shield","Shields only"],["tome","Foci only"],["quiver","Quivers only"]].map(([v,n])=>`<option value="${v}" ${S.sc===v?"selected":""}>${n}</option>`).join("")}</select></div>`;
   if(lf)h+=`<label class="lab" for="pkfitsel-${k}">Show mods</label><div class="selwrap"><select id="pkfitsel-${k}" data-pkfit="${k}"><option value="0" ${S.fit===0?"selected":""}>All mods</option><option value="1" ${S.fit===1?"selected":""}>Can roll on this item type</option><option value="2" ${S.fit===2?"selected":""} ${lf.only.size?"":"disabled"}>Only on this item type</option></select></div>`;
   if(bl)h+=`<label class="pkchk"><input class="sw sm" type="checkbox" data-pkbase="${k}" ${S.baseFit?"checked":""}><span>Only mods that can roll on the picked bases</span></label>`;
@@ -280,8 +280,8 @@ function renderPickList(k){
   const words=q.split(/\s+/).filter(Boolean);
   const shw=x=>(k==="a"||k==="na")?dl(x[1])+lineExtra(x[0]):k==="b"?(LX.bases[x[0]]||x[1]):REDD[x[0]];
   const hayOf=x=>((k==="a"||k==="na")?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase())+(LANG==="en"?"":" "+shw(x).toLowerCase());
-  const lf=(k==="a"||k==="na")&&(S.fit||(r.type===9&&S.sc))?lineFit(r.type,S.sc):null,bl=(k==="a"||k==="na")&&S.baseFit?baseLines(mlist(r,"b")):null; /* picked bases hide the mods that cannot roll on them */
-  const res=P.list().filter(x=>{if(k==="b"&&!baseInType(r.type,x[0],S.sc))return false;if(lf&&!(S.fit===2?lf.only:lf.fits).has(x[1]))return false;if(bl&&!bl.has(x[1]))return false;if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
+  const lf=(k==="a"||k==="na")&&(S.fit||(r.type===9&&S.sc))?lineFit(r.type,S.sc,mval(r,"d")):null,bl=(k==="a"||k==="na")&&S.baseFit?baseLines(mlist(r,"b")):null; /* picked bases hide the mods that cannot roll on them */
+  const res=P.list().filter(x=>{if(k==="b"&&!baseInType(r.type,x[0],S.sc,mval(r,"d")))return false;if(lf&&!(S.fit===2?lf.only:lf.fits).has(x[1]))return false;if(bl&&!bl.has(x[1]))return false;if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
   const tag=x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);
     if(on)return "<small>picked</small>";
     if((k==="a"||k==="na")&&ATTACK_LINE(x[0]))return `<small class="qm" title="${esc(lineWhere(x[0]))}" aria-label="${esc(lineWhere(x[0]))}">?</small>`;
@@ -503,7 +503,7 @@ document.addEventListener("change",e=>{
   if(t.dataset.on){const r=F.rules.find(x=>x.id===t.dataset.on);if(r){const want=t.checked;t.checked=!!r.on;setRuleOn(r,want);}return;}
   if(t.id==="f-on"){const r=curRule();if(r){r.on=t.checked?1:0;touch();}return;}
   if(t.id==="preset"){const p=PRESETS[+t.value];if(p){setFilter(p.build());toast("Loaded preset: "+p.label+".");}t.value="";return;}
-  if(t.dataset.m&&t.tagName==="SELECT"){const r=curRule();if(r){mset(r,t.dataset.m,t.value);chgMark(t);touch();if(t.dataset.m==="rt")renderEditor();}return;}
+  if(t.dataset.m&&t.tagName==="SELECT"){const r=curRule();if(r){mset(r,t.dataset.m,t.value);chgMark(t);touch();if(t.dataset.m==="rt")renderEditor();if(t.dataset.m==="d")refreshFit();}return;}
   if(t.dataset.mr&&t.tagName==="SELECT"){const r=curRule(),k=t.dataset.mr.split(",")[0];if(r){msetRng(r,k,+$("#m-"+k+"0").value||0,+$("#m-"+k+"1").value||0);chgMark(t);touch();}return;}
   if(t.dataset.pkscope){S.sc=t.value;refreshFit();return;}
   if(t.dataset.pkfit){S.fit=+t.value;refreshFit();return;}

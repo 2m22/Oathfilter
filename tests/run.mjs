@@ -709,6 +709,16 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
    ok(baseInType(13,"ct_proj_bow_8")&&!baseInType(13,"bow_1"),"Core-touched keeps core-touched bases only");
    ok(baseInType(33,"dwarven_rune")&&!baseInType(33,"bow_1"),"Dwarven Runes keep the rune base only");
    ok(baseInType(0,"bow_1")&&baseInType(15,"bow_1"),"Any gear and flag types do not narrow the base list");}
+  {ok(baseInType(0,"plate_chest_1","",1)&&!baseInType(0,"silk_chest_1","",1)&&!baseInType(0,"leather_chest_1","",1),"defence type 1 (Armour): plate only");
+   ok(baseInType(0,"brigandine_chest_1","",4)&&!baseInType(0,"plate_chest_1","",4)&&baseInType(0,"chain_chest_1","",5)&&baseInType(0,"ritual_chest_1","",6),"defence types 4/5/6 match the hybrid bases");
+   ok(baseInType(6,"plate_chest_1","",1)&&!baseInType(5,"plate_chest_1","",1)&&!baseInType(6,"plate_helm_1","",1)&&baseInType(5,"plate_helm_1","",1),"type and defence type combine (AND)");
+   ok(!baseInType(0,"iron_ring","",1)&&!baseInType(0,"bow_1","",3),"jewellery and weapons have no defence type");
+   const pa=lineFit(2,"",1),ps=lineFit(2,"",3),ph=lineFit(2,"",5),pc=lineFit(6,"",1),pall=lineFit(2);
+   ok(pa&&ps&&ph&&pc,"mod filter works for type + defence type");
+   ok(pa.fits.has(LINEN["armour_local"])&&!ps.fits.has(LINEN["armour_local"])&&ps.fits.has(LINEN["es_local"])&&!pa.fits.has(LINEN["evasion_local"]),"local Armour only on armour bases, local ES on ES bases, no Evasion on plate (flat ES text is shared with the global ES line)");
+   ok(ph.fits.has(LINEN["armour_local"])&&ph.fits.has(LINEN["es_local"])&&!ph.fits.has(LINEN["evasion_local"]),"Armour + ES hybrid rolls armour and ES, not evasion");
+   ok([...pa.fits].every(x=>pall.fits.has(x))&&pc.fits.size<=pa.fits.size,"narrowing never adds mods");
+   ok(lineFit(0,"",1)&&!lineFit(0,"",0),"Any gear gets a mod filter once a defence type is set");}
   eq(lineFit(33),null,"Dwarven Runes have no mod filter (their affixes are not in the page data)");
   [10,18,1,5,6,7,8,11,12,31,32,34].forEach(t=>{const f=lineFit(t);ok(f&&f.fits.size>0&&[...f.only].every(x=>f.fits.has(x)),"type "+t+": only is a subset of fits");});
   ok(!bow.only.has(L("fire_added_local")),"a line shared with other types is not exclusive");
