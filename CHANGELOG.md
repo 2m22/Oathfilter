@@ -14,9 +14,12 @@ All notable changes for players. Newest first.
 - Rules that can never match are marked "never matches". Nothing is deleted.
 - Easy Mode is now three steps: pick a filter strictness (Leveling, Endgame or Uber Strict), optionally a build focus, then keep or hide extras. Uber Strict also keeps top-roll Rare gear (item level 82+) and hides the other Rares. A badge shows Leveling, Endgame, Uber Strict, + builds or Custom.
 - The language selector now translates the whole page (buttons, tabs, Easy Mode, Drop Test, Import), not only game texts. 28 languages are covered; Thai and the long Guide, About and help texts stay English.
+- Leveling now steps its tier limits by item level on its own (under 20, 40, 60 and 75, then 75+), keeping the best tier that can drop plus one more. It only affects the lines of your Build focus picks.
+- Leveling always shows "+X to Level of all Skill Gems" (skill level affixes), whatever the tier or item level.
 
 ### Changed
 - New layout: centred 1280px page, calmer top bars, equal cards and one slim status bar with the rule count (X / 200) on all tabs.
+- Leveling keeps 2 tiers (was 3). Lines without any tier limit, such as the Max Resistance lines, stop showing from item level 75 in Leveling.
 - The Easy Mode rarity-0 catch-all no longer hides Normal and Magic gear when only one of them is hidden; it now has separate Hide rules for each.
 - Named lines: the tier limit and the line counts (n, Any N, All of them) now count only the named lines, as the game does. Without named lines they still count all lines. Top roll still looks at the whole item.
 
