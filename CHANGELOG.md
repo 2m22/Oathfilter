@@ -12,8 +12,12 @@ All notable changes for players. Newest first.
 - Order check at copy and share: it warns when a Hide or Sell sits above the Ashen block, when a tier highlight sits below it, and about Sell on Dwarven Runes.
 - Share links made offline also carry the game data build and a check hash, and the code from before a merge.
 - Rules that can never match are marked "never matches". Nothing is deleted.
+- Easy Mode is now three steps: pick a filter strictness (Leveling, Endgame or Uber Strict), optionally a build focus, then keep or hide extras. Uber Strict also keeps top-roll Rare gear (item level 82+) and hides the other Rares. A badge shows Leveling, Endgame, Uber Strict, + builds or Custom.
+- The language selector now translates the whole page (buttons, tabs, Easy Mode, Drop Test, Import), not only game texts. 28 languages are covered; Thai and the long Guide, About and help texts stay English.
 
 ### Changed
+- New layout: centred 1280px page, calmer top bars, equal cards and one slim status bar with the rule count (X / 200) on all tabs.
+- The Easy Mode rarity-0 catch-all no longer hides Normal and Magic gear when only one of them is hidden; it now has separate Hide rules for each.
 - Named lines: the tier limit and the line counts (n, Any N, All of them) now count only the named lines, as the game does. Without named lines they still count all lines. Top roll still looks at the whole item.
 
 ## 2026-11-24
