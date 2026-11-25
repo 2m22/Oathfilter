@@ -92,7 +92,7 @@ const newRule=o=>Object.assign({extra:[],m:[]},NEW_RULE,o||{});
 /* key order as the game writes it. Seen in exports (22.11.2026): b a t k n s d i q g gx r rn u (one string with all of them), b s rt, a an na t k n d, b a na nb rn, a na rn, b a nb, nr rn, an rn, a all. Guessed: where all, an, na, nb and nr sit among each other, and rt after u. Readers use the key name. */
 const MORE_ORDER=["b","a","all","an","na","nb","t","k","n","s","d","i","q","g","gx","r","nr","rn","u","rt"];
 /* data version of the item lists above */
-const DATA_BUILD={build:90,source:"local game files",read:"2026-11-25",apiChecked:88};
+const DATA_BUILD={build:90,source:"local game files",read:"2026-11-25",apiChecked:90};
 const MAXL={a:6,b:12,rn:12,na:6}; /* list limits shown in the game (Patch 87) */
 const parseMore=s=>s.split(";").filter(x=>x!=="").map(seg=>{const i=seg.indexOf("=");return i<0?[seg,null]:[seg.slice(0,i),seg.slice(i+1)];});
 const moreStr=r=>r.m&&r.m.length?",3:"+r.m.map(p=>p[1]===null?p[0]:p[0]+"="+p[1]).join(";"):"";
