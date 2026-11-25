@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset} from "../js/filter-engine.js";
+import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -627,6 +627,50 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(I.tx("3 picked")==="3 gewählt"&&I.tx("{n} picked",{n:5})==="5 gewählt","tx fills {n} templates");
   ok(I.tx("Ashen Rares 2/8")==="Ashen-Seltene 2/8","tx matches templates with two placeholders");
   dict={};ok(I.tx("Filter strictness")==="Filter strictness","an empty table returns English");
+}
+
+/* ---- Leveling: automatic tier steps by item level (no UI), skill levels always shown ---- */
+{
+  const lv0=ezPreset("leveling",ezSane({}));
+  eq(lv0.lv,1,"the Leveling preset turns the tier steps on");eq(lv0.tk,2,"Leveling keeps 2 tiers (tk=2)");
+  ["endgame","uber"].forEach(id=>eq(ezPreset(id,lv0).lv,0,id+" has no tier steps"));
+  ok(!("band" in ezSane({})),"no level band in the state");
+  const gen=(arch,over)=>easyGen(Object.assign(ezPreset("leveling",ezSane({arch})),over||{}),false,false);
+  const lvOf=r=>r.level||0,inLv=(r,n)=>{const[a,b]=LEVEL[lvOf(r)];return n>=a&&n<=b;};
+  const picks={attack:1,fire:1,cold:1,res:1,move:1};
+  const g=gen(picks),R=g.rules.filter(r=>r.type===0&&r.action>0&&mlist(r,"a").length);
+  ok(new Set(R.map(lvOf)).size>1,"Leveling with picks uses several item-level steps");
+  ok(R.every(r=>[0,1,2,3,4,6].includes(lvOf(r))),"only compiler level steps are used (<20, <40, <60, <75, 75+)");
+  /* property: at every item level the best droppable tier of every picked line is still shown */
+  const pickIds=new Set();R.forEach(r=>mlist(r,"a").forEach(i=>pickIds.add(i)));
+  let chk=0,hid=0;
+  pickIds.forEach(id=>{const t=LINEN[id];const as=AFF.filter(a=>!/^idol/i.test(a.id)&&LINEN[a.id]===t);if(!as.length)return;
+    for(let n=1;n<=90;n++){let kb=99,top=0;as.forEach(a=>{top=Math.max(top,a.n);for(let k=1;k<=a.n;k++)if(tierLvl(a,k)<=n){kb=Math.min(kb,k);break;}});if(kb===99)continue;
+      const hit=R.filter(r=>mlist(r,"a").includes(id)&&inLv(r,n));chk++;
+      ok(hit.some(r=>!mval(r,"t")||kb<=+mval(r,"t")),"best droppable tier T"+kb+" of "+id+" is shown at item level "+n);
+      /* the worst tier of a long line must be hidden somewhere */
+      if(top>=8&&n>=60&&!hit.some(r=>!mval(r,"t")||8<=+mval(r,"t")))hid++;}});
+  ok(chk>1000,"property check ran over many lines and levels ("+chk+")");ok(hid>0,"T8 is hidden on 8-tier lines at higher item levels");
+  /* skill levels: one general rule, never tier- or level-limited, and not repeated inside the picks */
+  const sk=R.filter(r=>mlist(r,"a").includes("skill_level"));
+  eq(sk.length,1,"skill_level is in exactly one rule");ok(sk[0]&&!mval(sk[0],"t")&&lvOf(sk[0])===0&&mlist(sk[0],"a").length===1,"the skill level rule has no tier or level limit");
+  ok(!gen({spell:1,bow:1,attack:1}).rules.filter(r=>mlist(r,"a").length>1).some(r=>mlist(r,"a").includes("skill_level")),"skill_level is not repeated inside pick rules");
+  /* no picks: no tier steps, no skill rule; endgame keeps one rule per pick part */
+  ok(!gen({}).rules.some(r=>lvOf(r)&&r.type===0&&mlist(r,"a").length),"no picks: no tier steps");
+  ok(!gen({}).rules.some(r=>mlist(r,"a").includes("skill_level")),"no picks: no skill level rule");
+  /* resistances, movement speed, attributes only come through Build focus */
+  { const used=r=>gen({attack:1}).rules.filter(x=>x.type===0).flatMap(x=>mlist(x,"a")).filter(i=>/res|move|^str|^dex|^int|attr/.test(i));
+    eq(used().length,0,"Resistances, Movement Speed and Attributes are not forced without a pick");
+    ok(gen({res:1}).rules.some(x=>mlist(x,"a").some(i=>/res/.test(i))),"a Resistances pick lists the resistance lines (and they follow the tier steps)");}
+  /* budget and limits, also with every pick */
+  const all=Object.fromEntries(EZ_ARCH.map(a=>[a.k,1]));
+  [{},{attack:1},picks,all].forEach((p,i)=>{const e=gen(p),n=e.rules.length;
+    ok(n<=MAX_RULES,"Leveling stays within 200 rules for pick set "+i+" ("+n+")");
+    ok(e.rules.every(r=>mlist(r,"a").length<=6),"at most 6 named lines per rule, pick set "+i);
+    ok(rulesIssues(e.rules).length===0,"no rule issues, pick set "+i+": "+JSON.stringify(rulesIssues(e.rules)).slice(0,120));});
+  console.log("Leveling rule counts: none "+gen({}).rules.length+", 1 pick "+gen({attack:1}).rules.length+", 5 picks "+gen(picks).rules.length+", all picks "+gen(all).rules.length);
+  /* the built-in gear affixes: 114 (25 raw drune_* affixes are Dwarven Runes and not in the page data, 8 page-only affixes: vow_effect98, 6 pen95, elemental_pen95_amulet) */
+  eq(AFF.filter(a=>!/^idol/i.test(a.id)).length,114,"the page data holds 114 non-Idol gear affixes");
 }
 
 console.log(passed+" passed, "+failed+" failed");

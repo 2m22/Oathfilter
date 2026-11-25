@@ -1208,12 +1208,12 @@ const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1}}); /* st: strictness extras for a filter without picks, 0 none, 1 hide Rare gear under item level 75, 2 keep only top-roll Rares from item level 82. gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
+const ezDef=()=>({lv:0,rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1}}); /* st: strictness extras for a filter without picks, 0 none, 1 hide Rare gear under item level 75, 2 keep only top-roll Rares from item level 82. gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
-  const s={rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
+  const s={lv:n(o.lv,0,1,d.lv),rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
     idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),ga:on(o.ga,d.ga),hr:on(o.hr,d.hr),st:n(o.st,0,2,d.st),pre:typeof o.pre==="string"?o.pre.slice(0,24):d.pre,arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
@@ -1255,6 +1255,18 @@ function ezThr(id,rl,keep){
   return thr&&thr<Math.min(top,EZ_TMAX)?thr:0;
 }
 const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=MAXL.a)p.push(ids.slice(i,i+MAXL.a));return p;};
+/* Leveling tier steps. Item-level steps of the compiler (rule level 1..4 = <20, <40, <60, <75, 6 = 75+). Each step caps a line at the best tier that can drop at the step's LOWER item level plus keep-1 tiers, so the best droppable tier is never hidden. */
+const LV_STEPS=[{lv:1,lo:1,n:"<20"},{lv:2,lo:20,n:"<40"},{lv:3,lo:40,n:"<60"},{lv:4,lo:60,n:"<75"},{lv:6,lo:75,n:"75+"}];
+/* ids: [{id,t,top,c}] with c = cap per step (99 = no cap). Returns [{lv,n,parts}]. <20 .. <75 are nested, so a narrow step is only written where its cap is looser than the next wider one; when <75 and 75+ have the same cap one rule without a level covers both. */
+function ezStages(ids,lvOn){
+  const mkp=(list,ti)=>ezTP(list.map(x=>({id:x.id,top:x.top,t:ti(x)})).sort((a,b)=>a.t-b.t));
+  if(!lvOn)return[{lv:0,n:"",parts:mkp(ids,x=>x.t)}];
+  const out=[],same=ids.filter(x=>x.c[3]===x.c[4]),diff=ids.filter(x=>x.c[3]!==x.c[4]);
+  [0,1,2].forEach(k=>{const l=ids.filter(x=>x.c[k]>x.c[k+1]);if(l.length)out.push({lv:LV_STEPS[k].lv,n:LV_STEPS[k].n,parts:mkp(l,x=>x.c[k])});});
+  if(diff.length){out.push({lv:4,n:"<75",parts:mkp(diff,x=>x.c[3])});out.push({lv:6,n:"75+",parts:mkp(diff,x=>x.c[4])});}
+  if(same.length)out.push({lv:0,n:"",parts:mkp(same,x=>x.c[4])});
+  return out.filter(x=>x.parts.length);
+}
 function easyGen(s,pack,merge){
   s=ezSane(s);
   const notes=[],R=[],rl=s.rl;
@@ -1264,9 +1276,11 @@ function easyGen(s,pack,merge){
   /* a line that two picks share (crit, for example) is listed once, under the first pick that has it, so it never wastes an a= slot or a rule */
   const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
   const og=own(),oi=own();
+  const SKILL="skill_level"; /* one line text for skill_level, _bow and _2h; with the Leveling steps it is shown for every item, so it is taken out of the picks */
+  if(s.lv&&LINEN[SKILL])og(SKILL);
   /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 6 per rule. */
-  const gearA=act.map(a=>{const ids=ezGearIds(a,s).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99,top:ezTop(id)})).sort((x,y)=>x.t-y.t);
-    const parts=pack?[]:ezTP(ids); /* same rule count as without a tier limit: sorted by limit, up to 6 per rule, the loosest line of a rule sets its limit */
+  const gearA=act.map(a=>{const ids=ezGearIds(a,s).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99,top:ezTop(id),c:s.lv?LV_STEPS.map(z=>ezThr(id,z.lo,s.tk)||99):null})).sort((x,y)=>x.t-y.t);
+    const parts=pack?[]:ezStages(ids,s.lv); /* sorted by limit, up to 6 per rule, the loosest line of a rule sets its limit */
     return{a,parts,ids};}).filter(x=>x.ids.length);
   let idolA=act.map(a=>({a,parts:ezChunks(ezIdolIds(a,s).filter(oi))})).filter(x=>x.parts.length);
   let gearP=gearA;
@@ -1274,14 +1288,14 @@ function easyGen(s,pack,merge){
   if(pack){
     const gi=gearA.flatMap(x=>x.ids),ii=idolA.flatMap(x=>x.parts.flat());
     const col=act[0]?act[0].col:6;
-    gearP=gi.length?[{a:{n:"Gear picks",col},parts:ezTP(gi.slice().sort((x,y)=>x.t-y.t))}]:[];
+    gearP=gi.length?[{a:{n:"Gear picks",col},parts:ezStages(gi,s.lv)}]:[];
     idolA=ii.length?[{a:{n:"Idol picks",col},parts:ezChunks(ii)}]:[];
   }
   /* picks with the same colour share rules (any-of lines with the same action, colour and tier limit behave exactly like one rule), so 6 lines fill a rule even across picks */
   /* each pick keeps its own rules by default; picks of the same colour share rules only when the separate build would pass the rule limit (merge), and everything shares one list as the last step (pack) */
   if(!pack&&merge){
     const byCol=(list,get)=>{const m=new Map();list.forEach(x=>{const c=x.a.col;if(!m.has(c))m.set(c,{n:[],col:c,ids:[]});const g=m.get(c);g.n.push(x.a.n);g.ids.push(...get(x));});return[...m.values()];};
-    gearP=byCol(gearA,x=>x.ids).map(g=>({a:{n:g.n.length>3?"Picks":g.n.join(" + "),col:g.col},parts:ezTP(g.ids.slice().sort((x,y)=>x.t-y.t))}));
+    gearP=byCol(gearA,x=>x.ids).map(g=>({a:{n:g.n.length>3?"Picks":g.n.join(" + "),col:g.col},parts:ezStages(g.ids,s.lv)}));
     idolA=byCol(idolA,x=>x.parts.flat()).map(g=>({a:{n:g.n.length>3?"Picks":g.n.join(" + "),col:g.col},parts:ezChunks(g.ids)}));
   }
   const rarHide=(s.hn||s.hm)?1:0;
@@ -1317,7 +1331,8 @@ function easyGen(s,pack,merge){
   if(!gearA.length){stTop();ga();stHide();hideR();} /* the Rare Ashen / Gnome-made block sits above every Hide and Sell */
   /* 4 gear picks and the level floor */
   if(white){
-    gearP.forEach(x=>x.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);})));
+    gearP.forEach(x=>x.parts.forEach(st=>st.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col,level:st.lv},x.a.n+(st.n?" "+st.n:"")+(st.parts.length>1?" "+(i+1)+"/"+st.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);}))));
+    if(s.lv&&LINEN[SKILL])mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:act[0].col},"Skill levels",r=>msetList(r,"a",[SKILL])); /* all skill levels (+1, +2, +3), whatever the tier or the item level */
     if(gearA.length){ga();hideR();} /* below the tier highlights of the picks, above the hides */
     /* the catch-all hide never uses Any rarity: it is written per rarity. Normal and Magic that the hide above did not take, then Rare. */
     if(s.hn&&s.hm)mk({type:0,rarity:4,action:0},"Everything else"); /* Normal and Magic are already hidden above, so only Rares are left to hide */
@@ -1344,12 +1359,12 @@ const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
    A preset owns the hides, the tier limits, the level, the rule order and the Ashen block. The build buttons (arch) only add lines to keep, so they never change the label; they show as a "+ builds" chip.
    Changing anything the preset owns, or editing the filter outside Easy Mode, makes the state Custom. The presets are defined in EZ_PRESETS (id -> {name, short, vals}): Leveling, Endgame and Uber Strict. */
 const EZ_PRESETS={
-  leveling:{name:"Leveling",short:"Shows basic gear, early bases, and progression items while leveling up.",vals:{rl:0,tk:3,hl:1,idol:"match",hn:0,hm:0,hs:0,gems:0,ga:1,hr:0,st:0}},
-  endgame:{name:"Endgame",short:"Hides low-tier items; highlights optimal endgame bases and essential affixes.",vals:{rl:75,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:1}},
-  uber:{name:"Uber Strict",short:"Hides almost everything except absolute best-in-slot bases and top tier rolls.",vals:{rl:84,tk:1,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:1,st:2}}
+  leveling:{name:"Leveling",short:"Shows basic gear, early bases, and progression items while leveling up.",vals:{lv:1,rl:0,tk:2,hl:1,idol:"match",hn:0,hm:0,hs:0,gems:0,ga:1,hr:0,st:0}},
+  endgame:{name:"Endgame",short:"Hides low-tier items; highlights optimal endgame bases and essential affixes.",vals:{lv:0,rl:75,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:1}},
+  uber:{name:"Uber Strict",short:"Hides almost everything except absolute best-in-slot bases and top tier rolls.",vals:{lv:0,rl:84,tk:1,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:1,st:2}}
 };
 const EZ_PRE_IDS=Object.keys(EZ_PRESETS);
-const EZ_OWNED=["rl","tk","hl","idol","hn","hm","hs","gems","ga","hr","st"];
+const EZ_OWNED=["lv","rl","tk","hl","idol","hn","hm","hs","gems","ga","hr","st"];
 /* the state after choosing a preset: everything the preset owns is reset, the build picks stay */
 const ezPreset=(id,s)=>ezSane(Object.assign({},s,EZ_PRESETS[id].vals,{keep:{core:1,runes:1,tsw:1},pre:id,arch:s.arch}));
 const ezOwnedChanged=(a,b)=>EZ_OWNED.some(k=>a[k]!==b[k])||["core","runes","tsw"].some(k=>a.keep[k]!==b.keep[k]);
