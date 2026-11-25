@@ -1,7 +1,7 @@
 import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
 import {createI18n} from "./i18n.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
-import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_BANDS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -1646,8 +1646,7 @@ function ezBuild(){
   const card=id=>{const p=EZ_PRESETS[id];return `<button type="button" class="ezcard" data-ez="pre,${id}" aria-pressed="false"><b>${esc(p.name)}</b><span>${esc(p.short)}</span></button>`;};
   $("#ezCtl").innerHTML=`
   <section class="ezs" aria-labelledby="ez-h1"><div class="hrow ezh"><h3 id="ez-h1" class="ezt"><span class="ezn">1</span>Filter strictness</h3>${hb("ezPre")}<span id="ezState" class="ezstate" aria-live="polite"></span></div>
-    <div class="ezcards" role="group" aria-label="Filter strictness">${EZ_PRE_IDS.map(card).join("")}</div>
-    <div class="ezband" id="ezBand" hidden><span class="ezbl" id="ezBandL">Your level</span><div class="chips" role="group" aria-labelledby="ezBandL">${EZ_BANDS.map((b,i)=>ezBtn("band,"+i,b.label)).join("")}</div></div></section>
+    <div class="ezcards" role="group" aria-label="Filter strictness">${EZ_PRE_IDS.map(card).join("")}</div></section>
   <section class="ezs" aria-labelledby="ez-h2"><div class="hrow ezh"><h3 id="ez-h2" class="ezt"><span class="ezn">2</span>Build focus</h3>${hb("ezWant")}<span id="ezBuildsB" class="ezbadge chip" hidden>+ builds</span><span class="ezpk" id="ezPicked" aria-live="polite"></span><button type="button" class="btn ezclr" data-ez="clear,all" title="Unpick every pill. Ctrl+Z brings them back.">${li("x")}Clear all</button></div>
     <div class="ezgrid">${EZ_GRP.map(([t,ic,blocks])=>`<div class="ezg" role="group" aria-label="${esc(t)}"><div class="ezgt">${ezIco(ic)}<span>${esc(t)}</span></div><div class="chips">${blocks.flatMap(([bt,ks])=>ks).map(ezChip).join("")}</div></div>`).join("")}</div></section>
   <div class="ez2">
@@ -1663,7 +1662,6 @@ function ezSync(){
   const pk=EZ_ARCH.filter(a=>s.arch[a.k]).length,pe=$("#ezPicked"),ce=$("#ezCtl .ezclr");
   if(pe)pe.textContent=pk?pk+" picked":"";if(ce)ce.disabled=!pk;
   const st=$("#ezState");if(st){st.textContent=bg&&bg.custom?"Custom":"";st.classList.toggle("on",!!(bg&&bg.custom));}
-  const bd=$("#ezBand");if(bd)bd.hidden=s.pre!=="leveling";
   const bb=$("#ezBuildsB");if(bb)bb.hidden=!(bg&&bg.chip);
   $$("#ezCtl button[data-ez]").forEach(b=>{
     const[k,v]=b.dataset.ez.split(",");
@@ -1731,7 +1729,6 @@ function ezTouched(){
     else if(k==="hn"||k==="hm")s[k]=s[k]?0:1;
     else if(k==="hs")s.hs=s.hs?0:1;
     else if(k==="ga"||k==="hr")s[k]=s[k]?0:1;
-    else if(k==="band")s.band=+v;
     else if(k==="gems")s.gems=s.gems===+v?0:+v;
         if(ezOwnedChanged(before,s)&&s.pre)s.pre="custom"; /* the preset owns these: Custom from here. Build buttons (arch) do not count. */
     EZ.s=ezSane(s);ezTouched();
