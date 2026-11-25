@@ -1,7 +1,7 @@
 import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
 import {createI18n} from "./i18n.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
-import {baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -241,7 +241,7 @@ const ATTACK_LINE=id=>/^attack_added_(phys|fire|cold|lightning)$/.test(id);
 const lineExtra=id=>LOCAL_LINE(id)?" (local)":"";
 const lineWhere=id=>{if(LOCAL_LINE(id))return "Local: rolls on the weapon itself, e.g. on a bow (not on quivers).";if(ATTACK_LINE(id)){const a=AFF.find(x=>x.id===id);const w=a?a.tags.filter(t=>/^(Gloves|Quiver|Ring|Amulet|Boots)$/.test(t)).map(t=>t.toLowerCase()+(t==="Boots"?"":"s")).join(", "):"gloves, quivers, rings, amulets";return "Applies to "+w+" (e.g. quivers for bows), not to the weapon itself.";}return "";};
 const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,disp:BASED,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line, like life or fire"},na:{title:"Not these lines",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line that must NOT be on the item"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,disp:REDD,ph:"Type a red name"}};
-S.pk={b:"",a:"",na:"",rn:""};S.fit=0;S.baseFit=true;S.sc=""; /* named-line list: 0 all mods, 1 can roll on the rule's item type, 2 only on it */
+S.pk={b:"",a:"",na:"",rn:""};S.fit=1;S.baseFit=true;S.sc=""; /* named-line list (default 1, so choosing an item type filters at once): 0 all mods, 1 can roll on the rule's item type, 2 only on it */
 S.moreOpen=true;
 /* what the sample drops can produce: other bases and reds still go into the code, but the drop test never shows them */
 const SAMPLE={b:new Set(BASES.map(b=>b.id).concat(VAR_IDS,SPECIAL.map(b=>b.id),["dwarven_rune"])),rn:new Set(UNIQUES.map(u=>u.id||redIdOf(u.name)))};
@@ -272,7 +272,7 @@ function fitHTML(r,k){
   if(bl)h+=`<label class="pkchk"><input class="sw sm" type="checkbox" data-pkbase="${k}" ${S.baseFit?"checked":""}><span>Only mods that can roll on the picked bases</span></label>`;
   return h;
 }
-function refreshFit(){const r=curRule();if(!r)return;["a","na"].forEach(k=>{const b=$("#pkfit-"+k);if(b)b.innerHTML=fitHTML(r,k);renderPickList(k);});}
+function refreshFit(){const r=curRule();if(!r)return;["a","na"].forEach(k=>{const b=$("#pkfit-"+k);if(b)b.innerHTML=fitHTML(r,k);renderPickList(k);});renderPickList("b");}
 function renderPickList(k){
   const r=curRule(),box=$("#pl-"+k);if(!r||!box)return;
   const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=MAXL[k];
@@ -281,7 +281,7 @@ function renderPickList(k){
   const shw=x=>(k==="a"||k==="na")?dl(x[1])+lineExtra(x[0]):k==="b"?(LX.bases[x[0]]||x[1]):REDD[x[0]];
   const hayOf=x=>((k==="a"||k==="na")?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase())+(LANG==="en"?"":" "+shw(x).toLowerCase());
   const lf=(k==="a"||k==="na")&&(S.fit||(r.type===9&&S.sc))?lineFit(r.type,S.sc):null,bl=(k==="a"||k==="na")&&S.baseFit?baseLines(mlist(r,"b")):null; /* picked bases hide the mods that cannot roll on them */
-  const res=P.list().filter(x=>{if(lf&&!(S.fit===2?lf.only:lf.fits).has(x[1]))return false;if(bl&&!bl.has(x[1]))return false;if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
+  const res=P.list().filter(x=>{if(k==="b"&&!baseInType(r.type,x[0],S.sc))return false;if(lf&&!(S.fit===2?lf.only:lf.fits).has(x[1]))return false;if(bl&&!bl.has(x[1]))return false;if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
   const tag=x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);
     if(on)return "<small>picked</small>";
     if((k==="a"||k==="na")&&ATTACK_LINE(x[0]))return `<small class="qm" title="${esc(lineWhere(x[0]))}" aria-label="${esc(lineWhere(x[0]))}">?</small>`;
@@ -508,7 +508,7 @@ document.addEventListener("change",e=>{
   if(t.dataset.pkscope){S.sc=t.value;refreshFit();return;}
   if(t.dataset.pkfit){S.fit=+t.value;refreshFit();return;}
   if(t.dataset.pkbase){S.baseFit=t.checked;["a","na"].forEach(renderPickList);return;}
-  if(t.dataset.f&&t.tagName==="SELECT"){const r=curRule();if(r){r[t.dataset.f]=+t.value;touch();if(t.dataset.f==="type"){if(!lineFit(r.type))S.fit=0;if(r.type!==9)S.sc="";refreshFit();}}return;}
+  if(t.dataset.f&&t.tagName==="SELECT"){const r=curRule();if(r){r[t.dataset.f]=+t.value;touch();if(t.dataset.f==="type"){const lf=lineFit(r.type);if(S.fit===2&&!(lf&&lf.only.size))S.fit=1;if(r.type!==9)S.sc="";refreshFit();}}return;}
 });
 document.addEventListener("change",e=>{
   const t=e.target,k=t.dataset&&t.dataset.pls;if(!k||t.value==="")return;

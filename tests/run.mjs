@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines} from "../js/filter-engine.js";
+import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -703,6 +703,12 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
    ok(qvB.has(L2("attack_speed"))&&!shB.has(L2("attack_speed"))&&!toB.has(L2("attack_speed")),"picked bases: attack speed only for the quiver");
    ok(shB.has(L2("max_fire_res91"))&&!toB.has(L2("max_fire_res91"))&&!qvB.has(L2("max_fire_res91")),"picked bases: maximum resistance only for the shield");
    ok(toB.has(L2("minion_dmg"))&&!shB.has(L2("minion_dmg"))&&!qvB.has(L2("minion_dmg")),"picked bases: Wand/Tome minion damage only for the focus");}
+  {ok(baseInType(18,"bow_1")&&!baseInType(18,"sword1h_1")&&!baseInType(18,"iron_ring"),"base list by type: Bows keep bows only");
+   ok(baseInType(9,"shield_1")&&baseInType(9,"tome_1")&&baseInType(9,"hunters_quiver")&&!baseInType(9,"iron_ring"),"type 9 keeps shields, foci and quivers");
+   ok(!baseInType(9,"shield_1","quiver")&&baseInType(9,"hunters_quiver","quiver")&&baseInType(9,"tome_1","tome"),"type 9 narrowed to one kind");
+   ok(baseInType(13,"ct_proj_bow_8")&&!baseInType(13,"bow_1"),"Core-touched keeps core-touched bases only");
+   ok(baseInType(33,"dwarven_rune")&&!baseInType(33,"bow_1"),"Dwarven Runes keep the rune base only");
+   ok(baseInType(0,"bow_1")&&baseInType(15,"bow_1"),"Any gear and flag types do not narrow the base list");}
   eq(lineFit(33),null,"Dwarven Runes have no mod filter (their affixes are not in the page data)");
   [10,18,1,5,6,7,8,11,12,31,32,34].forEach(t=>{const f=lineFit(t);ok(f&&f.fits.size>0&&[...f.only].every(x=>f.fits.has(x)),"type "+t+": only is a subset of fits");});
   ok(!bow.only.has(L("fire_added_local")),"a line shared with other types is not exclusive");

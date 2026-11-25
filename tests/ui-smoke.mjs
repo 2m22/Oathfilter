@@ -102,15 +102,19 @@ async function run(name,mode){
     const list=()=>page.$$eval("#pl-a button[data-padd]",b=>b.map(x=>x.textContent));
     await page.selectOption("#f-type","0");await page.waitForTimeout(150);
     ok(!(await page.$("#pkfitsel-a")),"no mod filter while the rule is on Any gear");
+    const all=(await list()).length,baseList=()=>page.$$eval("#pl-b button[data-padd]",b=>b.map(x=>x.textContent)),allB=(await baseList()).length;
     await page.selectOption("#f-type","10");await page.waitForTimeout(200);
     ok(!!(await page.$("#pkfitsel-a")),"the mod filter shows for a specific item type (Rings)");
-    const all=(await list()).length;
-    await page.selectOption("#pkfitsel-a","1");await page.waitForTimeout(200);
     const fit=await list();
-    ok(fit.length>0&&fit.length<all,"Can roll on this item type shortens the list ("+fit.length+" of "+all+")");
+    ok(fit.length>0&&fit.length<all,"choosing an item type filters the mods at once ("+fit.length+" of "+all+")");
     ok(!fit.some(t=>/to Armour/.test(t))&&fit.some(t=>/Life/.test(t)),"Rings: no Armour line, Life is there");
+    const bl=await baseList();
+    ok(bl.length>0&&bl.length<allB&&!bl.some(t=>/Boots|Helm|Bow/.test(t)),"the base list follows the item type too ("+bl.length+" of "+allB+")");
+    await page.selectOption("#pkfitsel-a","0");await page.waitForTimeout(200);
+    ok((await list()).length===all,"All mods shows every mod again");
+    await page.selectOption("#pkfitsel-a","1");await page.waitForTimeout(100);
     await page.selectOption("#f-type","0");await page.waitForTimeout(200);
-    ok((await list()).length===all,"back on Any gear the full list returns");
+    ok((await list()).length===all&&(await baseList()).length===allB,"back on Any gear the full lists return");
     /* type 9 is split into shields, foci and quivers for the mod check */
     await page.selectOption("#f-type","9");await page.waitForTimeout(200);
     ok(!!(await page.$("#pkscope-a")),"shields/foci/quivers: an item-kind select shows");
