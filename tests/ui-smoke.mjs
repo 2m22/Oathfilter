@@ -176,6 +176,22 @@ async function run(name,mode){
   ok(/\d+ \/ 200 rules/.test(await page.$eval("#ezOut",e=>e.textContent)),"the Easy Mode status bar shows the rule count");
   ok(!/\d+ \/ 200/.test(await page.$eval("#ezDetS",e=>e.textContent)),"the collapsed details do not repeat it");
 
+  /* Language selector translates the page, also text the app renders later, and restores English */
+  { const txt=()=>page.evaluate(()=>document.body.textContent);
+    await page.selectOption("#langSel","de");await page.waitForTimeout(700);
+    let d=await txt();
+    ok(/Filterstrenge/.test(d)&&/Build-Fokus/.test(d)&&/Anleitung/.test(d)&&/Drop-Test/.test(d)&&/Immer behalten/.test(d),"German replaces the header, tabs and Easy Mode headings");
+    ok(await page.$eval('#ezCtl [data-ez="pre,endgame"]',b=>/Blendet minderwertige/.test(b.textContent)),"the strictness card text is translated");
+    await page.click('#ezCtl [data-ez="arch,cold"]');await page.waitForTimeout(300);
+    d=await txt();
+    ok(/\+ Builds/.test(d)&&/gewählt/.test(d),"text rendered after the switch (+ builds, picked) is translated");
+    await page.click('#ezCtl [data-ez="clear,all"]');await page.waitForTimeout(200);
+    await page.selectOption("#langSel","en");await page.waitForTimeout(700);
+    d=await txt();
+    ok(/Filter strictness/.test(d)&&/Build focus/.test(d)&&!/Filterstrenge|Build-Fokus/.test(d),"switching back restores English");
+    ok(await page.$eval("#langSel",e=>e.value)==="en","the selector shows English again");
+  }
+
   /* Guide and About cards: the heading is a role=button */
   for(const v of ["info","about"]){
     await page.click(`[data-view=${v}]`);await page.waitForTimeout(300);

@@ -51,7 +51,7 @@
       <div class="brand-text"><h1 class="brand-title">OATHFILTER</h1><span class="brand-sub">Loot filter builder</span></div>
     </div>
     <div class="header-right">
-      <label class="langsel" title="Language of game texts: affix lines, item bases and unique names. The page itself, the filter code and shared filters stay English."><span id="langLbl">Language</span><select id="langSel" aria-label="Language"></select></label>
+      <label class="langsel" title="Language of the page and of game texts (affix lines, item bases, unique names). Long help and guide texts stay English. The filter code and shared filters are always English."><span id="langLbl">Language</span><select id="langSel" aria-label="Language"></select></label>
       <div id="cap" class="count"></div>
     </div>
   </div>
@@ -140,7 +140,7 @@
   <section class="plate" style="flex:1 1 100%" aria-labelledby="h-g1"><h2 id="h-g1" class="coltitle">Quick start</h2>
     <ul class="pl">
      <li><b>1. Choose a mode.</b> Easy builds a whole filter from a few picks. Advanced starts from a game preset and lets you edit every rule.</li>
-     <li><b>2. Set it up.</b> Easy: set Rupture Level and Tier strictness, then pick what you want to see. Advanced: select a rule, set what it checks and does, and drag rules into order.</li>
+     <li><b>2. Set it up.</b> Easy: pick a filter strictness (Leveling, Endgame or Uber Strict), then optionally pick your build focus. Advanced: select a rule, set what it checks and does, and drag rules into order.</li>
      <li><b>3. Test it.</b> Open Drop Test and press Drop 25 or a Quick spawn button. Each sample shows which rule caught it. In Easy Mode it tests the Easy preview.</li>
      <li><b>4. Copy it.</b> Press “Copy filter code” in the bar at the top, then paste the code into the game’s loot filter window.</li>
     </ul></section>
@@ -156,9 +156,9 @@
     </ul>
     <h3 class="subtitle">Easy Mode</h3>
     <ul class="pl">
-     <li><b>Rupture Level.</b> The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit.</li>
-     <li><b>Tier strictness.</b> For each line you pick, how many of the best droppable tiers still count as good: best tier only, best 2 or best 3. Weaker lines are hidden. Idols are not limited.</li>
-     <li><b>What I want to see.</b> Each pick keeps its gear lines and the matching Idols, and hides the other Idols. A damage type (Physical, Fire, Cold, Lightning, Poison) or ailment (Bleed, Ignite) narrows Attacks and Spells: with Spells + Cold, Fire and Lightning spell lines are not kept. An item that also has another picked line (for example Spell Damage) stays visible. A line that two picks share is listed once. Choose at least one pick.</li>
+     <li><b>Filter strictness.</b> Leveling keeps basic gear and early bases. Endgame hides low-tier items and highlights good bases and affixes. Uber Strict hides almost everything except the best bases and top rolls.</li>
+     <li><b>Custom.</b> If you change any option after choosing a strictness, the badge switches to Custom. Your choices stay as they are.</li>
+     <li><b>Build focus.</b> Each pick keeps its gear lines and the matching Idols, and hides the other Idols. A damage type (Physical, Fire, Cold, Lightning, Poison) or ailment (Bleed, Ignite) narrows Attacks and Spells: with Spells + Cold, Fire and Lightning spell lines are not kept. An item that also has another picked line (for example Spell Damage) stays visible. A line that two picks share is listed once. Choose at least one pick.</li>
      <li><b>Preview.</b> Easy Mode shows the result first. Applying it replaces the rules in your Editor (Ctrl+Z brings them back).</li>
     </ul>
     <h3 class="subtitle">Never hidden</h3>

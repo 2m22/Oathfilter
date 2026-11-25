@@ -613,5 +613,21 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(new Set(EZ_PRE_IDS.map(sig)).size===3,"the three presets produce three different filters");
 }
 
+/* Page translation: ui3 tables and the lookup (templates, English fallback) */
+{ const fsx=await import("node:fs"),{createI18n}=await import("../js/i18n.js");
+  const rd=c=>JSON.parse(fsx.readFileSync(new URL("../lang/"+c+".json",import.meta.url),"utf8")).ui3||{};
+  const de=rd("de"),keys=Object.keys(de);
+  ok(keys.length>=120,"German has a page translation table ("+keys.length+" strings)");
+  ["fr","es-ES","es-419","it","pt-BR","nl","pl"].forEach(c=>{const d=rd(c);
+    ok(keys.every(k=>d[k]),c+" covers every string German covers");
+    ok(keys.every(k=>(k.match(/\{\w+\}/g)||[]).sort().join()===((d[k]||"").match(/\{\w+\}/g)||[]).sort().join()),c+" keeps the {n}/{m} placeholders");});
+  let dict=de;const I=createI18n(()=>dict);
+  ok(I.tx("Filter strictness")==="Filterstrenge","tx translates a known string");
+  ok(I.tx("Never heard of this")==="Never heard of this","tx leaves an unknown string English");
+  ok(I.tx("3 picked")==="3 gewählt"&&I.tx("{n} picked",{n:5})==="5 gewählt","tx fills {n} templates");
+  ok(I.tx("Ashen Rares 2/8")==="Ashen-Seltene 2/8","tx matches templates with two placeholders");
+  dict={};ok(I.tx("Filter strictness")==="Filter strictness","an empty table returns English");
+}
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);

@@ -1,4 +1,5 @@
 import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
+import {createI18n} from "./i18n.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
 import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
@@ -1736,17 +1737,21 @@ function ezTouched(){
   ezMode(EZ.m,true);
 })();
 
+const I18N=createI18n(()=>LX.ui3);
+const tx=(s,v)=>I18N.tx(s,v);
 async function setLang(code,quiet){
   if(!LANGS.some(x=>x[0]===code))code="en";
   let d={lines:{},bases:{},reds:{}};
   if(code!=="en"){try{const r=await fetch("lang/"+code+".json");if(!r.ok)throw new Error(r.status);d=await r.json();}catch(e){if(!quiet)toast("Could not load that language. Showing English.",true);code="en";}}
-  setLangId(code);LX.ui=d.ui||{};LX.ui2=d.ui2||{};LX.raw=d.lines||{};setDcRev(null);const ll=$("#langLbl");if(ll)ll.textContent=LX.ui.lang||"Language";LX.lines={};Object.keys(d.lines||{}).forEach(k=>{LX.lines[cleanLineText(k)]=cleanLineText(d.lines[k]);});LX.bases=d.bases||{};LX.reds=d.reds||{};
+  setLangId(code);LX.ui=d.ui||{};LX.ui2=d.ui2||{};LX.ui3=d.ui3||{};LX.raw=d.lines||{};setDcRev(null);const ll=$("#langLbl");if(ll)ll.textContent=LX.ui.lang||"Language";LX.lines={};Object.keys(d.lines||{}).forEach(k=>{LX.lines[cleanLineText(k)]=cleanLineText(d.lines[k]);});LX.bases=d.bases||{};LX.reds=d.reds||{};
   const sel=$("#langSel");if(sel)sel.value=code;
   try{localStorage.setItem("oathfilter-lang",code);}catch(e){}
   document.documentElement.setAttribute("data-gamelang",code);
   fullRender();
+  I18N.apply();
 }
 (function langInit(){
+  I18N.start();
   const sel=$("#langSel");if(!sel)return;
   sel.innerHTML=LANGS.map(x=>`<option value="${x[0]}">${esc(x[1])}</option>`).join("");
   sel.addEventListener("change",()=>setLang(sel.value));
