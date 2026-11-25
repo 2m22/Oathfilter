@@ -113,6 +113,9 @@ const msetList=(r,k,a)=>mset(r,k,a.join("+"));
 /* "Any N of them" belongs to named lines only (the game test and chip steps use lines: any -> any 2 -> ... -> all; an exported 6 lines gave an=2..5 and all=1, never an=6). Keep an between 2 and (lines - 1); with fewer than 3 lines there is no Any N. */
 function fixAn(r){const n=mlist(r,"a").length,an=+mval(r,"an")||0;if(!an)return;if(n<3)mset(r,"an","");else if(an>=n)mset(r,"an",n-1);}
 const hasRaw=r=>(r.m||[]).some(p=>p[1]===null||!MORE_ORDER.includes(p[0]));
+/* the game does not allow "none of these" bases or reds together with All / Any N of the lines (decode already warns about it); Any N belongs to named lines only, never to bases or reds. Compilers must never produce such a rule. */
+const ruleClash=r=>(mval(r,"nb")==="1"||mval(r,"nr")==="1")&&(mval(r,"all")==="1"||!!mval(r,"an"));
+const anOnBasesOrReds=r=>!!mval(r,"an")&&!mlist(r,"a").length&&(mlist(r,"b").length>0||mlist(r,"rn").length>0);
 
 function encode(f){return "BOFILTER:1,"+f.preset+f.rules.map(r=>"|"+FIELDS.map(k=>r[k]).join(",")+moreStr(r)+(r.extra&&r.extra.length?","+r.extra.join(","):"")).join("");}
 function decode(text){
@@ -176,7 +179,9 @@ function moreMatch(r,it){
   const t=+mval(r,"t")||0,n=+mval(r,"n")||0,s=+mval(r,"s")||0,g=+mval(r,"g")||0,gx=+mval(r,"gx")||0,rd=+mval(r,"r")||0,u=+mval(r,"u")||0;
   const k=+mval(r,"k")||0,dd=+mval(r,"d")||0;
   if(dd&&it.def!==dd)return false;
-  if(t||n){const c=it.mods.filter(m=>(!t||m.tier<=t)&&(!k||m.pre===k)).length;if(c<Math.max(1,n))return false;} /* k=1 only prefix lines, k=2 only suffix lines (confirmed in game) */
+  const as=mlist(r,"a");
+  /* t and n belong to the named lines when the rule has some (in-game test, Blood Reaver, 25.11.2026): t is checked on the named lines only, and n / Any N count the named lines that reach t (all named lines present when there is no t). Without named lines they run over every line on the item. k=1 only prefix lines, k=2 only suffix lines (confirmed in game). Top roll (quality) stays global: it is checked in matches(). */
+  if(!as.length&&(t||n)){const c=it.mods.filter(m=>(!t||m.tier<=t)&&(!k||m.pre===k)).length;if(c<Math.max(1,n))return false;}
   if(s&&it.sock<s)return false;
   const[il,ih]=mrng(r,"i");if((il&&it.lvl<il)||(ih&&it.lvl>ih))return false;
   const[ql,qh]=mrng(r,"q");if((ql&&it.req<ql)||(qh&&it.req>qh))return false;
@@ -185,8 +190,14 @@ function moreMatch(r,it){
   if(u===1&&it.unsworn)return false;if(u===2&&!it.unsworn)return false;
   const bs=mlist(r,"b");if(bs.length&&(mval(r,"nb")==="1"?bs.includes(it.baseId):!bs.includes(it.baseId)))return false;
   const rs=mlist(r,"rn");if(rs.length&&(mval(r,"nr")==="1"?rs.includes(it.redId):!rs.includes(it.redId)))return false;
-  const as=mlist(r,"a");const hasL=id=>it.mods.some(m=>m.lineLabel&&m.lineLabel===LINEN[id]);
-  if(as.length){const an=+mval(r,"an")||0;const ok=mval(r,"all")==="1"?as.every(hasL):an?as.filter(hasL).length>=an:as.some(hasL);if(!ok)return false;}
+  const hasL=id=>it.mods.some(m=>m.lineLabel&&m.lineLabel===LINEN[id]);
+  if(as.length){
+    const an=+mval(r,"an")||0,lim=t||n; /* k only narrows the lines while t or n is set, as before */
+    const hit=id=>it.mods.some(m=>m.lineLabel&&m.lineLabel===LINEN[id]&&(!t||m.tier<=t)&&(!lim||!k||m.pre===k));
+    const c=as.filter(hit).length;
+    const ok=mval(r,"all")==="1"?c===as.length:c>=Math.max(1,an,n); /* All: every named line must reach t. Any: at least max(1, n, Any N) named lines do. */
+    if(!ok)return false;
+  }
   const nas=mlist(r,"na");if(nas.length&&nas.some(hasL))return false; /* "Not these lines": none of them may be on the item */
    /* named lines: "any of them" by default, "all of them" with all=1 (shown in the game) */
   return true;
@@ -1144,6 +1155,42 @@ const rngText=(lo,hi,w)=>lo&&hi?w+" "+lo+"–"+hi:lo?w+" "+lo+"+":hi?w+" up to "
    named lines with a= (max 6 per rule), i= item level steps, type 14 for Idols (type 0 does not cover Idols).
    Named lines match by their text, so a gear line such as spell_inc also catches the Idol line with the same text.
    Gems only through the optional Hide/Sell gems setting, no roll quality, no line 1..26 guesses. The state lives in its own storage key; the filter code carries nothing of it. */
+/* ---- Rare Ashen (ash_*) and Gnome-made (gm_*) highlight block ----
+   Both families drop as Normal, Magic and Rare and the filter sees them (Mathies, in game, 25.11.2026). Only Rare is protected: 9 Rare Highlight rules, 1 for the gm_ ids and 8 for the ash_ ids (12 bases per rule at most, 7x12 + 1x9).
+   The lists come from the base ids of the local game data (Build 90: 646 bases, 93 ash_, 6 gm_), read case-insensitively. Order: below the tier and affix highlights (a Rare with T1 lines keeps its tier colour), above every Hide and Sell. */
+const GA_COLOUR=6; /* Ash: a colour no tier layer uses */
+const gaIds=pre=>DATA.bases.map(x=>String(x[0]).toLowerCase()).filter(i=>i.startsWith(pre)).sort();
+const GA_GM=gaIds("gm_"),GA_ASH=gaIds("ash_"),GA_IDS=new Set(GA_GM.concat(GA_ASH));
+function gaRules(){
+  const out=[],mkr=(ids,name)=>{const r=newRule({type:0,rarity:4,action:2,colour:GA_COLOUR});r.name=name.slice(0,NAME_MAX);msetList(r,"b",ids);out.push(r);};
+  for(let i=0;i<GA_GM.length;i+=MAXL.b)mkr(GA_GM.slice(i,i+MAXL.b),"Gnome-made Rares");
+  const n=Math.ceil(GA_ASH.length/MAXL.b);
+  for(let i=0;i<GA_ASH.length;i+=MAXL.b)mkr(GA_ASH.slice(i,i+MAXL.b),"Ashen Rares "+(i/MAXL.b+1)+"/"+n);
+  return out;
+}
+const isGaRule=r=>r.type===0&&r.rarity===4&&r.action===2&&!r.line&&!r.quality&&!r.count&&!r.level&&r.m.length===1&&r.m[0][0]==="b"&&mlist(r,"b").length>0&&mlist(r,"b").every(i=>GA_IDS.has(i));
+/* a Hide / Sell rule that could swallow a Rare Ashen or Gnome-made base: gear types only, no base list that leaves them out */
+const hidesGaRares=r=>(r.action===0||r.action===4)&&r.on!==0&&!!RAR[r.rarity]&&RAR[r.rarity].includes("R")&&![14,17,33].includes(r.type)&&(()=>{const b=mlist(r,"b");return !b.length||mval(r,"nb")==="1"||b.some(i=>GA_IDS.has(i));})();
+const affixHighlight=r=>r.on!==0&&(r.action===2||r.action===3)&&!!RAR[r.rarity]&&RAR[r.rarity].includes("R")&&!isGaRule(r)&&(!!mlist(r,"a").length||!!mval(r,"t")||!!r.line||!!r.quality||!!r.count);
+/* what the compilers and the export check guarantee. level "error" = never export as it is; "warn" = tell the person. Nothing here deletes or edits a rule. */
+function rulesIssues(rules){
+  const out=[],ga=[];rules.forEach((r,i)=>{if(isGaRule(r))ga.push(i);});
+  rules.forEach((r,i)=>{
+    if(ruleClash(r))out.push({i,level:"error",code:"clash",text:"Rule "+(i+1)+": none of these (nb / nr) cannot be combined with All of them or Any N."});
+    if(anOnBasesOrReds(r))out.push({i,level:"error",code:"an-list",text:"Rule "+(i+1)+": Any N works on named lines only, not on bases or reds."});
+    if(r.on!==0&&r.action===4&&r.type===33)out.push({i,level:"error",code:"sell-33",text:"Rule "+(i+1)+": Sell does not work on Normal or Magic Dwarven Runes (in game, 25.11.2026). Use Hide for them."});
+    if(r.on!==0&&r.action===4&&r.type===17)out.push({i,level:"warn",code:"sell-17",text:"Rule "+(i+1)+": this Sell rule sells gems, also the ones you could still use."});
+    if(r.on!==0&&(r.action===0||r.action===4)&&r.rarity===0&&![14,17,33].includes(r.type)&&!(r.m&&r.m.length))out.push({i,level:"warn",code:"rarity0",text:"Rule "+(i+1)+": "+(r.action===4?"Sell":"Hide")+" with Any rarity also catches Rare gear."});
+  });
+  if(ga.length){
+    const first=ga[0],last=ga[ga.length-1];
+    rules.forEach((r,i)=>{
+      if(i<last&&hidesGaRares(r))out.push({i,level:"error",code:"ga-below-hide",text:"Rule "+(i+1)+" hides or sells Rare gear above the Rare Ashen / Gnome-made highlight (rule "+(first+1)+"), so those drops are lost."});
+      if(i>first&&affixHighlight(r))out.push({i,level:"error",code:"ga-above-tier",text:"Rule "+(i+1)+" is a tier or affix highlight below the Rare Ashen / Gnome-made block (rule "+(first+1)+"): Rares with good rolls would only get the base colour."});
+    });
+  }
+  return out;
+}
 const EZ_KEY="oathfilter-easy";
 /* g: gear lines (type 0). Idol rules use the gear lines whose text also exists on Idols, plus the Idol-only lines in "idol". */
 /* The group lines live in data/easy-mode-groups.json (editable on GitHub). Ids the game data does not know are dropped with a console warning, so a typo cannot break the page. */
@@ -1161,13 +1208,13 @@ const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,arch:{},keep:{core:1,runes:1,tsw:1}}); /* gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
+const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1}}); /* gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
   const s={rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
-    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),arch:{},keep:{}};
+    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),ga:on(o.ga,d.ga),hr:on(o.hr,d.hr),pre:typeof o.pre==="string"?o.pre.slice(0,24):d.pre,arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
   if(o.arch&&o.arch.dot){s.arch.pois=s.arch.bleed=s.arch.ign=1;} /* ... and one Damage over time pick */
@@ -1250,6 +1297,7 @@ function easyGen(s,pack,merge){
   if(s.keep.runes&&anyHide)mk({type:4,rarity:1,action:1},"Rune bases");
   if(s.keep.tsw&&anyHide)mk({type:16,rarity:3,level:6,action:2,colour:0},"Truesworn bases");
   if(s.gems)mk({type:17,action:s.gems===2?4:0},s.gems===2?"Sell gems":"Hide gems"); /* a Gems rule only catches gems, so its place in the list does not matter */
+  if(s.hr)mk({type:33,rarity:3,action:0},"Hide Normal and Magic Dwarven Runes"); /* Sell does not work on Dwarven Runes (in game, 25.11.2026), so Hide; it costs Dwarven Carving material. A rune rule only catches runes, so its place does not matter */
   /* 2 Idols: Type 0 does not cover Idols, so they get their own rules. Picks come first, the hide of the other Idols after them. */
   if(s.idol!=="none"&&(s.idol==="match"||s.hl))idolA.forEach(x=>x.parts.forEach((p,i)=>mk({type:14,rarity:0,action:s.hl?2:1,colour:x.a.col},"Idols: "+x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>msetList(r,"a",p))));
   if(s.idol==="none"){mk({type:14,action:0},"Idols");if(act.some(a=>!a.ids.length))notes.push("Idol-only picks do nothing while all Idols are hidden.");}
@@ -1259,11 +1307,12 @@ function easyGen(s,pack,merge){
   /* 3 hide normal / magic gear. With gear picks it comes after them (so shown Magic matches are never caught) and before the catch-all.
         Without picks it must come before the level-floor show rule, or Normal and Magic gear above the floor would be shown first. */
   const hideR=()=>{if(rarHide){const w=s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear";mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:s.hs?4:0},s.hs?"Sell "+w[0].toLowerCase()+w.slice(1):w);}};
-  if(!gearA.length)hideR();
+  const ga=()=>{if(s.ga)gaRules().forEach(r=>R.push(r));};
+  if(!gearA.length){ga();hideR();} /* the Rare Ashen / Gnome-made block sits above every Hide and Sell */
   /* 4 gear picks and the level floor */
   if(white){
     gearP.forEach(x=>x.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);})));
-    if(gearA.length)hideR();
+    if(gearA.length){ga();hideR();} /* below the tier highlights of the picks, above the hides */
     mk({type:0,rarity:s.hn&&s.hm?4:0,action:0},"Everything else"); /* Normal and Magic are already hidden above, so only Rares are left to hide */
   }
   if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
@@ -1283,6 +1332,20 @@ function ezSave(){try{localStorage.setItem(EZ_KEY,JSON.stringify({s:EZ.s,h:EZ.h,
 const ezSnap=()=>EZ?{s:EZ.s,h:EZ.h}:null;
 function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="string"?f.e.h:"";ezSave();}if(f)delete f.e;}
 const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
+/* ---- state label: preset name, "+ builds" chip, Custom ----
+   A preset owns the hides, the tier limits, the level, the rule order and the Ashen block. The build buttons (arch) only add lines to keep, so they never change the label; they show as a "+ builds" chip.
+   Changing anything the preset owns, or editing the filter outside Easy Mode, makes the state Custom. The presets register in EZ_PRESETS (id -> {name}); none is defined yet. */
+const EZ_PRESETS={};
+const EZ_OWNED=["rl","tk","hl","idol","hn","hm","hs","gems","ga","hr"];
+const ezOwnedChanged=(a,b)=>EZ_OWNED.some(k=>a[k]!==b[k])||["core","runes","tsw"].some(k=>a.keep[k]!==b.keep[k]);
+function ezBadge(s,linked,hasHash){
+  const builds=EZ_ARCH.filter(a=>s.arch[a.k]).length;
+  if(hasHash&&!linked)return{label:"Custom",custom:true,builds:0,chip:""};
+  if(!s.pre)return null;
+  const p=EZ_PRESETS[s.pre];
+  if(!p)return{label:"Custom",custom:true,builds:0,chip:""};
+  return{label:p.name,custom:false,builds,chip:builds?"+ builds":""};
+}
 const NAME_MAX=40;
 
 /* module boundary: imported bindings are read-only, so the shared mutable state is changed through these setters */
@@ -1290,4 +1353,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,NAME_MAX};
+export {idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};

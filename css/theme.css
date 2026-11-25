@@ -340,6 +340,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .ezfoot{margin:18px 0 0;padding:10px 12px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-card);}
 .ezbrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.ezbrow .btn{margin-left:auto}
 .ezcnt b{font-size:1.1rem;color:var(--accent-gold)}.ezcnt.bad b{color:var(--hide-fg)}.ezmsg{margin:0;flex:1 1 220px}
+.ezbadge{display:inline-block;padding:2px 9px;border-radius:999px;border:1px solid var(--accent-gold);color:var(--accent-gold);font-size:.78rem;font-weight:600;white-space:nowrap}.ezbadge.chip{border-style:dashed;opacity:.85}.ezbadge.custom{border-color:var(--hide-fg);color:var(--hide-fg)}
 .ezfoot .ezerr,.ezfoot .ezbanner{margin:0 0 10px}.ezfoot .sub{margin-top:10px}
 .ezpair{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 @media (max-width:700px){.ezbrow .btn{margin-left:0;flex:1 1 100%}}

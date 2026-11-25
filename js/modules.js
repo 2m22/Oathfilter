@@ -1,6 +1,6 @@
 /* Module library (no DOM, no Vue): built-in modules, auto-split to the Patch 87 list limits, pre-insert check, Sell caution, custom module helpers.
    Names (module, rule, author) live only in app storage and share files, never in the BOFILTER code. */
-import {MAXL,MAX_RULES,NAME_MAX,ARM_N,BASE_BY_ID,BASEN,REDN,LINEN,RAR,LEVEL,T,newRule,mset,mval,mlist,msetList,mrng,hasRaw,encode,decode,uid,redIdOf} from "./filter-engine.js";
+import {rulesIssues,MAXL,MAX_RULES,NAME_MAX,ARM_N,BASE_BY_ID,BASEN,REDN,LINEN,RAR,LEVEL,T,newRule,mset,mval,mlist,msetList,mrng,hasRaw,encode,decode,uid,redIdOf} from "./filter-engine.js";
 
 /* does an earlier active rule catch at least everything this rule catches? (same reading as the drop test) */
 export const TYPE_KIDS={1:[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],2:[5,6,7,8],3:[10,11,12]};
@@ -45,6 +45,58 @@ export function covers(a,b){
   if(!((a.type===0&&b.type!==14)||a.type===b.type||(TYPE_KIDS[a.type]||[]).includes(b.type)))return false;
   const la=LEVEL[a.level],lb=LEVEL[b.level];if(!la||!lb||la[0]>lb[0]||la[1]<lb[1])return false;
   return (a.line===0||a.line===b.line)&&a.quality<=b.quality&&a.count<=b.count;
+}
+
+/* ---------- export plan: the 200 rule limit, checked only when a filter leaves the page ---------- */
+/* The game cuts a pasted filter silently at rule 200 (in game, 25.11.2026: rule 201 was gone), which drops the Hide and Sell rules at the end. So editing is never blocked; Copy filter code and Share link ask first.
+   The only change proposed is a "safe merge": two NEIGHBOURING rules that are the same in every field except one any-of list (a=, b= or rn=) become one rule with both lists. First match wins, so the result decides every item the same way.
+   Not merged: All of them, Any N, n with named lines (the lines are counted together), none-of-these lists (nb, nr, na), rules that are off, and lists that would pass the limit (6 lines, 12 bases, 12 reds). The merged copy is exported; the filter on the page is never changed. */
+const MERGE_LISTS=["a","b","rn"];
+const sameBut=(x,y,key)=>{
+  if(!x.on||!y.on||x.extra.length||y.extra.length)return false;
+  for(const f of ["type","rarity","level","line","action","colour","quality","count","sound"])if(x[f]!==y[f])return false;
+  const rest=r=>JSON.stringify(r.m.filter(p=>p[0]!==key));
+  if(rest(x)!==rest(y))return false;
+  if(!mlist(x,key).length||!mlist(y,key).length)return false;
+  if(["all","an","na","nb","nr"].some(k=>mval(x,k)!==""))return false;
+  if(key==="a"&&(+mval(x,"n")>1||mval(x,"all")==="1"))return false;
+  return true;
+};
+export function mergeAdjacent(rules){
+  const out=[];let merged=0;
+  rules.forEach(r=>{
+    const prev=out[out.length-1];
+    if(prev){
+      for(const key of MERGE_LISTS){
+        if(!sameBut(prev,r,key))continue;
+        const u=[...new Set(mlist(prev,key).concat(mlist(r,key)))];
+        if(u.length>MAXL[key])continue;
+        msetList(prev,key,u);merged++;return;
+      }
+    }
+    out.push(JSON.parse(JSON.stringify(r)));
+  });
+  return {rules:out,merged};
+}
+/* what Copy / Share must do with these rules: {ok} when it fits, otherwise a merged copy when that fits, otherwise a block. errors = order or guard errors in what would be exported. */
+export function exportPlan(rules){
+  const n=rules.length,errs=rs=>rulesIssues(rs).filter(x=>x.level==="error");
+  if(n<=MAX_RULES)return {ok:true,n,rules,errors:errs(rules),merged:0};
+  const m=mergeAdjacent(rules);
+  if(m.rules.length<=MAX_RULES)return {ok:false,n,over:n-MAX_RULES,canMerge:true,rules:m.rules,merged:m.merged,after:m.rules.length,errors:errs(m.rules)};
+  return {ok:false,n,over:n-MAX_RULES,canMerge:false,rules:rules,merged:m.merged,after:m.rules.length,errors:errs(rules)};
+}
+/* rules that can never match, as a list of {i, why}. Nothing is removed or changed: the page marks them "never matches" and leaves the decision to the person. */
+export function deadRules(rules){
+  const out=[];
+  rules.forEach((r,i)=>{
+    if(!r.on)return;
+    if(r.type===17&&r.rarity!==0){out.push({i,by:-1,why:"never matches: Gems are only handled with Any rarity"});return;}
+    const k=(()=>{for(let j=0;j<i;j++)if(covers(rules[j],r))return j;return -1;})();
+    if(k>=0){out.push({i,by:k,why:"never matches: rule "+(k+1)+" above already catches everything it would"});return;}
+    if(mval(r,"nb")==="1"&&mval(r,"all")==="1"||mval(r,"nr")==="1"&&mval(r,"all")==="1")out.push({i,by:-1,why:"never matches: none-of-these cannot be combined with All of them"});
+  });
+  return out;
 }
 
 /* ---------- auto-split to the per-rule list limits ---------- */

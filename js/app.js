@@ -1,6 +1,6 @@
-import {covers,fitRules,placeAt,sellKind} from "./modules.js";
+import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
-import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -412,13 +412,13 @@ function addDrops(n,f){let last=null;for(let k=0;k<n;k++){last=f?genItem(f):genI
 /* ---- export ---- */
 function renderOut(){$("#out").textContent=encode(F);if(window.shSync)window.shSync();}
 function toast(m,bad){const e=$("#gt");e.hidden=false;e.textContent=m;e.className="gt"+(bad?" bad":"");clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,3600);}
-async function copyCode(arg){
+async function copyCode(arg,adv){
   const own=typeof arg==="string",txt=own?arg:encode(F);
   const done=()=>{if(!own&&F.rules.length>MAX_RULES)toast("Copied, but this filter has "+F.rules.length+" rules. "+COPY.limit,true);else toast("Copied.");};
   try{await navigator.clipboard.writeText(txt);done();return;}catch(e){}
   try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();if(ok){done();return;}}catch(e){}
-  if(own){ezShowCode(txt);toast(COPY.blocked+" The code is selected below: press Ctrl+C.",true);return;}
-  if(V.view!=="edit")setView("edit");$("#shPanel").hidden=false;const o=$("#out");o.hidden=false;o.textContent=encode(F);const rg=document.createRange();rg.selectNodeContents($("#out"));const s=getSelection();s.removeAllRanges();s.addRange(rg);toast(COPY.blocked+" The code is selected below: press Ctrl+C.",true);
+  if(own&&!adv){ezShowCode(txt);toast(COPY.blocked+" The code is selected below: press Ctrl+C.",true);return;}
+  if(V.view!=="edit")setView("edit");$("#shPanel").hidden=false;const o=$("#out");o.hidden=false;o.textContent=txt;const rg=document.createRange();rg.selectNodeContents($("#out"));const s=getSelection();s.removeAllRanges();s.addRange(rg);toast(COPY.blocked+" The code is selected below: press Ctrl+C.",true);
 }
 const H=[];
 
@@ -508,7 +508,9 @@ document.addEventListener("input",e=>{
   if(t.dataset.pk){S.pk[t.dataset.pk]=t.value;renderPickList(t.dataset.pk);}
 });
 $("#clearF").onclick=()=>{if(!F.rules.length){toast("The filter is already empty.");return;}F.preset="-1";F.rules=[];S.cur=null;fullRender();toast("Filter cleared. "+COPY.undo);};
-$("#copyAdv").onclick=()=>{if(EZ.m==="easy"&&V.view==="edit")ezCopy();else copyCode();};
+/* the 200 rule limit is checked only when the filter leaves the page (Copy / Share), never while editing. The game cuts a pasted filter silently at rule 200. */
+async function copyFilter(rules,preset,adv){const out=await exportGate(rules,"copy");if(!out)return;copyCode(encode({preset,rules:out}),adv);}
+$("#copyAdv").onclick=()=>{if(EZ.m==="easy"&&V.view==="edit")ezCopy();else copyFilter(F.rules,F.preset,true);};
 /* Sound preview: plays the file assets/sounds/<name>.ogg (or .mp3 / .wav) for the chosen sound. The game's own audio is not part of this repository; copy the files there to hear them. */
 const SND_FILE={1:"chime",2:"soft",3:"jewel",4:"wind"};
 function playRuleSound(v){
@@ -676,7 +678,7 @@ function b64uEnc(u8){let s="";for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCh
 function b64uDec(t){const b=atob(t.replace(/-/g,"+").replace(/_/g,"/")+"===".slice((t.length+3)%4));const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
 /* offline link: JSON, deflate-raw when the browser can, base64url; first character says which (z = packed, p = plain) */
 async function shPack(pl){
-  const j=JSON.stringify({v:1,c:pl.bofilter,n:pl.ruleNames});let u=new TextEncoder().encode(j),m="p";
+  const j=JSON.stringify(Object.assign({v:1,c:pl.bofilter,n:pl.ruleNames,sv:DATA_BUILD.build,d:ezHash(pl.bofilter)},pl.pre?{pm:pl.pre}:{},pl.e?{e:pl.e}:{}));let u=new TextEncoder().encode(j),m="p";
   try{if(typeof CompressionStream==="function"){const z=new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());if(z.length<u.length){u=z;m="z";}}}catch(e){u=new TextEncoder().encode(j);m="p";}
   return m+b64uEnc(u);}
 const SH_MAXZ=262144; /* decompressed cap in bytes: a 200 rule filter with names is about 30 KB */
@@ -688,8 +690,9 @@ async function shUnpack(str){
     for(;;){const r=await rd.read();if(r.done)break;n+=r.value.length;if(n>SH_MAXZ){try{await rd.cancel();}catch(e){}throw new Error("size");}parts.push(r.value);}
     const all=new Uint8Array(n);let o=0;parts.forEach(x=>{all.set(x,o);o+=x.length;});t=new TextDecoder().decode(all);}
   else if(m==="p"){if(u.length>SH_MAXZ)throw new Error("size");t=new TextDecoder().decode(u);}else throw new Error("format");
-  const o=JSON.parse(t);return{bofilter:o.c,filterName:o.f,authorName:o.a,ruleNames:o.n};}
-function shPayload(){return{bofilter:encode(F),ruleNames:F.rules.map(r=>String(r.name||"").slice(0,NAME_MAX))};}
+  const o=JSON.parse(t);return{bofilter:o.c,filterName:o.f,authorName:o.a,ruleNames:o.n,sv:o.sv,d:o.d,pm:o.pm};}
+/* offline links also carry: the data build, a hash of the compiled code (a drift check only), and when rules were merged the code of your filter before the merge, plus the Easy Mode state (preset, build buttons, toggles). The share service stores only the code and the rule names. */
+function shPayload(rules){rules=rules||F.rules;return{bofilter:encode({preset:F.preset,rules}),ruleNames:rules.map(r=>String(r.name||"").slice(0,NAME_MAX)),pre:rules!==F.rules?encode(F):"",e:EZ.m==="easy"&&ezLinked()?ezSnap():null};}
 async function shPost(pl){
   const nm={};(pl.ruleNames||[]).forEach((x,i)=>{if(x)nm[i]=x;}); /* the service stores rule names as an object keyed by rule position */
   const body=JSON.stringify({bofilter:pl.bofilter,ruleNames:nm});let r;
@@ -712,7 +715,7 @@ async function shCopyText(txt,ok){
   try{await navigator.clipboard.writeText(txt);shMsg(ok);return;}catch(e){}
   try{const ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();const done=document.execCommand("copy");ta.remove();if(done){shMsg(ok);return;}}catch(e){}
   const u=$("#shUrl");u.focus();u.select();shMsg(COPY.blocked+" The link is selected: press Ctrl+C.",true);}
-window.shSync=()=>{const r=$("#shRes");if(r&&!r.hidden&&shLast.code!==encode(F)){r.hidden=true;shMsg("The filter changed. Create a new link to share the latest version.");}};
+window.shSync=()=>{const r=$("#shRes");if(r&&!r.hidden&&shLast.src!==encode(F)){r.hidden=true;shMsg("The filter changed. Create a new link to share the latest version.");}};
 $("#shClose").onclick=()=>{$("#shPanel").hidden=true;};
 $("#shMake").onclick=()=>{ /* Easy Mode: the Easy filter replaces the active filter first, then it is shared */
   if(EZ.m==="easy"&&V.view==="edit"&&!ezApply())return;
@@ -720,13 +723,17 @@ $("#shMake").onclick=()=>{ /* Easy Mode: the Easy filter replaces the active fil
 const shRun=async()=>{
   if(shLast.busy)return;
   if(!F.rules.length){shMsg("Add at least one rule first.",true);return;}
-  const pl=shPayload(),btn=$("#shMake");
-  shLast.busy=true;btn.disabled=true;$("#shRes").hidden=true;shMsg("Creating link…");
+  const btn=$("#shMake");
+  shLast.busy=true;btn.disabled=true;
+  const src=encode(F),rules=await exportGate(F.rules,"share");
+  if(!rules){shLast.busy=false;btn.disabled=false;shMsg("Not shared. Nothing was changed.");return;}
+  const pl=shPayload(rules);
+  $("#shRes").hidden=true;shMsg("Creating link…");
   let url="",offline=false,reused=false;const key=await shKey(pl),old=shCache.get(key,shBase());
   if(old){url=old;reused=true;}
   else try{url=shBase()+"#f="+await shPost(pl);shCache.put(key,url);}
   catch(e){try{url=shBase()+"#s="+await shPack(pl);offline=true;}catch(e2){shLast.busy=false;btn.disabled=false;shMsg("The link could not be created. Copy the game code instead.",true);return;}}
-  shLast={code:pl.bofilter,url,busy:false};btn.disabled=false;
+  shLast={code:pl.bofilter,src,url,busy:false};btn.disabled=false;
   $("#shUrl").value=url;$("#shRes").hidden=false;
   setTimeout(()=>{if(window.shSync)window.shSync();},0); /* the filter may have changed while the link was created */
   shMsg(reused?"This exact filter was shared before. Here is the same link, nothing new was stored.":offline?"The share service could not be reached, so this is an offline link. It works without the service"+(url.length>1800?", but it is long and Discord may cut it.":"."):"Link created.",offline&&url.length>1800);};
@@ -737,7 +744,35 @@ $("#shUrl").addEventListener("focus",e=>e.target.select());
 /* opening a share link: preview first, nothing changes until the person says so */
 let shTok=0,shPrev=null;
 const shr=$("#shr");
+/* Copy / Share gate: nothing leaves the page with more than 200 rules or a broken order without a clear yes. Resolves to the rules to export, or null. The filter on the page is never changed. */
+function exportGate(rules,what){
+  const plan=exportPlan(rules);
+  if(plan.ok&&!plan.errors.length)return Promise.resolve(rules);
+  return new Promise(res=>{
+    let done=false;const fin=v=>{if(done)return;done=true;res(v);};
+    const errs=plan.errors.slice(0,6).map(e=>"<li>"+esc(e.text)+"</li>").join("")+(plan.errors.length>6?"<li>+ "+(plan.errors.length-6)+" more</li>":"");
+    const buttons=[];let body="",title="";
+    if(!plan.ok){
+      title="Too many rules to "+what;
+      body=`<p class="shw">Your filter has ${plan.n} rules. The game takes ${MAX_RULES} and silently cuts everything after rule ${MAX_RULES}, so the Hide and Sell rules at the end would be lost.</p>`;
+      if(plan.canMerge){
+        body+=`<p class="shw" style="margin-top:8px">Safe merge: neighbouring rules that differ only in one any-of list (named lines, bases or reds) become one rule. ${plan.n} rules become ${plan.after}, and every item is decided the same way. Your filter on this page is not changed; only the ${what==="share"?"shared":"copied"} filter is merged.</p>`;
+        buttons.push({id:"gateGo",text:"Merge and "+what,cls:"gold",fn:()=>{fin(plan.rules);shrClose();}});
+      }else body+=`<p class="shw" style="margin-top:8px">Merging neighbouring rules only gets it to ${plan.after} rules, still ${plan.after-MAX_RULES} too many. Remove or combine rules, then try again. Nothing was ${what==="share"?"shared":"copied"}.</p>`;
+    }else{
+      title="Check before you "+what;
+      body=`<p class="shw">These problems are in the filter you are about to ${what}.</p>`;
+      buttons.push({id:"gateGo",text:(what==="share"?"Share":"Copy")+" anyway",cls:"gold",fn:()=>{fin(rules);shrClose();}});
+    }
+    if(errs)body+=`<p class="shw" style="margin-top:8px">Problems in the ${what==="share"?"shared":"copied"} filter:</p><ul class="shn">${errs}</ul>`;
+    buttons.push({id:"gateNo",text:"Cancel",fn:()=>shrClose()});
+    shrShow({title,desc:"Nothing is "+(what==="share"?"shared":"copied")+" until you choose.",body,focus:buttons[0].id,buttons});
+    shrCb=()=>fin(null);
+  });
+}
+let shrCb=null; /* called once when the dialog closes or another dialog replaces it (the export gate waits on it) */
 function shrShow(o){
+  if(shrCb){const f=shrCb;shrCb=null;f();}
   if(shr.hidden)shPrev=document.activeElement;
   $("#shrT").textContent=o.title||"";$("#shrD").textContent=o.desc||"";$("#shrBody").innerHTML=o.body||"";
   const bt=$("#shrBt");bt.innerHTML="";
@@ -746,7 +781,8 @@ function shrShow(o){
 function shrClose(){
   shTok++;shr.hidden=true;
   if(/^#(f|s)=/.test(location.hash)){try{history.replaceState(null,"",shBase());}catch(e){}}
-  if(shPrev&&shPrev.focus&&shPrev.isConnected){try{shPrev.focus({preventScroll:true});}catch(e){}}shPrev=null;}
+  if(shPrev&&shPrev.focus&&shPrev.isConnected){try{shPrev.focus({preventScroll:true});}catch(e){}}shPrev=null;
+  if(shrCb){const f=shrCb;shrCb=null;f();}}
 shr.addEventListener("keydown",e=>{
   if(e.key==="Escape"){e.preventDefault();e.stopPropagation();shrClose();return;}
   if(e.key==="Tab"){const b=[...shr.querySelectorAll("button:not([disabled])")];if(!b.length)return;const i=b.indexOf(document.activeElement);e.preventDefault();b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus();}});
@@ -757,7 +793,10 @@ function shBuild(pl){
   let d;try{d=decode(pl.bofilter);}catch(e){throw bad();}
   const f=d.filter;if(!f||!Array.isArray(f.rules))throw bad();
   if(pl.ruleNames&&typeof pl.ruleNames==="object")f.rules.forEach((r,i)=>{r.name=shClean(pl.ruleNames[i],NAME_MAX);});
-  return{f,notes:d.notes||[],filterName:shClean(pl.filterName,SH_NAME_MAX),authorName:shClean(pl.authorName,SH_BY_MAX)};}
+  const nt=(d.notes||[]).slice();
+  if(typeof pl.d==="string"&&pl.d!==ezHash(pl.bofilter))nt.push("This link's code does not match the check hash it was shared with, so it may have been changed after it was shared.");
+  if(Number.isFinite(+pl.sv)&&+pl.sv&&+pl.sv!==DATA_BUILD.build)nt.push("It was made with game data build "+(+pl.sv)+"; this page has build "+DATA_BUILD.build+". Lines or bases may differ.");
+  return{f,notes:nt,filterName:shClean(pl.filterName,SH_NAME_MAX),authorName:shClean(pl.authorName,SH_BY_MAX)};}
 const shErr={
   nf:["Share link not found","This link does not exist (any more). Check that it was copied completely."],
   net:["Share service not reachable","The filter could not be loaded. Check your connection and try again."],
@@ -1580,7 +1619,7 @@ async function dcFile(file){
 
 let ezT=null,ezAsk=false,ezCode="";
 function ezShowCode(t){ezCode=t;ezPreview();const x=$("#ez-code");if(x){x.focus();x.select();}}
-function ezCopy(){const g=easyGen(EZ.s);if(g.rules.length>MAX_RULES){toast("Not copied. "+COPY.over(g.rules.length),true);ezPreview(g);}else copyCode(encode({preset:"-1",rules:g.rules}));}
+function ezCopy(){const g=easyGen(EZ.s);copyFilter(g.rules,"-1",false);}
 function ezApply(){
   const g=easyGen(EZ.s);
   if(g.rules.length>MAX_RULES){ezAsk=false;ezPreview(g);toast("Not applied. "+COPY.over(g.rules.length),true);return false;}
@@ -1618,8 +1657,8 @@ function ezBuild(){
     <p class="hint" style="margin:8px 0 0">Picks also decide which Idols stay.</p>
     <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
   <div class="ez2">
-  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div><span class="lab" style="margin-top:10px;display:block">How</span><div class="chips">${ezBtn("hs","Sell instead of hide")}</div><p class="hint" style="margin:6px 0 0">Sell sells Normal and Magic gear when it lands. Caution: sold items are gone.</p><span class="lab" style="margin-top:10px;display:block">Gems</span><div class="chips">${ezBtn("gems,1","Hide gems")}${ezBtn("gems,2","Sell gems")}</div><p class="hint" style="margin:6px 0 0">Neither: gems are not touched. A gem under a Sell rule is sold when it lands.</p></div>
-  <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div></div>
+  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div><span class="lab" style="margin-top:10px;display:block">How</span><div class="chips">${ezBtn("hs","Sell instead of hide")}</div><p class="hint" style="margin:6px 0 0">Sell sells Normal and Magic gear when it lands. Caution: sold items are gone.</p><span class="lab" style="margin-top:10px;display:block">Gems</span><div class="chips">${ezBtn("gems,1","Hide gems")}${ezBtn("gems,2","Sell gems")}</div><p class="hint" style="margin:6px 0 0">Neither: gems are not touched. A gem under a Sell rule is sold when it lands.</p><span class="lab" style="margin-top:10px;display:block">Dwarven Runes</span><div class="chips">${ezBtn("hr","Hide Normal and Magic Dwarven Runes")}</div><p class="hint" style="margin:6px 0 0">Sell does not work on Dwarven Runes, so this hides them. Dwarven Carving uses Normal and Magic runes, so hidden ones are lost for it. Off: runes are not touched.</p></div>
+  <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div><span class="lab" style="margin-top:10px;display:block">Ashen and Gnome-made</span><div class="chips">${ezBtn("ga","Highlight Rare Ashen and Gnome-made")}</div><p class="hint" style="margin:6px 0 0">9 rules keep every Rare Ashen or Gnome-made base, below your tier highlights and above every hide. Normal and Magic ones follow your other rules.</p></div>
   </div>`;
 }
 function ezSync(){
@@ -1630,7 +1669,7 @@ function ezSync(){
   $$("#ezCtl button[data-ez]").forEach(b=>{
     const[k,v]=b.dataset.ez.split(",");
     if(k==="clear")return;
-    const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm"||k==="hs")?s[k]:k==="gems"?s.gems===+v:k==="idol"?s.idol===v:String(s[k])===v;
+    const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm"||k==="hs"||k==="ga"||k==="hr")?s[k]:k==="gems"?s.gems===+v:k==="idol"?s.idol===v:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
   $("#ez-ilv").textContent=s.rl?"Rupture Level "+s.rl+": only tiers up to item level "+s.rl+" can drop. Gear needs a picked line within the "+(s.tk===1?"best tier":"best "+s.tk+" tiers")+" that can drop; weaker lines are hidden. Pick at least one.":"Any: no tier limit. Set your Rupture Level to hide gear whose picked lines are too weak for what drops there.";
@@ -1638,7 +1677,8 @@ function ezSync(){
 function ezPreview(g){
   g=g||easyGen(EZ.s);
   const n=g.rules.length,over=n>MAX_RULES,linked=ezLinked(),div=!!EZ.h&&!linked,act=F.rules.length;
-  const sh=[];g.rules.forEach((r,i)=>{for(let k=0;k<i;k++)if(covers(g.rules[k],r)){sh.push("Rule "+(i+1)+" ("+r.name+") is never reached: rule "+(k+1)+" already catches everything it would take.");break;}});
+  const sh=deadRules(g.rules).map(d=>"Rule "+(d.i+1)+" ("+g.rules[d.i].name+") "+d.why+"."); /* flagged, never removed */
+  const bg=ezBadge(EZ.s,linked,!!EZ.h);
   let alerts="",msg="",btn="";
   if(over)alerts+=`<div class="ezerr" role="alert"><b>${COPY.over(n)}</b><p class="hint" style="margin:6px 0 0">Nothing was applied. Your filter keeps its ${act} rule${act===1?"":"s"}.</p></div>`;
   if(div)alerts+=`<div class="ezbanner" role="alert"><b>Your filter was changed outside Easy Mode.</b><p class="hint" style="margin:6px 0 8px">Easy Mode stopped controlling it, so your work is safe. Replace it with the Easy Mode rules (Ctrl+Z brings yours back) or keep it and carry on in Advanced.</p><div class="ezrow"><button type="button" class="btn danger" data-ezact="replace"${over?" disabled":""}>Replace with Easy Mode rules</button><button type="button" class="btn" data-ezact="keep">Keep my filter, go to Advanced</button></div></div>`;
@@ -1647,7 +1687,7 @@ function ezPreview(g){
   else{msg="Not applied yet. Your filter stays as it is until you apply it.";btn=`<button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>${li("check")}Apply to my filter</button>`;}
   const mn={black:"Hide only",white:"Show and highlight first, then hide the rest"}[g.mode];
   const w=g.notes.concat(sh);
-  const top=alerts+`<div class="ezbrow"><span class="ezcnt${over?" bad":""}"><b>${n} / ${MAX_RULES}</b> rules</span>${msg?`<span class="hint ezmsg">${esc(msg)}</span>`:""}${btn}</div>`+
+  const top=alerts+`<div class="ezbrow">${bg?`<span class="ezbadge${bg.custom?" custom":""}">${esc(bg.label)}</span>${bg.chip?`<span class="ezbadge chip">${esc(bg.chip)}</span>`:""}`:""}<span class="ezcnt${over?" bad":""}"><b>${n} / ${MAX_RULES}</b> rules</span>${msg?`<span class="hint ezmsg">${esc(msg)}</span>`:""}${btn}</div>`+
   (ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:"");
   const bot=`<div class="sub"><span class="lab">Rule count</span>
     <div class="ezcount"><span>Active filter (badge, top right)</span><b>${act} / ${MAX_RULES}</b></div>
@@ -1671,7 +1711,7 @@ function ezTouched(){
   $("#ezMode").addEventListener("click",e=>{const b=e.target.closest("button[data-ezm]");if(b)ezMode(b.dataset.ezm);});
   const rlv=e=>+EZ_RL[+e.target.value][0];
   bx.addEventListener("input",e=>{if(e.target.id!=="ez-rl")return;const v=rlv(e);$("#ez-rlo").textContent=v?String(v):"Any";}); /* live value while dragging */
-  bx.addEventListener("change",e=>{if(e.target.id!=="ez-rl")return;EZ.s=ezSane(Object.assign({},EZ.s,{rl:rlv(e)}));ezTouched();}); /* the filter updates on release */
+  bx.addEventListener("change",e=>{if(e.target.id!=="ez-rl")return;EZ.s=ezSane(Object.assign({},EZ.s,{rl:rlv(e),pre:""}));ezTouched();}); /* the filter updates on release */
   bx.addEventListener("click",e=>{
     const b=e.target.closest("button");if(!b||b.disabled)return;
     if(b.dataset.ezact){
@@ -1685,19 +1725,21 @@ function ezTouched(){
       return;
     }
     if(!b.dataset.ez)return;
-    const[k,v]=b.dataset.ez.split(","),s=EZ.s;
+    const[k,v]=b.dataset.ez.split(","),s=EZ.s,before=JSON.parse(JSON.stringify(s));
     /* Sell needs a confirmation first (Caution); turning it off needs none */
     if((k==="hs"&&!s.hs)||(k==="gems"&&+v===2&&s.gems!==2)){
       const kind=k==="gems"?"gems":s.hn&&!s.hm?"normal":s.hm&&!s.hn?"magic":"normalmagic";
-      askCaution([kind]).then(ok=>{if(ok){if(k==="hs")s.hs=1;else s.gems=2;EZ.s=ezSane(s);ezTouched();}});return;}
+      askCaution([kind]).then(ok=>{if(ok){if(k==="hs")s.hs=1;else s.gems=2;s.pre="";EZ.s=ezSane(s);ezTouched();}});return;}
     if(k==="clear")EZ_ARCH.forEach(a=>{s.arch[a.k]=0;});
     else if(k==="arch")s.arch[v]=s.arch[v]?0:1;
     else if(k==="keep")s.keep[v]=s.keep[v]?0:1;
     else if(k==="hn"||k==="hm")s[k]=s[k]?0:1;
     else if(k==="hs")s.hs=s.hs?0:1;
+    else if(k==="ga"||k==="hr")s[k]=s[k]?0:1;
     else if(k==="gems")s.gems=s.gems===+v?0:+v;
     else if(k==="rl"||k==="tk"||k==="hl")s[k]=+v;
     else if(k==="idol")s.idol=v;
+    if(ezOwnedChanged(before,s))s.pre=""; /* the preset owns these: Custom from here. Build buttons (arch) do not count. */
     EZ.s=ezSane(s);ezTouched();
   });
   const dt=$("#ezDet");dt.open=!!EZ.r;dt.addEventListener("toggle",()=>{EZ.r=dt.open?1:0;ezSave();});

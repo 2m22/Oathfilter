@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval} from "../js/filter-engine.js";
+import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -315,10 +315,10 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
 { const pen=AFF.filter(a=>/^(fire|cold|lightning)_pen95_(1h|2h)$|^elemental_pen95_amulet$/.test(a.id));
   eq(pen.length,7,"seven pen95 affixes (game file affixes_pen95.json)");ok(pen.every(a=>a.n===4),"pen95 affixes have 4 tiers");
   const tw=UNIQUES.find(u=>u.name==="Thunderwake Maul");ok(tw&&tw.base.id==="mace1h_2"&&tw.lvl===10,"Thunderwake Maul is mace1h_2, level 10 (game file and API build 86)");
-  const g=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0);
+  const g=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!isGaRule(r));
   eq(g.length,2,"Easy Mode: attacks + cold at rl 60 is 2 rules, the penetration line joins the T4 rule");
   ok(g.some(r=>mval(r,"a").includes("cold_pen95_2h")&&mval(r,"t")==="4"),"the penetration line sits in the rule with limit T4");
-  const h=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!mval(r,"t"));
+  const h=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!mval(r,"t")&&!isGaRule(r));
   eq(h.length,0,"no rule is left without a limit when every line is covered by T4"); }
 
 /* ---- picker: no double entries, and the list is not capped below the game limit ---- */
@@ -395,6 +395,171 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
 { const app=(await import("node:fs")).readFileSync(new URL("../js/app.js",import.meta.url),"utf8");
   const fn=app.slice(app.indexOf("function ezMode("),app.indexOf("function ezMode(")+500);
   ok(/renderMD\(\)/.test(fn),"Mode switch refreshes the module list (Insert was stuck disabled after leaving Easy Mode)"); }
+
+/* ---- t / n / Any N / All scoped to the named lines (a=), Top roll global. In-game tests on a Blood Reaver, 25.11.2026 ---- */
+{ const L=id=>LINEN[id];
+  const mod=(id,tier,pre)=>({id,pre,lineLabel:L(id),tier,tiers:8,lines:[]});
+  /* Blood Reaver: fire_added_local T1, shock_effect T1, crit_local T1, life_on_kill T2, bleed_chance T1 */
+  const br={id:"br",name:"Blood Reaver",def:0,baseId:"axe1h_8",kind:"weapon",sub:"axe1h",rar:"R",lvl:84,sock:0,grade:1,req:60,mods:[mod("fire_added_local",1,1),mod("shock_effect",1,2),mod("crit_local",1,2),mod("life_on_kill",2,2),mod("bleed_chance",1,2)]};
+  const rule=(more,f)=>{const r=newRule(Object.assign({type:0,rarity:4,action:3,colour:0},f||{}));r.m=[];more.split(";").filter(Boolean).forEach(x=>{const i=x.indexOf("=");r.m.push([x.slice(0,i),x.slice(i+1)]);});return r;};
+  const hit=(more,f,it)=>matches(rule(more,f),it||br);
+  ok(L("life_on_kill")&&L("crit_local")&&L("shock_effect")&&L("bleed_chance"),"Blood Reaver test lines exist in the data");
+  /* t belongs to the named lines */
+  ok(!hit("a=life_on_kill;t=1"),"a=life_on_kill;t=1: the named line is only T2, no match (the item has other T1 lines)");
+  ok(hit("a=crit_local;t=1"),"a=crit_local;t=1 matches");
+  ok(hit("a=life_on_kill;t=2"),"a=life_on_kill;t=2 matches (T2 reaches t=2)");
+  /* n counts named lines only */
+  ok(hit("a=life_on_kill"),"a=life_on_kill matches");
+  [3,4,5].forEach(n=>ok(!hit("a=life_on_kill;n="+n),"a=life_on_kill;n="+n+": one named line cannot reach n="+n));
+  /* several named lines, Any */
+  const three="a=life_on_kill+crit_local+shock_effect";
+  ok(!hit(three+";n=3;t=1"),"3 named lines, n=3;t=1: only crit and shock reach T1, no match");
+  ok(hit(three+";n=2;t=1"),"3 named lines, n=2;t=1 matches (crit and shock)");
+  ok(hit(three+";n=3"),"3 named lines, n=3 without t counts the lines that are present and matches");
+  /* Any N (an) with t counts like n with t */
+  ok(!hit(three+";an=3;t=1"),"an=3;t=1: only two of the three named lines reach T1, no match");
+  ok(hit(three+";an=3"),"an=3 without t matches (all three present)");
+  ok(hit(three+";an=2;t=1"),"an=2;t=1 matches");
+  /* All of them */
+  ok(!hit("a=life_on_kill+crit_local;t=1;all=1"),"all=1;t=1: life_on_kill misses T1, no match");
+  ok(hit("a=life_on_kill+crit_local;all=1"),"all=1 without t matches (both lines present)");
+  ok(hit("a=life_on_kill+crit_local;t=2;all=1"),"all=1;t=2 matches (both reach T2)");
+  ok(!hit("a=life_on_kill+crit_local+life_regen;all=1"),"all=1 fails when a named line is missing");
+  /* Top roll (quality) is global, not scoped to a= */
+  ok(hit("a=life_on_kill",{quality:2}),"Top roll with a=life_on_kill matches: the item has T1 lines elsewhere (quality is global)");
+  const lowOnly={...br,mods:[mod("life_on_kill",2,2),mod("crit_local",3,2)]};
+  ok(!hit("a=life_on_kill",{quality:2},lowOnly),"Top roll with a=life_on_kill fails on an item without any T1 line");
+  /* without a=: t and n run over every line */
+  ok(hit("t=1;n=4"),"no a=: t=1;n=4 matches (four T1 lines on the item)");
+  ok(!hit("t=1;n=5"),"no a=: t=1;n=5 does not match (only four T1 lines)");
+  ok(hit("n=5"),"no a=: n=5 counts all five lines");
+  ok(!hit("n=6"),"no a=: n=6 does not match");
+  /* k narrows the counted lines */
+  ok(hit("k=1;t=1;n=1")&&!hit("k=1;t=1;n=2"),"k=1 counts prefix lines only (no a=)");
+  ok(hit("a=crit_local+shock_effect;k=2;t=1;n=2")&&!hit("a=crit_local+fire_added_local;k=2;t=1;n=2"),"k with named lines counts only the named lines of that affix kind");
+  /* guards */
+  ok(ruleClash(rule("b=bow_1;nb=1;all=1"))&&ruleClash(rule("rn=x;nr=1;an=2"))&&!ruleClash(rule("b=bow_1;nb=1"))&&!ruleClash(rule("a=crit_local;all=1")),"ruleClash finds nb/nr together with all/an");
+  ok(anOnBasesOrReds(rule("b=bow_1;an=2"))&&!anOnBasesOrReds(rule("a=crit_local+life_on_kill+shock_effect;an=2")),"anOnBasesOrReds finds Any N on bases or reds");
+  /* simulator: the first matching rule decides; the tooltip names rule 2 in the in-game test */
+  const sim=(code)=>{setF(decode(code).filter);bumpRev();return evaluate({...br,_rv:-1});};
+  eq(sim("BOFILTER:1,-1|1,0,4,0,0,3,5,0,0,255,3:a=life_on_kill;t=1|1,0,4,0,0,2,1,0,0,255,3:a=life_on_kill").i,1,"simulator: test X, the T1 rule is skipped and rule 2 decides");
+  eq(sim("BOFILTER:1,-1|1,0,4,0,0,3,5,0,0,255,3:a=life_on_kill+crit_local;t=1;all=1|1,0,4,0,0,2,1,0,0,255,3:a=life_on_kill+crit_local").i,1,"simulator: all=1;t=1 is skipped, rule 2 decides");
+  eq(sim("BOFILTER:1,-1|1,0,4,0,0,3,5,0,0,255,3:a=crit_local;t=1").i,0,"simulator: a=crit_local;t=1 decides as rule 1");
+  setF({preset:"-1",rules:[]});bumpRev();
+}
+
+/* ---- Rare Ashen / Gnome-made block, order invariant, Dwarven Rune guards ---- */
+{ const L=gaRules();
+  eq(GA_GM.length,6,"6 gm_ base ids");eq(GA_ASH.length,93,"93 ash_ base ids");
+  eq(L.length,9,"the block is 9 rules (1 gm_ + 8 ash_)");
+  eq(L.filter(r=>mlistT(r,"b").every(i=>i.startsWith("gm_"))).length,1,"1 rule for the gm_ ids");
+  eq(JSON.stringify(L.slice(1).map(r=>mlistT(r,"b").length)),JSON.stringify([12,12,12,12,12,12,12,9]),"ash_ ids: 7 rules of 12 and one of 9");
+  ok(L.every(r=>mlistT(r,"b").length<=12),"no rule goes over 12 bases");
+  eq(new Set(L.flatMap(r=>mlistT(r,"b"))).size,99,"all 99 ids appear once");
+  ok(L.every(r=>encode({preset:"-1",rules:[r]}).startsWith("BOFILTER:1,-1|1,0,4,0,0,2,"+GA_COLOUR+",0,0,255,3:b=")),"rules use 1,0,4,0,0,2,<colour>,0,0,255,3:b=<ids>");
+  ok(L.every(r=>!/[A-Z]/.test(mval(r,"b"))),"base ids are lower case");
+  /* the ids really are bases of the local data, not invented */
+  const known=new Set(DATA.bases.map(x=>x[0].toLowerCase()));ok([...GA_IDS].every(i=>known.has(i)),"every id is a base id of the data");
+  /* Easy Mode output */
+  const all=Object.fromEntries(EZ_ARCH.map(a=>[a.k,1]));
+  const cases=[{},{arch:{attack:1,cold:1}},{rl:60,arch:{attack:1,cold:1}},{hn:1,hm:0,arch:{spell:1}},{hn:0,hm:0,arch:{life:1}},{hs:1,arch:{minion:1,bow:1}},{arch:all},{hn:0,hm:1,gems:1,hr:1,arch:{phys:1}}];
+  cases.forEach((c,k)=>{
+    const g=easyGen(ezSane(c)).rules,gi=g.map((r,i)=>isGaRule(r)?i:-1).filter(i=>i>=0);
+    eq(gi.length,9,"Easy Mode case "+k+": the block is 9 rules");
+    eq(gi[8]-gi[0],8,"Easy Mode case "+k+": the block is contiguous");
+    const err=rulesIssues(g).filter(x=>x.level==="error");
+    eq(err.length,0,"Easy Mode case "+k+": no order or guard errors"+(err.length?" ("+err[0].text+")":""));
+    ok(g.every((r,i)=>!(r.action===0||r.action===4)||i>gi[8]||r.type===14||r.type===17||r.type===33||!(r.rarity===0||r.rarity===4||r.rarity===5)),"Easy Mode case "+k+": no Hide or Sell that can catch Rare gear sits above the block");
+    ok(g.length<=MAX_RULES,"Easy Mode case "+k+": fits "+MAX_RULES+" rules ("+g.length+")");
+    ok(g.every(r=>!(r.rarity===0&&r.action===4)),"Easy Mode case "+k+": no Sell with Any rarity");
+  });
+  eq(easyGen(ezSane({ga:0,arch:{attack:1}})).rules.filter(isGaRule).length,0,"the opt-out turns the block off");
+  /* type 33: Hide only, never Sell */
+  const hr=easyGen(ezSane({hr:1,hs:1,arch:{attack:1}})).rules.filter(r=>r.type===33);
+  eq(hr.length,1,"Hide Dwarven Runes is one rule");ok(hr[0].action===0&&hr[0].rarity===3,"it hides Normal and Magic Dwarven Runes");
+  eq(easyGen(ezSane({hr:0,arch:{attack:1}})).rules.filter(r=>r.type===33).length,0,"no rune rule unless asked for");
+  ok(easyGen(ezSane({hr:1,hs:1,gems:1,arch:all})).rules.every(r=>!(r.type===33&&r.action===4)),"no Sell on type 33 in Easy Mode output");
+  /* the check finds a wrong order and the Dwarven Rune Sell, and edits nothing */
+  const hide=newRule({type:0,rarity:4,action:0}),tier=newRule({type:0,rarity:4,action:3});msetList(tier,"a",["crit_local"]);mset(tier,"t","1");
+  const bad=[hide,...L];eq(rulesIssues(bad).filter(x=>x.code==="ga-below-hide").length,1,"a Rare Hide above the block is an error");
+  const bad2=[...L,tier];eq(rulesIssues(bad2).filter(x=>x.code==="ga-above-tier").length,1,"a tier highlight below the block is an error");
+  eq(rulesIssues([tier,...L,hide]).filter(x=>x.level==="error").length,0,"tier highlight, block, Hide: valid");
+  const s33=newRule({type:33,rarity:3,action:4});eq(rulesIssues([s33]).filter(x=>x.code==="sell-33").length,1,"Sell on type 33 is an error");
+  eq(rulesIssues([newRule({type:0,rarity:0,action:0})]).filter(x=>x.code==="rarity0").length,1,"Hide with Any rarity on gear is reported");
+  eq(rulesIssues([newRule({type:14,rarity:0,action:0})]).length,0,"an Idol Hide with Any rarity is fine (it only hides Idols)");
+  eq(bad.length,10,"the check does not change the rules");
+  /* a Rare Ashen drop: the block gives it the colour, a T1 tier highlight above it wins */
+  const ashBase=GA_ASH[0],item={id:"a",name:"Rare ash",def:0,baseId:ashBase,kind:"weapon",sub:"axe1h",rar:"R",lvl:84,sock:0,grade:1,req:60,mods:[{id:"crit_local",pre:2,lineLabel:LINEN.crit_local,tier:1,tiers:8,lines:[]}]};
+  const hideR=newRule({type:0,rarity:4,action:0}),colour=GA_COLOUR;
+  setF({preset:"-1",rules:[...L,hideR]});bumpRev();
+  ok(evaluate({...item,_rv:-1}).v===2&&evaluate({...item,_rv:-1}).col===colour,"a Rare Ashen base is highlighted in the block colour, not hidden");
+  setF({preset:"-1",rules:[tier,...L,hideR]});bumpRev();eq(evaluate({...item,_rv:-1}).i,0,"a T1 line gets the tier highlight, not the block colour");
+  setF({preset:"-1",rules:[...L,hideR]});bumpRev();ok(evaluate({...item,rar:"M",_rv:-1}).v===1||evaluate({...item,rar:"M",_rv:-1}).v===0,"Normal and Magic Ashen drops fall through to the normal rules");
+  setF({preset:"-1",rules:[]});bumpRev();
+}
+
+/* ---- export plan: 200 rule gate, safe merges, never matches ---- */
+{ const R=(f,m)=>{const r=newRule(Object.assign({type:0,rarity:4,action:2,colour:2},f||{}));r.m=[];(m||[]).forEach(p=>r.m.push(p));return r;};
+  const bases=n=>Array.from({length:n},(_,i)=>"ring_"+i);
+  /* fits: nothing to do */
+  const small=[R(null,[["a","crit_local"]]),R(null,[["a","life"]])];
+  const p0=MOD.exportPlan(small);ok(p0.ok&&p0.rules===small&&p0.n===2,"export plan: 2 rules fit, nothing changes");
+  eq(MOD.exportPlan(Array.from({length:200},()=>R())).ok,true,"export plan: exactly 200 rules fit");
+  /* 201 neighbouring rules that differ in one base each: safe merge brings them under the limit, the original list is untouched */
+  const many=Array.from({length:240},(_,i)=>R({colour:2},[["b",bases(240)[i]]]));
+  const keep=JSON.stringify(many);
+  const p1=MOD.exportPlan(many);
+  ok(!p1.ok&&p1.canMerge&&p1.after===20&&p1.over===40&&p1.merged===220,"export plan: 240 neighbouring rules (1 base each) merge to 20 rules, 12 bases per rule");
+  eq(JSON.stringify(many),keep,"export plan: the original rules are not changed");
+  ok(p1.rules.every(r=>mlistT(r,"b").length<=12),"merged rules keep the 12 bases limit");
+  eq(new Set(p1.rules.flatMap(r=>mlistT(r,"b"))).size,240,"merged rules keep every base");
+  /* not safe: different colour, All, Any N, none-of-these, an off rule */
+  const mix=[R({colour:2},[["b","a_1"]]),R({colour:3},[["b","a_2"]]),R({colour:3,action:0},[["b","a_3"]])];
+  eq(MOD.mergeAdjacent(mix).rules.length,3,"merge: a different colour or action is never merged");
+  const nb=[R(null,[["b","x1"],["nb","1"]]),R(null,[["b","x2"],["nb","1"]])];eq(MOD.mergeAdjacent(nb).rules.length,2,"merge: none-of-these lists are never merged");
+  const all=[R(null,[["a","crit_local+life"],["all","1"]]),R(null,[["a","mana"],["all","1"]])];eq(MOD.mergeAdjacent(all).rules.length,2,"merge: All of them is never merged");
+  const nn=[R(null,[["a","crit_local"],["n","2"]]),R(null,[["a","life"],["n","2"]])];eq(MOD.mergeAdjacent(nn).rules.length,2,"merge: n>1 on named lines is never merged");
+  const off=[R(null,[["b","y1"]]),Object.assign(R(null,[["b","y2"]]),{on:0})];eq(MOD.mergeAdjacent(off).rules.length,2,"merge: a rule that is off is never merged");
+  const t1=[R(null,[["a","crit_local"],["t","1"]]),R(null,[["a","life"],["t","2"]])];eq(MOD.mergeAdjacent(t1).rules.length,2,"merge: different tier limits are never merged");
+  const t2=[R(null,[["a","crit_local"],["t","2"]]),R(null,[["a","life"],["t","2"]])];eq(MOD.mergeAdjacent(t2).rules.length,1,"merge: the same tier limit merges named lines (t belongs to the lines)");
+  const cap=[R(null,[["a",["a1","a2","a3","a4"].join("+")]]),R(null,[["a",["a5","a6","a7"].join("+")]])];eq(MOD.mergeAdjacent(cap).rules.length,2,"merge: a list never passes 6 lines");
+  /* merged rules decide items like the separate rules did */
+  const items=[];for(let i=0;i<400;i++)items.push(genItem());
+  const sep=Array.from({length:30},(_,i)=>R({colour:2},[["b",BASES[i*3%BASES.length].id]]));
+  const mer=MOD.mergeAdjacent(sep).rules;
+  ok(items.every(it=>{const a=sep.findIndex(r=>matches(r,it)),b=mer.findIndex(r=>matches(r,it));return (a<0)===(b<0);}),"merge: the merged rules catch exactly the same items");
+  /* too many to merge: blocked, with the reason */
+  const hard=Array.from({length:230},(_,i)=>R({colour:i%8},[["b","h"+i]]));
+  const p2=MOD.exportPlan(hard);ok(!p2.ok&&!p2.canMerge&&p2.over===30,"export plan: 230 rules that cannot merge are blocked");
+  /* the order check is part of the plan */
+  const ga=gaRules(),hideR=newRule({type:0,rarity:4,action:0});
+  ok(MOD.exportPlan([hideR,...ga]).errors.some(e=>e.code==="ga-below-hide"),"export plan: reports a Hide above the Ashen block");
+  eq(MOD.exportPlan([...ga,hideR]).errors.length,0,"export plan: the right order has no error");
+  /* never matches: flagged, nothing deleted */
+  const wide=R({rarity:0,type:0,action:1}),narrow=R({rarity:4,type:1,action:3});
+  const rs=[wide,narrow,Object.assign(R({type:17,rarity:4,action:0}),{})];const before=JSON.stringify(rs);
+  const dead=MOD.deadRules(rs);
+  ok(dead.some(d=>d.i===1&&d.by===0&&/never matches/.test(d.why)),"never matches: a rule under a wider rule is flagged");
+  ok(dead.some(d=>d.i===2&&/Gems/.test(d.why)),"never matches: a Gems rule with a rarity is flagged");
+  eq(JSON.stringify(rs),before,"never matches: flagging deletes and changes nothing");
+}
+
+/* ---- state label: preset name, + builds chip, Custom ---- */
+{ EZ_PRESETS.t_demo={name:"Demo"};
+  const base=ezSane({pre:"t_demo",rl:60});
+  let b=ezBadge(base,true,true);ok(b&&b.label==="Demo"&&!b.custom&&!b.chip,"badge: a linked preset shows its name");
+  const withBuilds=ezSane({pre:"t_demo",rl:60,arch:{attack:1,cold:1}});
+  b=ezBadge(withBuilds,true,true);ok(b.label==="Demo"&&b.chip==="+ builds"&&b.builds===2&&!b.custom,"badge: build buttons keep the name and add the + builds chip");
+  ok(!ezOwnedChanged(base,withBuilds),"build buttons do not change what the preset owns");
+  [["rl",{rl:70}],["tk",{tk:3}],["hl",{hl:0}],["hn",{hn:0}],["hm",{hm:0}],["hs",{hs:1}],["gems",{gems:1}],["ga",{ga:0}],["hr",{hr:1}],["keep",{keep:{core:0,runes:1,tsw:1}}]].forEach(([k,o])=>
+    ok(ezOwnedChanged(base,ezSane({...base,...o})),"owned by the preset: "+k));
+  ok(ezBadge(base,false,true).custom&&ezBadge(base,false,true).label==="Custom","badge: a filter edited outside Easy Mode is Custom");
+  ok(ezBadge(ezSane({pre:"unknown_id"}),true,true).custom,"badge: an unknown preset id is Custom");
+  eq(ezBadge(ezSane({}),true,true),null,"badge: no preset, no badge");
+  delete EZ_PRESETS.t_demo;
+  eq(ezSane({pre:"x".repeat(60)}).pre.length,24,"preset id is kept short");
+  eq(ezSane({ga:undefined}).ga,1,"the Ashen block is on by default");eq(ezSane({hr:undefined}).hr,0,"Hide Dwarven Runes is off by default");
+}
 
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
