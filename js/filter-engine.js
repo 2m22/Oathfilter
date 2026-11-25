@@ -173,6 +173,19 @@ function typeMatch(t,it){
     default:{const sub={18:"bow",19:"claw",20:"dagger",21:"dual",22:"fist",23:"sword2h",24:"axe2h",25:"mace2h",26:"macesh",27:"axe1h",28:"mace1h",29:"sword1h",30:"scythe",31:"staff",32:"wand"}[t];return it.sub===sub;}
   }
 }
+
+/* Advanced editor: which named lines can roll on the item type of a rule. A line is one text (grouped ids), so "only here" means no id of that line rolls on any other base. Read from the base tags and the affix tags (BaseTags any, ExcludeTags none), like the game data; not checked in the game. */
+const LF_CACHE=new Map();
+function lineFit(t){
+  if(!t||t===17)return null;
+  if(LF_CACHE.has(t))return LF_CACHE.get(t);
+  const bySig=new Map();
+  BASES.forEach(b=>{const k=b.tags.join(",");if(!bySig.has(k))bySig.set(k,{tags:b.tags,hit:false,miss:false});const e=bySig.get(k);if(typeMatch(t,b))e.hit=true;else e.miss=true;});
+  const fits=new Set(),elsewhere=new Set();
+  bySig.forEach(e=>AFF.forEach(a=>{if(!a.tags.some(x=>e.tags.includes(x))||a.ex.some(x=>e.tags.includes(x)))return;const l=LINEN[a.id];if(!l)return;if(e.hit)fits.add(l);if(e.miss)elsewhere.add(l);}));
+  const only=new Set([...fits].filter(l=>!elsewhere.has(l)));
+  const r=fits.size?{fits,only}:null;LF_CACHE.set(t,r);return r;
+}
 const defOf=tags=>{const a=tags.includes("Armour"),e=tags.includes("Evasion"),z=tags.includes("EnergyShield");return a&&e?4:a&&z?5:e&&z?6:a?1:e?2:z?3:0;};
 function rollOk(q,m){if(!q)return true;return q===1?m.tier<=2:m.tier<=1;}
 function moreMatch(r,it){
@@ -1386,4 +1399,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};
+export {lineFit,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};

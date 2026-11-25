@@ -613,3 +613,7 @@ body.mdm-lock{overflow:hidden}
 @media (max-width:1100px){.ezgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:700px){.ezgrid,.ez2{grid-template-columns:1fr}}
 .ez2{align-items:stretch}.ezu{height:100%}
+
+.pkfitrow{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 8px}
+.pkfitrow:empty{display:none}
+.pkfitrow .lab{margin:0}

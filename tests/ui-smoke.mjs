@@ -98,6 +98,21 @@ async function run(name,mode){
   ok(/Not confirmed/.test(await page.textContent("#cautionHost [role=alertdialog]")),"the Sell caution says the in-game behaviour is not confirmed");
   await page.click("#cautionHost [role=alertdialog] button:has-text('Cancel')");await page.waitForTimeout(250);
   ok(!(await page.isVisible("#cautionHost [role=alertdialog]")),"Cancel closes the Sell caution");
+  { /* named lines: show only the mods that fit the rule's item type */
+    const list=()=>page.$$eval("#pl-a button[data-padd]",b=>b.map(x=>x.textContent));
+    await page.selectOption("#f-type","0");await page.waitForTimeout(150);
+    ok(!(await page.$("#pkfitsel-a")),"no mod filter while the rule is on Any gear");
+    await page.selectOption("#f-type","10");await page.waitForTimeout(200);
+    ok(!!(await page.$("#pkfitsel-a")),"the mod filter shows for a specific item type (Rings)");
+    const all=(await list()).length;
+    await page.selectOption("#pkfitsel-a","1");await page.waitForTimeout(200);
+    const fit=await list();
+    ok(fit.length>0&&fit.length<all,"Can roll on this item type shortens the list ("+fit.length+" of "+all+")");
+    ok(!fit.some(t=>/to Armour/.test(t))&&fit.some(t=>/Life/.test(t)),"Rings: no Armour line, Life is there");
+    await page.selectOption("#f-type","0");await page.waitForTimeout(200);
+    ok((await list()).length===all,"back on Any gear the full list returns");
+    await page.selectOption("#f-type","10");await page.selectOption("#pkfitsel-a","0").catch(()=>{});await page.waitForTimeout(100);
+  }
 
   /* Advanced folds: mouse, keyboard, remembered state */
   const sum="details.fold[data-fold=preset]>summary",det="details.fold[data-fold=preset]";

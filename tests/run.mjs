@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist} from "../js/filter-engine.js";
+import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -676,6 +676,23 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   console.log("Leveling rule counts: none "+gen({}).rules.length+", 1 pick "+gen({attack:1}).rules.length+", 5 picks "+gen(picks).rules.length+", all picks "+gen(all).rules.length);
   /* the built-in gear affixes: 114 (25 raw drune_* affixes are Dwarven Runes and not in the page data, 8 page-only affixes: vow_effect98, 6 pen95, elemental_pen95_amulet) */
   eq(AFF.filter(a=>!/^idol/i.test(a.id)).length,114,"the page data holds 114 non-Idol gear affixes");
+}
+
+/* ---- Advanced: list only mods that fit / only fit the rule's item type ---- */
+{
+  eq(lineFit(0),null,"Any gear has no mod filter");eq(lineFit(17),null,"Gems have no mod filter");
+  const L=id=>LINEN[id],ring=lineFit(10),bow=lineFit(18),wep=lineFit(1),helm=lineFit(5),staff=lineFit(31),amu=lineFit(11),jew=lineFit(3);
+  ok(ring.fits.has(L("life"))&&ring.fits.has(L("ring_life_on_kill"))&&!ring.fits.has(L("armour_local")),"Rings can roll Life and Life on kill but not Armour");
+  ok(bow.fits.has(L("fire_added_local"))&&bow.fits.has(L("life_leech"))&&bow.fits.has(L("skill_level_bow")),"Bows can roll added fire, leech and bow skill levels");
+  ok(!bow.fits.has(L("fire_spell_added_2h"))&&!bow.fits.has(L("armour_local")),"Bows cannot roll spell damage or Armour");
+  ok(wep.fits.has(L("crit_local"))&&[...bow.fits].every(x=>wep.fits.has(x)),"Weapons cover everything a bow can roll");
+  ok(wep.only.has(L("phys_inc_local"))&&!wep.only.has(L("life")),"Weapons: Physical Damage is weapon-only, Life is not");
+  ok(amu.only.has(L("all_attr"))&&jew.only.has(L("all_res")),"Amulets: All Attributes is amulet-only; Jewellery: All Resistances is jewellery-only");
+  ok(helm.fits.has(L("life"))&&!helm.fits.has(L("crit_local")),"Helms roll Life but no weapon crit");
+  ok(staff.fits.has(L("spell_inc_2h")),"Staves can roll 2H spell damage");
+  eq(lineFit(33),null,"Dwarven Runes have no mod filter (their affixes are not in the page data)");
+  [10,18,1,5,6,7,8,11,12,31,32,34].forEach(t=>{const f=lineFit(t);ok(f&&f.fits.size>0&&[...f.only].every(x=>f.fits.has(x)),"type "+t+": only is a subset of fits");});
+  ok(!bow.only.has(L("fire_added_local")),"a line shared with other types is not exclusive");
 }
 
 console.log(passed+" passed, "+failed+" failed");
