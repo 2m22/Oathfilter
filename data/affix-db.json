@@ -1,7 +1,7 @@
 {
  "_doc": "Affix database of Oathfilter. Generated from js/filter-engine.js (AFF_SRC, EZ_ARCH). Data: local game files, build 90 (read 2026-11-25). Not official.",
  "build": 90,
- "count": 312,
+ "count": 313,
  "affixes": [
   {
    "id": "life_large",
@@ -1859,10 +1859,10 @@
    "excludes": [],
    "weight": 50,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -1955,10 +1955,10 @@
    "excludes": [],
    "weight": 50,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2107,10 +2107,10 @@
    "excludes": [],
    "weight": 80,
    "tiers": 6,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 1,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20,
@@ -2212,10 +2212,10 @@
    "excludes": [],
    "weight": 50,
    "tiers": 6,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 1,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20,
@@ -2240,10 +2240,10 @@
    "excludes": [],
    "weight": 50,
    "tiers": 6,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 1,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20,
@@ -2268,10 +2268,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 6,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 1,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20,
@@ -2296,10 +2296,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 6,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 1,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20,
@@ -2325,10 +2325,10 @@
    "excludes": [],
    "weight": 30,
    "tiers": 3,
-   "ilvl_top": 44,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    44,
+    84,
     32,
     20
    ],
@@ -2352,10 +2352,10 @@
    "excludes": [],
    "weight": 30,
    "tiers": 3,
-   "ilvl_top": 44,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    44,
+    84,
     32,
     20
    ],
@@ -2385,10 +2385,10 @@
    ],
    "weight": 30,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2417,10 +2417,10 @@
    ],
    "weight": 30,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2446,10 +2446,10 @@
    "excludes": [],
    "weight": 35,
    "tiers": 4,
-   "ilvl_top": 44,
+   "ilvl_top": 84,
    "ilvl_low": 10,
    "tier_ilvls": [
-    44,
+    84,
     32,
     20,
     10
@@ -2474,10 +2474,10 @@
    "excludes": [],
    "weight": 35,
    "tiers": 4,
-   "ilvl_top": 44,
+   "ilvl_top": 84,
    "ilvl_low": 10,
    "tier_ilvls": [
-    44,
+    84,
     32,
     20,
     10
@@ -2535,10 +2535,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2566,10 +2566,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2596,10 +2596,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2626,10 +2626,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2656,10 +2656,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2685,10 +2685,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2715,10 +2715,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2746,10 +2746,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2810,10 +2810,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -2973,10 +2973,10 @@
    "excludes": [],
    "weight": 40,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -3069,10 +3069,10 @@
    "excludes": [],
    "weight": 30,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20
@@ -3095,12 +3095,12 @@
     "Amulet"
    ],
    "excludes": [],
-   "weight": 8,
+   "weight": 4,
    "tiers": 1,
-   "ilvl_top": 44,
-   "ilvl_low": 44,
+   "ilvl_top": 84,
+   "ilvl_low": 84,
    "tier_ilvls": [
-    44
+    84
    ],
    "idol": false,
    "tier_in_filter": true,
@@ -3109,6 +3109,38 @@
    "style": "",
    "easy_mode": [
     "curse"
+   ]
+  },
+  {
+   "id": "es_recharge",
+   "text": "X% faster Energy Shield Recharge",
+   "type": "Suffix",
+   "group": "EsRecharge",
+   "slots": [
+    "Amulet",
+    "Belt",
+    "EnergyShield"
+   ],
+   "excludes": [
+    "Shield"
+   ],
+   "weight": 40,
+   "tiers": 4,
+   "ilvl_top": 84,
+   "ilvl_low": 20,
+   "tier_ilvls": [
+    84,
+    44,
+    32,
+    20
+   ],
+   "idol": false,
+   "tier_in_filter": true,
+   "excluded": false,
+   "switch_dependent": false,
+   "style": "",
+   "easy_mode": [
+    "es"
    ]
   },
   {
@@ -3291,10 +3323,10 @@
    "excludes": [],
    "weight": 50,
    "tiers": 4,
-   "ilvl_top": 56,
+   "ilvl_top": 84,
    "ilvl_low": 20,
    "tier_ilvls": [
-    56,
+    84,
     44,
     32,
     20

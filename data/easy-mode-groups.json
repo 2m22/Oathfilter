@@ -381,6 +381,7 @@
    "col": 7,
    "ids": [
     "es_global",
+    "es_recharge",
     "defence_inc",
     "int_flat",
     "all_attr"

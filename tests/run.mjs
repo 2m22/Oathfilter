@@ -674,8 +674,9 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
     ok(e.rules.every(r=>mlist(r,"a").length<=6),"at most 6 named lines per rule, pick set "+i);
     ok(rulesIssues(e.rules).length===0,"no rule issues, pick set "+i+": "+JSON.stringify(rulesIssues(e.rules)).slice(0,120));});
   console.log("Leveling rule counts: none "+gen({}).rules.length+", 1 pick "+gen({attack:1}).rules.length+", 5 picks "+gen(picks).rules.length+", all picks "+gen(all).rules.length);
-  /* the built-in gear affixes: 114 (25 raw drune_* affixes are Dwarven Runes and not in the page data, 8 page-only affixes: vow_effect98, 6 pen95, elemental_pen95_amulet) */
-  eq(AFF.filter(a=>!/^idol/i.test(a.id)).length,114,"the page data holds 114 non-Idol gear affixes");
+  /* the built-in gear affixes: 115 (25 raw drune_* affixes are Dwarven Runes and not in the page data, 8 page-only affixes: vow_effect98, 6 pen95, elemental_pen95_amulet) */
+  eq(AFF.filter(a=>!/^idol/i.test(a.id)).length,115,"the page data holds 115 non-Idol gear affixes");
+  ok(AFF.some(a=>a.id==="es_recharge"&&a.lv[0]===84&&a.n===4)&&AFF.find(a=>a.id==="curse_limit").w===4&&AFF.find(a=>a.id==="attack_speed").lv[0]===84,"Build 90 refresh: es_recharge added, curse_limit weight 4, top tiers at item level 84");
 }
 
 /* ---- Advanced: list only mods that fit / only fit the rule's item type ---- */

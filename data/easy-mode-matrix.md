@@ -123,7 +123,7 @@ Idol tiers exist in the game data, but Easy Mode puts no tier limit on Idol rule
 - Idols: X% increased Evasion Rating
 
 ### Energy Shield (`es`)
-- Gear: +X to maximum Energy Shield; X% increased Defences; +X to Intelligence; +X to all Attributes
+- Gear: +X to maximum Energy Shield; X% faster Energy Shield Recharge; X% increased Defences; +X to Intelligence; +X to all Attributes
 - Idols: none
 
 ## Per line (gear, grouped by text)
@@ -179,6 +179,7 @@ Idol tiers exist in the game data, but Easy Mode puts no tier limit on Idol rule
 | Penetrates X% Lightning Resistance | lightning_pen95_2h, lightning_pen95_1h | light | TwoHand, OneHand | 4 |
 | Penetrates X% Poison Resistance | poison_pen85_2h, poison_pen85_1h | pois | TwoHand, OneHand | 4 |
 | Regenerate X Life per second | life_regen | leech | Helm, Chest, Belt, Ring, Amulet, Boots, Gloves, Shield | 8 |
+| X% faster Energy Shield Recharge | es_recharge | es | Amulet, Belt, EnergyShield | 4 |
 | X% increased Area of Effect | area | aoe | Amulet, Helm | 5 |
 | X% increased Attack Speed | attack_speed_local, attack_speed, ring_attack_speed | attack, bow | Melee, Wand, Staff, Bow, Gloves, Quiver, Ring | 8 |
 | X% increased Bleeding damage (your Bleeds) | bleed_effect | bleed | Weapon, Amulet, Belt, Quiver | 4 |
