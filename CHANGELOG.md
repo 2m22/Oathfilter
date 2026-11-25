@@ -2,6 +2,20 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-25
+
+### Added
+- Game data of Patch 90 (local game files): 49 more bases, 14 more uniques, updated drop weights, the Hewing Axe and the Signet names.
+- Easy Mode: 9 rules keep every Rare Ashen and Gnome-made base highlighted in Ash colour. They sit below your tier highlights and above every hide. Switch: "Highlight Rare Ashen and Gnome-made" (on by default).
+- Easy Mode: optional "Hide Normal and Magic Dwarven Runes" (off by default). Sell does not work on Dwarven Runes in the game, so it hides them.
+- Copy filter code and Share Filter Link check the 200 rule limit when the filter leaves the page. Over 200, the page offers a safe merge of neighbouring rules (nothing is copied until you confirm) or tells you it cannot fit. The game cuts a pasted filter at rule 200 and drops the rules after it. Editing is never blocked.
+- Order check at copy and share: it warns when a Hide or Sell sits above the Ashen block, when a tier highlight sits below it, and about Sell on Dwarven Runes.
+- Share links made offline also carry the game data build and a check hash, and the code from before a merge.
+- Rules that can never match are marked "never matches". Nothing is deleted.
+
+### Changed
+- Named lines: the tier limit and the line counts (n, Any N, All of them) now count only the named lines, as the game does. Without named lines they still count all lines. Top roll still looks at the whole item.
+
 ## 2026-11-24
 
 ### Added
