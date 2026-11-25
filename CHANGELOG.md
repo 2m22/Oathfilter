@@ -16,6 +16,10 @@ All notable changes for players. Newest first.
 - The language selector now translates the whole page (buttons, tabs, Easy Mode, Drop Test, Import), not only game texts. 28 languages are covered; Thai and the long Guide, About and help texts stay English.
 - Leveling now steps its tier limits by item level on its own (under 20, 40, 60 and 75, then 75+), keeping the best tier that can drop plus one more. It only affects the lines of your Build focus picks.
 - Leveling always shows "+X to Level of all Skill Gems" (skill level affixes), whatever the tier or item level.
+- Advanced editor: choosing an item type now filters the lists at once. The Named line and Not these lines pickers show only mods that can roll on that item type ("Show mods": All mods, Can roll on this item type, Only on this item type), and the Base and Named red pickers show only bases and reds of that type.
+- Advanced editor: Defence type narrows the base, mod and red lists as well, together with the item type (for example Body armour + Armour shows plate chests only).
+- Advanced editor: "Item kind" splits Shields, foci and quivers in the mod, base and red lists.
+- Advanced editor: with bases picked, the mod lists hide mods that cannot roll on those bases, and the red list shows only reds on them. Two switches in the column headers turn this off.
 
 ### Changed
 - New layout: centred 1280px page, calmer top bars, equal cards and one slim status bar with the rule count (X / 200) on all tabs.
