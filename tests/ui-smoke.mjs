@@ -149,6 +149,32 @@ async function run(name,mode){
   await page.focus("#ezDet>summary");await page.keyboard.press("Enter");await page.waitForTimeout(150);
   ok(!(await page.$eval("#ezDet",d=>d.open)),"Enter closes Easy Mode Details");
 
+  /* Easy Mode: three steps, three strictness cards, badge transitions */
+  const pressed=()=>page.$$eval("#ezCtl .ezcard",b=>b.filter(x=>x.getAttribute("aria-pressed")==="true").map(x=>x.querySelector("b").textContent));
+  const st=()=>page.$eval("#ezState",e=>e.textContent.trim());
+  const bb=()=>page.$eval("#ezBuildsB",e=>!e.hidden);
+  ok(JSON.stringify(await page.$$eval("#ezCtl .ezcard b",b=>b.map(x=>x.textContent)))===JSON.stringify(["Leveling","Endgame","Uber Strict"]),"Easy Mode shows the three strictness cards");
+  ok((await page.$$("#ez-rl,.ezsl,.eztk")).length===0,"the Rupture Level slider and tier bar are gone");
+  ok(JSON.stringify(await page.$$eval("#ezCtl .ezg .ezgt span",s=>s.map(x=>x.textContent)))===JSON.stringify(["Playstyle","Damage","Defences","Utility"]),"Build focus has the four pill groups");
+  ok(JSON.stringify(await page.$$eval("#ezCtl .ezt",s=>s.map(x=>x.textContent.replace(/^\d/,"").trim())))===JSON.stringify(["Filter strictness","Build focus","Always keep & Rare bases","Hide & Dwarven Runes"]),"Easy Mode headings: steps 1 and 2, then the two utility cards");
+  ok(JSON.stringify(await page.$$eval("#ezCtl .ezu .cb2 span",s=>s.map(x=>x.textContent)))===JSON.stringify(["Core-touched","Rune bases","Truesworn bases","Rare Ashen & Gnome-made","Normal gear","Magic gear","Sell instead of hide","Hide Normal & Magic Dwarven Runes"]),"the utility cards hold the requested switches");
+  ok((await page.$$eval("#ezSumK,#ezSumH",e=>e.map(x=>x.textContent.length>10))).every(Boolean),"each utility card has one summary line");
+  await page.click('#ezCtl [data-ez="pre,endgame"]');await page.waitForTimeout(150);
+  ok(JSON.stringify(await pressed())==='["Endgame"]'&&await st()===""&&!await bb(),"Endgame: card selected, no Custom, no + builds");
+  await page.click('#ezCtl [data-ez="arch,attack"]');await page.waitForTimeout(150);
+  ok(JSON.stringify(await pressed())==='["Endgame"]'&&await st()===""&&await bb(),"a build pill adds + builds and keeps Endgame");
+  await page.click('#ezCtl [data-ez="hn"]');await page.waitForTimeout(150);
+  ok((await pressed()).length===0&&await st()==="Custom","changing a preset-owned switch turns the state to Custom");
+  ok(await bb()===false,"Custom does not show + builds");
+  await page.click('#ezCtl [data-ez="pre,uber"]');await page.waitForTimeout(150);
+  ok(JSON.stringify(await pressed())==='["Uber Strict"]'&&await st()==="","choosing a card again clears Custom");
+  ok(await page.$eval('#ezCtl [data-ez="hr"]',b=>b.getAttribute("aria-pressed"))==="true","Uber Strict turns Hide Dwarven Runes on");
+  await page.click('#ezCtl [data-ez="pre,leveling"]');await page.waitForTimeout(150);
+  ok(await page.$eval('#ezCtl [data-ez="hn"]',b=>b.getAttribute("aria-pressed"))==="false"&&await page.$eval('#ezCtl [data-ez="hm"]',b=>b.getAttribute("aria-pressed"))==="false","Leveling hides no Normal or Magic gear");
+  await page.click('#ezCtl [data-ez="clear,all"]');await page.waitForTimeout(150);
+  ok(!await bb()&&JSON.stringify(await pressed())==='["Leveling"]',"Clear all removes + builds and keeps the strictness");
+  ok((await page.$eval("#ezOut",e=>e.textContent)).includes("/ 200"),"the rule count row shows X / 200");
+
   /* Guide and About cards: the heading is a role=button */
   for(const v of ["info","about"]){
     await page.click(`[data-view=${v}]`);await page.waitForTimeout(300);

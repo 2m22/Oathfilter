@@ -1202,19 +1202,19 @@ const EZ_ARCH=EZ_DATA.groups.map(g=>{const ok=id=>(EZ_KNOWN.has(id)||/^idol_/.te
 /* Style-bound element lines. A line tagged "spell" or "attack" only stays when that style is picked (or no style is picked). Everything else of a picked element stays. */
 const EZ_ST=EZ_DATA.st;
 const EZ_ATK=["attack","melee","slam","bow"];
-const EZ_GRP=[["Playstyle","play",[["",["attack","spell","minion","melee","slam","bow","trap","totem"]]]],["Damage & Ailments","dmg",[["Damage types",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign","chaos"]]]],["Defences","def",[["",["life","armour","evasion","es","res"]]]],["Utility","util",[["",["aoe","chain","channel","orbit","curse","move","mana","leech"]]]]]; /* every chip id stays; only the grouping changed */
+const EZ_GRP=[["Playstyle","play",[["",["attack","spell","minion","melee","slam","bow","trap","totem"]]]],["Damage","dmg",[["Damage types",["phys","fire","cold","light","pois","holy"]],["Ailments",["bleed","ign","chaos"]]]],["Defences","def",[["",["life","armour","evasion","es","res"]]]],["Utility","util",[["",["aoe","chain","channel","orbit","curse","move","mana","leech"]]]]]; /* every chip id stays; only the grouping changed */
 const EZ_RL=[["0","Any"]].concat(LVSTEPS.filter(v=>v<=84).map(v=>[String(v),String(v)])); /* Rupture Level = monster level = drop (item) level; it decides which affix tiers can drop */
 const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]; /* how many of the tiers that can drop at that level a rule keeps */
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1}}); /* gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
+const ezDef=()=>({rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1}}); /* st: strictness extras for a filter without picks, 0 none, 1 hide Rare gear under item level 75, 2 keep only top-roll Rares from item level 82. gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
   const s={rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
-    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),ga:on(o.ga,d.ga),hr:on(o.hr,d.hr),pre:typeof o.pre==="string"?o.pre.slice(0,24):d.pre,arch:{},keep:{}};
+    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),ga:on(o.ga,d.ga),hr:on(o.hr,d.hr),st:n(o.st,0,2,d.st),pre:typeof o.pre==="string"?o.pre.slice(0,24):d.pre,arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
   if(o.arch&&o.arch.dot){s.arch.pois=s.arch.bleed=s.arch.ign=1;} /* ... and one Damage over time pick */
@@ -1308,7 +1308,13 @@ function easyGen(s,pack,merge){
         Without picks it must come before the level-floor show rule, or Normal and Magic gear above the floor would be shown first. */
   const hideR=()=>{if(rarHide){const w=s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear";mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:s.hs?4:0},s.hs?"Sell "+w[0].toLowerCase()+w.slice(1):w);}};
   const ga=()=>{if(s.ga)gaRules().forEach(r=>R.push(r));};
-  if(!gearA.length){ga();hideR();} /* the Rare Ashen / Gnome-made block sits above every Hide and Sell */
+  /* strictness extras (filters without gear picks; with picks the catch-all below already hides every other Rare). Always an explicit Rare rarity, never Any. */
+  const stTop=()=>{if(s.st===2)mk({type:0,rarity:4,level:7,quality:2,action:s.hl?3:1,colour:4},"Keep top-roll Rares (item level 82+)");}; /* a tier highlight: it sits above the Ashen block */
+  const stHide=()=>{
+    if(s.st===1)mk({type:0,rarity:4,level:4,action:0},"Hide Rare gear under item level 75");
+    if(s.st===2)mk({type:0,rarity:4,action:0},"Hide other Rare gear");
+  };
+  if(!gearA.length){stTop();ga();stHide();hideR();} /* the Rare Ashen / Gnome-made block sits above every Hide and Sell */
   /* 4 gear picks and the level floor */
   if(white){
     gearP.forEach(x=>x.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col},x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);})));
@@ -1336,9 +1342,16 @@ function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="
 const ezLinked=()=>!!EZ.h&&EZ.h===ezHashF(F);
 /* ---- state label: preset name, "+ builds" chip, Custom ----
    A preset owns the hides, the tier limits, the level, the rule order and the Ashen block. The build buttons (arch) only add lines to keep, so they never change the label; they show as a "+ builds" chip.
-   Changing anything the preset owns, or editing the filter outside Easy Mode, makes the state Custom. The presets register in EZ_PRESETS (id -> {name}); none is defined yet. */
-const EZ_PRESETS={};
-const EZ_OWNED=["rl","tk","hl","idol","hn","hm","hs","gems","ga","hr"];
+   Changing anything the preset owns, or editing the filter outside Easy Mode, makes the state Custom. The presets are defined in EZ_PRESETS (id -> {name, short, vals}): Leveling, Endgame and Uber Strict. */
+const EZ_PRESETS={
+  leveling:{name:"Leveling",short:"Shows basic gear, early bases, and progression items while leveling up.",vals:{rl:0,tk:3,hl:1,idol:"match",hn:0,hm:0,hs:0,gems:0,ga:1,hr:0,st:0}},
+  endgame:{name:"Endgame",short:"Hides low-tier items; highlights optimal endgame bases and essential affixes.",vals:{rl:75,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:1}},
+  uber:{name:"Uber Strict",short:"Hides almost everything except absolute best-in-slot bases and top tier rolls.",vals:{rl:84,tk:1,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:1,st:2}}
+};
+const EZ_PRE_IDS=Object.keys(EZ_PRESETS);
+const EZ_OWNED=["rl","tk","hl","idol","hn","hm","hs","gems","ga","hr","st"];
+/* the state after choosing a preset: everything the preset owns is reset, the build picks stay */
+const ezPreset=(id,s)=>ezSane(Object.assign({},s,EZ_PRESETS[id].vals,{keep:{core:1,runes:1,tsw:1},pre:id,arch:s.arch}));
 const ezOwnedChanged=(a,b)=>EZ_OWNED.some(k=>a[k]!==b[k])||["core","runes","tsw"].some(k=>a.keep[k]!==b.keep[k]);
 function ezBadge(s,linked,hasHash){
   const builds=EZ_ARCH.filter(a=>s.arch[a.k]).length;
@@ -1355,4 +1368,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};
+export {idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};

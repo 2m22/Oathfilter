@@ -1,6 +1,6 @@
 import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
-import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -13,7 +13,7 @@ const foldClose="</div></details>";
 document.addEventListener("toggle",e=>{const d=e.target,k=d&&d.dataset&&d.dataset.fold;if(!k)return;if(d.open)delete FOLD[k];else FOLD[k]=1;try{localStorage.setItem("oathfilter-fold",JSON.stringify(FOLD));}catch(x){}},true);
 document.querySelectorAll("details.fold[data-fold]").forEach(d=>{d.open=!FOLD[d.dataset.fold];});
 document.querySelectorAll("details.fold[data-fold]>summary,details.ezdet>summary").forEach(sm=>{if(!sm.querySelector(".fold-chev"))sm.insertAdjacentHTML("beforeend",li("chevron-right","fold-chev"));});
-const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. You can save one rule, several rules or your whole filter. The Modules button opens the organizer: modules on the left, your rules on the right. Tick one or more modules and press the insert button, or drag them into the rule list. Several modules go in as one block in the order you ticked them, and you can drag rules to reorder them. Replace filter starts a new filter from one of your modules. Share makes a link, and whoever opens it can insert the rules into their own filter. If an insert would go over 200 rules, it is blocked. Ctrl+Z takes it back. Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezRL": ["Rupture Level", "The monster level you farm at, which is also the item drop level. Only affix tiers up to that item level can drop. Any means no tier limit."], "ezKeep": ["Tier strictness", "How many of the best droppable tiers still count as good for each line you pick (the T limit of a line). Gear without such a line is hidden. Idols are not limited."], "ezWant": ["What I want to see", "Each pick keeps gear with its lines and the matching Idols, and hides the other Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. Items that also carry another picked line stay visible. Choose at least one."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to 6 named lines, 12 bases and 12 reds per rule (plus 6 not-these lines)."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."]};
+const HELP={"modules": ["Modules", "A module is a group of rules saved in this browser. You can save one rule, several rules or your whole filter. The Modules button opens the organizer: modules on the left, your rules on the right. Tick one or more modules and press the insert button, or drag them into the rule list. Several modules go in as one block in the order you ticked them, and you can drag rules to reorder them. Replace filter starts a new filter from one of your modules. Share makes a link, and whoever opens it can insert the rules into their own filter. If an insert would go over 200 rules, it is blocked. Ctrl+Z takes it back. Nothing is uploaded, and clearing the site data deletes them. For a backup or another device, use Copy filter code."], "ezMode": ["Easy Mode", "Builds the whole filter from a few choices. The result is a normal game filter code. Your choices stay in this browser. Use Advanced Mode to edit single rules."], "ezPre": ["Filter strictness", "Leveling: nothing is hidden by rarity. Endgame: hides Normal and Magic gear and Rares under item level 75, and limits your picks to the tiers that drop at Rupture Level 75 (best 2). Uber Strict: also hides every Rare that is not a top roll from item level 82, and limits picks to the best tier at Rupture Level 84. Change any switch below and the label turns to Custom."], "ezWant": ["Build focus", "Each pick keeps gear with its lines and the matching Idols. A damage type or ailment narrows Attacks and Spells: with Spells + Cold, only Cold spell lines stay. With picks, gear without a picked line is hidden. Idols without a picked line are hidden too."], "copyAdv": ["Copy filter code", "Copies the code for the game's loot filter window. In Easy Mode it copies the Easy preview, otherwise your active filter. Nothing changes until you paste it in the game."], "share": ["Share", "Makes a link to your active filter with its rule names. In Easy Mode it first replaces your filter with the Easy Mode rules (Ctrl+Z brings yours back). The game code never contains names."], "order": ["Rule order", "The game checks rules from top to bottom and the first match decides. Drag rules, or use Alt+Shift+Up/Down, to reorder. Check rule order runs sample items through your filter."], "hide": ["Hide", "Hide never works on uniques, runes, Dwarven Runes, the Cube, gems, currency, gold and flasks. The Drop Test marks them SHOW*."], "sell": ["Sell", "Sell exists in the game, but its exact behaviour is not confirmed. The Drop Test treats it like Hide and counts it as Sell."], "more": ["More conditions", "Extra conditions from the game's MORE window. All of them must fit together with the options above. Up to 6 named lines, 12 bases and 12 reds per rule (plus 6 not-these lines)."], "dcOcr": ["Screenshot reader", "The text is read on your device and your image is never uploaded. The first scan downloads the text reader (tesseract.js, about 10 MB) from a public CDN."], "dcTier": ["Tier marker", "The bar “│” separates the item text from its tier marker, for example “… Life │ T2 [21-28]”."], "dcSell": ["Sold samples", "Samples caught by a Sell rule. The game's Sell behaviour is not confirmed, so they are treated like hidden items."]};
 const hb=k=>`<button type="button" class="hlp" data-help="${k}" aria-label="Help: ${HELP[k][0]}" aria-expanded="false">?</button>`;
 (function(){
   const pop=document.createElement("div");pop.id="hlpPop";pop.setAttribute("role","tooltip");pop.hidden=true;document.body.appendChild(pop);
@@ -1642,37 +1642,36 @@ const EZ_ICO={play:'<path d="M5 19 19 5M14 5h5v5M7 17l-3 3"/>',dmg:'<path d="M12
 const ezIco=k=>`<svg class="ezico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${EZ_ICO[k]||EZ_CI[k]||""}</svg>`;
 const ezChip=k=>{const a=EZ_ARCH.find(x=>x.k===k);return ezBtn("arch,"+a.k,a.n,a.k);};
 function ezBuild(){
+  const card=id=>{const p=EZ_PRESETS[id];return `<button type="button" class="ezcard" data-ez="pre,${id}" aria-pressed="false"><b>${esc(p.name)}</b><span>${esc(p.short)}</span></button>`;};
   $("#ezCtl").innerHTML=`
+  <section class="ezs" aria-labelledby="ez-h1"><div class="hrow ezh"><h3 id="ez-h1" class="ezt"><span class="ezn">1</span>Filter strictness</h3>${hb("ezPre")}<span id="ezState" class="ezstate" aria-live="polite"></span></div>
+    <div class="ezcards" role="group" aria-label="Filter strictness">${EZ_PRE_IDS.map(card).join("")}</div></section>
+  <section class="ezs" aria-labelledby="ez-h2"><div class="hrow ezh"><h3 id="ez-h2" class="ezt"><span class="ezn">2</span>Build focus</h3>${hb("ezWant")}<span id="ezBuildsB" class="ezbadge chip" hidden>+ builds</span><span class="ezpk" id="ezPicked" aria-live="polite"></span><button type="button" class="btn ezclr" data-ez="clear,all" title="Unpick every pill. Ctrl+Z brings them back.">${li("x")}Clear all</button></div>
+    <div class="ezgrid">${EZ_GRP.map(([t,ic,blocks])=>`<div class="ezg" role="group" aria-label="${esc(t)}"><div class="ezgt">${ezIco(ic)}<span>${esc(t)}</span></div><div class="chips">${blocks.flatMap(([bt,ks])=>ks).map(ezChip).join("")}</div></div>`).join("")}</div></section>
   <div class="ez2">
-  <div class="sub"><div class="hrow"><label class="lab" for="ez-rl">Rupture Level <output id="ez-rlo" aria-live="polite" style="color:var(--accent-gold);margin-left:6px"></output></label>${hb("ezRL")}</div>
-    <p class="hint" style="margin:2px 0 4px">The monster level you farm at. It decides which affix tiers can drop.</p>
-    <input id="ez-rl" class="ezsl" type="range" min="0" max="${EZ_RL.length-1}" step="1" value="0" list="ez-rlt" aria-valuetext="Any">
-    <datalist id="ez-rlt">${EZ_RL.map((x,i)=>`<option value="${i}"></option>`).join("")}</datalist>
-    <div class="eztk" aria-hidden="true">${EZ_RL.map((x,i)=>`<span style="left:calc(8px + (100% - 16px) * ${i/(EZ_RL.length-1)})">${x[1]}</span>`).join("")}</div></div>
-  <div class="sub"><div class="hrow"><span class="lab">Tier strictness</span>${hb("ezKeep")}</div><p class="hint" style="margin:2px 0 6px">How many of the best droppable tiers count as good.</p>${ezSeg("tk",EZ_KEEP,"Tier strictness")}
-    <p class="hint" id="ez-ilv" style="margin:8px 0 0"></p></div>
-  </div>
-  <div class="sub"><div class="hrow ezwant"><span class="lab">What I want to see</span>${hb("ezWant")}<span class="ezpk" id="ezPicked" aria-live="polite"></span><button type="button" class="btn ezclr" data-ez="clear,all" title="Unpick every chip. Ctrl+Z brings them back.">${li("x")}Clear all</button></div>
-    <div class="ezgrid">${EZ_GRP.map(([t,ic,blocks])=>`<div class="ezg" role="group" aria-label="${esc(t)}"><div class="ezgt">${ezIco(ic)}<span>${esc(t)}</span></div>${blocks.map(([bt,ks])=>`${bt?`<span class="lab ezgl">${esc(bt)}</span>`:""}<div class="chips">${ks.map(ezChip).join("")}</div>`).join("")}</div>`).join("")}</div>
-    <p class="hint" style="margin:8px 0 0">Picks also decide which Idols stay.</p>
-    <span class="lab" style="margin-top:10px;display:block">Matches</span>${ezSeg("hl",[[0,"Show"],[1,"Highlight"]],"Matches")}</div>
-  <div class="ez2">
-  <div class="sub"><span class="lab">Hide</span><div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}</div><span class="lab" style="margin-top:10px;display:block">How</span><div class="chips">${ezBtn("hs","Sell instead of hide")}</div><p class="hint" style="margin:6px 0 0">Sell sells Normal and Magic gear when it lands. Caution: sold items are gone.</p><span class="lab" style="margin-top:10px;display:block">Gems</span><div class="chips">${ezBtn("gems,1","Hide gems")}${ezBtn("gems,2","Sell gems")}</div><p class="hint" style="margin:6px 0 0">Neither: gems are not touched. A gem under a Sell rule is sold when it lands.</p><span class="lab" style="margin-top:10px;display:block">Dwarven Runes</span><div class="chips">${ezBtn("hr","Hide Normal and Magic Dwarven Runes")}</div><p class="hint" style="margin:6px 0 0">Sell does not work on Dwarven Runes, so this hides them. Dwarven Carving uses Normal and Magic runes, so hidden ones are lost for it. Off: runes are not touched.</p></div>
-  <div class="sub"><span class="lab">Always keep</span><div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}</div><span class="lab" style="margin-top:10px;display:block">Ashen and Gnome-made</span><div class="chips">${ezBtn("ga","Highlight Rare Ashen and Gnome-made")}</div><p class="hint" style="margin:6px 0 0">9 rules keep every Rare Ashen or Gnome-made base, below your tier highlights and above every hide. Normal and Magic ones follow your other rules.</p></div>
+    <section class="ezs ezu" aria-labelledby="ez-h3"><h3 id="ez-h3" class="ezt">Always keep &amp; Rare bases</h3>
+      <div class="chips">${[["core","Core-touched"],["runes","Rune bases"],["tsw","Truesworn bases"]].map(k=>ezBtn("keep,"+k[0],k[1])).join("")}${ezBtn("ga","Rare Ashen & Gnome-made")}</div><p class="hint ezsum" id="ezSumK"></p></section>
+    <section class="ezs ezu" aria-labelledby="ez-h4"><h3 id="ez-h4" class="ezt">Hide &amp; Dwarven Runes</h3>
+      <div class="chips">${ezBtn("hn","Normal gear")}${ezBtn("hm","Magic gear")}${ezBtn("hs","Sell instead of hide")}${ezBtn("hr","Hide Normal & Magic Dwarven Runes")}</div><p class="hint ezsum" id="ezSumH"></p></section>
   </div>`;
 }
+const ezJoin=a=>a.length<2?a.join(""):a.slice(0,-1).join(", ")+" and "+a[a.length-1];
 function ezSync(){
-  const s=EZ.s;
-  const sl=$("#ez-rl");if(sl){const i=Math.max(0,EZ_RL.findIndex(x=>+x[0]===s.rl));sl.value=i;sl.setAttribute("aria-valuetext",s.rl?"Rupture Level "+s.rl:"Any");$("#ez-rlo").textContent=s.rl?String(s.rl):"Any";}
+  const s=EZ.s,bg=ezBadge(s,ezLinked(),!!EZ.h);
   const pk=EZ_ARCH.filter(a=>s.arch[a.k]).length,pe=$("#ezPicked"),ce=$("#ezCtl .ezclr");
-  if(pe)pe.textContent=pk?pk+" picked":"None picked";if(ce)ce.disabled=!pk;
+  if(pe)pe.textContent=pk?pk+" picked":"";if(ce)ce.disabled=!pk;
+  const st=$("#ezState");if(st){st.textContent=bg&&bg.custom?"Custom":"";st.classList.toggle("on",!!(bg&&bg.custom));}
+  const bb=$("#ezBuildsB");if(bb)bb.hidden=!(bg&&bg.chip);
   $$("#ezCtl button[data-ez]").forEach(b=>{
     const[k,v]=b.dataset.ez.split(",");
     if(k==="clear")return;
-    const on=k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm"||k==="hs"||k==="ga"||k==="hr")?s[k]:k==="gems"?s.gems===+v:k==="idol"?s.idol===v:String(s[k])===v;
+    const on=k==="pre"?s.pre===v:k==="arch"?s.arch[v]:k==="keep"?s.keep[v]:(k==="hn"||k==="hm"||k==="hs"||k==="ga"||k==="hr")?s[k]:String(s[k])===v;
     b.setAttribute("aria-pressed",on?"true":"false");
   });
-  $("#ez-ilv").textContent=s.rl?"Rupture Level "+s.rl+": only tiers up to item level "+s.rl+" can drop. Gear needs a picked line within the "+(s.tk===1?"best tier":"best "+s.tk+" tiers")+" that can drop; weaker lines are hidden. Pick at least one.":"Any: no tier limit. Set your Rupture Level to hide gear whose picked lines are too weak for what drops there.";
+  const keep=[s.keep.core&&"Core-touched",s.keep.runes&&"Rune bases",s.keep.tsw&&"Truesworn bases",s.ga&&"Rare Ashen & Gnome-made"].filter(Boolean);
+  $("#ezSumK").textContent=keep.length?"Always shown, above every hide: "+ezJoin(keep)+".":"No special keep rules.";
+  const hid=[s.hn&&s.hm?"Normal and Magic gear":s.hn?"Normal gear":s.hm?"Magic gear":"",s.hr?"Normal and Magic Dwarven Runes":""].filter(Boolean);
+  $("#ezSumH").textContent=hid.length?(s.hs&&(s.hn||s.hm)?"Hidden, and the gear is sold: ":"Hidden: ")+ezJoin(hid)+".":"Nothing is hidden by rarity.";
 }
 function ezPreview(g){
   g=g||easyGen(EZ.s);
@@ -1685,17 +1684,13 @@ function ezPreview(g){
   else if(linked)msg="Applied. Easy Mode controls your filter; changes apply when you let go of a control.";
   else if(ezAsk&&!over)alerts+=`<div class="ezbanner" role="alert"><b>Replace your current ${act} rule${act===1?"":"s"}?</b><p class="hint" style="margin:6px 0 8px">Easy Mode builds the whole filter. Ctrl+Z brings your rules back.</p><div class="ezrow"><button type="button" class="btn gold" data-ezact="replace">Replace</button><button type="button" class="btn" data-ezact="cancel">Cancel</button></div></div>`;
   else{msg="Not applied yet. Your filter stays as it is until you apply it.";btn=`<button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>${li("check")}Apply to my filter</button>`;}
-  const mn={black:"Hide only",white:"Show and highlight first, then hide the rest"}[g.mode];
   const w=g.notes.concat(sh);
   const top=alerts+`<div class="ezbrow">${bg?`<span class="ezbadge${bg.custom?" custom":""}">${esc(bg.label)}</span>${bg.chip?`<span class="ezbadge chip">${esc(bg.chip)}</span>`:""}`:""}<span class="ezcnt${over?" bad":""}"><b>${n} / ${MAX_RULES}</b> rules</span>${msg?`<span class="hint ezmsg">${esc(msg)}</span>`:""}${btn}</div>`+
   (ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:"");
-  const bot=`<div class="sub"><span class="lab">Rule count</span>
-    <div class="ezcount"><span>Active filter (badge, top right)</span><b>${act} / ${MAX_RULES}</b></div>
-    <div class="ezcount${over?" bad":""}"><span>Easy Mode ${linked?"rules (applied)":"preview (not applied)"}</span><b>${n} / ${MAX_RULES}</b></div></div>
-  <div class="sub"><span class="lab">Strategy</span><b>${esc(mn)}</b><p class="hint" style="margin:4px 0 0">${esc(g.why)}</p></div>
-  <div class="sub"><span class="lab">Rules in the preview</span>
-    <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(actWord(r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol></div>
-  ${w.length?`<div class="sub"><span class="lab">Warnings</span>${w.map(t=>`<p class="hint ezw" style="margin:4px 0 0">${esc(t)}</p>`).join("")}</div>`:""}
+  const bot=`<p class="hint ezln">Active filter: <b>${act} / ${MAX_RULES}</b> rules. Easy Mode ${linked?"rules (applied)":"preview (not applied)"}: <b${over?' class="bad"':""}>${n} / ${MAX_RULES}</b>.</p>
+  <span class="lab">Rules in the preview</span>
+    <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(actWord(r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol>
+  ${w.length?`<span class="lab">Warnings</span>${w.map(t=>`<p class="hint ezw">${esc(t)}</p>`).join("")}`:""}
 `;
   $("#ezOut").innerHTML=top;$("#ezOut2").innerHTML=bot;
   $("#ezDetT").textContent="Details · "+n+" / "+MAX_RULES+" rules"+(w.length?" · "+w.length+" note"+(w.length>1?"s":""):"");$("#ezDetS").classList.toggle("bad",over);
@@ -1709,9 +1704,6 @@ function ezTouched(){
   ezBuild();
   const bx=$("#ezBox");
   $("#ezMode").addEventListener("click",e=>{const b=e.target.closest("button[data-ezm]");if(b)ezMode(b.dataset.ezm);});
-  const rlv=e=>+EZ_RL[+e.target.value][0];
-  bx.addEventListener("input",e=>{if(e.target.id!=="ez-rl")return;const v=rlv(e);$("#ez-rlo").textContent=v?String(v):"Any";}); /* live value while dragging */
-  bx.addEventListener("change",e=>{if(e.target.id!=="ez-rl")return;EZ.s=ezSane(Object.assign({},EZ.s,{rl:rlv(e),pre:""}));ezTouched();}); /* the filter updates on release */
   bx.addEventListener("click",e=>{
     const b=e.target.closest("button");if(!b||b.disabled)return;
     if(b.dataset.ezact){
@@ -1729,7 +1721,8 @@ function ezTouched(){
     /* Sell needs a confirmation first (Caution); turning it off needs none */
     if((k==="hs"&&!s.hs)||(k==="gems"&&+v===2&&s.gems!==2)){
       const kind=k==="gems"?"gems":s.hn&&!s.hm?"normal":s.hm&&!s.hn?"magic":"normalmagic";
-      askCaution([kind]).then(ok=>{if(ok){if(k==="hs")s.hs=1;else s.gems=2;s.pre="";EZ.s=ezSane(s);ezTouched();}});return;}
+      askCaution([kind]).then(ok=>{if(ok){if(k==="hs")s.hs=1;else s.gems=2;if(s.pre)s.pre="custom";EZ.s=ezSane(s);ezTouched();}});return;}
+    if(k==="pre"){if(EZ_PRESETS[v]){EZ.s=ezPreset(v,s);ezTouched();}return;}
     if(k==="clear")EZ_ARCH.forEach(a=>{s.arch[a.k]=0;});
     else if(k==="arch")s.arch[v]=s.arch[v]?0:1;
     else if(k==="keep")s.keep[v]=s.keep[v]?0:1;
@@ -1737,9 +1730,7 @@ function ezTouched(){
     else if(k==="hs")s.hs=s.hs?0:1;
     else if(k==="ga"||k==="hr")s[k]=s[k]?0:1;
     else if(k==="gems")s.gems=s.gems===+v?0:+v;
-    else if(k==="rl"||k==="tk"||k==="hl")s[k]=+v;
-    else if(k==="idol")s.idol=v;
-    if(ezOwnedChanged(before,s))s.pre=""; /* the preset owns these: Custom from here. Build buttons (arch) do not count. */
+        if(ezOwnedChanged(before,s)&&s.pre)s.pre="custom"; /* the preset owns these: Custom from here. Build buttons (arch) do not count. */
     EZ.s=ezSane(s);ezTouched();
   });
   const dt=$("#ezDet");dt.open=!!EZ.r;dt.addEventListener("toggle",()=>{EZ.r=dt.open?1:0;ezSave();});

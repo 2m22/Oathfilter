@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge} from "../js/filter-engine.js";
+import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -580,6 +580,37 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   eq(easyGen(ezSane({hn:1,hm:0,arch:{attack:1}})).rules.filter(r=>/^Everything else/.test(r.name)).map(r=>r.rarity).join(","),"2,4","Normal hidden above: Magic (2), then Rare (4)");
   eq(easyGen(ezSane({hn:0,hm:1,arch:{attack:1}})).rules.filter(r=>/^Everything else/.test(r.name)).map(r=>r.rarity).join(","),"1,4","Magic hidden above: Normal (1), then Rare (4)");
   eq(easyGen(ezSane({hn:1,hm:1,arch:{attack:1}})).rules.filter(r=>/^Everything else/.test(r.name)).map(r=>r.rarity).join(","),"4","both hidden above: only Rare (4)");
+}
+
+/* ---- strictness presets: Leveling, Endgame, Uber Strict ---- */
+{ eq(EZ_PRE_IDS.join(","),"leveling,endgame,uber","three strictness presets");
+  const bad=["rarity0","ga-below-hide","ga-above-tier","clash","an-list","sell-33"];
+  EZ_PRE_IDS.forEach(id=>[{},{attack:1},{spell:1,cold:1},{minion:1,life:1,res:1}].forEach(arch=>{
+    const s=ezPreset(id,ezSane({arch})),g=easyGen(s).rules;
+    eq(s.pre,id,id+": state carries the preset id");
+    ok(g.every(r=>!((r.action===0||r.action===4)&&r.rarity===0&&![14,17].includes(r.type))),id+" "+Object.keys(arch).join("+")+": no Hide/Sell with Any rarity");
+    ok(rulesIssues(g).every(x=>!bad.includes(x.code)),id+" "+Object.keys(arch).join("+")+": no order or guard issue");
+    ok(g.length<=MAX_RULES,id+": within the rule limit");
+    const b=ezBadge(s,true,true);ok(b&&b.label===EZ_PRESETS[id].name&&!b.custom,id+": badge shows the preset name");
+  }));
+  const rn=id=>easyGen(ezPreset(id,ezSane({}))).rules.map(r=>r.name);
+  ok(!rn("leveling").some(n=>/^(Hide|Keep)/.test(n)||/Normal and magic gear/.test(n)),"Leveling without picks hides nothing");
+  ok(rn("endgame").includes("Hide Rare gear under item level 75")&&rn("endgame").includes("Normal and magic gear"),"Endgame without picks: hides Rares under 75 and Normal/Magic");
+  const u=easyGen(ezPreset("uber",ezSane({}))).rules,ki=u.findIndex(r=>r.name==="Keep top-roll Rares (item level 82+)"),hi=u.findIndex(r=>r.name==="Hide other Rare gear");
+  ok(ki>=0&&hi>ki&&u[ki].quality===2&&u[ki].level===7&&u[ki].rarity===4&&u[hi].rarity===4,"Uber Strict: top-roll Rares are kept above the Rare hide");
+  ok(u.some(r=>r.type===33&&r.action===0),"Uber Strict hides Normal and Magic Dwarven Runes");
+  /* builds on top of a preset: label stays, + builds chip */
+  const sb=ezPreset("endgame",ezSane({arch:{attack:1,fire:1}}));const bb=ezBadge(sb,true,true);
+  ok(bb.label==="Endgame"&&bb.chip==="+ builds"&&bb.builds===2,"Endgame + 2 picks: Endgame, + builds");
+  ok(!ezOwnedChanged(ezPreset("endgame",ezSane({})),sb),"picks do not change what the preset owns");
+  /* changing something the preset owns */
+  const base=ezPreset("endgame",ezSane({}));
+  ["rl","tk","hl","hn","hm","hs","ga","hr","st","gems"].forEach(k=>ok(ezOwnedChanged(base,{...base,[k]:k==="rl"?60:k==="tk"?1:k==="gems"?1:base[k]?0:1,keep:base.keep}),"Endgame owns "+k));
+  ok(ezOwnedChanged(base,{...base,keep:{...base.keep,core:0}}),"Endgame owns the Always keep switches");
+  ok(ezBadge({...base,pre:"custom"},true,true).custom,"the custom marker shows Custom");
+  /* each preset really differs */
+  const sig=id=>easyGen(ezPreset(id,ezSane({}))).rules.map(r=>[r.type,r.rarity,r.level,r.action,r.quality].join()).join("|");
+  ok(new Set(EZ_PRE_IDS.map(sig)).size===3,"the three presets produce three different filters");
 }
 
 console.log(passed+" passed, "+failed+" failed");
