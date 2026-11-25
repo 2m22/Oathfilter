@@ -643,17 +643,22 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(R.every(r=>[0,1,2,3,4,6].includes(lvOf(r))),"only compiler level steps are used (<20, <40, <60, <75, 75+)");
   /* property: at every item level the best droppable tier of every picked line is still shown */
   const pickIds=new Set();R.forEach(r=>mlist(r,"a").forEach(i=>pickIds.add(i)));
-  let chk=0,hid=0;
+  let chk=0,hid=0;const untiered=new Set();
+  pickIds.delete("skill_level"); /* permanent exception, checked below */
   pickIds.forEach(id=>{const t=LINEN[id];const as=AFF.filter(a=>!/^idol/i.test(a.id)&&LINEN[a.id]===t);if(!as.length)return;
     for(let n=1;n<=90;n++){let kb=99,top=0;as.forEach(a=>{top=Math.max(top,a.n);for(let k=1;k<=a.n;k++)if(tierLvl(a,k)<=n){kb=Math.min(kb,k);break;}});if(kb===99)continue;
       const hit=R.filter(r=>mlist(r,"a").includes(id)&&inLv(r,n));chk++;
-      ok(hit.some(r=>!mval(r,"t")||kb<=+mval(r,"t")),"best droppable tier T"+kb+" of "+id+" is shown at item level "+n);
+      const open=[1,20,40,60,75].every(lo=>!(ezThr(id,lo,2)));if(open)untiered.add(id);
+      if(open&&n>=75)ok(hit.length===0,"untiered line "+id+" has run out at item level "+n); /* upper limit <75 */
+      else ok(hit.some(r=>!mval(r,"t")||kb<=+mval(r,"t")),"best droppable tier T"+kb+" of "+id+" is shown at item level "+n);
       /* the worst tier of a long line must be hidden somewhere */
       if(top>=8&&n>=60&&!hit.some(r=>!mval(r,"t")||8<=+mval(r,"t")))hid++;}});
+  ok(untiered.size>0,"the picks contain untiered lines ("+untiered.size+"), they stop at the upper limit <75");
+  ok([...untiered].every(id=>R.filter(r=>mlist(r,"a").includes(id)).every(r=>lvOf(r)===4&&!mval(r,"t"))),"untiered lines only sit in <75 rules without a tier limit");
   ok(chk>1000,"property check ran over many lines and levels ("+chk+")");ok(hid>0,"T8 is hidden on 8-tier lines at higher item levels");
   /* skill levels: one general rule, never tier- or level-limited, and not repeated inside the picks */
   const sk=R.filter(r=>mlist(r,"a").includes("skill_level"));
-  eq(sk.length,1,"skill_level is in exactly one rule");ok(sk[0]&&!mval(sk[0],"t")&&lvOf(sk[0])===0&&mlist(sk[0],"a").length===1,"the skill level rule has no tier or level limit");
+  eq(sk.length,1,"skill_level is in exactly one rule");ok(sk[0]&&[1,30,74,75,90].every(n=>inLv(sk[0],n)),"skill levels stay on at every item level (permanent exception)");ok(sk[0]&&!mval(sk[0],"t")&&lvOf(sk[0])===0&&mlist(sk[0],"a").length===1,"the skill level rule has no tier or level limit");
   ok(!gen({spell:1,bow:1,attack:1}).rules.filter(r=>mlist(r,"a").length>1).some(r=>mlist(r,"a").includes("skill_level")),"skill_level is not repeated inside pick rules");
   /* no picks: no tier steps, no skill rule; endgame keeps one rule per pick part */
   ok(!gen({}).rules.some(r=>lvOf(r)&&r.type===0&&mlist(r,"a").length),"no picks: no tier steps");

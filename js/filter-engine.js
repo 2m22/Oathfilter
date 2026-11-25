@@ -1261,9 +1261,12 @@ const LV_STEPS=[{lv:1,lo:1,n:"<20"},{lv:2,lo:20,n:"<40"},{lv:3,lo:40,n:"<60"},{l
 function ezStages(ids,lvOn){
   const mkp=(list,ti)=>ezTP(list.map(x=>({id:x.id,top:x.top,t:ti(x)})).sort((a,b)=>a.t-b.t));
   if(!lvOn)return[{lv:0,n:"",parts:mkp(ids,x=>x.t)}];
-  const out=[],same=ids.filter(x=>x.c[3]===x.c[4]),diff=ids.filter(x=>x.c[3]!==x.c[4]);
+  /* untiered lines (no tier limit at any step) would stay on for ever, so they run out with the Leveling range: the widest upper limit the compiler has is <75 (rule level 4), they join that step */
+  const open=x=>x.c.every(v=>v===99),same=ids.filter(x=>x.c[3]===x.c[4]&&!open(x)),diff=ids.filter(x=>x.c[3]!==x.c[4]),un=ids.filter(open);
+  const out=[];
   [0,1,2].forEach(k=>{const l=ids.filter(x=>x.c[k]>x.c[k+1]);if(l.length)out.push({lv:LV_STEPS[k].lv,n:LV_STEPS[k].n,parts:mkp(l,x=>x.c[k])});});
-  if(diff.length){out.push({lv:4,n:"<75",parts:mkp(diff,x=>x.c[3])});out.push({lv:6,n:"75+",parts:mkp(diff,x=>x.c[4])});}
+  const w=diff.concat(un);if(w.length)out.push({lv:4,n:"<75",parts:mkp(w,x=>x.c[3])});
+  if(diff.length)out.push({lv:6,n:"75+",parts:mkp(diff,x=>x.c[4])});
   if(same.length)out.push({lv:0,n:"",parts:mkp(same,x=>x.c[4])});
   return out.filter(x=>x.parts.length);
 }
