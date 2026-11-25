@@ -173,7 +173,8 @@ async function run(name,mode){
   ok(await page.$eval('#ezCtl [data-ez="hn"]',b=>b.getAttribute("aria-pressed"))==="false"&&await page.$eval('#ezCtl [data-ez="hm"]',b=>b.getAttribute("aria-pressed"))==="false","Leveling hides no Normal or Magic gear");
   await page.click('#ezCtl [data-ez="clear,all"]');await page.waitForTimeout(150);
   ok(!await bb()&&JSON.stringify(await pressed())==='["Leveling"]',"Clear all removes + builds and keeps the strictness");
-  ok((await page.$eval("#ezOut",e=>e.textContent)).includes("/ 200"),"the rule count row shows X / 200");
+  ok(/\d+ \/ 200/.test(await page.$eval("#cap",e=>e.textContent)),"the header shows the one rule counter, X / 200");
+  ok(!/\d+ \/ 200/.test(await page.$eval("#ezOut",e=>e.textContent)+await page.$eval("#ezDetS",e=>e.textContent)),"Easy Mode does not repeat the counter while under the limit");
 
   /* Guide and About cards: the heading is a role=button */
   for(const v of ["info","about"]){

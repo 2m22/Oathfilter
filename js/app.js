@@ -95,7 +95,7 @@ watchEffect(()=>{const v=V.view;$$(".panel").forEach(p=>p.hidden=p.id!=="p-"+v);
 watchEffect(()=>{const f=V.filter;$$("#rfilter button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rf===f));});
 watchEffect(()=>{const a=$("#rfAct");if(a)a.setAttribute("aria-pressed",V.act);});
 watchEffect(()=>{const m=ui.mode;$$("#ezMode button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ezm===m?"true":"false"));});
-watchEffect(()=>{const n=ui.count,mx=ui.max;$("#cap").innerHTML=`<span class="hint">Active filter</span><b class="gold-t" style="font-size:17px;${n>mx?"color:var(--hide-fg)":""}">${n} / ${mx}</b>`;const mc=$("#mdCount");if(mc){mc.textContent=n+" / "+mx;mc.classList.toggle("bad",n>mx);}});
+watchEffect(()=>{const n=ui.count,mx=ui.max;$("#cap").innerHTML=`<span class="hint">Rules</span><b class="gold-t" style="font-size:17px;${n>mx?"color:var(--hide-fg)":""}">${n} / ${mx}</b>`;const mc=$("#mdCount");if(mc){mc.textContent=n+" / "+mx;mc.classList.toggle("bad",n>mx);}});
 function setView(v){V.view=v;
   if(v==="test"){renderDrops();}if(v==="io"){renderOut();}if(v==="edit"&&EZ.m==="easy"){ezRefresh();}}
 function shadowOf(i){for(let k=0;k<i;k++)if(covers(F.rules[k],F.rules[i]))return k;return -1;}
@@ -1681,19 +1681,18 @@ function ezPreview(g){
   let alerts="",msg="",btn="";
   if(over)alerts+=`<div class="ezerr" role="alert"><b>${COPY.over(n)}</b><p class="hint" style="margin:6px 0 0">Nothing was applied. Your filter keeps its ${act} rule${act===1?"":"s"}.</p></div>`;
   if(div)alerts+=`<div class="ezbanner" role="alert"><b>Your filter was changed outside Easy Mode.</b><p class="hint" style="margin:6px 0 8px">Easy Mode stopped controlling it, so your work is safe. Replace it with the Easy Mode rules (Ctrl+Z brings yours back) or keep it and carry on in Advanced.</p><div class="ezrow"><button type="button" class="btn danger" data-ezact="replace"${over?" disabled":""}>Replace with Easy Mode rules</button><button type="button" class="btn" data-ezact="keep">Keep my filter, go to Advanced</button></div></div>`;
-  else if(linked)msg="Applied. Easy Mode controls your filter; changes apply when you let go of a control.";
+  else if(linked)msg="Applied. Easy Mode controls your filter.";
   else if(ezAsk&&!over)alerts+=`<div class="ezbanner" role="alert"><b>Replace your current ${act} rule${act===1?"":"s"}?</b><p class="hint" style="margin:6px 0 8px">Easy Mode builds the whole filter. Ctrl+Z brings your rules back.</p><div class="ezrow"><button type="button" class="btn gold" data-ezact="replace">Replace</button><button type="button" class="btn" data-ezact="cancel">Cancel</button></div></div>`;
-  else{msg="Not applied yet. Your filter stays as it is until you apply it.";btn=`<button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>${li("check")}Apply to my filter</button>`;}
+  else{msg="Not applied yet.";btn=`<button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>${li("check")}Apply to my filter</button>`;}
   const w=g.notes.concat(sh);
-  const top=alerts+`<div class="ezbrow">${bg?`<span class="ezbadge${bg.custom?" custom":""}">${esc(bg.label)}</span>${bg.chip?`<span class="ezbadge chip">${esc(bg.chip)}</span>`:""}`:""}<span class="ezcnt${over?" bad":""}"><b>${n} / ${MAX_RULES}</b> rules</span>${msg?`<span class="hint ezmsg">${esc(msg)}</span>`:""}${btn}</div>`+
+  const top=alerts+`<div class="ezbrow">${bg?`<span class="ezbadge${bg.custom?" custom":""}">${esc(bg.label)}</span>`:""}${over?`<span class="ezcnt bad"><b>${n} / ${MAX_RULES}</b> rules</span>`:""}${msg?`<span class="hint ezmsg">${esc(msg)}</span>`:""}${btn}</div>`+
   (ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:"");
-  const bot=`<p class="hint ezln">Active filter: <b>${act} / ${MAX_RULES}</b> rules. Easy Mode ${linked?"rules (applied)":"preview (not applied)"}: <b${over?' class="bad"':""}>${n} / ${MAX_RULES}</b>.</p>
-  <span class="lab">Rules in the preview</span>
+  const bot=`
     <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(actWord(r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol>
   ${w.length?`<span class="lab">Warnings</span>${w.map(t=>`<p class="hint ezw">${esc(t)}</p>`).join("")}`:""}
 `;
   $("#ezOut").innerHTML=top;$("#ezOut2").innerHTML=bot;
-  $("#ezDetT").textContent="Details · "+n+" / "+MAX_RULES+" rules"+(w.length?" · "+w.length+" note"+(w.length>1?"s":""):"");$("#ezDetS").classList.toggle("bad",over);
+  $("#ezDetT").textContent="Preview rules"+(w.length?" · "+w.length+" note"+(w.length>1?"s":""):"");$("#ezDetS").classList.toggle("bad",over);
 }
 const ezRefresh=()=>{ezSync();ezPreview();};
 function ezTouched(){

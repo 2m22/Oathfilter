@@ -124,10 +124,10 @@ textarea.field{height:auto;min-height:104px;padding:10px 12px;font-family:ui-mon
 .ezrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:8px}
 .ezw{color:var(--warn-fg)}.ezbanner{padding:10px 12px;border:1px solid var(--warn-fg);border-radius:8px;margin-bottom:12px}
 .ezol{margin:8px 0 0;padding-left:24px}.ezol li{margin:2px 0}
-.ezbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:0 0 16px;padding:10px 14px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-subtle)}
-.ezbar .lab{margin:0}.ezbar .seg{border:2px solid var(--accent-gold);border-radius:10px;min-width:260px}
-.ezbar .seg button{min-height:46px;padding:0 26px;font-size:1.02rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.ezbar .seg button[aria-pressed="true"]{background:var(--accent-gold);color:#15110a;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.ezbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 0 10px;padding:0}
+.ezbar .lab{margin:0}.ezbar .seg{border:1px solid var(--border-strong);border-radius:var(--r-ctl);min-width:220px}
+.ezbar .seg button{min-height:38px;padding:0 20px;font-size:.875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+
 .ezbar .ezact{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
 .eztick{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin:0 2px}
 .ezcount{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:4px}.ezcount b{font-size:17px}.ezcount.bad b{color:var(--hide-fg)}
@@ -309,13 +309,13 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 .upd b{display:block;font-size:1rem;color:var(--accent-gold)}.upd span{color:var(--text-muted);font-size:.8125rem}
 .upd .updh{display:block;margin:0 0 6px;font-weight:700;color:var(--text-main);font-size:.8125rem}
 /* responsive / zoom safety */
-.ezbar .seg{min-width:min(260px,100%)}
-.ezbar .seg button{padding:0 clamp(12px,3vw,26px)}
+.ezbar .seg{min-width:min(220px,100%)}
+.ezbar .seg button{padding:0 clamp(12px,3vw,20px)}
 #copyAdv.over{box-shadow:0 0 0 2px var(--hide-fg)}
 .simnote{margin:0 0 10px;overflow-wrap:anywhere}.simnote.easysim{color:var(--accent-gold)}
 #shPanel{min-width:0;max-width:100%}#shPanel .shres input,#shPanel .field{min-width:0;max-width:100%;box-sizing:border-box}
 #shMsg{overflow-wrap:anywhere}#shPanel .out{white-space:pre-wrap;overflow-wrap:anywhere}
-#ezBox .chips .cb2{font-size:1rem;padding:9px 16px}
+
 #ezCtl .sub .hint{text-transform:none;letter-spacing:0;font-weight:400;font-size:.88rem;line-height:1.45}
 .ezdet{margin-top:10px}.ezdet>summary{cursor:pointer;font-size:.9rem;color:var(--text-muted);padding:6px 0}.ezdet>summary.bad{color:var(--hide-fg)}
 .ezdet[open]>summary{margin-bottom:8px}
@@ -335,7 +335,7 @@ ul.pl b{color:var(--accent-gold)}ul.pl a,.site-footer a{color:var(--accent-gold)
 #ezCtl .cb2[aria-pressed="true"]{background:linear-gradient(180deg,#ffd873,var(--accent-gold));border:2px solid #fff3cf;color:#15110a;font-weight:700;padding:7px 13px 7px 10px;box-shadow:0 2px 12px rgba(240,180,50,.35);transform:none}
 #ezCtl .cb2[aria-pressed="true"] .ezico{color:#15110a;filter:none}
 @media (prefers-reduced-motion:reduce){#ezCtl .cb2{transition:none}#ezCtl .cb2:hover{transform:none}}
-.ezfoot{margin:18px 0 0;padding:10px 12px;border:1px solid var(--accent-gold);border-radius:10px;background:var(--bg-card);}
+.ezfoot{margin:6px 0 0;padding:14px 0 0;border-top:1px solid var(--border)}
 .ezbrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.ezbrow .btn{margin-left:auto}
 .ezcnt b{font-size:1.1rem;color:var(--accent-gold)}.ezcnt.bad b{color:var(--hide-fg)}.ezmsg{margin:0;flex:1 1 220px}
 .ezbadge{display:inline-block;padding:2px 9px;border-radius:999px;border:1px solid var(--accent-gold);color:var(--accent-gold);font-size:.78rem;font-weight:600;white-space:nowrap}.ezbadge.chip{border-style:dashed;opacity:.85}.ezbadge.custom{border-color:var(--hide-fg);color:var(--hide-fg)}
@@ -574,3 +574,14 @@ body.mdm-lock{overflow:hidden}
 .ezdet .lab{margin-top:8px}
 .exnote{margin:-4px 2px 12px}
 @media (max-width:700px){.ezcards{grid-template-columns:1fr}.ezcard{min-height:0}}
+
+/* calm pass: lighter bars, one counter, even pills */
+.ezdet{margin-top:6px}.ezdet>summary{font-size:.8125rem;padding:4px 0}
+.ezg .chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px}
+#ezCtl .ezg .cb2{display:flex;align-items:center;justify-content:flex-start;gap:7px;min-height:38px;padding:0 10px;font-size:.875rem;white-space:nowrap;overflow:hidden}
+#ezCtl .ezg .cb2 span{overflow:hidden;text-overflow:ellipsis}
+#ezCtl .cb2{min-height:38px;font-size:.875rem;border-width:1px}
+#ezCtl .cb2[aria-pressed="true"]{border:1px solid var(--accent-gold);padding:0 14px 0 11px;box-shadow:none}
+#ezCtl .ezg .cb2[aria-pressed="true"]{padding:0 10px}
+#ezCtl .cb2{padding:0 14px 0 11px}#ezCtl .ezg .cb2{padding:0 10px}#ezCtl .cb2:hover{transform:none;box-shadow:none}
+.ezgrid{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
