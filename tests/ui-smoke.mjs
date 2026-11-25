@@ -123,6 +123,21 @@ async function run(name,mode){
     ok(bodyPlate.length>0&&bodyPlate.length<body&&body>bodyPlate.length,"body armour + defence type Armour: fewer bases ("+bodyPlate.length+" of "+body+")");
     ok(!bodyPlate.some(t=>/Silk|Leather|Helm|Gloves|Boots/.test(t)),"only plate body armours are listed");
     await page.selectOption("#m-d","");await page.selectOption("#f-type","0");await page.waitForTimeout(200);
+    /* named reds follow the item type and the picked bases */
+    const redList=()=>page.$$eval("#pl-rn button[data-padd]",b=>b.map(x=>x.textContent));
+    const allR=(await redList()).length;
+    await page.selectOption("#f-type","18");await page.waitForTimeout(250);
+    const bowR=await redList();
+    ok(bowR.length>0&&bowR.length<allR,"named reds follow the item type ("+bowR.length+" of "+allR+")");
+    await page.fill("#pk-b","Hunter's Bow");await page.waitForTimeout(150);
+    await page.click('#pl-b button[data-padd]');await page.waitForTimeout(300);
+    const oneR=await redList();
+    ok(!!(await page.$("#pkfit-rn input[data-pkbase]")),"a switch for reds appears once a base is picked");
+    ok(oneR.length<bowR.length,"picked base narrows the reds further ("+oneR.length+" of "+bowR.length+")");
+    await page.uncheck("#pkfit-rn input[data-pkbase]");await page.waitForTimeout(150);
+    ok((await redList()).length===bowR.length,"switch off: back to the item type's reds");
+    await page.click('[data-pclr="b"]');await page.selectOption("#f-type","0");await page.waitForTimeout(250);
+    ok((await redList()).length===allR,"Any gear: every red again");
     /* type 9 is split into shields, foci and quivers for the mod check */
     await page.selectOption("#f-type","9");await page.waitForTimeout(200);
     ok(!!(await page.$("#pkscope-a")),"shields/foci/quivers: an item-kind select shows");

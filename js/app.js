@@ -1,7 +1,7 @@
 import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
 import {createI18n} from "./i18n.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
-import {baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {redInType,baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -241,7 +241,7 @@ const ATTACK_LINE=id=>/^attack_added_(phys|fire|cold|lightning)$/.test(id);
 const lineExtra=id=>LOCAL_LINE(id)?" (local)":"";
 const lineWhere=id=>{if(LOCAL_LINE(id))return "Local: rolls on the weapon itself, e.g. on a bow (not on quivers).";if(ATTACK_LINE(id)){const a=AFF.find(x=>x.id===id);const w=a?a.tags.filter(t=>/^(Gloves|Quiver|Ring|Amulet|Boots)$/.test(t)).map(t=>t.toLowerCase()+(t==="Boots"?"":"s")).join(", "):"gloves, quivers, rings, amulets";return "Applies to "+w+" (e.g. quivers for bows), not to the weapon itself.";}return "";};
 const PK={b:{title:"Base",list:()=>DATA.bases,name:BASEN,disp:BASED,ph:"Type a base name"},a:{title:"Named line",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line, like life or fire"},na:{title:"Not these lines",list:()=>DATA.lines.map(x=>[x[1],x[0]]),name:LINEN,disp:LINED,ph:"Type a line that must NOT be on the item"},rn:{title:"Named red",list:()=>DATA.reds,name:REDN,disp:REDD,ph:"Type a red name"}};
-S.pk={b:"",a:"",na:"",rn:""};S.fit=1;S.baseFit=true;S.sc=""; /* named-line list (default 1, so choosing an item type filters at once): 0 all mods, 1 can roll on the rule's item type, 2 only on it */
+S.pk={b:"",a:"",na:"",rn:""};S.fit=1;S.baseFit=true;S.redBase=true;S.sc=""; /* named-line list (default 1, so choosing an item type filters at once): 0 all mods, 1 can roll on the rule's item type, 2 only on it */
 S.moreOpen=true;
 /* what the sample drops can produce: other bases and reds still go into the code, but the drop test never shows them */
 const SAMPLE={b:new Set(BASES.map(b=>b.id).concat(VAR_IDS,SPECIAL.map(b=>b.id),["dwarven_rune"])),rn:new Set(UNIQUES.map(u=>u.id||redIdOf(u.name)))};
@@ -258,7 +258,7 @@ function invHTML(r,k){
 }
 function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k),lists=(PL.load()[k]||[]);
-  return `<div class="pk" data-pkbox="${k}"><div class="pkhead"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of ${MAXL[k]} picked</label>${k==="a"?anyAllHTML(r):k==="b"||k==="rn"?invHTML(r,k):""}${ids.length?`<button type="button" class="lnk" data-pclr="${k}">Clear</button>`:""}${k==="a"||k==="na"?`<div class="pkfitrow" id="pkfit-${k}">${fitHTML(r,k)}</div>`:""}</div>
+  return `<div class="pk" data-pkbox="${k}"><div class="pkhead"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of ${MAXL[k]} picked</label>${k==="a"?anyAllHTML(r):k==="b"||k==="rn"?invHTML(r,k):""}${ids.length?`<button type="button" class="lnk" data-pclr="${k}">Clear</button>`:""}${k==="a"||k==="na"||k==="rn"?`<div class="pkfitrow" id="pkfit-${k}">${fitHTML(r,k)}</div>`:""}</div>
    <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.disp[x]||x],[0,P.disp[y]||y])).map(id=>`<span class="b more" title="${esc(P.disp[id]||id)}"><span class="bt">${esc((P.disp[id]||id)+((k==="a"||k==="na")?lineExtra(id):""))}${(k==="a"||k==="na")&&ATTACK_LINE(id)?`<span class="qm" title="${esc(lineWhere(id))}" aria-label="${esc(lineWhere(id))}">?</span>`:""}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">${li("x")}</button></span>`).join("")}</div>
    <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>[i,l.n,l]).sort(ALPHA).map(([i,n,l])=>`<option value="${i}">${esc(n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>${li("save")}Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>${li("trash")}Delete list</button></div>
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
@@ -266,13 +266,14 @@ function pickHTML(r,k){
 }
 /* named lines: show all mods, or only those that can roll on the rule's item type, or only those found nowhere else (needs a specific item type) */
 function fitHTML(r,k){
+  if(k==="rn")return mlist(r,"b").length?`<label class="pkchk"><input class="sw sm" type="checkbox" data-pkbase="rn" ${S.redBase?"checked":""}><span>Only reds on the picked bases</span></label>`:"";
   const lf=lineFit(r.type,S.sc,mval(r,"d")),bl=baseLines(mlist(r,"b"));let h="";
   if(r.type===9)h+=`<label class="lab" for="pkscope-${k}">Item kind</label><div class="selwrap"><select id="pkscope-${k}" data-pkscope="${k}">${[["","Shields, foci & quivers"],["shield","Shields only"],["tome","Foci only"],["quiver","Quivers only"]].map(([v,n])=>`<option value="${v}" ${S.sc===v?"selected":""}>${n}</option>`).join("")}</select></div>`;
   if(lf)h+=`<label class="lab" for="pkfitsel-${k}">Show mods</label><div class="selwrap"><select id="pkfitsel-${k}" data-pkfit="${k}"><option value="0" ${S.fit===0?"selected":""}>All mods</option><option value="1" ${S.fit===1?"selected":""}>Can roll on this item type</option><option value="2" ${S.fit===2?"selected":""} ${lf.only.size?"":"disabled"}>Only on this item type</option></select></div>`;
   if(bl)h+=`<label class="pkchk"><input class="sw sm" type="checkbox" data-pkbase="${k}" ${S.baseFit?"checked":""}><span>Only mods that can roll on the picked bases</span></label>`;
   return h;
 }
-function refreshFit(){const r=curRule();if(!r)return;["a","na"].forEach(k=>{const b=$("#pkfit-"+k);if(b)b.innerHTML=fitHTML(r,k);renderPickList(k);});renderPickList("b");}
+function refreshFit(){const r=curRule();if(!r)return;["a","na","rn"].forEach(k=>{const b=$("#pkfit-"+k);if(b)b.innerHTML=fitHTML(r,k);renderPickList(k);});renderPickList("b");}
 function renderPickList(k){
   const r=curRule(),box=$("#pl-"+k);if(!r||!box)return;
   const P=PK[k],ids=mlist(r,k),q=S.pk[k].trim().toLowerCase(),full=ids.length>=MAXL[k];
@@ -281,7 +282,7 @@ function renderPickList(k){
   const shw=x=>(k==="a"||k==="na")?dl(x[1])+lineExtra(x[0]):k==="b"?(LX.bases[x[0]]||x[1]):REDD[x[0]];
   const hayOf=x=>((k==="a"||k==="na")?LINE_HAY[x[0]]:(String(x[1])+" "+String(x[0])).toLowerCase())+(LANG==="en"?"":" "+shw(x).toLowerCase());
   const lf=(k==="a"||k==="na")&&(S.fit||(r.type===9&&S.sc))?lineFit(r.type,S.sc,mval(r,"d")):null,bl=(k==="a"||k==="na")&&S.baseFit?baseLines(mlist(r,"b")):null; /* picked bases hide the mods that cannot roll on them */
-  const res=P.list().filter(x=>{if(k==="b"&&!baseInType(r.type,x[0],S.sc,mval(r,"d")))return false;if(lf&&!(S.fit===2?lf.only:lf.fits).has(x[1]))return false;if(bl&&!bl.has(x[1]))return false;if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
+  const res=P.list().filter(x=>{if(k==="b"&&!baseInType(r.type,x[0],S.sc,mval(r,"d")))return false;if(k==="rn"&&!redInType(r.type,x[0],S.sc,mval(r,"d"),S.redBase?mlist(r,"b"):null))return false;if(lf&&!(S.fit===2?lf.only:lf.fits).has(x[1]))return false;if(bl&&!bl.has(x[1]))return false;if(!words.length)return true;const h=hayOf(x);return words.every(w=>h.includes(w));});
   const tag=x=>{const on=(k==="a"||k==="na")?lineSel.has(x[1]):ids.includes(x[0]);
     if(on)return "<small>picked</small>";
     if((k==="a"||k==="na")&&ATTACK_LINE(x[0]))return `<small class="qm" title="${esc(lineWhere(x[0]))}" aria-label="${esc(lineWhere(x[0]))}">?</small>`;
@@ -507,7 +508,7 @@ document.addEventListener("change",e=>{
   if(t.dataset.mr&&t.tagName==="SELECT"){const r=curRule(),k=t.dataset.mr.split(",")[0];if(r){msetRng(r,k,+$("#m-"+k+"0").value||0,+$("#m-"+k+"1").value||0);chgMark(t);touch();}return;}
   if(t.dataset.pkscope){S.sc=t.value;refreshFit();return;}
   if(t.dataset.pkfit){S.fit=+t.value;refreshFit();return;}
-  if(t.dataset.pkbase){S.baseFit=t.checked;["a","na"].forEach(renderPickList);return;}
+  if(t.dataset.pkbase){if(t.dataset.pkbase==="rn"){S.redBase=t.checked;renderPickList("rn");}else{S.baseFit=t.checked;["a","na"].forEach(renderPickList);}return;}
   if(t.dataset.f&&t.tagName==="SELECT"){const r=curRule();if(r){r[t.dataset.f]=+t.value;touch();if(t.dataset.f==="type"){const lf=lineFit(r.type);if(S.fit===2&&!(lf&&lf.only.size))S.fit=1;if(r.type!==9)S.sc="";refreshFit();}}return;}
 });
 document.addEventListener("change",e=>{

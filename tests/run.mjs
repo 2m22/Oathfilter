@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType} from "../js/filter-engine.js";
+import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -719,6 +719,13 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
    ok(ph.fits.has(LINEN["armour_local"])&&ph.fits.has(LINEN["es_local"])&&!ph.fits.has(LINEN["evasion_local"]),"Armour + ES hybrid rolls armour and ES, not evasion");
    ok([...pa.fits].every(x=>pall.fits.has(x))&&pc.fits.size<=pa.fits.size,"narrowing never adds mods");
    ok(lineFit(0,"",1)&&!lineFit(0,"",0),"Any gear gets a mod filter once a defence type is set");}
+  {const rid=u=>u.id||redIdOf(u.name),bowU=UNIQUES.find(u=>u.base.sub==="bow"),amuU=UNIQUES.find(u=>u.base.kind==="amulet"),plateU=UNIQUES.find(u=>u.base.tags.includes("Armour")&&u.base.kind==="chest"&&!u.base.tags.includes("Evasion")&&!u.base.tags.includes("EnergyShield"));
+   ok(bowU&&amuU&&plateU,"found sample uniques");
+   ok(redInType(18,rid(bowU))&&!redInType(18,rid(amuU))&&redInType(11,rid(amuU))&&!redInType(11,rid(bowU)),"named reds follow the item type");
+   ok(redInType(0,rid(bowU))&&redInType(15,rid(bowU)),"Any gear and flag types keep every red");
+   ok(redInType(0,rid(plateU),"",1)&&!redInType(0,rid(plateU),"",3)&&!redInType(0,rid(bowU),"",1),"named reds follow the defence type");
+   ok(redInType(0,rid(bowU),"",0,[bowU.base.id])&&!redInType(0,rid(bowU),"",0,[amuU.base.id])&&redInType(0,rid(bowU),"",0,[]),"named reds follow the picked bases (empty pick = all)");
+   ok(redInType(0,"no_such_red_id"),"a red without a known base always stays");}
   eq(lineFit(33),null,"Dwarven Runes have no mod filter (their affixes are not in the page data)");
   [10,18,1,5,6,7,8,11,12,31,32,34].forEach(t=>{const f=lineFit(t);ok(f&&f.fits.size>0&&[...f.only].every(x=>f.fits.has(x)),"type "+t+": only is a subset of fits");});
   ok(!bow.only.has(L("fire_added_local")),"a line shared with other types is not exclusive");
