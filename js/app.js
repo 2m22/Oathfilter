@@ -258,10 +258,9 @@ function invHTML(r,k){
 }
 function pickHTML(r,k){
   const P=PK[k],ids=mlist(r,k),lists=(PL.load()[k]||[]);
-  return `<div class="pk" data-pkbox="${k}"><div class="pkhead"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of ${MAXL[k]} picked</label>${k==="a"?anyAllHTML(r):k==="b"||k==="rn"?invHTML(r,k):""}${ids.length?`<button type="button" class="lnk" data-pclr="${k}">Clear</button>`:""}</div>
+  return `<div class="pk" data-pkbox="${k}"><div class="pkhead"><label class="lab" for="pk-${k}">${P.title} · ${ids.length} of ${MAXL[k]} picked</label>${k==="a"?anyAllHTML(r):k==="b"||k==="rn"?invHTML(r,k):""}${ids.length?`<button type="button" class="lnk" data-pclr="${k}">Clear</button>`:""}${k==="a"||k==="na"?`<div class="pkfitrow" id="pkfit-${k}">${fitHTML(r,k)}</div>`:""}</div>
    <div class="chosen">${ids.slice().sort((x,y)=>ALPHA([0,P.disp[x]||x],[0,P.disp[y]||y])).map(id=>`<span class="b more" title="${esc(P.disp[id]||id)}"><span class="bt">${esc((P.disp[id]||id)+((k==="a"||k==="na")?lineExtra(id):""))}${(k==="a"||k==="na")&&ATTACK_LINE(id)?`<span class="qm" title="${esc(lineWhere(id))}" aria-label="${esc(lineWhere(id))}">?</span>`:""}</span><button type="button" data-prm="${k},${esc(id)}" aria-label="Remove ${esc(P.name[id]||id)}">${li("x")}</button></span>`).join("")}</div>
    <div class="plrow"><select id="pls-${k}" data-pls="${k}" aria-label="Saved ${P.title.toLowerCase()} lists"><option value="">Saved lists${lists.length?"":" (none yet)"}</option>${lists.map((l,i)=>[i,l.n,l]).sort(ALPHA).map(([i,n,l])=>`<option value="${i}">${esc(n)} · ${l.ids.length}</option>`).join("")}</select><button type="button" class="btn" data-plsave="${k}" ${ids.length?"":"disabled"}>${li("save")}Save as list</button><button type="button" class="btn" data-pldel="${k}" ${lists.length?"":"disabled"}>${li("trash")}Delete list</button></div>
-   ${k==="a"||k==="na"?`<div class="pkfitrow" id="pkfit-${k}">${fitHTML(r,k)}</div>`:""}
    <input class="field" id="pk-${k}" data-pk="${k}" type="search" placeholder="${P.ph}" value="${esc(S.pk[k])}" autocomplete="off">
    <div class="pklist" id="pl-${k}"></div></div>`;
 }

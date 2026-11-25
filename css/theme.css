@@ -614,7 +614,7 @@ body.mdm-lock{overflow:hidden}
 @media (max-width:700px){.ezgrid,.ez2{grid-template-columns:1fr}}
 .ez2{align-items:stretch}.ezu{height:100%}
 
-.pkfitrow{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 8px}
+.pkfitrow{flex:0 0 100%;display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:2px 0 6px}
 .pkfitrow:empty{display:none}
 .pkfitrow .lab{margin:0}
 .pkchk{display:inline-flex;align-items:center;gap:8px;font-size:.8125rem;cursor:pointer}
