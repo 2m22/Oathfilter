@@ -176,15 +176,18 @@ function typeMatch(t,it){
 
 /* Advanced editor: which named lines can roll on the item type of a rule. A line is one text (grouped ids), so "only here" means no id of that line rolls on any other base. Read from the base tags and the affix tags (BaseTags any, ExcludeTags none), like the game data; not checked in the game. */
 const LF_CACHE=new Map();
-function lineFit(t){
+/* type 9 is one game type for shields, foci and quivers: sc ("shield" | "tome" | "quiver") narrows the mod check to one of them, judged by that base's own tags */
+function lineFit(t,sc){
   if(!t||t===17)return null;
-  if(LF_CACHE.has(t))return LF_CACHE.get(t);
+  if(t!==9)sc="";
+  const ck=t+":"+(sc||"");
+  if(LF_CACHE.has(ck))return LF_CACHE.get(ck);
   const bySig=new Map();
-  BASES.forEach(b=>{const k=b.tags.join(",");if(!bySig.has(k))bySig.set(k,{tags:b.tags,hit:false,miss:false});const e=bySig.get(k);if(typeMatch(t,b))e.hit=true;else e.miss=true;});
+  BASES.forEach(b=>{const k=b.tags.join(",");if(!bySig.has(k))bySig.set(k,{tags:b.tags,hit:false,miss:false});const e=bySig.get(k);if(typeMatch(t,b)&&(!sc||b.kind===sc))e.hit=true;else e.miss=true;});
   const fits=new Set(),elsewhere=new Set();
   bySig.forEach(e=>AFF.forEach(a=>{if(!a.tags.some(x=>e.tags.includes(x))||a.ex.some(x=>e.tags.includes(x)))return;const l=LINEN[a.id];if(!l)return;if(e.hit)fits.add(l);if(e.miss)elsewhere.add(l);}));
   const only=new Set([...fits].filter(l=>!elsewhere.has(l)));
-  const r=fits.size?{fits,only}:null;LF_CACHE.set(t,r);return r;
+  const r=fits.size?{fits,only}:null;LF_CACHE.set(ck,r);return r;
 }
 /* the lines that can roll on a given set of base tags / on the picked bases of a rule (Advanced named-line list) */
 const TL_CACHE=new Map();

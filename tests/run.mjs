@@ -690,6 +690,19 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(amu.only.has(L("all_attr"))&&jew.only.has(L("all_res")),"Amulets: All Attributes is amulet-only; Jewellery: All Resistances is jewellery-only");
   ok(helm.fits.has(L("life"))&&!helm.fits.has(L("crit_local")),"Helms roll Life but no weapon crit");
   ok(staff.fits.has(L("spell_inc_2h")),"Staves can roll 2H spell damage");
+  {const all9=lineFit(9),sh=lineFit(9,"shield"),to=lineFit(9,"tome"),qv=lineFit(9,"quiver");
+   ok(sh&&to&&qv&&all9,"type 9 can be narrowed to shields, foci or quivers");
+   ok(qv.fits.has(L("attack_speed"))&&!sh.fits.has(L("attack_speed"))&&!to.fits.has(L("attack_speed")),"attack speed (gloves/quiver tag) rolls on quivers only");
+   ok(sh.fits.has(L("max_fire_res91"))&&!to.fits.has(L("max_fire_res91"))&&!qv.fits.has(L("max_fire_res91")),"maximum resistance rolls on shields only");
+   ok(to.fits.has(L("minion_dmg"))&&!sh.fits.has(L("minion_dmg"))&&!qv.fits.has(L("minion_dmg")),"Wand/Tome minion damage rolls on foci only");
+   ok(!to.fits.has(L("poison_dmg_inc")),"a focus does not roll poison damage (Tome is excluded)");
+   ok([...sh.fits].every(x=>all9.fits.has(x))&&[...to.fits].every(x=>all9.fits.has(x))&&[...qv.fits].every(x=>all9.fits.has(x)),"each kind is a subset of the combined type");
+   ok(lineFit(10,"quiver")===lineFit(10),"the kind only matters for type 9");}
+  {const L2=id=>LINEN[id],shB=baseLines(["shield_1"]),toB=baseLines(["tome_1"]),qvB=baseLines(["hunters_quiver"]);
+   ok(shB&&toB&&qvB,"shield, focus and quiver bases give their own mod lists");
+   ok(qvB.has(L2("attack_speed"))&&!shB.has(L2("attack_speed"))&&!toB.has(L2("attack_speed")),"picked bases: attack speed only for the quiver");
+   ok(shB.has(L2("max_fire_res91"))&&!toB.has(L2("max_fire_res91"))&&!qvB.has(L2("max_fire_res91")),"picked bases: maximum resistance only for the shield");
+   ok(toB.has(L2("minion_dmg"))&&!shB.has(L2("minion_dmg"))&&!qvB.has(L2("minion_dmg")),"picked bases: Wand/Tome minion damage only for the focus");}
   eq(lineFit(33),null,"Dwarven Runes have no mod filter (their affixes are not in the page data)");
   [10,18,1,5,6,7,8,11,12,31,32,34].forEach(t=>{const f=lineFit(t);ok(f&&f.fits.size>0&&[...f.only].every(x=>f.fits.has(x)),"type "+t+": only is a subset of fits");});
   ok(!bow.only.has(L("fire_added_local")),"a line shared with other types is not exclusive");

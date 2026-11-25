@@ -111,6 +111,14 @@ async function run(name,mode){
     ok(!fit.some(t=>/to Armour/.test(t))&&fit.some(t=>/Life/.test(t)),"Rings: no Armour line, Life is there");
     await page.selectOption("#f-type","0");await page.waitForTimeout(200);
     ok((await list()).length===all,"back on Any gear the full list returns");
+    /* type 9 is split into shields, foci and quivers for the mod check */
+    await page.selectOption("#f-type","9");await page.waitForTimeout(200);
+    ok(!!(await page.$("#pkscope-a")),"shields/foci/quivers: an item-kind select shows");
+    const k0=(await list()).length;
+    await page.selectOption("#pkscope-a","quiver");await page.waitForTimeout(200);
+    const kq=await list();await page.selectOption("#pkscope-a","shield");await page.waitForTimeout(200);const ks=await list();
+    ok(kq.length>0&&ks.length>0&&kq.length<k0&&ks.length<k0&&kq.join("|")!==ks.join("|"),"quivers and shields list different mods ("+kq.length+" / "+ks.length+" of "+k0+")");
+    await page.selectOption("#pkscope-a","");await page.selectOption("#f-type","0");await page.waitForTimeout(150);
     /* bases picked: the list hides the mods that cannot roll on them */
     await page.selectOption("#f-type","0");await page.waitForTimeout(150);
     const full=(await list()).length;
