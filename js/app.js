@@ -1669,7 +1669,7 @@ function ezSync(){
     b.setAttribute("aria-pressed",on?"true":"false");
   });
   const keep=[s.keep.core&&"Core-touched",s.keep.runes&&"Rune bases",s.keep.tsw&&"Truesworn bases",s.ga&&"Rare Ashen & Gnome-made"].filter(Boolean);
-  $("#ezSumK").textContent=keep.length?"Always shown, above every hide: "+ezJoin(keep)+".":"No special keep rules.";
+  $("#ezSumK").textContent=keep.length?"Always shown, above every hide.":"No special keep rules.";
   const hid=[s.hn&&s.hm?"Normal and Magic gear":s.hn?"Normal gear":s.hm?"Magic gear":"",s.hr?"Normal and Magic Dwarven Runes":""].filter(Boolean);
   $("#ezSumH").textContent=hid.length?(s.hs&&(s.hn||s.hm)?"Hidden, and the gear is sold: ":"Hidden: ")+ezJoin(hid)+".":"Nothing is hidden by rarity.";
 }
@@ -1685,7 +1685,7 @@ function ezPreview(g){
   else if(ezAsk&&!over)alerts+=`<div class="ezbanner" role="alert"><b>Replace your current ${act} rule${act===1?"":"s"}?</b><p class="hint" style="margin:6px 0 8px">Easy Mode builds the whole filter. Ctrl+Z brings your rules back.</p><div class="ezrow"><button type="button" class="btn gold" data-ezact="replace">Replace</button><button type="button" class="btn" data-ezact="cancel">Cancel</button></div></div>`;
   else{msg="Not applied yet.";btn=`<button type="button" class="btn gold" data-ezact="apply"${over?" disabled":""}>${li("check")}Apply to my filter</button>`;}
   const w=g.notes.concat(sh);
-  const top=alerts+`<div class="ezbrow">${bg?`<span class="ezbadge${bg.custom?" custom":""}">${esc(bg.label)}</span>`:""}${over?`<span class="ezcnt bad"><b>${n} / ${MAX_RULES}</b> rules</span>`:""}${msg?`<span class="hint ezmsg">${esc(msg)}</span>`:""}${btn}</div>`+
+  const top=alerts+`<div class="ezbrow">${bg?`<span class="ezbadge${bg.custom?" custom":""}">${esc(bg.label)}</span>`:""}<span class="ezcnt${over?" bad":""}"><b>${n} / ${MAX_RULES}</b> rules</span>${msg?`<span class="hint ezmsg">${esc(msg)}</span>`:""}${btn}</div>`+
   (ezCode?`<div class="sub"><textarea id="ez-code" class="field" readonly rows="4" aria-label="Filter code" style="width:100%">${esc(ezCode)}</textarea></div>`:"");
   const bot=`
     <ol class="ezol">${g.rules.map(r=>`<li><span class="hint">${esc(actWord(r.action))}</span> ${esc(r.name)}</li>`).join("")||"<li class=\"hint\">No rules: everything is shown.</li>"}</ol>

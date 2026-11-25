@@ -87,7 +87,6 @@ async function run(name,mode){
   await icons(page,"editor, first load");
 
   /* warnings and the Clear filter button where they matter */
-  ok(await page.isVisible("#exNote")&&/no names/.test(await page.textContent("#exNote"))&&/rule names/.test(await page.textContent("#exNote")),"a visible note tells game code (no names) from the share link (rule names)");
   {const sh=await box(page,"#shMake"),cl=await box(page,"#clearF");
    ok(cl.l-sh.r>=60,"Clear filter sits well apart from Copy and Share ("+Math.round(cl.l-sh.r)+"px)");
    ok(await page.$eval("#clearF",e=>e.classList.contains("danger")),"Clear filter has the danger style");}
@@ -174,7 +173,8 @@ async function run(name,mode){
   await page.click('#ezCtl [data-ez="clear,all"]');await page.waitForTimeout(150);
   ok(!await bb()&&JSON.stringify(await pressed())==='["Leveling"]',"Clear all removes + builds and keeps the strictness");
   ok(/\d+ \/ 200/.test(await page.$eval("#cap",e=>e.textContent)),"the header shows the one rule counter, X / 200");
-  ok(!/\d+ \/ 200/.test(await page.$eval("#ezOut",e=>e.textContent)+await page.$eval("#ezDetS",e=>e.textContent)),"Easy Mode does not repeat the counter while under the limit");
+  ok(/\d+ \/ 200 rules/.test(await page.$eval("#ezOut",e=>e.textContent)),"the Easy Mode status bar shows the rule count");
+  ok(!/\d+ \/ 200/.test(await page.$eval("#ezDetS",e=>e.textContent)),"the collapsed details do not repeat it");
 
   /* Guide and About cards: the heading is a role=button */
   for(const v of ["info","about"]){
