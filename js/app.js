@@ -1,7 +1,7 @@
 import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
 import {createI18n} from "./i18n.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
-import {bzRules,BZ_MODES,redInType,baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {bzPicks,bzRules,BZ_MODES,redInType,baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -854,13 +854,24 @@ function shPreview(b,views){
       if(mdPlace(rs,b.filterName||"")){setView("edit");shrClose();}}},
     {id:"shrSave",text:"Save as module",fn:()=>{const r=shLfSave(b),n=$("#shrNote");if(r.err){n.textContent=r.err;n.style.color="var(--hide-fg)";return;}n.style.color="";n.textContent="Saved as “"+r.name+"” as a module. Your current filter is unchanged.";$("#shrSave").disabled=true;}},
     {id:"shrNo",text:"Cancel",fn:shrClose}]});const bm=$("#bzMode"),bh=$("#bzHide");if(bm)bm.onchange=()=>shPreview(bzBuild(b.j,bm.value,bh.checked),views);if(bh)bh.onchange=()=>shPreview(bzBuild(b.j,bm.value,bh.checked),views);}
+function bzEasy(j,mode){
+  /* Easy Mode: the build sets the Build focus pills and the strictness card; nothing else changes until you press Apply */
+  mode=mode||"leveling";const pk=bzPicks(j),nm=shClean(j.name,SH_NAME_MAX);
+  const body=`<dl class="shl">${nm?`<dt>Build</dt><dd>${esc(nm)}</dd>`:""}</dl>`
+    +(pk.length?`<p class="shw" style="margin:6px 0 4px">Build focus from this build</p>${pk.map(x=>`<label class="pkchk" style="display:flex;margin:4px 0"><input type="checkbox" class="bzpk" value="${esc(x.k)}" checked> ${esc(x.n)}</label>`).join("")}`:`<p class="shw" style="margin-top:8px">No Build focus pill fits this build clearly. Pick them yourself.</p>`)
+    +`<p style="margin-top:8px"><label for="bzMode">Strictness </label><select id="bzMode">${BZ_MODES.map(([k,n])=>`<option value="${k}"${k===mode?" selected":""}>${n}</option>`).join("")}</select></p>`
+    +`<p class="shw" style="margin-top:8px">Easy Mode builds its own rules from these choices. Your pill choices are replaced.</p>`;
+  shrShow({title:"Set Build focus from this build?",desc:"Nothing changes until you choose.",body,focus:"bzApply",buttons:[
+    {id:"bzApply",text:"Apply",cls:"gold",fn:()=>{const arch={};EZ_ARCH.forEach(a=>{arch[a.k]=0;});document.querySelectorAll(".bzpk").forEach(c=>{if(c.checked)arch[c.value]=1;});
+      EZ.s=ezPreset($("#bzMode").value,Object.assign({},EZ.s,{arch}));ezTouched();shrClose();toast("Build focus set from the build"+(nm?" “"+nm+"”":"")+".");}},
+    {id:"shrNo",text:"Cancel",fn:shrClose}]});}
 function bzAsk(msg){
   shrShow({title:"Import build",desc:"Paste the link from the build simulator. It is read in your browser and nothing is uploaded.",
     body:`<label class="sr" for="bzIn">Paste the build link or code</label><input id="bzIn" class="field" type="text" autocomplete="off" spellcheck="false" placeholder="Paste the build link or code" style="width:100%"><p class="shw" id="bzErr" role="status" style="margin-top:8px;color:var(--hide-fg)">${msg?esc(msg):""}</p>`,focus:"bzGo",
     buttons:[{id:"bzGo",text:"Import",cls:"gold",fn:async()=>{
       const v=($("#bzIn").value||"").trim(),m=v.match(/buildz=([A-Za-z0-9_-]+)/)||v.match(/^([A-Za-z0-9_-]{20,})$/);
       if(!m){$("#bzErr").textContent="This is not a valid build link.";return;}
-      try{shPreview(bzBuild(await bzUnpack(m[1])));}catch(e){$("#bzErr").textContent="This is not a valid build link.";}}},
+      try{const j=await bzUnpack(m[1]);if(EZ.m==="easy")bzEasy(j);else shPreview(bzBuild(j));}catch(e){$("#bzErr").textContent="This is not a valid build link.";}}},
      {id:"shrNo",text:"Cancel",fn:shrClose}]});
   const i=$("#bzIn");if(i){i.focus();i.onkeydown=e=>{if(e.key==="Enter")$("#bzGo").click();};}}
 $("#bzOpen").onclick=()=>bzAsk();
@@ -879,7 +890,7 @@ async function shOpenFromHash(){
       if(j&&j.data&&typeof j.data==="object"&&!j.bofilter)j=j.data;
       pl={bofilter:j&&(j.bofilter||j.code),filterName:j&&j.filterName,authorName:j&&j.authorName,ruleNames:j&&j.ruleNames};
       if(j&&j.views!=null&&Number.isFinite(+j.views))views=Math.max(0,Math.round(+j.views));
-    }else if(m[1]==="buildz"){try{b=bzBuild(await bzUnpack(m[2]));}catch(e){throw {kind:"bad"};}}
+    }else if(m[1]==="buildz"){try{const j=await bzUnpack(m[2]);if(EZ.m==="easy"){if(tok===shTok)bzEasy(j);return;}b=bzBuild(j);}catch(e){throw {kind:"bad"};}}
     else{try{pl=await shUnpack(m[2]);}catch(e){throw {kind:"bad"};}}
     if(!b)b=shBuild(pl);
   }catch(e){
@@ -1686,7 +1697,7 @@ function ezBuild(){
   $("#ezCtl").innerHTML=`
   <section class="ezs" aria-labelledby="ez-h1"><div class="hrow ezh"><h3 id="ez-h1" class="ezt"><span class="ezn">1</span>Filter strictness</h3>${hb("ezPre")}<span id="ezState" class="ezstate" aria-live="polite"></span></div>
     <div class="ezcards" role="group" aria-label="Filter strictness">${EZ_PRE_IDS.map(card).join("")}</div></section>
-  <section class="ezs" aria-labelledby="ez-h2"><div class="hrow ezh"><h3 id="ez-h2" class="ezt"><span class="ezn">2</span>Build focus</h3>${hb("ezWant")}<span id="ezBuildsB" class="ezbadge chip" hidden>+ builds</span><span class="ezpk" id="ezPicked" aria-live="polite"></span><button type="button" class="btn ezclr" data-ez="clear,all" title="Unpick every pill. Ctrl+Z brings them back.">${li("x")}Clear all</button></div>
+  <section class="ezs" aria-labelledby="ez-h2"><div class="hrow ezh"><h3 id="ez-h2" class="ezt"><span class="ezn">2</span>Build focus</h3>${hb("ezWant")}<span id="ezBuildsB" class="ezbadge chip" hidden>+ builds</span><span class="ezpk" id="ezPicked" aria-live="polite"></span><button type="button" class="btn" id="ezBz" data-ezact="bz">Import build</button><button type="button" class="btn ezclr" data-ez="clear,all" title="Unpick every pill. Ctrl+Z brings them back.">${li("x")}Clear all</button></div>
     <div class="ezgrid">${EZ_GRP.map(([t,ic,blocks])=>`<div class="ezg" role="group" aria-label="${esc(t)}"><div class="ezgt">${ezIco(ic)}<span>${esc(t)}</span></div><div class="chips">${blocks.flatMap(([bt,ks])=>ks).map(ezChip).join("")}</div></div>`).join("")}</div></section>
   <div class="ez2">
     <section class="ezs ezu" aria-labelledby="ez-h3"><h3 id="ez-h3" class="ezt">Always keep &amp; Rare bases</h3>
@@ -1753,6 +1764,7 @@ function ezTouched(){
       else if(a==="keep"){EZ.h="";ezSave();ezAsk=false;ezMode("adv");}
       else if(a==="adv")ezMode("adv");
       else if(a==="copy")ezCopy();
+      else if(a==="bz")bzAsk();
       return;
     }
     if(!b.dataset.ez)return;

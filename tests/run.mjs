@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {bzRules,bzType,idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
+import {bzPicks,bzRules,bzType,idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -784,6 +784,11 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(bzRules({items:[]}).rules.length===0&&bzRules(null).rules.length===0,"empty build gives no rules");
 }
 
+/* Easy Mode import: Build focus pills from a build */
+{ const p=bzPicks({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"fire_dmg_inc",tier:1},{id:"fire_added_local",tier:1},{id:"life_large",tier:2},{id:"str_flat",tier:1},{id:"fire_res",tier:1}]}]});
+  ok(p.some(x=>x.k==="fire"),"build import (Easy): a build with Fire lines picks the Fire pill");
+  ok(!p.some(x=>x.k==="res"),"build import (Easy): the Resists pill is never picked from a build");
+  ok(bzPicks({items:[]}).length===0&&bzPicks(null).length===0,"build import (Easy): an empty build picks nothing"); }
 /* Leveling: the catch-all hides start late, Endgame hides from item level 1 */
 {
   const lv=easyGen(ezPreset("leveling",{arch:{fire:1}})).rules,en=easyGen(ezPreset("endgame",{arch:{fire:1}})).rules;

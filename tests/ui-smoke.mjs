@@ -333,6 +333,13 @@ async function runBuildz(){
   await page.click("#bzOpen");await page.fill("#bzIn","nonsense");await page.click("#bzGo");await page.waitForTimeout(200);
   ok(/not a valid build link/.test(await page.textContent("#bzErr")),"a wrong paste shows an error in the dialog");
   await page.click("#shrNo");await page.waitForTimeout(150);
+  await page.click("[data-ezm=easy]");await page.waitForTimeout(400);
+  ok(await page.isVisible("#ezBz"),"Easy Mode has an Import build button in Build focus");
+  await page.click("#ezBz");await page.fill("#bzIn",tok(bd));await page.click("#bzGo");await page.waitForTimeout(500);
+  ok(/Set Build focus from this build\?/.test(await page.evaluate(()=>document.body.innerText)),"Easy Mode: the build opens the Build focus dialog");
+  await page.click("#bzApply");await page.waitForTimeout(500);
+  ok(await page.$$eval("#ezCtl [data-ez^='arch,'][aria-pressed=true]",e=>e.length)>=1,"Easy Mode: Apply presses the Build focus pills of the build");
+  await page.click("[data-ezm=adv]");await page.waitForTimeout(300);
   await page.goto(BASE+"#buildz=AAAA");await page.waitForTimeout(700);
   ok(/cannot be opened/.test(await page.evaluate(()=>document.body.innerText)),"a broken build link shows the error dialog");
   ok(errors.length===0,"no page errors ("+errors.join("; ")+")");
