@@ -326,6 +326,13 @@ async function runBuildz(){
   const n=await page.$$eval("#rows .rrow, #rows > *",e=>e.length);
   ok(n>=3,"Replace my filter loads the build rules ("+n+" rows)");
   ok(!/#buildz=/.test(page.url()),"the link is removed from the address bar");
+  await page.click("#bzOpen");await page.waitForTimeout(200);
+  await page.fill("#bzIn","https://example.test/lootfilter/#buildz="+tok(bd));await page.click("#bzGo");await page.waitForTimeout(500);
+  ok(/Import this build\?/.test(await page.evaluate(()=>document.body.innerText)),"pasting the link into Import build opens the import dialog");
+  await page.click("#shrNo");await page.waitForTimeout(150);
+  await page.click("#bzOpen");await page.fill("#bzIn","nonsense");await page.click("#bzGo");await page.waitForTimeout(200);
+  ok(/not a valid build link/.test(await page.textContent("#bzErr")),"a wrong paste shows an error in the dialog");
+  await page.click("#shrNo");await page.waitForTimeout(150);
   await page.goto(BASE+"#buildz=AAAA");await page.waitForTimeout(700);
   ok(/cannot be opened/.test(await page.evaluate(()=>document.body.innerText)),"a broken build link shows the error dialog");
   ok(errors.length===0,"no page errors ("+errors.join("; ")+")");

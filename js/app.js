@@ -854,6 +854,16 @@ function shPreview(b,views){
       if(mdPlace(rs,b.filterName||"")){setView("edit");shrClose();}}},
     {id:"shrSave",text:"Save as module",fn:()=>{const r=shLfSave(b),n=$("#shrNote");if(r.err){n.textContent=r.err;n.style.color="var(--hide-fg)";return;}n.style.color="";n.textContent="Saved as “"+r.name+"” as a module. Your current filter is unchanged.";$("#shrSave").disabled=true;}},
     {id:"shrNo",text:"Cancel",fn:shrClose}]});const bm=$("#bzMode"),bh=$("#bzHide");if(bm)bm.onchange=()=>shPreview(bzBuild(b.j,bm.value,bh.checked),views);if(bh)bh.onchange=()=>shPreview(bzBuild(b.j,bm.value,bh.checked),views);}
+function bzAsk(msg){
+  shrShow({title:"Import build",desc:"Paste the link from the build simulator. It is read in your browser and nothing is uploaded.",
+    body:`<label class="sr" for="bzIn">Paste the build link or code</label><input id="bzIn" class="field" type="text" autocomplete="off" spellcheck="false" placeholder="Paste the build link or code" style="width:100%"><p class="shw" id="bzErr" role="status" style="margin-top:8px;color:var(--hide-fg)">${msg?esc(msg):""}</p>`,focus:"bzGo",
+    buttons:[{id:"bzGo",text:"Import",cls:"gold",fn:async()=>{
+      const v=($("#bzIn").value||"").trim(),m=v.match(/buildz=([A-Za-z0-9_-]+)/)||v.match(/^([A-Za-z0-9_-]{20,})$/);
+      if(!m){$("#bzErr").textContent="This is not a valid build link.";return;}
+      try{shPreview(bzBuild(await bzUnpack(m[1])));}catch(e){$("#bzErr").textContent="This is not a valid build link.";}}},
+     {id:"shrNo",text:"Cancel",fn:shrClose}]});
+  const i=$("#bzIn");if(i){i.focus();i.onkeydown=e=>{if(e.key==="Enter")$("#bzGo").click();};}}
+$("#bzOpen").onclick=()=>bzAsk();
 async function shOpenFromHash(){
   const m=location.hash.match(/^#(f|s|buildz)=([A-Za-z0-9_-]+)$/);if(!m)return;
   const tok=++shTok,retry=()=>shOpenFromHash();
