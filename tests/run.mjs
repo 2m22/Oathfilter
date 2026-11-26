@@ -782,6 +782,14 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(r.notes.some(x=>x.includes("nope_x")),"unknown ids are reported");
   ok(r.rules.every(x=>mlist(x,"a").length<=6),"build import respects the 6 named lines limit");
   ok(bzRules({items:[]}).rules.length===0&&bzRules(null).rules.length===0,"empty build gives no rules");
+  for(const md of ["leveling","endgame","uber"]){
+    const h=bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]},{mode:md,hide:true}).rules;
+    const gi=h.findIndex(x=>/^(Ashen|Gnome-made) Rares/.test(x.name)),hi=h.findIndex(x=>x.action===0);
+    ok(gi>0&&hi>gi&&h.filter(x=>/^(Ashen|Gnome-made) Rares/.test(x.name)).length===9,"build import "+md+" with hide: the Rare Ashen / Gnome-made block sits above the hides");
+    ok(rulesIssues(h).length===0,"build import "+md+" with hide: no rule issues");}
+  { const h=bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1}]}]},{mode:"leveling",hide:true}).rules;
+    ok(h.some(x=>x.action===0&&x.rarity===3&&mval(x,"i")==="20-0"),"build import Leveling with hide: Normal/Magic hidden from item level 20"); }
+  ok(!bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1}]}]},{mode:"endgame"}).rules.some(x=>/^Ashen/.test(x.name)),"build import without hide writes no Ashen block");
 }
 
 /* Easy Mode import: Build focus pills from a build */

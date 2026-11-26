@@ -1480,7 +1480,9 @@ function bzRules(bd,o){
     const lv=mode==="leveling";
     /* the keeps and the "always" lines go above the build rules, the hides below them */
     rules.unshift(...pre);
-    rules.push(hd(3,"Build: hide other Normal/Magic"+(lv?" 40+":""),lv?40:0),hd(4,"Build: hide other Rares"+(lv?" 60+":""),lv?60:0));
+    /* Rare Ashen / Gnome-made block: below the build's tier highlights, above every hide (same rule as Easy Mode) */
+    rules.push(...gaRules());
+    rules.push(hd(3,"Build: hide other Normal/Magic"+(lv?" 20+":""),lv?20:0),hd(4,"Build: hide other Rares"+(lv?" 60+":""),lv?60:0));
   }
   if(skip.size)notes.push("Left out, not known here ("+skip.size+"): "+[...skip].slice(0,6).join(", ")+(skip.size>6?", …":"")+".");
   if(!rules.length)notes.push("The build has no gear lines or uniques to highlight.");
