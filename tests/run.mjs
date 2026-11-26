@@ -1,7 +1,7 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
+import {bzRules,bzType,idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -741,6 +741,25 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   const both=baseLines(["bow_1","iron_ring"]);ok([...bow].every(x=>both.has(x))&&both.has(L("all_res"))&&!bow.has(L("all_res")),"two bases: the lines of both are listed");
   ok(baseLines(["ash_bow_7"]).has(L("fire_added_local"))&&baseLines(["ct_proj_bow_8"]).has(L("fire_added_local")),"Ashen and Core Touched bases follow their base type");
   ok(baseLines(["iron_ring"]).size<bow.size+10&&baseLines(["iron_ring"]).has(L("life")),"a ring rolls Life");
+}
+
+/* simulator build link: worn gear -> highlight rules */
+{
+  const r=bzRules({v:1,name:"T",level:100,items:[
+    {slot:"MainHand",rarity:"Rare",base:"ct_proj_bow_9",item_level:84,affixes:[{id:"riven95_skill_level_bow",tier:1},{id:"life",tier:2},{id:"fire_dmg_inc",tier:2},{id:"nope_x",tier:1}]},
+    {slot:"Ring1",rarity:"Rare",base:"iron_ring",affixes:[{id:"life_large",tier:3}]},
+    {slot:"Chest",rarity:"Unique",base:"plate_chest_1",unique:"adders_kiss",affixes:[{id:"life_large",tier:1}]}]});
+  ok(r.items===3,"build import counts the gear pieces");
+  ok(bzType("hunters_quiver")===34&&bzType("shield_1")===9&&bzType("plate_chest_1")===6&&bzType("amber_amulet")===11&&bzType("bow_9")===18,"build import maps bases to item types");
+  const by=n=>r.rules.filter(x=>x.name===n);
+  ok(r.rules.every(x=>x.on===1&&x.action>=2),"build import only highlights, never hides");
+  ok(r.rules.filter(x=>x.type===18).length===2&&r.rules.some(x=>x.type===10&&mlist(x,"a").join()==="life_large"),"build import groups lines per item type and tier");
+  ok(r.rules.some(x=>mlist(x,"a").includes("skill_level")),"Riven lines map to the normal line");
+  ok(mlist(r.rules.find(x=>mlist(x,"rn").length),"rn").join()==="adders_kiss","uniques become a red rule");
+  ok(!r.rules.some(x=>x.type===6),"a unique's own lines are not turned into rules");
+  ok(r.notes.some(x=>x.includes("nope_x")),"unknown ids are reported");
+  ok(r.rules.every(x=>mlist(x,"a").length<=6),"build import respects the 6 named lines limit");
+  ok(bzRules({items:[]}).rules.length===0&&bzRules(null).rules.length===0,"empty build gives no rules");
 }
 
 console.log(passed+" passed, "+failed+" failed");

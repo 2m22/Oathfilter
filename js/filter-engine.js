@@ -1411,8 +1411,42 @@ function ezBadge(s,linked,hasHash){
 const NAME_MAX=40;
 
 /* module boundary: imported bindings are read-only, so the shared mutable state is changed through these setters */
+
+/* Simulator build link (#buildz=): turns the worn gear of a build into highlight rules. Only lifts, never hides. Rares: the build's lines per item type, grouped by tier (<= 6 named lines per rule, n=1).
+   Uniques: one rule with the unique's id; their own lines are not in the export. Idols and Dwarven Runes are not part of the export. Unknown ids are skipped and counted in notes. */
+const BZ_ORDER=[10,11,12,5,6,7,8,34,9,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,1];
+function bzType(id){const b=BASE_BY_ID[id];if(!b)return 0;const t=BZ_ORDER.find(x=>typeMatch(x,b));return t||0;}
+function bzRules(bd){
+  const notes=[],skip=new Set(),lines=new Map(),reds=new Set();let items=0;
+  const list=bd&&Array.isArray(bd.items)?bd.items:[];
+  list.slice(0,40).forEach(it=>{
+    if(!it||typeof it!=="object")return;items++;
+    const u=typeof it.unique==="string"?it.unique:"";
+    if(u){if(REDN[u])reds.add(u);else skip.add(u);return;}
+    const t=bzType(String(it.base||""));
+    (Array.isArray(it.affixes)?it.affixes:[]).slice(0,12).forEach(a=>{
+      const raw=a&&typeof a.id==="string"?a.id:"",tier=Math.max(1,Math.min(8,Math.round(+a.tier)||1));
+      const lab=LINEN[raw]||LINEN[raw.replace(/^riven95_/,"")];
+      if(!lab){if(raw)skip.add(raw);return;}
+      const id=(LINE_IDS[lab]||[])[0]||raw,k=t+"|"+tier;
+      if(!lines.has(k))lines.set(k,{t,tier,ids:new Set()});lines.get(k).ids.add(id);});});
+  const rules=[];
+  const tn=t=>({0:"Any gear",1:"Weapons",5:"Helms",6:"Body armour",7:"Gloves",8:"Boots",9:"Shields/foci",10:"Rings",11:"Amulets",12:"Belts",34:"Quivers"})[t]||"Weapons";
+  [...lines.values()].sort((a,b)=>a.t-b.t||a.tier-b.tier).forEach(g=>{
+    const ids=[...g.ids];
+    for(let i=0;i<ids.length;i+=MAXL.a){
+      const r=newRule({type:g.t,rarity:4,action:2,colour:4});
+      r.name=("Build "+tn(g.t)+" T"+g.tier).slice(0,NAME_MAX);
+      msetList(r,"a",ids.slice(i,i+MAXL.a));mset(r,"t",String(g.tier));mset(r,"n","1");rules.push(r);}});
+  const rl=[...reds];
+  for(let i=0;i<rl.length;i+=MAXL.rn){
+    const r=newRule({type:0,rarity:0,action:3,colour:4});r.name="Build uniques";
+    msetList(r,"rn",rl.slice(i,i+MAXL.rn));rules.push(r);}
+  if(skip.size)notes.push("Left out, not known here ("+skip.size+"): "+[...skip].slice(0,6).join(", ")+(skip.size>6?", …":"")+".");
+  if(!rules.length)notes.push("The build has no gear lines or uniques to highlight.");
+  return{rules,notes,items};}
 export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {lineFit,baseLines,baseInType,redInType,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};
+export {bzRules,bzType,lineFit,baseLines,baseInType,redInType,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};

@@ -307,6 +307,26 @@ async function run(name,mode){
 }
 
 
+
+async function runBuildz(){
+  pass="build link";
+  const {browser,page,errors}=await openPage("normal");
+  const zlib=await import("node:zlib");
+  const tok=o=>zlib.deflateRawSync(Buffer.from(JSON.stringify(o))).toString("base64url");
+  const bd={v:1,name:"Rangtest",level:100,items:[{slot:"MainHand",rarity:"Rare",base:"ct_proj_bow_9",item_level:84,affixes:[{id:"riven95_skill_level_bow",tier:1},{id:"life",tier:2}]},{slot:"Chest",rarity:"Unique",unique:"adders_kiss",affixes:[]}]};
+  await page.goto(BASE+"#buildz="+tok(bd));await page.waitForTimeout(900);
+  ok(await page.isVisible("#shrLoad"),"a #buildz link opens the import dialog");
+  const t=await page.textContent("#shrLoad").catch(()=>"");const dlg=await page.evaluate(()=>document.body.innerText);
+  ok(/Import this build/.test(dlg)&&/Rangtest/.test(dlg)&&/Gear pieces/.test(dlg),"the dialog names the build and its gear");
+  await page.click("#shrLoad");await page.waitForTimeout(500);
+  const n=await page.$$eval("#rows .rrow, #rows > *",e=>e.length);
+  ok(n>=3,"Replace my filter loads the build rules ("+n+" rows)");
+  ok(!/#buildz=/.test(page.url()),"the link is removed from the address bar");
+  await page.goto(BASE+"#buildz=AAAA");await page.waitForTimeout(700);
+  ok(/cannot be opened/.test(await page.evaluate(()=>document.body.innerText)),"a broken build link shows the error dialog");
+  ok(errors.length===0,"no page errors ("+errors.join("; ")+")");
+  await browser.close();
+}
 async function runNarrow(){
   pass="420px";
   const {browser,page,errors}=await openPage("on",420);
@@ -337,6 +357,7 @@ try{
   await run("lucide","on");
   await run("no lucide (built-in icons)","nolucide");
   await run("lucide throws","throwing");
+  await runBuildz();
   await runNarrow();
 }finally{server.close();}
 console.log(`${passed} passed, ${failed} failed`);
