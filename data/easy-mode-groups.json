@@ -342,10 +342,7 @@
     "max_poison_res91",
     "phys_as_elem"
    ],
-   "idol": [
-    "idol_grand_max_res",
-    "idol_grand_max_poison_res"
-   ]
+   "idol": []
   },
   {
    "k": "armour",

@@ -361,7 +361,7 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   for(const [c,want] of [[["armour","evasion"],["str_flat","dex_flat"]],[["evasion","es"],["dex_flat","int_flat"]],[["armour","es"],["str_flat","int_flat"]]]){
     const l=pick(c);ok(want.every(i=>l.includes(i)),"Easy Mode: hybrid pick "+c.join("+")+" keeps "+want.join(" and "));
     eq(l.filter(i=>i==="all_attr").length,1,"Easy Mode: hybrid pick "+c.join("+")+" lists all Attributes once"); }
-  ok(["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91","phys_as_elem"].every(i=>G("res").ids.includes(i))&&G("res").idol.includes("idol_grand_max_poison_res"),"Easy Mode: maximum resistances and Physical taken as are under Resists");
+  ok(["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91","phys_as_elem"].every(i=>G("res").ids.includes(i))&&G("res").idol.length===0,"Easy Mode: maximum resistances and Physical taken as are under Resists; the Resists pick keeps no Idols");
   { const l=pick(["res"]);ok(["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91","phys_as_elem"].every(i=>l.includes(i)),"Easy Mode: a Resists pick writes the maximum resistance lines"); }
   const ex=EZ_EXCLUDED,exT=new Set(ex.map(txt).filter(Boolean));
   ok(["life_on_kill","ring_life_on_kill","mana_on_kill","ring_mana_on_kill","cooldown_recovery","req_reduce"].every(i=>ex.includes(i)),"Easy Mode: on-kill, cooldown recovery and attribute requirements are excluded");
