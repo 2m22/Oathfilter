@@ -1266,7 +1266,7 @@ function ezEff(a,s){
   return a.ids;
 }
 const ezGearIds=(a,s)=>ezLines(ezEff(a,s));
-const ezIdolIds=(a,s)=>ezLines(ezEff(a,s).concat(a.idol),(id,t)=>a.idol.includes(id)||EZ_IDOLTXT.has(t));
+const ezIdolIds=(a,s)=>ezLines(ezEff(a,s).concat(a.idol),(id,t)=>a.idol.includes(id)||(a.k!=="res"&&EZ_IDOLTXT.has(t))); /* Resists: an Idol with +2% Cold Resistance is not wanted, so the pick never matches Idols by text */
 /* tier limit t for one gear line at Rupture Level rl: for each affix with this text, the best tier whose item level is <= rl, plus (keep-1) tiers; the loosest affix decides. 0 = no limit. */
 function ezTP(ids){const parts=[];[ids.filter(x=>x.t!==99),ids.filter(x=>x.t===99)].forEach(g=>{for(let i=0;i<g.length;i+=MAXL.a){const c=g.slice(i,i+MAXL.a),m=Math.max(...c.map(x=>x.t));parts.push({p:c.map(x=>x.id),t:m===99?0:m});}});
   /* an unlimited line that has no more tiers than a limited rule's limit loses nothing there (a limit of T4 on a 4-tier line hides nothing), so it joins that rule instead of getting its own */
@@ -1309,7 +1309,9 @@ function easyGen(s,pack,merge){
   const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
   const og=own(),oi=own();
   const SKILL="skill_level"; /* one line text for skill_level, _bow and _2h; with the Leveling steps it is shown for every item, so it is taken out of the picks */
+  const MAXRES=["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91"].filter(i=>LINEN[i]); /* maximum resistances: always shown (like skill levels), so they are taken out of the picks */
   if(s.lv&&LINEN[SKILL])og(SKILL);
+  if(act.length)MAXRES.forEach(i=>og(i));
   /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 6 per rule. */
   const gearA=act.map(a=>{const ids=ezGearIds(a,s).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99,top:ezTop(id),c:s.lv?LV_STEPS.map(z=>ezThr(id,z.lo,s.tk)||99):null})).sort((x,y)=>x.t-y.t);
     const parts=pack?[]:ezStages(ids,s.lv); /* sorted by limit, up to 6 per rule, the loosest line of a rule sets its limit */
@@ -1332,7 +1334,7 @@ function easyGen(s,pack,merge){
   }
   const rarHide=(s.hn||s.hm)?1:0;
   const white=gearA.length>0;
-  const idolWhite=s.idol==="match"&&idolA.length>0;
+  const idolWhite=s.idol==="match"&&act.length>0; /* picks without Idol lines (Resists, for example) hide the Idols that do not match too */
   let why=white?(gearA.length?"Gear picks are on, so matching gear is kept and the rest of the gear is hidden.":""):"Only a few things are hidden, so everything else stays shown.";
   const idolWhy=s.idol==="none"?" All Idols are hidden.":idolWhite?" Idols without your picked lines are hidden.":s.idol==="all"?" All Idols stay shown.":" Idols are not touched.";
   why+=idolWhy;
@@ -1349,7 +1351,6 @@ function easyGen(s,pack,merge){
   if(s.idol==="none"){mk({type:14,action:0},"Idols");if(act.some(a=>!a.ids.length))notes.push("Idol-only picks do nothing while all Idols are hidden.");}
   else if(idolWhite)mk({type:14,action:0},"Other idols");
   else if(s.idol==="all"&&!s.hl&&idolA.length)notes.push("Idols stay shown and Highlight is off, so Idol picks change nothing. Turn Highlight on or use Match my picks.");
-  else if(s.idol==="match"&&act.length&&!idolA.length)notes.push("None of your picks has Idol lines, so Idols are not touched.");
   /* 3 hide normal / magic gear. With gear picks it comes after them (so shown Magic matches are never caught) and before the catch-all.
         Without picks it must come before the level-floor show rule, or Normal and Magic gear above the floor would be shown first. */
   const hideR=()=>{if(rarHide){const w=s.hn&&s.hm?"Normal and magic gear":s.hn?"Normal gear":"Magic gear";mk({type:0,rarity:s.hn&&s.hm?3:s.hn?1:2,action:s.hs?4:0},s.hs?"Sell "+w[0].toLowerCase()+w.slice(1):w);}};
@@ -1365,6 +1366,7 @@ function easyGen(s,pack,merge){
   if(white){
     gearP.forEach(x=>x.parts.forEach(st=>st.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col,level:st.lv},x.a.n+(st.n?" "+st.n:"")+(st.parts.length>1?" "+(i+1)+"/"+st.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);}))));
     if(s.lv&&LINEN[SKILL])mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:act[0].col},"Skill levels",r=>msetList(r,"a",[SKILL])); /* all skill levels (+1, +2, +3), whatever the tier or the item level */
+    if(MAXRES.length)for(let i=0;i<MAXRES.length;i+=MAXL.a)mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:act[0].col},"Max resistances"+(MAXRES.length>MAXL.a?" "+(i/MAXL.a+1):""),r=>msetList(r,"a",MAXRES.slice(i,i+MAXL.a)));
     if(gearA.length){ga();hideR();} /* below the tier highlights of the picks, above the hides */
     /* the catch-all hide never uses Any rarity: it is written per rarity. Normal and Magic that the hide above did not take, then Rare. */
     /* Leveling: while you level, gear is an upgrade candidate, so the catch-all hide starts later (Normal and Magic from item level 40, Rare from 60) instead of hiding everything without a picked line from item level 1 */
@@ -1461,6 +1463,21 @@ function bzRules(bd,o){
   for(let i=0;i<rl.length;i+=MAXL.rn){
     const r=newRule({type:0,rarity:0,action:3,colour:4});r.name="Build uniques";
     msetList(r,"rn",rl.slice(i,i+MAXL.rn));rules.push(r);}
+  /* hide everything else, like the Easy Mode preset of the same strictness: Leveling hides Normal/Magic from item level 40 and Rares from 60, Endgame and Uber Strict hide all Normal/Magic gear and every Rare the rules above did not lift. Kept above the hides: skill levels, maximum resistances, Core-touched, Rune bases, Truesworn bases. */
+  if(o&&o.hide&&rules.some(r=>mlist(r,"a").length)){
+    const pre=[];
+    const kp=(t,name)=>{const r=newRule({type:t,rarity:0,action:1,colour:4});r.name=name;return r;};
+    pre.push(kp(13,"Keep Core-touched"),kp(4,"Keep Rune bases"),kp(16,"Keep Truesworn bases"));
+    if(LINEN.skill_level){const r=newRule({type:0,rarity:4,action:2,colour:4});r.name="Keep skill levels";msetList(r,"a",["skill_level"]);pre.push(r);}
+    const mr=["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91"].filter(i=>LINEN[i]);
+    if(mr.length){const r=newRule({type:0,rarity:4,action:2,colour:4});r.name="Keep max resistances";msetList(r,"a",mr);pre.push(r);}
+    const fl=(r,lo)=>{if(lo)msetRng(r,"i",lo,0);return r;};
+    const hd=(rar,name,lo)=>{const r=newRule({type:0,rarity:rar,action:0});r.name=name;return fl(r,lo);};
+    const lv=mode==="leveling";
+    /* the keeps and the "always" lines go above the build rules, the hides below them */
+    rules.unshift(...pre);
+    rules.push(hd(3,"Build: hide other Normal/Magic"+(lv?" 40+":""),lv?40:0),hd(4,"Build: hide other Rares"+(lv?" 60+":""),lv?60:0));
+  }
   if(skip.size)notes.push("Left out, not known here ("+skip.size+"): "+[...skip].slice(0,6).join(", ")+(skip.size>6?", …":"")+".");
   if(!rules.length)notes.push("The build has no gear lines or uniques to highlight.");
   return{rules,notes,items};}

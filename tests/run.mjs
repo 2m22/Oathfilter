@@ -315,10 +315,10 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
 { const pen=AFF.filter(a=>/^(fire|cold|lightning)_pen95_(1h|2h)$|^elemental_pen95_amulet$/.test(a.id));
   eq(pen.length,7,"seven pen95 affixes (game file affixes_pen95.json)");ok(pen.every(a=>a.n===4),"pen95 affixes have 4 tiers");
   const tw=UNIQUES.find(u=>u.name==="Thunderwake Maul");ok(tw&&tw.base.id==="mace1h_2"&&tw.lvl===10,"Thunderwake Maul is mace1h_2, level 10 (game file and API build 86)");
-  const g=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!isGaRule(r));
+  const g=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!isGaRule(r)&&!/^Max res/.test(r.name));
   eq(g.length,2,"Easy Mode: attacks + cold at rl 60 is 2 rules, the penetration line joins the T4 rule");
   ok(g.some(r=>mval(r,"a").includes("cold_pen95_2h")&&mval(r,"t")==="4"),"the penetration line sits in the rule with limit T4");
-  const h=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!mval(r,"t")&&!isGaRule(r));
+  const h=easyGen(ezSane({rl:60,arch:{attack:1,cold:1}})).rules.filter(r=>r.type===0&&r.action>0&&!mval(r,"t")&&!isGaRule(r)&&!/^Max res/.test(r.name));
   eq(h.length,0,"no rule is left without a limit when every line is covered by T4"); }
 
 /* ---- picker: no double entries, and the list is not capped below the game limit ---- */
@@ -638,7 +638,7 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   const gen=(arch,over)=>easyGen(Object.assign(ezPreset("leveling",ezSane({arch})),over||{}),false,false);
   const lvOf=r=>r.level||0,inLv=(r,n)=>{const[a,b]=LEVEL[lvOf(r)];return n>=a&&n<=b;};
   const picks={attack:1,fire:1,cold:1,res:1,move:1};
-  const g=gen(picks),R=g.rules.filter(r=>r.type===0&&r.action>0&&mlist(r,"a").length);
+  const g=gen(picks),R=g.rules.filter(r=>r.type===0&&r.action>0&&mlist(r,"a").length&&!/^Max res/.test(r.name));
   ok(new Set(R.map(lvOf)).size>1,"Leveling with picks uses several item-level steps");
   ok(R.every(r=>[0,1,2,3,4,6].includes(lvOf(r))),"only compiler level steps are used (<20, <40, <60, <75, 75+)");
   /* property: at every item level the best droppable tier of every picked line is still shown */
@@ -653,7 +653,7 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
       else ok(hit.some(r=>!mval(r,"t")||kb<=+mval(r,"t")),"best droppable tier T"+kb+" of "+id+" is shown at item level "+n);
       /* the worst tier of a long line must be hidden somewhere */
       if(top>=8&&n>=60&&!hit.some(r=>!mval(r,"t")||8<=+mval(r,"t")))hid++;}});
-  ok(untiered.size>0,"the picks contain untiered lines ("+untiered.size+"), they stop at the upper limit <75");
+  ok(untiered.size===0,"no untiered lines are left in the picks: the maximum resistances have their own always-on rule ("+untiered.size+")");
   ok([...untiered].every(id=>R.filter(r=>mlist(r,"a").includes(id)).every(r=>lvOf(r)===4&&!mval(r,"t"))),"untiered lines only sit in <75 rules without a tier limit");
   ok(chk>1000,"property check ran over many lines and levels ("+chk+")");ok(hid>0,"T8 is hidden on 8-tier lines at higher item levels");
   /* skill levels: one general rule, never tier- or level-limited, and not repeated inside the picks */
@@ -663,8 +663,14 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   /* no picks: no tier steps, no skill rule; endgame keeps one rule per pick part */
   ok(!gen({}).rules.some(r=>lvOf(r)&&r.type===0&&mlist(r,"a").length),"no picks: no tier steps");
   ok(!gen({}).rules.some(r=>mlist(r,"a").includes("skill_level")),"no picks: no skill level rule");
+  /* maximum resistances: always shown with any pick, in their own rule, never tier- or level-limited, not repeated in the picks; the Resists pick keeps no Idols */
+  { const mr=gen({attack:1}).rules.filter(x=>/^Max res/.test(x.name));
+    ok(mr.length===1&&mlist(mr[0],"a").length===4&&!mval(mr[0],"t")&&!mr[0].level,"Max resistances: one rule with all four lines, no tier or level limit");
+    ok(!gen({res:1,attack:1}).rules.some(x=>!/^Max res/.test(x.name)&&mlist(x,"a").some(i=>/^max_/.test(i))),"Max resistances are not repeated inside the picks");
+    ok(gen({}).rules.every(x=>!/^Max res/.test(x.name)),"no picks: no Max resistances rule");
+    ok(!gen({res:1}).rules.some(x=>x.type===14&&/Resists/.test(x.name)),"the Resists pick writes no Idol rule"); }
   /* resistances, movement speed, attributes only come through Build focus */
-  { const used=r=>gen({attack:1}).rules.filter(x=>x.type===0).flatMap(x=>mlist(x,"a")).filter(i=>/res|move|^str|^dex|^int|attr/.test(i));
+  { const used=r=>gen({attack:1}).rules.filter(x=>x.type===0&&!/^Max res/.test(x.name)).flatMap(x=>mlist(x,"a")).filter(i=>/res|move|^str|^dex|^int|attr/.test(i));
     eq(used().length,0,"Resistances, Movement Speed and Attributes are not forced without a pick");
     ok(gen({res:1}).rules.some(x=>mlist(x,"a").some(i=>/res/.test(i))),"a Resistances pick lists the resistance lines (and they follow the tier steps)");}
   /* budget and limits, also with every pick */
@@ -755,6 +761,12 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(r.rules.every(x=>x.on===1&&x.action>=2),"build import only highlights, never hides");
   ok(r.rules.some(x=>x.type===18&&x.name.includes("core")&&x.action===3)&&r.rules.some(x=>x.type===10&&mlist(x,"a").includes("life_large")),"build import makes a core and a good rule per item type");
   ok(r.rules.filter(x=>mlist(x,"a").length).every(x=>{const v=mval(x,"t");return v===""||["7","6","4","3"].includes(String(v));}),"build import caps tiers per Leveling step, not by the build's tiers");
+  { const h=bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]},{mode:"endgame",hide:true}).rules,n=h.length;
+    ok(h[n-1].action===0&&h[n-1].rarity===4&&h[n-2].action===0&&h[n-2].rarity===3,"build import with hide: the hides come last");
+    ok(h.slice(0,n-2).every(x=>x.action!==0),"build import with hide: everything above the hides lifts or keeps");
+    ok(h.some(x=>x.type===13&&x.action===1)&&h.some(x=>x.name==="Keep max resistances"),"build import with hide keeps Core-touched and the maximum resistances");
+    ok(!bzRules({items:[]},{mode:"endgame",hide:true}).rules.some(x=>x.action===0),"an empty build never writes hide rules");
+    ok(!bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1}]}]},{mode:"endgame"}).rules.some(x=>x.action===0),"build import without the hide switch writes no hides"); }
   ok(["<20","<40","<60","<75","75+"].every(n=>r.rules.some(x=>x.name==="Build Rings core "+n)),"build import writes the five Leveling steps");
   ok(r.rules.some(x=>x.name==="Build bases 82+"&&x.level===7&&mlist(x,"b").includes("iron_ring")&&mlist(x,"b").includes("ct_proj_bow_9")),"build import highlights the build's rare bases from item level 82");
   const bi={items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]};

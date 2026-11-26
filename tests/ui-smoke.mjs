@@ -321,6 +321,7 @@ async function runBuildz(){
   await page.selectOption("#bzMode","uber");await page.waitForTimeout(200);
   ok(/top roll/.test(await page.textContent("#shrBody")),"the strictness select switches the import to Uber Strict");
   await page.selectOption("#bzMode","leveling");await page.waitForTimeout(200);
+  ok(await page.isChecked("#bzHide"),"the hide switch is on by default");
   await page.click("#shrLoad");await page.waitForTimeout(500);
   const n=await page.$$eval("#rows .rrow, #rows > *",e=>e.length);
   ok(n>=3,"Replace my filter loads the build rules ("+n+" rows)");
