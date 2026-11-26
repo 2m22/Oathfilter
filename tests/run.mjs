@@ -768,11 +768,14 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
     ok(!bzRules({items:[]},{mode:"endgame",hide:true}).rules.some(x=>x.action===0),"an empty build never writes hide rules");
     ok(!bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1}]}]},{mode:"endgame"}).rules.some(x=>x.action===0),"build import without the hide switch writes no hides"); }
   ok(["<20","<40","<60","<75","75+"].every(n=>r.rules.some(x=>x.name==="Build Rings core "+n)),"build import writes the five Leveling steps");
-  ok(r.rules.some(x=>x.name==="Build bases 82+"&&x.level===7&&mlist(x,"b").includes("iron_ring")&&mlist(x,"b").includes("ct_proj_bow_9")),"build import highlights the build's rare bases from item level 82");
+  ok(r.rules.some(x=>x.name==="Build bases 82+"&&x.level===7&&mlist(x,"b").includes("iron_ring")&&mlist(x,"b").includes("ct_proj_bow_9")&&!mlist(x,"a").length),"build import (Leveling) highlights the build's rare bases from item level 82");
+  { const bi={items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]};
+    for(const md of ["endgame","uber"]){const b=bzRules(bi,{mode:md}).rules.filter(x=>mlist(x,"b").length);
+      ok(b.length===1&&b[0].level===7&&mlist(b[0],"a").length>0&&mval(b[0],"n")==="1","build import "+md+": a rare base needs at least one wanted line");}}
   const bi={items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]};
   const en=bzRules(bi,{mode:"endgame"}).rules,ub=bzRules(bi,{mode:"uber"}).rules;
-  ok(en.length>0&&en.filter(x=>mlist(x,"a").length).every(x=>!x.level&&+mval(x,"t")>=1&&+mval(x,"t")<=3),"build import Endgame: one step, tier cap of Rupture Level 75");
-  ok(ub.filter(x=>mlist(x,"a").length).every(x=>x.level===7&&mval(x,"t")==="1")&&ub.some(x=>x.quality===2),"build import Uber Strict: item level 82+, T1 only, core needs a top roll");
+  ok(en.length>0&&en.filter(x=>mlist(x,"a").length&&!mlist(x,"b").length).every(x=>!x.level&&+mval(x,"t")>=1&&+mval(x,"t")<=3),"build import Endgame: one step, tier cap of Rupture Level 75");
+  ok(ub.filter(x=>mlist(x,"a").length&&!mlist(x,"b").length).every(x=>x.level===7&&mval(x,"t")==="1")&&ub.some(x=>x.quality===2),"build import Uber Strict: item level 82+, T1 only, core needs a top roll");
   ok(r.rules.some(x=>mlist(x,"a").includes("skill_level")),"Riven lines map to the normal line");
   ok(mlist(r.rules.find(x=>mlist(x,"rn").length),"rn").join()==="adders_kiss","uniques become a red rule");
   ok(!r.rules.some(x=>x.type===6),"a unique's own lines are not turned into rules");
@@ -785,7 +788,7 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
 {
   const lv=easyGen(ezPreset("leveling",{arch:{fire:1}})).rules,en=easyGen(ezPreset("endgame",{arch:{fire:1}})).rules;
   const nm=l=>l.find(r=>r.name==="Everything else: Normal and magic gear"),rr=l=>l.find(r=>r.name==="Everything else: Rare gear");
-  ok(nm(lv)&&mval(nm(lv),"i")==="40-0"&&mval(rr(lv),"i")==="60-0","Leveling: Normal/Magic are hidden from item level 40, Rares from 60");
+  ok(nm(lv)&&mval(nm(lv),"i")==="20-0"&&mval(rr(lv),"i")==="60-0","Leveling: Normal/Magic are hidden from item level 20, Rares from 60");
   ok(en.filter(r=>/^Everything else/.test(r.name)).length>0&&en.filter(r=>/^Everything else/.test(r.name)).every(r=>mval(r,"i")===""),"without Leveling the catch-all hide has no item level start");
 }
 

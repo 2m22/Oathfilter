@@ -1369,10 +1369,10 @@ function easyGen(s,pack,merge){
     if(MAXRES.length)for(let i=0;i<MAXRES.length;i+=MAXL.a)mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:act[0].col},"Max resistances"+(MAXRES.length>MAXL.a?" "+(i/MAXL.a+1):""),r=>msetList(r,"a",MAXRES.slice(i,i+MAXL.a)));
     if(gearA.length){ga();hideR();} /* below the tier highlights of the picks, above the hides */
     /* the catch-all hide never uses Any rarity: it is written per rarity. Normal and Magic that the hide above did not take, then Rare. */
-    /* Leveling: while you level, gear is an upgrade candidate, so the catch-all hide starts later (Normal and Magic from item level 40, Rare from 60) instead of hiding everything without a picked line from item level 1 */
+    /* Leveling: while you level, gear is an upgrade candidate, so the catch-all hide starts later (Normal and Magic from item level 20, Rare from 60) instead of hiding everything without a picked line from item level 1 */
     const fl=(r,lo)=>{if(s.lv)msetRng(r,"i",lo,0);};
     if(s.hn&&s.hm)mk({type:0,rarity:4,action:0},"Everything else",r=>fl(r,60)); /* Normal and Magic are already hidden above, so only Rares are left to hide */
-    else{const rest=s.hn?2:s.hm?1:3;mk({type:0,rarity:rest,action:0},"Everything else: "+(rest===3?"Normal and magic":rest===1?"Normal":"Magic")+" gear",r=>fl(r,40));mk({type:0,rarity:4,action:0},"Everything else: Rare gear",r=>fl(r,60));}
+    else{const rest=s.hn?2:s.hm?1:3;mk({type:0,rarity:rest,action:0},"Everything else: "+(rest===3?"Normal and magic":rest===1?"Normal":"Magic")+" gear",r=>fl(r,20));mk({type:0,rarity:4,action:0},"Everything else: Rare gear",r=>fl(r,60));}
   }
   if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
   if(!pack&&R.length>EASY_PACK_LIMIT&&act.length){
@@ -1430,14 +1430,14 @@ const BZ_MODES=[["leveling","Leveling"],["endgame","Endgame"],["uber","Uber Stri
 function bzCap(id,lo,keep,tb){let v=ezThr(id,lo,keep)||99;if(tb)v=Math.min(v,Math.max(tb+keep-1,ezThr(id,lo,1)||1));return v===99?0:v;}
 function bzRules(bd,o){
   const mode=o&&o.mode||"leveling",stg=mode==="leveling";
-  const notes=[],skip=new Set(),byT=new Map(),reds=new Set(),bases=new Set(),best=new Map();let items=0;
+  const notes=[],skip=new Set(),byT=new Map(),reds=new Set(),bases=new Set(),bT=new Map(),best=new Map();let items=0;
   const list=bd&&Array.isArray(bd.items)?bd.items:[];
   list.slice(0,40).forEach(it=>{
     if(!it||typeof it!=="object")return;items++;
     const u=typeof it.unique==="string"?it.unique:"";
     if(u){if(REDN[u])reds.add(u);else skip.add(u);return;}
     const t=bzType(String(it.base||""));
-    if(BASE_BY_ID[it.base]&&Array.isArray(it.affixes)&&it.affixes.length&&!/^(normal|magic)$/i.test(String(it.rarity)))bases.add(it.base);
+    if(BASE_BY_ID[it.base]&&Array.isArray(it.affixes)&&it.affixes.length&&!/^(normal|magic)$/i.test(String(it.rarity))){bases.add(it.base);if(!bT.has(t))bT.set(t,new Set());bT.get(t).add(it.base);}
     (Array.isArray(it.affixes)?it.affixes:[]).slice(0,12).forEach(a=>{
       const raw=a&&typeof a.id==="string"?a.id:"";
       const lab=LINEN[raw]||LINEN[raw.replace(/^riven95_/,"")];
@@ -1457,13 +1457,17 @@ function bzRules(bd,o){
     const m=byT.get(t),ids=[...m.keys()].sort((a,b)=>(filler(a)-filler(b))||(m.get(b)-m.get(a))),core=ids.filter(id=>!filler(id));
     if(core.length)steps.forEach(st=>mkA(t,core.slice(0,MAXL.a),2,3,"Build "+tn(t)+" core",st,mode==="uber"));
     if(ids.length>1)steps.forEach(st=>mkA(t,ids.slice(0,MAXL.a),3,2,"Build "+tn(t)+" good",st,false));});
-  const bl=[...bases];
-  for(let i=0;i<bl.length;i+=MAXL.b){const r=newRule({type:0,rarity:4,level:7,action:3,colour:4,quality:mode==="uber"?2:0});r.name=(mode==="uber"?"Build bases top roll":"Build bases 82+");msetList(r,"b",bl.slice(i,i+MAXL.b));rules.push(r);}
+  /* bases: Leveling highlights every Rare on the build's bases from item level 82; Endgame and Uber Strict only when the item also has at least one wanted line of its type (core lines first) */
+  if(stg){const bl=[...bases];
+    for(let i=0;i<bl.length;i+=MAXL.b){const r=newRule({type:0,rarity:4,level:7,action:3,colour:4});r.name="Build bases 82+";msetList(r,"b",bl.slice(i,i+MAXL.b));rules.push(r);}}
+  else[...bT.keys()].sort((a,b)=>a-b).forEach(t=>{
+    const m=byT.get(t);if(!m)return;const all=[...m.keys()].sort((a,b)=>(filler(a)-filler(b))||(m.get(b)-m.get(a))),ids=(all.some(i=>!filler(i))?all.filter(i=>!filler(i)):all).slice(0,MAXL.a),bl=[...bT.get(t)];
+    for(let i=0;i<bl.length;i+=MAXL.b){const r=newRule({type:t,rarity:4,level:7,action:3,colour:4,quality:mode==="uber"?2:0});r.name=("Build bases "+tn(t)+(mode==="uber"?" top roll":" 82+")).slice(0,NAME_MAX);msetList(r,"b",bl.slice(i,i+MAXL.b));msetList(r,"a",ids);mset(r,"n","1");rules.push(r);}});
   const rl=[...reds];
   for(let i=0;i<rl.length;i+=MAXL.rn){
     const r=newRule({type:0,rarity:0,action:3,colour:4});r.name="Build uniques";
     msetList(r,"rn",rl.slice(i,i+MAXL.rn));rules.push(r);}
-  /* hide everything else, like the Easy Mode preset of the same strictness: Leveling hides Normal/Magic from item level 40 and Rares from 60, Endgame and Uber Strict hide all Normal/Magic gear and every Rare the rules above did not lift. Kept above the hides: skill levels, maximum resistances, Core-touched, Rune bases, Truesworn bases. */
+  /* hide everything else, like the Easy Mode preset of the same strictness: Leveling hides Normal/Magic from item level 20 and Rares from 60, Endgame and Uber Strict hide all Normal/Magic gear and every Rare the rules above did not lift. Kept above the hides: skill levels, maximum resistances, Core-touched, Rune bases, Truesworn bases. */
   if(o&&o.hide&&rules.some(r=>mlist(r,"a").length)){
     const pre=[];
     const kp=(t,name)=>{const r=newRule({type:t,rarity:0,action:1,colour:4});r.name=name;return r;};
