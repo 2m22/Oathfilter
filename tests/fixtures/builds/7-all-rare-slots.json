@@ -1,0 +1,235 @@
+{
+ "v": 1,
+ "name": "All rare slots",
+ "level": 95,
+ "items": [
+  {
+   "slot": "MainHand",
+   "rarity": "Rare",
+   "base": "sword1h_9",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "phys_inc_local",
+     "tier": 1
+    },
+    {
+     "id": "crit_local",
+     "tier": 1
+    },
+    {
+     "id": "attack_speed_local",
+     "tier": 1
+    },
+    {
+     "id": "phys_added_local",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "OffHand",
+   "rarity": "Rare",
+   "base": "shield_15",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    },
+    {
+     "id": "armour_local_small",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Helm",
+   "rarity": "Rare",
+   "base": "plate_helm_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life",
+     "tier": 1
+    },
+    {
+     "id": "armour_local_small",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    },
+    {
+     "id": "cold_res",
+     "tier": 3
+    }
+   ]
+  },
+  {
+   "slot": "Chest",
+   "rarity": "Rare",
+   "base": "plate_chest_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life_large",
+     "tier": 1
+    },
+    {
+     "id": "armour_local",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 1
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Gloves",
+   "rarity": "Rare",
+   "base": "plate_gloves_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "attack_speed",
+     "tier": 1
+    },
+    {
+     "id": "attack_added_phys",
+     "tier": 1
+    },
+    {
+     "id": "life",
+     "tier": 2
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Boots",
+   "rarity": "Rare",
+   "base": "plate_boots_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "move_speed",
+     "tier": 1
+    },
+    {
+     "id": "life",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Ring1",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "attack_added_phys",
+     "tier": 1
+    },
+    {
+     "id": "ring_attack_speed",
+     "tier": 2
+    },
+    {
+     "id": "fire_res",
+     "tier": 1
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Ring2",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "attack_added_phys",
+     "tier": 1
+    },
+    {
+     "id": "life",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Amulet",
+   "rarity": "Rare",
+   "base": "emberglow_amulet",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "skill_level",
+     "tier": 1
+    },
+    {
+     "id": "crit_global",
+     "tier": 1
+    },
+    {
+     "id": "attack_added_phys",
+     "tier": 2
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Belt",
+   "rarity": "Rare",
+   "base": "oathbound_girdle",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life_large",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 1
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  }
+ ]
+}

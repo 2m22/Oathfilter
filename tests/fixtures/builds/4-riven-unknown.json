@@ -1,0 +1,71 @@
+{
+ "v": 1,
+ "name": "Riven and unknown ids",
+ "level": 95,
+ "items": [
+  {
+   "slot": "MainHand",
+   "rarity": "Rare",
+   "base": "greatsword_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "riven95_phys_inc_local",
+     "tier": 1
+    },
+    {
+     "id": "riven95_crit_local",
+     "tier": 1
+    },
+    {
+     "id": "attack_speed_local",
+     "tier": 1
+    },
+    {
+     "id": "riven95_skill_level",
+     "tier": 1
+    }
+   ]
+  },
+  {
+   "slot": "Chest",
+   "rarity": "Rare",
+   "base": "plate_chest_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "riven95_life_large",
+     "tier": 1
+    },
+    {
+     "id": "armour_local",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Ring1",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "mythic_worldbreaker",
+     "tier": 1
+    },
+    {
+     "id": "drune_fire_rune",
+     "tier": 1
+    },
+    {
+     "id": "made_up_line_99",
+     "tier": 1
+    }
+   ]
+  }
+ ]
+}

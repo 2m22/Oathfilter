@@ -1,0 +1,214 @@
+{
+ "v": 1,
+ "name": "Warrior #1 (ladder 9074ea)",
+ "level": 85,
+ "items": [
+  {
+   "slot": "Gloves",
+   "rarity": "Unique",
+   "base": "ritual_gloves_9",
+   "item_level": 42,
+   "unique": "siphoning_lattice",
+   "affixes": []
+  },
+  {
+   "slot": "Ring1",
+   "rarity": "Rare",
+   "base": "ruby_ring",
+   "item_level": 52,
+   "affixes": [
+    {
+     "id": "life",
+     "tier": 3
+    },
+    {
+     "id": "attack_added_lightning",
+     "tier": 3
+    },
+    {
+     "id": "cold_res",
+     "tier": 4
+    },
+    {
+     "id": "life_regen",
+     "tier": 5
+    },
+    {
+     "id": "str_flat",
+     "tier": 4
+    }
+   ]
+  },
+  {
+   "slot": "Helm",
+   "rarity": "Rare",
+   "base": "plate_helm_5",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "defence_inc",
+     "tier": 1
+    },
+    {
+     "id": "armour_local_small",
+     "tier": 1
+    },
+    {
+     "id": "skill_level",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 4
+    },
+    {
+     "id": "str_flat",
+     "tier": 1
+    },
+    {
+     "id": "curse_effect",
+     "tier": 1
+    }
+   ]
+  },
+  {
+   "slot": "Belt",
+   "rarity": "Rare",
+   "base": "ironwarden_girdle",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "riven95_life_large",
+     "tier": 1
+    },
+    {
+     "id": "shock_effect",
+     "tier": 1
+    },
+    {
+     "id": "lightning_res",
+     "tier": 3
+    },
+    {
+     "id": "fire_res",
+     "tier": 3
+    },
+    {
+     "id": "str_flat",
+     "tier": 1
+    }
+   ]
+  },
+  {
+   "slot": "MainHand",
+   "rarity": "Normal",
+   "base": "greatmace_7",
+   "item_level": 84,
+   "affixes": []
+  },
+  {
+   "slot": "Amulet",
+   "rarity": "Rare",
+   "base": "agate_amulet",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "attack_added_lightning",
+     "tier": 1
+    },
+    {
+     "id": "shock_effect",
+     "tier": 1
+    },
+    {
+     "id": "skill_level",
+     "tier": 1
+    },
+    {
+     "id": "curse_effect",
+     "tier": 1
+    },
+    {
+     "id": "str_flat",
+     "tier": 1
+    },
+    {
+     "id": "vow_effect98",
+     "tier": 1
+    }
+   ]
+  },
+  {
+   "slot": "Boots",
+   "rarity": "Unique",
+   "base": "leather_boots_1",
+   "item_level": 50,
+   "unique": "the_hunters_promise",
+   "affixes": []
+  },
+  {
+   "slot": "Chest",
+   "rarity": "Rare",
+   "base": "plate_chest_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life_large",
+     "tier": 1
+    },
+    {
+     "id": "armour_local",
+     "tier": 1
+    },
+    {
+     "id": "defence_inc",
+     "tier": 1
+    },
+    {
+     "id": "dex_flat",
+     "tier": 5
+    },
+    {
+     "id": "str_flat",
+     "tier": 1
+    },
+    {
+     "id": "poison_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Ring2",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "es_global",
+     "tier": 1
+    },
+    {
+     "id": "life",
+     "tier": 1
+    },
+    {
+     "id": "attack_added_phys",
+     "tier": 1
+    },
+    {
+     "id": "lightning_res",
+     "tier": 1
+    },
+    {
+     "id": "str_flat",
+     "tier": 1
+    },
+    {
+     "id": "all_res",
+     "tier": 2
+    }
+   ]
+  }
+ ]
+}

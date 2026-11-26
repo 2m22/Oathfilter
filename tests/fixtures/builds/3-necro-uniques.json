@@ -1,0 +1,113 @@
+{
+ "v": 1,
+ "name": "Necro Uniques",
+ "level": 95,
+ "items": [
+  {
+   "slot": "MainHand",
+   "rarity": "Unique",
+   "base": "staff_2",
+   "item_level": 10,
+   "unique": "hearthfire"
+  },
+  {
+   "slot": "Helm",
+   "rarity": "Unique",
+   "base": "silk_helm_2",
+   "item_level": 18,
+   "unique": "ashen_crown"
+  },
+  {
+   "slot": "Chest",
+   "rarity": "Unique",
+   "base": "plate_chest_3",
+   "item_level": 30,
+   "unique": "mountainheart"
+  },
+  {
+   "slot": "Gloves",
+   "rarity": "Unique",
+   "base": "leather_gloves_2",
+   "item_level": 20,
+   "unique": "shadowsilk_wraps"
+  },
+  {
+   "slot": "Boots",
+   "rarity": "Unique",
+   "base": "leather_boots_1",
+   "item_level": 4,
+   "unique": "pilgrims_stride"
+  },
+  {
+   "slot": "Amulet",
+   "rarity": "Unique",
+   "base": "lapis_amulet",
+   "item_level": 36,
+   "unique": "eye_of_the_tempest"
+  },
+  {
+   "slot": "Ring1",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "ring_cast_speed",
+     "tier": 2
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    },
+    {
+     "id": "cold_res",
+     "tier": 3
+    }
+   ]
+  },
+  {
+   "slot": "Ring2",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 1
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Belt",
+   "rarity": "Rare",
+   "base": "oathbound_girdle",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life_large",
+     "tier": 1
+    },
+    {
+     "id": "minion_life",
+     "tier": 2
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  }
+ ]
+}

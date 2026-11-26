@@ -1,0 +1,255 @@
+{
+ "v": 1,
+ "name": "Mage ES/Minion",
+ "level": 90,
+ "items": [
+  {
+   "slot": "MainHand",
+   "rarity": "Rare",
+   "base": "wand_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "minion_dmg",
+     "tier": 1
+    },
+    {
+     "id": "minion_crit",
+     "tier": 1
+    },
+    {
+     "id": "fire_spell_added",
+     "tier": 2
+    },
+    {
+     "id": "skill_level",
+     "tier": 1
+    },
+    {
+     "id": "int_flat",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "OffHand",
+   "rarity": "Rare",
+   "base": "tome_11",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "minion_dmg",
+     "tier": 1
+    },
+    {
+     "id": "es_local_small",
+     "tier": 1
+    },
+    {
+     "id": "cast_speed",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Helm",
+   "rarity": "Rare",
+   "base": "silk_helm_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "es_local_small",
+     "tier": 1
+    },
+    {
+     "id": "es_leech",
+     "tier": 1
+    },
+    {
+     "id": "minion_dmg_jewel",
+     "tier": 2
+    },
+    {
+     "id": "int_flat",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Chest",
+   "rarity": "Rare",
+   "base": "silk_chest_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "es_global",
+     "tier": 1
+    },
+    {
+     "id": "es_recharge",
+     "tier": 1
+    },
+    {
+     "id": "life_large",
+     "tier": 2
+    },
+    {
+     "id": "fire_res",
+     "tier": 1
+    },
+    {
+     "id": "cold_res",
+     "tier": 3
+    }
+   ]
+  },
+  {
+   "slot": "Gloves",
+   "rarity": "Rare",
+   "base": "silk_gloves_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "es_global",
+     "tier": 1
+    },
+    {
+     "id": "gloves_cast_speed",
+     "tier": 2
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    },
+    {
+     "id": "cold_res",
+     "tier": 4
+    }
+   ]
+  },
+  {
+   "slot": "Boots",
+   "rarity": "Rare",
+   "base": "silk_boots_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "move_speed",
+     "tier": 1
+    },
+    {
+     "id": "es_global",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Ring1",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "es_global",
+     "tier": 1
+    },
+    {
+     "id": "ring_cast_speed",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    },
+    {
+     "id": "cold_res",
+     "tier": 3
+    }
+   ]
+  },
+  {
+   "slot": "Ring2",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "es_global",
+     "tier": 2
+    },
+    {
+     "id": "mana",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 1
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Amulet",
+   "rarity": "Rare",
+   "base": "emberglow_amulet",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "skill_level",
+     "tier": 1
+    },
+    {
+     "id": "es_global",
+     "tier": 1
+    },
+    {
+     "id": "minion_dmg_jewel",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 2
+    }
+   ]
+  },
+  {
+   "slot": "Belt",
+   "rarity": "Rare",
+   "base": "oathbound_girdle",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life_large",
+     "tier": 1
+    },
+    {
+     "id": "es_global",
+     "tier": 2
+    },
+    {
+     "id": "fire_res",
+     "tier": 1
+    },
+    {
+     "id": "cold_res",
+     "tier": 2
+    }
+   ]
+  }
+ ]
+}

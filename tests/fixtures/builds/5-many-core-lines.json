@@ -1,0 +1,127 @@
+{
+ "v": 1,
+ "name": "More than 6 core lines per type",
+ "level": 95,
+ "items": [
+  {
+   "slot": "Ring1",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "attack_added_phys",
+     "tier": 1
+    },
+    {
+     "id": "ring_attack_speed",
+     "tier": 1
+    },
+    {
+     "id": "life",
+     "tier": 1
+    },
+    {
+     "id": "ring_cast_speed",
+     "tier": 1
+    },
+    {
+     "id": "mana",
+     "tier": 1
+    }
+   ]
+  },
+  {
+   "slot": "Ring2",
+   "rarity": "Rare",
+   "base": "heartblood_ring",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "es_global",
+     "tier": 1
+    },
+    {
+     "id": "ring_mana_leech",
+     "tier": 1
+    },
+    {
+     "id": "ring_move_speed",
+     "tier": 1
+    },
+    {
+     "id": "attack_added_fire",
+     "tier": 1
+    },
+    {
+     "id": "attack_added_phys",
+     "tier": 1
+    }
+   ]
+  },
+  {
+   "slot": "Amulet",
+   "rarity": "Rare",
+   "base": "emberglow_amulet",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "skill_level",
+     "tier": 1
+    },
+    {
+     "id": "crit_global",
+     "tier": 1
+    },
+    {
+     "id": "fire_dmg_inc",
+     "tier": 1
+    },
+    {
+     "id": "life",
+     "tier": 1
+    },
+    {
+     "id": "es_global",
+     "tier": 1
+    },
+    {
+     "id": "cold_dmg_inc",
+     "tier": 1
+    }
+   ]
+  },
+  {
+   "slot": "Chest",
+   "rarity": "Rare",
+   "base": "plate_chest_7",
+   "item_level": 84,
+   "affixes": [
+    {
+     "id": "life_large",
+     "tier": 1
+    },
+    {
+     "id": "armour_local",
+     "tier": 1
+    },
+    {
+     "id": "defence_inc",
+     "tier": 1
+    },
+    {
+     "id": "life_regen",
+     "tier": 1
+    },
+    {
+     "id": "fire_res",
+     "tier": 1
+    },
+    {
+     "id": "mana",
+     "tier": 1
+    }
+   ]
+  }
+ ]
+}
