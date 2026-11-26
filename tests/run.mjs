@@ -753,8 +753,11 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(bzType("hunters_quiver")===34&&bzType("shield_1")===9&&bzType("plate_chest_1")===6&&bzType("amber_amulet")===11&&bzType("bow_9")===18,"build import maps bases to item types");
   const by=n=>r.rules.filter(x=>x.name===n);
   ok(r.rules.every(x=>x.on===1&&x.action>=2),"build import only highlights, never hides");
-  ok(r.rules.some(x=>x.type===18&&x.name.endsWith("core")&&x.action===3)&&r.rules.some(x=>x.type===10&&mlist(x,"a").includes("life_large")),"build import makes a core and a good rule per item type");
-  ok(r.rules.every(x=>!mlist(x,"rn").length&&x.m.every(([k])=>k!=="t")||mlist(x,"rn").length),"build import ignores the tiers of the build");
+  ok(r.rules.some(x=>x.type===18&&x.name.includes("core")&&x.action===3)&&r.rules.some(x=>x.type===10&&mlist(x,"a").includes("life_large")),"build import makes a core and a good rule per item type");
+  ok(r.rules.filter(x=>mlist(x,"a").length).every(x=>{const v=mval(x,"t");return v===""||["7","6","4","3"].includes(String(v));}),"build import caps tiers per Leveling step, not by the build's tiers");
+  ok(["<20","<40","<60","<75","75+"].every(n=>r.rules.some(x=>x.name==="Build Rings core "+n)),"build import writes the five Leveling steps");
+  ok(r.rules.some(x=>x.name==="Build bases 82+"&&x.level===7&&mlist(x,"b").includes("iron_ring")&&mlist(x,"b").includes("ct_proj_bow_9")),"build import highlights the build's rare bases from item level 82");
+  ok(bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]},{lv:false}).rules.every(x=>!x.level&&mval(x,"t")===""),"build import without Leveling steps has no level or tier cap");
   ok(r.rules.some(x=>mlist(x,"a").includes("skill_level")),"Riven lines map to the normal line");
   ok(mlist(r.rules.find(x=>mlist(x,"rn").length),"rn").join()==="adders_kiss","uniques become a red rule");
   ok(!r.rules.some(x=>x.type===6),"a unique's own lines are not turned into rules");

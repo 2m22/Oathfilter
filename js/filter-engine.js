@@ -1414,19 +1414,22 @@ const NAME_MAX=40;
 
 /* Simulator build link (#buildz=): worn gear of a build -> highlight rules. Only lifts, never hides. The build is an example, not a spec:
    tiers are ignored, a rule needs several wanted lines on one item (n=2 / 3), and attributes, resistances and regeneration count as filler, everything else is core.
-   Per item type: "core" rule (Beam, <= 6 core lines, n=2) and a weaker "good" rule below it (core first, then filler, n=3). Uniques: one rule with the unique's id.
+   Per item type: "core" rule (Beam, <= 6 core lines, n=2) and a weaker "good" rule below it (core first, then filler, n=3).
+   Leveling (default): both are written per item-level step (<20, <40, <60, <75, 75+) with one tier cap per step (best droppable tier at the step's lower item level + 1: none / T7 / T6 / T4 / T3), so the tier opens up from T8 to T1 while you level. The build's rare bases are highlighted from item level 82 (one rule, <= 12 bases). Uniques: one rule with the unique's id.
    Idols and Dwarven Runes are not part of the export. Unknown ids are skipped and listed in notes. */
 const BZ_ORDER=[10,11,12,5,6,7,8,34,9,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,1];
 function bzType(id){const b=BASE_BY_ID[id];if(!b)return 0;const t=BZ_ORDER.find(x=>typeMatch(x,b));return t||0;}
 const BZ_TN={0:"Any gear",1:"Weapons",5:"Helms",6:"Body armour",7:"Gloves",8:"Boots",9:"Shields/foci",10:"Rings",11:"Amulets",12:"Belts",34:"Quivers"};
-function bzRules(bd){
-  const notes=[],skip=new Set(),byT=new Map(),reds=new Set();let items=0;
+const BZ_STEPS=(()=>{const c=[84,70,56,44,32,20,10,1];return[[1,"<20",0],[2,"<40",20],[3,"<60",40],[4,"<75",60],[6,"75+",75]].map(([lv,n,lo])=>{const k=lo?c.findIndex(v=>v<=lo)+1:0;return{lv,n,t:k?k+1:0};});})();
+function bzRules(bd,o){
+  const stg=!(o&&o.lv===false),notes=[],skip=new Set(),byT=new Map(),reds=new Set(),bases=new Set();let items=0;
   const list=bd&&Array.isArray(bd.items)?bd.items:[];
   list.slice(0,40).forEach(it=>{
     if(!it||typeof it!=="object")return;items++;
     const u=typeof it.unique==="string"?it.unique:"";
     if(u){if(REDN[u])reds.add(u);else skip.add(u);return;}
     const t=bzType(String(it.base||""));
+    if(BASE_BY_ID[it.base]&&Array.isArray(it.affixes)&&it.affixes.length&&!/^(normal|magic)$/i.test(String(it.rarity)))bases.add(it.base);
     (Array.isArray(it.affixes)?it.affixes:[]).slice(0,12).forEach(a=>{
       const raw=a&&typeof a.id==="string"?a.id:"";
       const lab=LINEN[raw]||LINEN[raw.replace(/^riven95_/,"")];
@@ -1437,9 +1440,12 @@ function bzRules(bd){
   const rules=[],tn=t=>BZ_TN[t]||"Weapons";
   [...byT.keys()].sort((a,b)=>a-b).forEach(t=>{
     const m=byT.get(t),ids=[...m.keys()].sort((a,b)=>(filler(a)-filler(b))||(m.get(b)-m.get(a))),core=ids.filter(id=>!filler(id));
-    const mk=(name,l,n,act)=>{const r=newRule({type:t,rarity:4,action:act,colour:4});r.name=name.slice(0,NAME_MAX);msetList(r,"a",l);mset(r,"n",String(Math.max(1,Math.min(n,l.length))));rules.push(r);};
+    const mk=(name,l,n,act)=>{
+      (stg?BZ_STEPS:[{lv:0,n:"",t:0}]).forEach(st=>{const r=newRule({type:t,rarity:4,level:st.lv,action:act,colour:4});r.name=(name+(st.n?" "+st.n:"")).slice(0,NAME_MAX);msetList(r,"a",l);mset(r,"n",String(Math.max(1,Math.min(n,l.length))));if(st.t)mset(r,"t",String(st.t));rules.push(r);});};
     if(core.length)mk("Build "+tn(t)+" core",core.slice(0,MAXL.a),2,3);
     if(ids.length>1)mk("Build "+tn(t)+" good",ids.slice(0,MAXL.a),3,2);});
+  const bl=[...bases];
+  if(stg)for(let i=0;i<bl.length;i+=MAXL.b){const r=newRule({type:0,rarity:4,level:7,action:3,colour:4});r.name="Build bases 82+";msetList(r,"b",bl.slice(i,i+MAXL.b));rules.push(r);}
   const rl=[...reds];
   for(let i=0;i<rl.length;i+=MAXL.rn){
     const r=newRule({type:0,rarity:0,action:3,colour:4});r.name="Build uniques";
