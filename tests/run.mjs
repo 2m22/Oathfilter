@@ -766,5 +766,13 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(bzRules({items:[]}).rules.length===0&&bzRules(null).rules.length===0,"empty build gives no rules");
 }
 
+/* Leveling: the catch-all hides start late, Endgame hides from item level 1 */
+{
+  const lv=easyGen(ezPreset("leveling",{arch:{fire:1}})).rules,en=easyGen(ezPreset("endgame",{arch:{fire:1}})).rules;
+  const nm=l=>l.find(r=>r.name==="Everything else: Normal and magic gear"),rr=l=>l.find(r=>r.name==="Everything else: Rare gear");
+  ok(nm(lv)&&mval(nm(lv),"i")==="40-0"&&mval(rr(lv),"i")==="60-0","Leveling: Normal/Magic are hidden from item level 40, Rares from 60");
+  ok(en.filter(r=>/^Everything else/.test(r.name)).length>0&&en.filter(r=>/^Everything else/.test(r.name)).every(r=>mval(r,"i")===""),"without Leveling the catch-all hide has no item level start");
+}
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);

@@ -1367,8 +1367,10 @@ function easyGen(s,pack,merge){
     if(s.lv&&LINEN[SKILL])mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:act[0].col},"Skill levels",r=>msetList(r,"a",[SKILL])); /* all skill levels (+1, +2, +3), whatever the tier or the item level */
     if(gearA.length){ga();hideR();} /* below the tier highlights of the picks, above the hides */
     /* the catch-all hide never uses Any rarity: it is written per rarity. Normal and Magic that the hide above did not take, then Rare. */
-    if(s.hn&&s.hm)mk({type:0,rarity:4,action:0},"Everything else"); /* Normal and Magic are already hidden above, so only Rares are left to hide */
-    else{const rest=s.hn?2:s.hm?1:3;mk({type:0,rarity:rest,action:0},"Everything else: "+(rest===3?"Normal and magic":rest===1?"Normal":"Magic")+" gear");mk({type:0,rarity:4,action:0},"Everything else: Rare gear");}
+    /* Leveling: while you level, gear is an upgrade candidate, so the catch-all hide starts later (Normal and Magic from item level 40, Rare from 60) instead of hiding everything without a picked line from item level 1 */
+    const fl=(r,lo)=>{if(s.lv)msetRng(r,"i",lo,0);};
+    if(s.hn&&s.hm)mk({type:0,rarity:4,action:0},"Everything else",r=>fl(r,60)); /* Normal and Magic are already hidden above, so only Rares are left to hide */
+    else{const rest=s.hn?2:s.hm?1:3;mk({type:0,rarity:rest,action:0},"Everything else: "+(rest===3?"Normal and magic":rest===1?"Normal":"Magic")+" gear",r=>fl(r,40));mk({type:0,rarity:4,action:0},"Everything else: Rare gear",r=>fl(r,60));}
   }
   if(act.length&&!gearA.length&&!white&&act.every(a=>!a.ids.length))notes.push("Your picks are Idol-only, so gear is not touched.");
   if(!pack&&R.length>EASY_PACK_LIMIT&&act.length){
