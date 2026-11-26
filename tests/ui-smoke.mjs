@@ -318,6 +318,9 @@ async function runBuildz(){
   ok(await page.isVisible("#shrLoad"),"a #buildz link opens the import dialog");
   const t=await page.textContent("#shrLoad").catch(()=>"");const dlg=await page.evaluate(()=>document.body.innerText);
   ok(/Import this build/.test(dlg)&&/Rangtest/.test(dlg)&&/Gear pieces/.test(dlg),"the dialog names the build and its gear");
+  await page.selectOption("#bzMode","uber");await page.waitForTimeout(200);
+  ok(/top roll/.test(await page.textContent("#shrBody")),"the strictness select switches the import to Uber Strict");
+  await page.selectOption("#bzMode","leveling");await page.waitForTimeout(200);
   await page.click("#shrLoad");await page.waitForTimeout(500);
   const n=await page.$$eval("#rows .rrow, #rows > *",e=>e.length);
   ok(n>=3,"Replace my filter loads the build rules ("+n+" rows)");

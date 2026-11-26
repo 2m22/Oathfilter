@@ -757,7 +757,10 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(r.rules.filter(x=>mlist(x,"a").length).every(x=>{const v=mval(x,"t");return v===""||["7","6","4","3"].includes(String(v));}),"build import caps tiers per Leveling step, not by the build's tiers");
   ok(["<20","<40","<60","<75","75+"].every(n=>r.rules.some(x=>x.name==="Build Rings core "+n)),"build import writes the five Leveling steps");
   ok(r.rules.some(x=>x.name==="Build bases 82+"&&x.level===7&&mlist(x,"b").includes("iron_ring")&&mlist(x,"b").includes("ct_proj_bow_9")),"build import highlights the build's rare bases from item level 82");
-  ok(bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]},{lv:false}).rules.every(x=>!x.level&&mval(x,"t")===""),"build import without Leveling steps has no level or tier cap");
+  const bi={items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]};
+  const en=bzRules(bi,{mode:"endgame"}).rules,ub=bzRules(bi,{mode:"uber"}).rules;
+  ok(en.length>0&&en.filter(x=>mlist(x,"a").length).every(x=>!x.level&&+mval(x,"t")>=1&&+mval(x,"t")<=3),"build import Endgame: one step, tier cap of Rupture Level 75");
+  ok(ub.filter(x=>mlist(x,"a").length).every(x=>x.level===7&&mval(x,"t")==="1")&&ub.some(x=>x.quality===2),"build import Uber Strict: item level 82+, T1 only, core needs a top roll");
   ok(r.rules.some(x=>mlist(x,"a").includes("skill_level")),"Riven lines map to the normal line");
   ok(mlist(r.rules.find(x=>mlist(x,"rn").length),"rn").join()==="adders_kiss","uniques become a red rule");
   ok(!r.rules.some(x=>x.type===6),"a unique's own lines are not turned into rules");

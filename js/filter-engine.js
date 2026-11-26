@@ -1422,9 +1422,13 @@ const NAME_MAX=40;
 const BZ_ORDER=[10,11,12,5,6,7,8,34,9,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,1];
 function bzType(id){const b=BASE_BY_ID[id];if(!b)return 0;const t=BZ_ORDER.find(x=>typeMatch(x,b));return t||0;}
 const BZ_TN={0:"Any gear",1:"Weapons",5:"Helms",6:"Body armour",7:"Gloves",8:"Boots",9:"Shields/foci",10:"Rings",11:"Amulets",12:"Belts",34:"Quivers"};
-const BZ_STEPS=(()=>{const c=[84,70,56,44,32,20,10,1];return[[1,"<20",0],[2,"<40",20],[3,"<60",40],[4,"<75",60],[6,"75+",75]].map(([lv,n,lo])=>{const k=lo?c.findIndex(v=>v<=lo)+1:0;return{lv,n,t:k?k+1:0};});})();
+const BZ_STEPS=[[1,"<20",1],[2,"<40",20],[3,"<60",40],[4,"<75",60],[6,"75+",75]];
+const BZ_MODES=[["leveling","Leveling"],["endgame","Endgame"],["uber","Uber Strict"]];
+/* tier cap (T{n} or better, 0 = none) of one line at item level lo: the line's own tier curve (best droppable tier + keep-1), and in the last step never looser than the tier the build has on it (+keep-1) */
+function bzCap(id,lo,keep,tb){let v=ezThr(id,lo,keep)||99;if(tb)v=Math.min(v,Math.max(tb+keep-1,ezThr(id,lo,1)||1));return v===99?0:v;}
 function bzRules(bd,o){
-  const stg=!(o&&o.lv===false),notes=[],skip=new Set(),byT=new Map(),reds=new Set(),bases=new Set();let items=0;
+  const mode=o&&o.mode||"leveling",stg=mode==="leveling";
+  const notes=[],skip=new Set(),byT=new Map(),reds=new Set(),bases=new Set(),best=new Map();let items=0;
   const list=bd&&Array.isArray(bd.items)?bd.items:[];
   list.slice(0,40).forEach(it=>{
     if(!it||typeof it!=="object")return;items++;
@@ -1436,18 +1440,23 @@ function bzRules(bd,o){
       const raw=a&&typeof a.id==="string"?a.id:"";
       const lab=LINEN[raw]||LINEN[raw.replace(/^riven95_/,"")];
       if(!lab){if(raw)skip.add(raw);return;}
-      const id=(LINE_IDS[lab]||[])[0]||raw;
-      if(!byT.has(t))byT.set(t,new Map());const m=byT.get(t);m.set(id,(m.get(id)||0)+1);});});
+      const id=(LINE_IDS[lab]||[])[0]||raw,tr=Math.max(1,Math.min(8,Math.round(+a.tier)||1));
+      if(!byT.has(t))byT.set(t,new Map());const m=byT.get(t);m.set(id,(m.get(id)||0)+1);
+      best.set(id,Math.min(best.get(id)||9,tr));});});
   const filler=id=>/\b(strength|dexterity|intelligence|attributes?|resistances?|regenerat)/i.test(LINEN[id]||"");
   const rules=[],tn=t=>BZ_TN[t]||"Weapons";
+  /* steps: Leveling = five item-level steps; Endgame = one step at Rupture Level 75 (best 2 tiers); Uber Strict = item level 82+, best tier only, core rule needs a top roll */
+  const steps=stg?BZ_STEPS.map(([lv,n,lo],k)=>({lv,n,lo,keep:2,last:k===BZ_STEPS.length-1})):mode==="endgame"?[{lv:0,n:"",lo:75,keep:2,last:true}]:[{lv:7,n:"",lo:84,keep:1,last:true}];
+  const mkA=(t,l,n,act,name,st,top)=>{
+    const caps=l.map(id=>bzCap(id,st.lo,st.keep,st.last?best.get(id):0)),cap=caps.some(c=>!c)?0:Math.max(...caps);
+    const r=newRule({type:t,rarity:4,level:st.lv,action:act,colour:4,quality:top?2:0});r.name=(name+(st.n?" "+st.n:"")).slice(0,NAME_MAX);
+    msetList(r,"a",l);mset(r,"n",String(Math.max(1,Math.min(n,l.length))));if(cap)mset(r,"t",String(cap));rules.push(r);};
   [...byT.keys()].sort((a,b)=>a-b).forEach(t=>{
     const m=byT.get(t),ids=[...m.keys()].sort((a,b)=>(filler(a)-filler(b))||(m.get(b)-m.get(a))),core=ids.filter(id=>!filler(id));
-    const mk=(name,l,n,act)=>{
-      (stg?BZ_STEPS:[{lv:0,n:"",t:0}]).forEach(st=>{const r=newRule({type:t,rarity:4,level:st.lv,action:act,colour:4});r.name=(name+(st.n?" "+st.n:"")).slice(0,NAME_MAX);msetList(r,"a",l);mset(r,"n",String(Math.max(1,Math.min(n,l.length))));if(st.t)mset(r,"t",String(st.t));rules.push(r);});};
-    if(core.length)mk("Build "+tn(t)+" core",core.slice(0,MAXL.a),2,3);
-    if(ids.length>1)mk("Build "+tn(t)+" good",ids.slice(0,MAXL.a),3,2);});
+    if(core.length)steps.forEach(st=>mkA(t,core.slice(0,MAXL.a),2,3,"Build "+tn(t)+" core",st,mode==="uber"));
+    if(ids.length>1)steps.forEach(st=>mkA(t,ids.slice(0,MAXL.a),3,2,"Build "+tn(t)+" good",st,false));});
   const bl=[...bases];
-  if(stg)for(let i=0;i<bl.length;i+=MAXL.b){const r=newRule({type:0,rarity:4,level:7,action:3,colour:4});r.name="Build bases 82+";msetList(r,"b",bl.slice(i,i+MAXL.b));rules.push(r);}
+  for(let i=0;i<bl.length;i+=MAXL.b){const r=newRule({type:0,rarity:4,level:7,action:3,colour:4,quality:mode==="uber"?2:0});r.name=(mode==="uber"?"Build bases top roll":"Build bases 82+");msetList(r,"b",bl.slice(i,i+MAXL.b));rules.push(r);}
   const rl=[...reds];
   for(let i=0;i<rl.length;i+=MAXL.rn){
     const r=newRule({type:0,rarity:0,action:3,colour:4});r.name="Build uniques";
@@ -1459,4 +1468,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {bzRules,bzType,lineFit,baseLines,baseInType,redInType,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};
+export {bzRules,bzType,BZ_MODES,lineFit,baseLines,baseInType,redInType,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};

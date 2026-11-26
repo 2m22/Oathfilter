@@ -1,7 +1,7 @@
 import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
 import {createI18n} from "./i18n.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
-import {bzRules,redInType,baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {bzRules,BZ_MODES,redInType,baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -705,10 +705,10 @@ async function bzUnpack(str){
   for(;;){const r=await rd.read();if(r.done)break;n+=r.value.length;if(n>SH_MAXZ){try{await rd.cancel();}catch(e){}throw new Error("size");}parts.push(r.value);}
   const all=new Uint8Array(n);let o=0;parts.forEach(x=>{all.set(x,o);o+=x.length;});
   const j=JSON.parse(new TextDecoder().decode(all));if(!j||typeof j!=="object"||!Array.isArray(j.items))throw new Error("format");return j;}
-function bzBuild(j){
-  const r=bzRules(j),nm=shClean(j.name,SH_NAME_MAX),nt=r.notes.slice();
+function bzBuild(j,mode){
+  mode=mode||"leveling";const r=bzRules(j,{mode}),nm=shClean(j.name,SH_NAME_MAX),nt=r.notes.slice();
   if(r.items===0)nt.push("The build wears no gear.");
-  return{f:{preset:"-1",rules:r.rules},notes:nt,filterName:nm,authorName:"",bz:true,items:r.items};}
+  return{f:{preset:"-1",rules:r.rules},notes:nt,filterName:nm,authorName:"",bz:true,items:r.items,j,mode};}
 async function shUnpack(str){
   if(str.length>400000)throw new Error("size");
   const m=str[0],u=b64uDec(str.slice(1));let t;
@@ -842,6 +842,7 @@ function shPreview(b,views){
   if(views!=null)rows.push(["Opened",views+(views===1?" time":" times")]);
   const lst=named.slice(0,8).map(n=>"<li>"+esc(n)+"</li>").join("")+(named.length>8?"<li>+ "+(named.length-8)+" more</li>":"");
   const body=`<dl class="shl">${rows.map(r=>`<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("")}${b.bz?"":`<dt>Rule names</dt><dd>${named.length?named.length+" included":"none"}</dd>`}</dl>${named.length?`<ul class="shn">${lst}</ul>`:""}`
+    +(b.bz?`<p style="margin-top:8px"><label for="bzMode">Strictness </label><select id="bzMode">${BZ_MODES.map(([k,n])=>`<option value="${k}"${k===b.mode?" selected":""}>${n}</option>`).join("")}</select></p><p class="shw">${b.mode==="endgame"?"Endgame: one rule set at Rupture Level 75, tiers capped to the best 2 that drop there.":b.mode==="uber"?"Uber Strict: item level 82+ only, best tier only; the core rule needs a top roll.":"Leveling: the tier cap opens up step by step with the item level (T8 down to the build's tier)."}</p>`:"")
     +(b.notes.length?`<p class="shw" style="margin-top:8px">${b.notes.map(esc).join(" ")}</p>`:"")
     +`<p class="shw" id="shrNote" style="margin-top:8px" role="status">${cur?"Loading it replaces your current filter ("+cur+" rule"+(cur===1?"":"s")+"). "+COPY.undo+" (Editor)":"Your current filter is empty."}</p>`;
   shrShow({title:b.bz?"Import this build?":"Open this shared filter?",desc:b.bz?"The rules highlight the lines on the gear of this build. Nothing is hidden. Nothing changes until you choose.":"Nothing changes until you choose.",body,focus:"shrNo",buttons:[
@@ -852,7 +853,7 @@ function shPreview(b,views){
       if(F.rules.length+rs.length>MAX_RULES){n.textContent=F.rules.length+" + "+rs.length+" = "+(F.rules.length+rs.length)+" / "+MAX_RULES+". Delete "+(F.rules.length+rs.length-MAX_RULES)+" rule"+(F.rules.length+rs.length-MAX_RULES===1?"":"s")+" first, or use Replace my filter.";n.style.color="var(--hide-fg)";return;}
       if(mdPlace(rs,b.filterName||"")){setView("edit");shrClose();}}},
     {id:"shrSave",text:"Save as module",fn:()=>{const r=shLfSave(b),n=$("#shrNote");if(r.err){n.textContent=r.err;n.style.color="var(--hide-fg)";return;}n.style.color="";n.textContent="Saved as “"+r.name+"” as a module. Your current filter is unchanged.";$("#shrSave").disabled=true;}},
-    {id:"shrNo",text:"Cancel",fn:shrClose}]});}
+    {id:"shrNo",text:"Cancel",fn:shrClose}]});const bm=$("#bzMode");if(bm)bm.onchange=()=>shPreview(bzBuild(b.j,bm.value),views);}
 async function shOpenFromHash(){
   const m=location.hash.match(/^#(f|s|buildz)=([A-Za-z0-9_-]+)$/);if(!m)return;
   const tok=++shTok,retry=()=>shOpenFromHash();
