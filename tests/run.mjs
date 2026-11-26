@@ -753,7 +753,8 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(bzType("hunters_quiver")===34&&bzType("shield_1")===9&&bzType("plate_chest_1")===6&&bzType("amber_amulet")===11&&bzType("bow_9")===18,"build import maps bases to item types");
   const by=n=>r.rules.filter(x=>x.name===n);
   ok(r.rules.every(x=>x.on===1&&x.action>=2),"build import only highlights, never hides");
-  ok(r.rules.filter(x=>x.type===18).length===2&&r.rules.some(x=>x.type===10&&mlist(x,"a").join()==="life_large"),"build import groups lines per item type and tier");
+  ok(r.rules.some(x=>x.type===18&&x.name.endsWith("core")&&x.action===3)&&r.rules.some(x=>x.type===10&&mlist(x,"a").includes("life_large")),"build import makes a core and a good rule per item type");
+  ok(r.rules.every(x=>!mlist(x,"rn").length&&x.m.every(([k])=>k!=="t")||mlist(x,"rn").length),"build import ignores the tiers of the build");
   ok(r.rules.some(x=>mlist(x,"a").includes("skill_level")),"Riven lines map to the normal line");
   ok(mlist(r.rules.find(x=>mlist(x,"rn").length),"rn").join()==="adders_kiss","uniques become a red rule");
   ok(!r.rules.some(x=>x.type===6),"a unique's own lines are not turned into rules");
