@@ -1442,7 +1442,7 @@ function bzParse(bd){
     const un=typeof it.unique==="string"?it.unique:"";
     if(un){if(REDN[un])u.add(un);else skip.add(un);return;}
     const t=bzType(String(it.base||"")),af=Array.isArray(it.affixes)?it.affixes.slice(0,12):[];
-    if(BASE_BY_ID[it.base]&&af.length&&!/^(normal|magic)$/i.test(String(it.rarity))){if(!b.has(t))b.set(t,new Set());b.get(t).add(it.base);}
+    if(BASE_BY_ID[it.base]&&!/^(normal|magic)$/i.test(String(it.rarity))){if(!b.has(t))b.set(t,new Set());b.get(t).add(it.base);}
     af.forEach(a=>{const raw=a&&typeof a.id==="string"?a.id:"";if(!bzLab(raw)){if(raw)skip.add(raw);return;}
       const nr=raw.replace(/^riven95_/,""),id=LINEN[nr]?nr:raw,tr=Math.max(1,Math.min(8,Math.round(+a.tier)||1)),l=bzLab(id);
       if(!g.has(t))g.set(t,new Map());const m=g.get(t),o=m.get(l)||[id,9,0];o[1]=Math.min(o[1],tr);o[2]++;m.set(l,o);});});
@@ -1450,14 +1450,15 @@ function bzParse(bd){
   const bld={n:String(bd&&typeof bd.name==="string"?bd.name:"").replace(/[\u0000-\u001f]/g,"").slice(0,40),ou:1,
     g:[...g.entries()].sort((x,y)=>x[0]-y[0]).map(([t,m])=>[t,[...m.values()].slice(0,24)]),u:[...u].slice(0,24),
     b:[...b.entries()].sort((x,y)=>x[0]-y[0]).map(([t,s])=>[t,[...s].slice(0,12)])};
-  return{bld:bld.g.length||bld.u.length?bld:null,notes,items};}
+  if(!bld.g.length&&bld.b.length)notes.push("The build has no rolled lines, so only its Rare bases are highlighted (item level 82+).");
+  return{bld:bld.g.length||bld.u.length||bld.b.length?bld:null,notes,items};}
 function bzSane(o){
   if(!o||typeof o!=="object"||!Array.isArray(o.g))return null;
   const str=v=>typeof v==="string"?v.slice(0,64):"",n=(v,lo,hi)=>Math.max(lo,Math.min(hi,Math.round(+v)||lo));
   const g=o.g.slice(0,16).filter(x=>Array.isArray(x)&&BZ_TYPES.has(+x[0])&&Array.isArray(x[1])).map(x=>[+x[0],x[1].slice(0,24).filter(l=>Array.isArray(l)&&typeof l[0]==="string"&&l[0]).map(l=>[str(l[0]),n(l[1],1,8),n(l[2],1,99)])]).filter(x=>x[1].length);
   const u=Array.isArray(o.u)?o.u.slice(0,24).filter(x=>typeof x==="string"&&x).map(str):[];
   const b=Array.isArray(o.b)?o.b.slice(0,16).filter(x=>Array.isArray(x)&&BZ_TYPES.has(+x[0])&&Array.isArray(x[1])).map(x=>[+x[0],x[1].slice(0,12).filter(i=>typeof i==="string"&&i).map(str)]):[];
-  if(!g.length&&!u.length)return null;
+  if(!g.length&&!u.length&&!b.length)return null;
   return{n:str(o.n).replace(/[\u0000-\u001f]/g,"").slice(0,40),ou:o.ou===0?0:1,g,u,b};}
 /* The build's rules: per item type, and every line keeps its own tier limit. A rule has one tier limit and counts its lines (n) only inside itself, so per item type there is one rule for each tier limit the type's lines use, listing every line whose own limit is at least that loose (a tier ladder). That way a match never takes a line below its own limit. Two lines are needed (one when the type has a single build line).
    Limits: Leveling = the Easy Mode steps (best tier that drops at the step's lower item level + keep), the build's tier is not used. Endgame = the preset limit, loosened to the build's tier on that item type (+ keep) where the build wears a worse tier. Uber Strict (keep 1) = the preset limit only.
@@ -1488,10 +1489,12 @@ function bzEzRules(bld,s){
     [0,1,2].forEach(k=>{if(sg[k]!==sg[k+1])write(st[k],LV_STEPS[k].lv,LV_STEPS[k].n);});
     if(sg[3]===sg[4])write(st[4],0,"");else{write(st[3],4,"<75");write(st[4],6,"75+");}
   });
-  /* the build's Rare bases from item level 82 (Beam); Endgame and Uber Strict only with at least one build line of that item type */
+  /* the build's Rare bases from item level 82 (Beam); Endgame and Uber Strict only with at least one build line of that item type.
+     A build without any rolled lines (the simulator can export bases only) gets its bases without a line condition in every strictness. */
+  const lines=[...coreOf.values()].some(x=>x.length);
   bld.b.forEach(([t,bl])=>{const ok=bl.filter(i=>BASE_BY_ID[i]),a=(coreOf.get(t)||[]).slice(0,MAXL.a);bl.filter(i=>!BASE_BY_ID[i]).forEach(i=>gone.add(i));
-    if(!ok.length||!s.lv&&!a.length)return;
-    for(let i=0;i<ok.length;i+=MAXL.b)mk({type:t,rarity:4,level:7,action:3,colour:4},"Build bases "+tn(t)+" 82+",r=>{msetList(r,"b",ok.slice(i,i+MAXL.b));if(!s.lv){msetList(r,"a",a);mset(r,"n","1");}});});
+    if(!ok.length||lines&&!s.lv&&!a.length)return;
+    for(let i=0;i<ok.length;i+=MAXL.b)mk({type:t,rarity:4,level:7,action:3,colour:4},"Build bases "+tn(t)+" 82+",r=>{msetList(r,"b",ok.slice(i,i+MAXL.b));if(lines&&!s.lv){msetList(r,"a",a);mset(r,"n","1");}});});
   if(gone.size)notes.push("Build lines or items this game data does not know were left out ("+gone.size+"): "+[...gone].slice(0,6).join(", ")+(gone.size>6?", …":"")+".");
   return{rules:R,notes,typed};}
 /* Advanced import: the rules Easy Mode writes for this build and strictness. With hide: the whole Easy Mode filter of that strictness (keeps, Ashen block, hides); without: only the build's highlights. */

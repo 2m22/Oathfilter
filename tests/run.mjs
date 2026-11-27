@@ -791,9 +791,16 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   for(const f of readdirSync(new URL("./fixtures/builds/",import.meta.url))){const fx=JSON.parse(readFileSync(new URL("./fixtures/builds/"+f,import.meta.url))),b=bzParse(fx).bld;if(!b)continue;
     for(const md of ["leveling","endgame","uber"]){
       const g=easyGen(ezPreset(md,{arch:{},bld:b})),h=g.rules,gi=h.findIndex(x=>/^(Ashen|Gnome-made) Rares/.test(x.name)),hi=h.findIndex(x=>x.action===0&&x.type===0);
-      ok(h.length<=MAX_RULES&&rulesIssues(h).filter(x=>x.level==="error").length===0&&gi>0&&hi>gi,"build "+f+" "+md+": "+h.length+" rules, no issues, Ashen block above the hides");
+      ok(h.length<=MAX_RULES&&rulesIssues(h).filter(x=>x.level==="error").length===0&&gi>0&&(hi<0||hi>gi),"build "+f+" "+md+": "+h.length+" rules, no issues, Ashen block above the hides");
       const all=easyGen(ezPreset(md,{arch:Object.fromEntries(EZ_ARCH.map(a=>[a.k,1])),bld:b})).rules;
       ok(all.length<=MAX_RULES,"build "+f+" "+md+" with every pill: "+all.length+" rules");}}
+  /* a build without rolled lines (the simulator exports bases only): its Rare bases are highlighted from item level 82, nothing else changes */
+  { const bo=JSON.parse(readFileSync(new URL("./fixtures/builds/8-bases-only.json",import.meta.url))),q=bzParse(bo);
+    ok(q.bld&&!q.bld.g.length&&q.bld.b.length===8&&q.notes.some(x=>/no rolled lines/.test(x)),"bases-only build: kept with its bases and a note");
+    for(const md of ["leveling","endgame","uber"]){const rs=bzEzRules(q.bld,ezPreset(md,{arch:{},bld:q.bld})).rules,g=easyGen(ezPreset(md,{arch:{},bld:q.bld}));
+      ok(rs.length&&rs.every(x=>x.level===7&&x.rarity===4&&x.action===3&&mlist(x,"b").length&&!mlist(x,"a").length)&&mlist(rs.find(x=>x.type===10),"b").includes("gm_mainspring_ring"),"bases-only build "+md+": Rare bases 82+ highlighted");
+      ok(g.mode==="black"&&!g.rules.some(x=>/^Everything else/.test(x.name)),"bases-only build "+md+": no whitelist, only the preset hides");}
+    ok(bzRules(bo,{mode:"endgame"}).rules.length>0,"bases-only build: the Advanced import has rules"); }
   /* Advanced import */
   { const h=bzRules(bd,{mode:"endgame",hide:true}).rules,n=bzRules(bd,{mode:"endgame"}).rules;
     ok(h.some(x=>x.action===0)&&h.some(x=>/^Ashen Rares/.test(x.name))&&rulesIssues(h).length===0,"build import with hide: the Easy Mode filter of that strictness");
