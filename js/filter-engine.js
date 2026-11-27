@@ -1367,10 +1367,11 @@ function easyGen(s,pack,merge){
   /* 4 gear picks and the level floor */
   if(white){
     bz.rules.forEach(r=>R.push(r)); /* the build first: its rules are per item type with their own tier limits */
+    if(!gearA.length)stTop(); /* Spec 4.8: the strictness rules apply without Gear picks; with picks the catch-all hides the other Rares */
     gearP.forEach(x=>x.parts.forEach(st=>st.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col,level:st.lv},x.a.n+(st.n?" "+st.n:"")+(st.parts.length>1?" "+(i+1)+"/"+st.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);}))));
     if(s.lv&&LINEN[SKILL])mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:(act[0]||{col:4}).col},"Skill levels",r=>msetList(r,"a",[SKILL])); /* all skill levels (+1, +2, +3), whatever the tier or the item level */
     if(MAXRES.length)for(let i=0;i<MAXRES.length;i+=MAXL.a)mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:(act[0]||{col:4}).col},"Max resistances"+(MAXRES.length>MAXL.a?" "+(i/MAXL.a+1):""),r=>msetList(r,"a",MAXRES.slice(i,i+MAXL.a)));
-    ga();hideR(); /* below the tier highlights of the picks, above the hides */
+    ga();if(!gearA.length)stHide();hideR(); /* below the tier highlights of the picks, above the hides */
     /* the catch-all hide never uses Any rarity: it is written per rarity. Normal and Magic that the hide above did not take, then Rare. */
     /* Leveling: while you level, gear is an upgrade candidate, so the catch-all hide starts later (Normal and Magic from item level 20, Rare from 60) instead of hiding everything without a picked line from item level 1 */
     const fl=(r,lo)=>{if(s.lv)msetRng(r,"i",lo,0);};
