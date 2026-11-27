@@ -1,7 +1,8 @@
 /* Plain Node tests, no dependencies:  node tests/run.mjs
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
-import {bzPicks,bzRules,bzType,idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
+import {readFileSync,readdirSync} from "node:fs";
+import {bzSane,bzParse,bzEzRules,bzPicks,bzRules,bzType,idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -749,53 +750,64 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(baseLines(["iron_ring"]).size<bow.size+10&&baseLines(["iron_ring"]).has(L("life")),"a ring rolls Life");
 }
 
-/* simulator build link: worn gear -> highlight rules */
+/* simulator build link (#buildz=): the build's gear lines per item type, written by the Easy Mode generator as a tier ladder */
 {
-  const r=bzRules({v:1,name:"T",level:100,items:[
+  const bd={v:1,name:"T",level:100,items:[
     {slot:"MainHand",rarity:"Rare",base:"ct_proj_bow_9",item_level:84,affixes:[{id:"riven95_skill_level_bow",tier:1},{id:"life",tier:2},{id:"fire_dmg_inc",tier:2},{id:"nope_x",tier:1}]},
-    {slot:"Ring1",rarity:"Rare",base:"iron_ring",affixes:[{id:"life_large",tier:3}]},
-    {slot:"Chest",rarity:"Unique",base:"plate_chest_1",unique:"adders_kiss",affixes:[{id:"life_large",tier:1}]}]});
-  ok(r.items===3,"build import counts the gear pieces");
+    {slot:"Ring1",rarity:"Rare",base:"iron_ring",affixes:[{id:"life_large",tier:3},{id:"attack_added_phys",tier:4},{id:"fire_res",tier:1}]},
+    {slot:"Ring2",rarity:"Rare",base:"iron_ring",affixes:[{id:"life_large",tier:1},{id:"es_global",tier:4}]},
+    {slot:"Chest",rarity:"Unique",base:"plate_chest_1",unique:"adders_kiss",affixes:[{id:"life_large",tier:1}]}]};
+  const p=bzParse(bd);
+  ok(p.items===4&&p.notes.some(x=>x.includes("nope_x")),"build import counts the gear pieces and reports unknown ids");
   ok(bzType("hunters_quiver")===34&&bzType("shield_1")===9&&bzType("plate_chest_1")===6&&bzType("amber_amulet")===11&&bzType("bow_9")===18,"build import maps bases to item types");
-  const by=n=>r.rules.filter(x=>x.name===n);
-  ok(r.rules.every(x=>x.on===1&&x.action>=2),"build import only highlights, never hides");
-  ok(r.rules.some(x=>x.type===18&&x.name.includes("core")&&x.action===3)&&r.rules.some(x=>x.type===10&&mlist(x,"a").includes("life_large")),"build import makes a core and a good rule per item type");
-  ok(r.rules.filter(x=>mlist(x,"a").length).every(x=>{const v=mval(x,"t");return v===""||["7","6","4","3"].includes(String(v));}),"build import caps tiers per Leveling step, not by the build's tiers");
-  { const h=bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]},{mode:"endgame",hide:true}).rules,n=h.length;
-    ok(h[n-1].action===0&&h[n-1].rarity===4&&h[n-2].action===0&&h[n-2].rarity===3,"build import with hide: the hides come last");
-    ok(h.slice(0,n-2).every(x=>x.action!==0),"build import with hide: everything above the hides lifts or keeps");
-    ok(h.some(x=>x.type===13&&x.action===1)&&h.some(x=>x.name==="Keep max resistances"),"build import with hide keeps Core-touched and the maximum resistances");
-    ok(!bzRules({items:[]},{mode:"endgame",hide:true}).rules.some(x=>x.action===0),"an empty build never writes hide rules");
-    ok(!bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1}]}]},{mode:"endgame"}).rules.some(x=>x.action===0),"build import without the hide switch writes no hides"); }
-  ok(["<20","<40","<60","<75","75+"].every(n=>r.rules.some(x=>x.name==="Build Rings core "+n)),"build import writes the five Leveling steps");
-  ok(r.rules.some(x=>x.name==="Build bases 82+"&&x.level===7&&mlist(x,"b").includes("iron_ring")&&mlist(x,"b").includes("ct_proj_bow_9")&&!mlist(x,"a").length),"build import (Leveling) highlights the build's rare bases from item level 82");
-  { const bi={items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]};
-    for(const md of ["endgame","uber"]){const b=bzRules(bi,{mode:md}).rules.filter(x=>mlist(x,"b").length);
-      ok(b.length===1&&b[0].level===7&&mlist(b[0],"a").length>0&&mval(b[0],"n")==="1","build import "+md+": a rare base needs at least one wanted line");}}
-  const bi={items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]};
-  const en=bzRules(bi,{mode:"endgame"}).rules,ub=bzRules(bi,{mode:"uber"}).rules;
-  ok(en.length>0&&en.filter(x=>mlist(x,"a").length&&!mlist(x,"b").length).every(x=>!x.level&&+mval(x,"t")>=1&&+mval(x,"t")<=3),"build import Endgame: one step, tier cap of Rupture Level 75");
-  ok(ub.filter(x=>mlist(x,"a").length&&!mlist(x,"b").length).every(x=>x.level===7&&mval(x,"t")==="1")&&ub.some(x=>x.quality===2),"build import Uber Strict: item level 82+, T1 only, core needs a top roll");
-  ok(r.rules.some(x=>mlist(x,"a").includes("skill_level")),"Riven lines map to the normal line");
-  ok(mlist(r.rules.find(x=>mlist(x,"rn").length),"rn").join()==="adders_kiss","uniques become a red rule");
-  ok(!r.rules.some(x=>x.type===6),"a unique's own lines are not turned into rules");
-  ok(r.notes.some(x=>x.includes("nope_x")),"unknown ids are reported");
-  ok(r.rules.every(x=>mlist(x,"a").length<=6),"build import respects the 6 named lines limit");
-  ok(bzRules({items:[]}).rules.length===0&&bzRules(null).rules.length===0,"empty build gives no rules");
-  for(const md of ["leveling","endgame","uber"]){
-    const h=bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1},{id:"es_global",tier:1}]}]},{mode:md,hide:true}).rules;
-    const gi=h.findIndex(x=>/^(Ashen|Gnome-made) Rares/.test(x.name)),hi=h.findIndex(x=>x.action===0);
-    ok(gi>0&&hi>gi&&h.filter(x=>/^(Ashen|Gnome-made) Rares/.test(x.name)).length===9,"build import "+md+" with hide: the Rare Ashen / Gnome-made block sits above the hides");
-    ok(rulesIssues(h).length===0,"build import "+md+" with hide: no rule issues");}
-  { const h=bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1}]}]},{mode:"leveling",hide:true}).rules;
-    ok(h.some(x=>x.action===0&&x.rarity===3&&mval(x,"i")==="20-0"),"build import Leveling with hide: Normal/Magic hidden from item level 20"); }
-  ok(!bzRules({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"life",tier:1}]}]},{mode:"endgame"}).rules.some(x=>/^Ashen/.test(x.name)),"build import without hide writes no Ashen block");
+  const ring=p.bld.g.find(x=>x[0]===10)[1];
+  ok(ring.find(x=>LINEN[x[0]]===LINEN.life_large)[1]===1&&ring.find(x=>LINEN[x[0]]===LINEN.life_large)[2]===2,"build import keeps the best tier per item type and how often a line appears");
+  ok(p.bld.g.flatMap(x=>x[1]).some(x=>x[0]==="skill_level_bow")&&!p.bld.g.flatMap(x=>x[1]).some(x=>/^riven95_/.test(x[0])),"Riven lines are stored as the normal line");
+  ok(p.bld.u.join()==="adders_kiss"&&!p.bld.g.some(x=>x[0]===6),"uniques become reds, their own lines are not used");
+  ok(bzParse({items:[]}).bld===null&&bzParse(null).bld===null&&bzRules({items:[]}).rules.length===0&&bzRules(null).rules.length===0,"empty build gives no rules");
+  ok(bzSane({g:"x"})===null&&bzSane({g:[[999,[["life",1,1]]]]})===null&&bzSane(p.bld).g.length===p.bld.g.length,"stored builds are checked");
+  ok(ezSane({bld:p.bld}).bld&&ezPreset("uber",{arch:{},bld:p.bld}).bld,"the Easy Mode state and the presets keep the build");
+  /* rules */
+  const R=md=>bzEzRules(p.bld,ezPreset(md,{arch:{},bld:p.bld})).rules;
+  const eg=R("endgame"),ub=R("uber"),lv=R("leveling");
+  const typed=rs=>rs.filter(x=>/^Build (?!uniques|bases)/.test(x.name));
+  ok(typed(eg).every(x=>x.type!==0&&mlist(x,"a").length<=6&&mval(x,"n")===(mlist(x,"a").length>1?"2":"1")),"build rules are per item type, need two lines (6 at most)");
+  ok(typed(eg).some(x=>x.type===10&&mval(x,"t")==="5"),"Endgame: where the build wears a worse tier on that item type, that tier (+1) counts");
+  ok(typed(ub).every(x=>mval(x,"t")==="1"),"Uber Strict: best tier only, the build's tier does not loosen it");
+  ok(typed(lv).every(x=>!mval(x,"t")||+mval(x,"t")>=2)&&typed(lv).some(x=>x.level===2)&&!typed(lv).some(x=>x.type===10&&mval(x,"t")==="5"&&!x.level),"Leveling: the Easy Mode steps, not the build's tier");
+  ok(!lv.some(x=>mlist(x,"a").includes("skill_level"))&&eg.some(x=>mlist(x,"a").includes("skill_level"))&&!eg.concat(lv).some(x=>mlist(x,"a").some(i=>/^max_.*res91$/.test(i))),"skill levels (Leveling) and max resistances have rules of their own");
+  ok(!eg.concat(lv).some(x=>mlist(x,"a").some(i=>/resist|strength|dexterity|intelligence/i.test(LINEN[i]))),"filler lines are never build lines");
+  { const b=eg.filter(x=>mlist(x,"b").length),bl=lv.filter(x=>mlist(x,"b").length);
+    ok(b.length&&b.every(x=>x.level===7&&mlist(x,"a").length&&mval(x,"n")==="1")&&bl.every(x=>x.level===7&&!mlist(x,"a").length),"bases 82+: Endgame and Uber need a build line, Leveling does not"); }
+  ok(mlist(eg.find(x=>mlist(x,"rn").length),"rn").join()==="adders_kiss"&&!bzEzRules(Object.assign({},p.bld,{ou:0}),ezPreset("endgame",{arch:{}})).rules.some(x=>mlist(x,"rn").length),"uniques get a red rule unless switched off");
+  ok(bzEzRules(Object.assign({},p.bld,{g:[[10,[["gone_line_x",1,1],["life_large",1,1],["es_global",1,1]]]]}),ezPreset("endgame",{arch:{}})).notes.some(x=>x.includes("gone_line_x")),"stored lines the game data no longer knows are dropped with a note");
+  /* the ladder never takes a line below its own limit: every hit has enough lines of that type, each within the limit of its own rung */
+  { const fx=JSON.parse(readFileSync(new URL("./fixtures/builds/0-warrior-real.json",import.meta.url)));const q=bzParse(fx).bld,s=ezPreset("endgame",{arch:{},bld:q}),rs=typed(bzEzRules(q,s).rules);
+    const caps=new Map();q.g.forEach(([t,ls])=>ls.forEach(([id,tr])=>{const l=LINEN[id];caps.set(t+"|"+l,Math.max(ezThr(id,75,2),Math.min(8,tr+1)));}));
+    let bad=0,hits=0;for(let i=0;i<20000;i++){const it=genItem({cls:"raredecent",lvl:84});const r=rs.find(x=>matches(x,it));if(!r)continue;hits++;
+      const good=it.mods.filter(m=>caps.has(r.type+"|"+m.lineLabel)&&m.tier<=caps.get(r.type+"|"+m.lineLabel)).length;if(good<+mval(r,"n"))bad++;}
+    ok(hits>0&&bad===0,"build tier ladder: a match never takes a line below its own limit ("+hits+" hits)"); }
+  /* Easy Mode with only a build: whitelist, Ashen block above the hides, no rule issues, within the rule limit for every test build */
+  for(const f of readdirSync(new URL("./fixtures/builds/",import.meta.url))){const fx=JSON.parse(readFileSync(new URL("./fixtures/builds/"+f,import.meta.url))),b=bzParse(fx).bld;if(!b)continue;
+    for(const md of ["leveling","endgame","uber"]){
+      const g=easyGen(ezPreset(md,{arch:{},bld:b})),h=g.rules,gi=h.findIndex(x=>/^(Ashen|Gnome-made) Rares/.test(x.name)),hi=h.findIndex(x=>x.action===0&&x.type===0);
+      ok(h.length<=MAX_RULES&&rulesIssues(h).filter(x=>x.level==="error").length===0&&gi>0&&hi>gi,"build "+f+" "+md+": "+h.length+" rules, no issues, Ashen block above the hides");
+      const all=easyGen(ezPreset(md,{arch:Object.fromEntries(EZ_ARCH.map(a=>[a.k,1])),bld:b})).rules;
+      ok(all.length<=MAX_RULES,"build "+f+" "+md+" with every pill: "+all.length+" rules");}}
+  /* Advanced import */
+  { const h=bzRules(bd,{mode:"endgame",hide:true}).rules,n=bzRules(bd,{mode:"endgame"}).rules;
+    ok(h.some(x=>x.action===0)&&h.some(x=>/^Ashen Rares/.test(x.name))&&rulesIssues(h).length===0,"build import with hide: the Easy Mode filter of that strictness");
+    ok(n.length&&n.every(x=>x.action>=2||x.action===1),"build import without the hide switch writes no hides"); }
 }
 
-/* Easy Mode import: Build focus pills from a build */
-{ const p=bzPicks({items:[{rarity:"Rare",base:"iron_ring",affixes:[{id:"fire_dmg_inc",tier:1},{id:"fire_added_local",tier:1},{id:"life_large",tier:2},{id:"str_flat",tier:1},{id:"fire_res",tier:1}]}]});
-  ok(p.some(x=>x.k==="fire"),"build import (Easy): a build with Fire lines picks the Fire pill");
-  ok(!p.some(x=>x.k==="res"),"build import (Easy): the Resists pill is never picked from a build");
+/* Easy Mode import: Build focus pills from a build (optional extras) */
+{ const it=(b,af)=>({rarity:"Rare",base:b,affixes:af.map(([id,tier])=>({id,tier}))});
+  const p=bzPicks({items:[it("iron_ring",[["fire_dmg_inc",1],["fire_res",1]]),it("agate_amulet",[["fire_dmg_inc",1],["fire_added_local",1],["str_flat",1]])]});
+  ok(p.some(x=>x.k==="fire"),"build import (Easy): Fire lines on two gear pieces suggest the Fire pill");
+  ok(!bzPicks({items:[it("iron_ring",[["fire_dmg_inc",1],["fire_added_local",1]])]}).some(x=>x.k==="fire"),"build import (Easy): one gear piece is not enough for a pill");
+  ok(!p.some(x=>x.k==="res")&&p.length<=4,"build import (Easy): never Resists, at most 4 pills");
+  const ab=[it("iron_ring",[["attack_added_phys",1],["attack_speed_local",1]]),it("agate_amulet",[["attack_added_phys",1],["crit_local",1]])];
+  ok(!bzPicks({items:ab}).some(x=>x.k==="bow")&&bzPicks({items:ab.concat([it("bow_9",[["phys_inc_local",1],["attack_speed_local",1]])])}).some(x=>x.k==="bow"),"build import (Easy): Bow only when the build wears a bow or a quiver");
   ok(bzPicks({items:[]}).length===0&&bzPicks(null).length===0,"build import (Easy): an empty build picks nothing"); }
 /* Leveling: the catch-all hides start late, Endgame hides from item level 1 */
 {

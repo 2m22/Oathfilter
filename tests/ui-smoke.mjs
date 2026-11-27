@@ -319,7 +319,7 @@ async function runBuildz(){
   const t=await page.textContent("#shrLoad").catch(()=>"");const dlg=await page.evaluate(()=>document.body.innerText);
   ok(/Import this build/.test(dlg)&&/Rangtest/.test(dlg)&&/Gear pieces/.test(dlg),"the dialog names the build and its gear");
   await page.selectOption("#bzMode","uber");await page.waitForTimeout(200);
-  ok(/top roll/.test(await page.textContent("#shrBody")),"the strictness select switches the import to Uber Strict");
+  ok(/best tier only/.test(await page.textContent("#shrBody")),"the strictness select switches the import to Uber Strict");
   await page.selectOption("#bzMode","leveling");await page.waitForTimeout(200);
   ok(await page.isChecked("#bzHide"),"the hide switch is on by default");
   await page.click("#shrLoad");await page.waitForTimeout(500);
@@ -336,9 +336,12 @@ async function runBuildz(){
   await page.click("[data-ezm=easy]");await page.waitForTimeout(400);
   ok(await page.isVisible("#ezBz"),"Easy Mode has an Import build button in Build focus");
   await page.click("#ezBz");await page.fill("#bzIn",tok(bd));await page.click("#bzGo");await page.waitForTimeout(500);
-  ok(/Set Build focus from this build\?/.test(await page.evaluate(()=>document.body.innerText)),"Easy Mode: the build opens the Build focus dialog");
+  ok(/Use this build in Easy Mode\?/.test(await page.evaluate(()=>document.body.innerText)),"Easy Mode: the build opens the Easy Mode build dialog");
   await page.click("#bzApply");await page.waitForTimeout(500);
-  ok(await page.$$eval("#ezCtl [data-ez^='arch,'][aria-pressed=true]",e=>e.length)>=1,"Easy Mode: Apply presses the Build focus pills of the build");
+  ok(await page.isVisible("#ezBld")&&/Build/.test(await page.textContent("#ezBld"))&&await page.isVisible("#ezBzX"),"Easy Mode: Apply loads the build (shown in Build focus, with Remove build)");
+  ok(/Build /.test(await page.textContent("#ezOut2")),"Easy Mode: the preview lists the build's rules");
+  await page.click("#ezBzX");await page.waitForTimeout(400);
+  ok(!(await page.isVisible("#ezBld"))&&!/Build (Rings|Helms|Body|Amulets|Belts|Weapons|Gloves|Boots|uniques)/.test(await page.textContent("#ezOut2")),"Easy Mode: Remove build takes the build rules out");
   await page.click("[data-ezm=adv]");await page.waitForTimeout(300);
   await page.goto(BASE+"#buildz=AAAA");await page.waitForTimeout(700);
   ok(/cannot be opened/.test(await page.evaluate(()=>document.body.innerText)),"a broken build link shows the error dialog");

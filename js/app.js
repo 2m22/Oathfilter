@@ -1,7 +1,7 @@
 import {covers,fitRules,placeAt,sellKind,exportPlan,deadRules} from "./modules.js";
 import {createI18n} from "./i18n.js";
 import {mountModuleUi,mountCaution} from "./module-ui.js";
-import {bzPicks,bzRules,BZ_MODES,redInType,baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
+import {bzParse,bzPicks,bzRules,BZ_MODES,redInType,baseInType,baseLines,lineFit,fixAn,MAXL,AFF,ALPHA,BASED,BASEN,BASES,CLASSES,COLOURS,COND_LINE,COPY,DATA,DC_REV,EZ,EZ_ARCH,EZ_GRP,EZ_KEEP,EZ_RL,F,LANG,LANGS,LEVEL,LINED,LINEMAP,LINEN,LINE_HAY,LINE_IDS,LVSTEPS,LX,MAX_RULES,NAME_MAX,DATA_BUILD,ezHash,ezBadge,ezOwnedChanged,EZ_PRESETS,EZ_PRE_IDS,ezPreset,PRESETS,RAR,REDD,REDN,REV,SPECIAL,T,UNIQUES,VAR_IDS,cleanLineText,colOf,dItemName,decode,dl,easyGen,encode,evalC,ezHashF,ezLinked,ezRestore,ezSane,ezSave,ezSnap,genItem,hasRaw,matches,mlist,mrng,mset,msetList,msetRng,mval,nameOf,newRule,redIdOf,rngText,rollOk,simRules,typeMatch,uid,setF,bumpRev,setLangId,setDcRev} from "./filter-engine.js";
 /* SortableJS instance for the rule list (null while the library is not loaded: the built-in pointer drag below then stays active) */
 let rowSortable=null;
 /* Lucide icons: <i data-lucide> placeholders are swapped for SVG by lucide.createIcons(). Without the library the same shapes come from this map, so no control ends up without an icon. */
@@ -842,7 +842,7 @@ function shPreview(b,views){
   if(views!=null)rows.push(["Opened",views+(views===1?" time":" times")]);
   const lst=named.slice(0,8).map(n=>"<li>"+esc(n)+"</li>").join("")+(named.length>8?"<li>+ "+(named.length-8)+" more</li>":"");
   const body=`<dl class="shl">${rows.map(r=>`<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("")}${b.bz?"":`<dt>Rule names</dt><dd>${named.length?named.length+" included":"none"}</dd>`}</dl>${named.length?`<ul class="shn">${lst}</ul>`:""}`
-    +(b.bz?`<p style="margin-top:8px"><label for="bzMode">Strictness </label><select id="bzMode">${BZ_MODES.map(([k,n])=>`<option value="${k}"${k===b.mode?" selected":""}>${n}</option>`).join("")}</select></p><p style="margin-top:6px"><label class="pkchk"><input type="checkbox" id="bzHide"${b.hide?" checked":""}> Hide everything else (like the Easy Mode preset)</label></p><p class="shw">${b.mode==="endgame"?"Endgame: one rule set at Rupture Level 75, tiers capped to the best 2 that drop there.":b.mode==="uber"?"Uber Strict: item level 82+ only, best tier only; the core rule needs a top roll.":"Leveling: the tier cap opens up step by step with the item level (T8 down to the build's tier)."}</p>`:"")
+    +(b.bz?`<p style="margin-top:8px"><label for="bzMode">Strictness </label><select id="bzMode">${BZ_MODES.map(([k,n])=>`<option value="${k}"${k===b.mode?" selected":""}>${n}</option>`).join("")}</select></p><p style="margin-top:6px"><label class="pkchk"><input type="checkbox" id="bzHide"${b.hide?" checked":""}> Hide everything else (like the Easy Mode preset)</label></p><p class="shw">${b.mode==="endgame"?"Endgame: per gear piece the tier limits of Rupture Level 75; where the build wears a worse tier, that tier counts.":b.mode==="uber"?"Uber Strict: per gear piece the best tier only (Rupture Level 84).":"Leveling: per gear piece, the tier limit opens up step by step with the item level."}</p>`:"")
     +(b.notes.length?`<p class="shw" style="margin-top:8px">${b.notes.map(esc).join(" ")}</p>`:"")
     +`<p class="shw" id="shrNote" style="margin-top:8px" role="status">${cur?"Loading it replaces your current filter ("+cur+" rule"+(cur===1?"":"s")+"). "+COPY.undo+" (Editor)":"Your current filter is empty."}</p>`;
   shrShow({title:b.bz?"Import this build?":"Open this shared filter?",desc:b.bz?"The rules highlight the lines on the gear of this build. With the hide switch on, other Normal, Magic and Rare gear is hidden too. Nothing changes until you choose.":"Nothing changes until you choose.",body,focus:"shrNo",buttons:[
@@ -855,15 +855,20 @@ function shPreview(b,views){
     {id:"shrSave",text:"Save as module",fn:()=>{const r=shLfSave(b),n=$("#shrNote");if(r.err){n.textContent=r.err;n.style.color="var(--hide-fg)";return;}n.style.color="";n.textContent="Saved as “"+r.name+"” as a module. Your current filter is unchanged.";$("#shrSave").disabled=true;}},
     {id:"shrNo",text:"Cancel",fn:shrClose}]});const bm=$("#bzMode"),bh=$("#bzHide");if(bm)bm.onchange=()=>shPreview(bzBuild(b.j,bm.value,bh.checked),views);if(bh)bh.onchange=()=>shPreview(bzBuild(b.j,bm.value,bh.checked),views);}
 function bzEasy(j,mode){
-  /* Easy Mode: the build sets the Build focus pills and the strictness card; nothing else changes until you press Apply */
-  mode=mode||"leveling";const pk=bzPicks(j),nm=shClean(j.name,SH_NAME_MAX);
-  const body=`<dl class="shl">${nm?`<dt>Build</dt><dd>${esc(nm)}</dd>`:""}</dl>`
-    +(pk.length?`<p class="shw" style="margin:6px 0 4px">Build focus from this build</p>${pk.map(x=>`<label class="pkchk" style="display:flex;margin:4px 0"><input type="checkbox" class="bzpk" value="${esc(x.k)}" checked> ${esc(x.n)}</label>`).join("")}`:`<p class="shw" style="margin-top:8px">No Build focus pill fits this build clearly. Pick them yourself.</p>`)
+  /* Easy Mode: the build becomes part of the Easy Mode state (its own rules per gear piece, every line at its own tier); the Build focus pills it suggests are an optional extra */
+  mode=mode||(EZ_PRESETS[EZ.s.pre]?EZ.s.pre:"leveling");const p=bzParse(j),pk=bzPicks(j),nm=shClean(j.name,SH_NAME_MAX);
+  if(!p.bld){bzAsk(p.items?"The build has no gear lines or uniques to highlight.":"The build wears no gear.");return;}
+  const nl=p.bld.g.reduce((t,x)=>t+x[1].length,0),nu=p.bld.u.length;
+  const body=`<dl class="shl">${nm?`<dt>Build</dt><dd>${esc(nm)}</dd>`:""}<dt>Gear pieces</dt><dd>${p.items}</dd><dt>Gear lines</dt><dd>${nl}</dd>${nu?`<dt>Uniques</dt><dd>${nu}</dd>`:""}</dl>`
     +`<p style="margin-top:8px"><label for="bzMode">Strictness </label><select id="bzMode">${BZ_MODES.map(([k,n])=>`<option value="${k}"${k===mode?" selected":""}>${n}</option>`).join("")}</select></p>`
-    +`<p class="shw" style="margin-top:8px">Easy Mode builds its own rules from these choices. Your pill choices are replaced.</p>`;
-  shrShow({title:"Set Build focus from this build?",desc:"Nothing changes until you choose.",body,focus:"bzApply",buttons:[
-    {id:"bzApply",text:"Apply",cls:"gold",fn:()=>{const arch={};EZ_ARCH.forEach(a=>{arch[a.k]=0;});document.querySelectorAll(".bzpk").forEach(c=>{if(c.checked)arch[c.value]=1;});
-      EZ.s=ezPreset($("#bzMode").value,Object.assign({},EZ.s,{arch}));ezTouched();shrClose();toast("Build focus set from the build"+(nm?" “"+nm+"”":"")+".");}},
+    +(nu?`<p style="margin-top:6px"><label class="pkchk"><input type="checkbox" id="bzU" checked> Highlight the build's uniques</label></p>`:"")
+    +(pk.length?`<p class="shw" style="margin:8px 0 4px">Also pick these Build focus pills (optional)</p>${pk.map(x=>`<label class="pkchk" style="display:flex;margin:4px 0"><input type="checkbox" class="bzpk" value="${esc(x.k)}"${EZ.s.arch[x.k]?" checked":""}> ${esc(x.n)}</label>`).join("")}`:"")
+    +(p.notes.length?`<p class="shw" style="margin-top:8px">${p.notes.map(esc).join(" ")}</p>`:"")
+    +`<p class="shw" style="margin-top:8px">Easy Mode writes rules for the lines on each gear piece of this build, every line at its own tier. Your Build focus pills stay.</p>`;
+  shrShow({title:"Use this build in Easy Mode?",desc:"Nothing changes until you choose.",body,focus:"bzApply",buttons:[
+    {id:"bzApply",text:"Apply",cls:"gold",fn:()=>{const arch=Object.assign({},EZ.s.arch);document.querySelectorAll(".bzpk").forEach(c=>{arch[c.value]=c.checked?1:0;});
+      const u=$("#bzU"),bld=Object.assign({},p.bld,{ou:u&&!u.checked?0:1});
+      EZ.s=ezPreset($("#bzMode").value,Object.assign({},EZ.s,{arch,bld}));ezTouched();shrClose();toast("Build loaded into Easy Mode"+(nm?" “"+nm+"”":"")+".");}},
     {id:"shrNo",text:"Cancel",fn:shrClose}]});}
 function bzAsk(msg){
   shrShow({title:"Import build",desc:"Paste the link from the build simulator. It is read in your browser and nothing is uploaded.",
@@ -1697,7 +1702,7 @@ function ezBuild(){
   $("#ezCtl").innerHTML=`
   <section class="ezs" aria-labelledby="ez-h1"><div class="hrow ezh"><h3 id="ez-h1" class="ezt"><span class="ezn">1</span>Filter strictness</h3>${hb("ezPre")}<span id="ezState" class="ezstate" aria-live="polite"></span></div>
     <div class="ezcards" role="group" aria-label="Filter strictness">${EZ_PRE_IDS.map(card).join("")}</div></section>
-  <section class="ezs" aria-labelledby="ez-h2"><div class="hrow ezh"><h3 id="ez-h2" class="ezt"><span class="ezn">2</span>Build focus</h3>${hb("ezWant")}<span id="ezBuildsB" class="ezbadge chip" hidden>+ builds</span><span class="ezpk" id="ezPicked" aria-live="polite"></span><button type="button" class="btn" id="ezBz" data-ezact="bz">Import build</button><button type="button" class="btn ezclr" data-ez="clear,all" title="Unpick every pill. Ctrl+Z brings them back.">${li("x")}Clear all</button></div>
+  <section class="ezs" aria-labelledby="ez-h2"><div class="hrow ezh"><h3 id="ez-h2" class="ezt"><span class="ezn">2</span>Build focus</h3>${hb("ezWant")}<span id="ezBuildsB" class="ezbadge chip" hidden>+ builds</span><span class="ezpk" id="ezPicked" aria-live="polite"></span><span class="ezpk" id="ezBld" hidden></span><button type="button" class="btn" id="ezBz" data-ezact="bz">Import build</button><button type="button" class="btn" id="ezBzX" data-ezact="bzclear" hidden title="Remove the imported build from Easy Mode.">${li("x")}Remove build</button><button type="button" class="btn ezclr" data-ez="clear,all" title="Unpick every pill. Ctrl+Z brings them back.">${li("x")}Clear all</button></div>
     <div class="ezgrid">${EZ_GRP.map(([t,ic,blocks])=>`<div class="ezg" role="group" aria-label="${esc(t)}"><div class="ezgt">${ezIco(ic)}<span>${esc(t)}</span></div><div class="chips">${blocks.flatMap(([bt,ks])=>ks).map(ezChip).join("")}</div></div>`).join("")}</div></section>
   <div class="ez2">
     <section class="ezs ezu" aria-labelledby="ez-h3"><h3 id="ez-h3" class="ezt">Always keep &amp; Rare bases</h3>
@@ -1711,6 +1716,7 @@ function ezSync(){
   const s=EZ.s,bg=ezBadge(s,ezLinked(),!!EZ.h);
   const pk=EZ_ARCH.filter(a=>s.arch[a.k]).length,pe=$("#ezPicked"),ce=$("#ezCtl .ezclr");
   if(pe)pe.textContent=pk?pk+" picked":"";if(ce)ce.disabled=!pk;
+  const bl=$("#ezBld"),bx=$("#ezBzX");if(bl){bl.hidden=!s.bld;bl.innerHTML=s.bld?"<b>Build</b> "+esc(s.bld.n||"imported"):"";}if(bx)bx.hidden=!s.bld;
   const st=$("#ezState");if(st){st.textContent=bg&&bg.custom?"Custom":"";st.classList.toggle("on",!!(bg&&bg.custom));}
   const bb=$("#ezBuildsB");if(bb)bb.hidden=!(bg&&bg.chip);
   $$("#ezCtl button[data-ez]").forEach(b=>{
@@ -1765,6 +1771,7 @@ function ezTouched(){
       else if(a==="adv")ezMode("adv");
       else if(a==="copy")ezCopy();
       else if(a==="bz")bzAsk();
+      else if(a==="bzclear"){const s=EZ.s;s.bld=null;EZ.s=ezSane(s);ezTouched();toast("Build removed from Easy Mode.");}
       return;
     }
     if(!b.dataset.ez)return;

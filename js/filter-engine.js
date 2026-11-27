@@ -1237,7 +1237,7 @@ const EZ_KEEP=[["1","Best tier only"],["2","Best 2 tiers"],["3","Best 3 tiers"]]
 const EZ_TMAX=8; /* highest T{n} the game's Tier list offers */
 const EZ_LINEIDS=new Set(DATA.lines.map(x=>x[1]));
 const EZ_IDOLTXT=new Set(Object.keys(LINEN).filter(k=>k.indexOf("idol_")===0).map(k=>LINEN[k]));
-const ezDef=()=>({lv:0,rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1}}); /* st: strictness extras for a filter without picks, 0 none, 1 hide Rare gear under item level 75, 2 keep only top-roll Rares from item level 82. gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
+const ezDef=()=>({lv:0,rl:0,tk:2,hl:1,idol:"match",hn:1,hm:1,hs:0,gems:0,ga:1,hr:0,st:0,pre:"",arch:{},keep:{core:1,runes:1,tsw:1},bld:null}); /* st: strictness extras for a filter without picks, 0 none, 1 hide Rare gear under item level 75, 2 keep only top-roll Rares from item level 82. gems: 0 no Gems rule (default, so old saves and codes do not change), 1 hide gems, 2 sell gems (game: a gem under a Gems Sell rule is sold on landing) */
 function ezSane(o){
   o=o&&typeof o==="object"?o:{};const d=ezDef();
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
@@ -1250,6 +1250,7 @@ function ezSane(o){
   if(o.arch&&o.arch.def){s.arch.armour=s.arch.evasion=s.arch.es=1;} /* ... and one Defences pick */
   if(o.idol==="orbit")s.arch.orbit=1; /* older saves had "only orbiting" as an Idol mode */
   ["core","runes","tsw"].forEach(k=>{s.keep[k]=on(o.keep&&o.keep[k],d.keep[k]);});
+  s.bld=bzSane(o.bld); /* an imported build (see bzParse) */
   return s;
 }
 /* lines the game data knows, one per distinct text (same text = same line) */
@@ -1304,6 +1305,7 @@ function easyGen(s,pack,merge){
   const notes=[],R=[],rl=s.rl;
   const mk=(o,name,fn)=>{const r=newRule(o);r.name=name.slice(0,NAME_MAX);if(fn)fn(r);R.push(r);return r;};
   const act=EZ_ARCH.filter(a=>s.arch[a.k]);
+  const bz=bzEzRules(s.bld,s),hasB=bz.typed>0;bz.notes.forEach(x=>notes.push(x)); /* an imported build: its own rules per item type, they work like a gear pick */
   act.forEach(a=>{[a.ids,a.idol].forEach(l=>l.forEach(id=>{if(!EZ_LINEIDS.has(id)||!LINEN[id])notes.push("Line "+id+" is not in the game data of this page and was skipped.");}));});
   /* a line that two picks share (crit, for example) is listed once, under the first pick that has it, so it never wastes an a= slot or a rule */
   const own=()=>{const seen=new Set();return id=>{const t=LINEN[id];if(seen.has(t))return false;seen.add(t);return true;};};
@@ -1311,7 +1313,7 @@ function easyGen(s,pack,merge){
   const SKILL="skill_level"; /* one line text for skill_level, _bow and _2h; with the Leveling steps it is shown for every item, so it is taken out of the picks */
   const MAXRES=["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91"].filter(i=>LINEN[i]); /* maximum resistances: always shown (like skill levels), so they are taken out of the picks */
   if(s.lv&&LINEN[SKILL])og(SKILL);
-  if(act.length)MAXRES.forEach(i=>og(i));
+  if(act.length||hasB)MAXRES.forEach(i=>og(i));
   /* Rupture Level -> tier: per line, the best tier that can drop at that level (tier item levels from the game data) plus how many tiers to keep. Lines are sorted by limit and grouped 6 per rule. */
   const gearA=act.map(a=>{const ids=ezGearIds(a,s).filter(og).map(id=>({id,t:ezThr(id,rl,s.tk)||99,top:ezTop(id),c:s.lv?LV_STEPS.map(z=>ezThr(id,z.lo,s.tk)||99):null})).sort((x,y)=>x.t-y.t);
     const parts=pack?[]:ezStages(ids,s.lv); /* sorted by limit, up to 6 per rule, the loosest line of a rule sets its limit */
@@ -1333,12 +1335,12 @@ function easyGen(s,pack,merge){
     idolA=byCol(idolA,x=>x.parts.flat()).map(g=>({a:{n:g.n.length>3?"Picks":g.n.join(" + "),col:g.col},parts:ezChunks(g.ids)}));
   }
   const rarHide=(s.hn||s.hm)?1:0;
-  const white=gearA.length>0;
+  const white=gearA.length>0||hasB;
   const idolWhite=s.idol==="match"&&act.length>0; /* picks without Idol lines (Resists, for example) hide the Idols that do not match too */
-  let why=white?(gearA.length?"Gear picks are on, so matching gear is kept and the rest of the gear is hidden.":""):"Only a few things are hidden, so everything else stays shown.";
+  let why=white?(gearA.length?"Gear picks are on, so matching gear is kept and the rest of the gear is hidden.":"Your build is on, so gear with its lines is kept and the rest of the gear is hidden."):"Only a few things are hidden, so everything else stays shown.";
   const idolWhy=s.idol==="none"?" All Idols are hidden.":idolWhite?" Idols without your picked lines are hidden.":s.idol==="all"?" All Idols stay shown.":" Idols are not touched.";
   why+=idolWhy;
-  if(act.length)why+=s.hm?" Match rules use Rarity Rare, because Magic is hidden.":" Match rules use any Rarity, because Magic is not hidden.";
+  if(act.length||hasB)why+=s.hm?" Match rules use Rarity Rare, because Magic is hidden.":" Match rules use any Rarity, because Magic is not hidden.";
   const anyHide=white||rarHide;
   /* 1 specials: the game's own End Game preset rules (kept above every hide so they are never caught) */
   if(s.keep.core)mk({type:13,action:3,colour:0},"Core-touched");
@@ -1361,13 +1363,14 @@ function easyGen(s,pack,merge){
     if(s.st===1)mk({type:0,rarity:4,level:4,action:0},"Hide Rare gear under item level 75");
     if(s.st===2)mk({type:0,rarity:4,action:0},"Hide other Rare gear");
   };
-  if(!gearA.length){stTop();ga();stHide();hideR();} /* the Rare Ashen / Gnome-made block sits above every Hide and Sell */
+  if(!white){bz.rules.forEach(r=>R.push(r));stTop();ga();stHide();hideR();} /* the Rare Ashen / Gnome-made block sits above every Hide and Sell */
   /* 4 gear picks and the level floor */
   if(white){
+    bz.rules.forEach(r=>R.push(r)); /* the build first: its rules are per item type with their own tier limits */
     gearP.forEach(x=>x.parts.forEach(st=>st.parts.forEach((q,i)=>mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:x.a.col,level:st.lv},x.a.n+(st.n?" "+st.n:"")+(st.parts.length>1?" "+(i+1)+"/"+st.parts.length:""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);}))));
-    if(s.lv&&LINEN[SKILL])mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:act[0].col},"Skill levels",r=>msetList(r,"a",[SKILL])); /* all skill levels (+1, +2, +3), whatever the tier or the item level */
-    if(MAXRES.length)for(let i=0;i<MAXRES.length;i+=MAXL.a)mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:act[0].col},"Max resistances"+(MAXRES.length>MAXL.a?" "+(i/MAXL.a+1):""),r=>msetList(r,"a",MAXRES.slice(i,i+MAXL.a)));
-    if(gearA.length){ga();hideR();} /* below the tier highlights of the picks, above the hides */
+    if(s.lv&&LINEN[SKILL])mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:(act[0]||{col:4}).col},"Skill levels",r=>msetList(r,"a",[SKILL])); /* all skill levels (+1, +2, +3), whatever the tier or the item level */
+    if(MAXRES.length)for(let i=0;i<MAXRES.length;i+=MAXL.a)mk({type:0,rarity:s.hm?4:0,action:s.hl?2:1,colour:(act[0]||{col:4}).col},"Max resistances"+(MAXRES.length>MAXL.a?" "+(i/MAXL.a+1):""),r=>msetList(r,"a",MAXRES.slice(i,i+MAXL.a)));
+    ga();hideR(); /* below the tier highlights of the picks, above the hides */
     /* the catch-all hide never uses Any rarity: it is written per rarity. Normal and Magic that the hide above did not take, then Rare. */
     /* Leveling: while you level, gear is an upgrade candidate, so the catch-all hide starts later (Normal and Magic from item level 20, Rare from 60) instead of hiding everything without a picked line from item level 1 */
     const fl=(r,lo)=>{if(s.lv)msetRng(r,"i",lo,0);};
@@ -1405,7 +1408,7 @@ const EZ_OWNED=["lv","rl","tk","hl","idol","hn","hm","hs","gems","ga","hr","st"]
 const ezPreset=(id,s)=>ezSane(Object.assign({},s,EZ_PRESETS[id].vals,{keep:{core:1,runes:1,tsw:1},pre:id,arch:s.arch}));
 const ezOwnedChanged=(a,b)=>EZ_OWNED.some(k=>a[k]!==b[k])||["core","runes","tsw"].some(k=>a.keep[k]!==b.keep[k]);
 function ezBadge(s,linked,hasHash){
-  const builds=EZ_ARCH.filter(a=>s.arch[a.k]).length;
+  const builds=EZ_ARCH.filter(a=>s.arch[a.k]).length+(s.bld?1:0);
   if(hasHash&&!linked)return{label:"Custom",custom:true,builds:0,chip:""};
   if(!s.pre)return null;
   const p=EZ_PRESETS[s.pre];
@@ -1424,80 +1427,98 @@ const NAME_MAX=40;
 const BZ_ORDER=[10,11,12,5,6,7,8,34,9,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,1];
 function bzType(id){const b=BASE_BY_ID[id];if(!b)return 0;const t=BZ_ORDER.find(x=>typeMatch(x,b));return t||0;}
 const BZ_TN={0:"Any gear",1:"Weapons",5:"Helms",6:"Body armour",7:"Gloves",8:"Boots",9:"Shields/foci",10:"Rings",11:"Amulets",12:"Belts",34:"Quivers"};
-const BZ_STEPS=[[1,"<20",1],[2,"<40",20],[3,"<60",40],[4,"<75",60],[6,"75+",75]];
 const BZ_MODES=[["leveling","Leveling"],["endgame","Endgame"],["uber","Uber Strict"]];
 /* tier cap (T{n} or better, 0 = none) of one line at item level lo: the line's own tier curve (best droppable tier + keep-1), and in the last step never looser than the tier the build has on it (+keep-1) */
-function bzCap(id,lo,keep,tb){let v=ezThr(id,lo,keep)||99;if(tb)v=Math.min(v,Math.max(tb+keep-1,ezThr(id,lo,1)||1));return v===99?0:v;}
-function bzRules(bd,o){
-  const mode=o&&o.mode||"leveling",stg=mode==="leveling";
-  const notes=[],skip=new Set(),byT=new Map(),reds=new Set(),bases=new Set(),bT=new Map(),best=new Map();let items=0;
+/* ---- simulator build (#buildz=): the build's gear lines per item type, kept in the Easy Mode state (s.bld) and written by easyGen ----
+   Stored: the source line id (riven95_ prefix removed), the best tier the build wears on that item type and how often it appears. Names are looked up when the rules are written, so after a game patch only the lines the data no longer knows drop out (with a note). */
+const BZ_FILL=/\b(strength|dexterity|intelligence|attributes?|resistances?|regenerat)/i; /* filler: attributes, resistances, regeneration are on almost every Rare, so they never count as build lines (the max resistances have their own rule) */
+const bzLab=raw=>LINEN[raw]||LINEN[String(raw).replace(/^riven95_/,"")];
+const BZ_TYPES=new Set(BZ_ORDER.concat([0]));
+function bzParse(bd){
+  const notes=[],skip=new Set(),g=new Map(),u=new Set(),b=new Map();let items=0;
   const list=bd&&Array.isArray(bd.items)?bd.items:[];
   list.slice(0,40).forEach(it=>{
     if(!it||typeof it!=="object")return;items++;
-    const u=typeof it.unique==="string"?it.unique:"";
-    if(u){if(REDN[u])reds.add(u);else skip.add(u);return;}
-    const t=bzType(String(it.base||""));
-    if(BASE_BY_ID[it.base]&&Array.isArray(it.affixes)&&it.affixes.length&&!/^(normal|magic)$/i.test(String(it.rarity))){bases.add(it.base);if(!bT.has(t))bT.set(t,new Set());bT.get(t).add(it.base);}
-    (Array.isArray(it.affixes)?it.affixes:[]).slice(0,12).forEach(a=>{
-      const raw=a&&typeof a.id==="string"?a.id:"";
-      const lab=LINEN[raw]||LINEN[raw.replace(/^riven95_/,"")];
-      if(!lab){if(raw)skip.add(raw);return;}
-      const id=(LINE_IDS[lab]||[])[0]||raw,tr=Math.max(1,Math.min(8,Math.round(+a.tier)||1));
-      if(!byT.has(t))byT.set(t,new Map());const m=byT.get(t);m.set(id,(m.get(id)||0)+1);
-      best.set(id,Math.min(best.get(id)||9,tr));});});
-  const filler=id=>/\b(strength|dexterity|intelligence|attributes?|resistances?|regenerat)/i.test(LINEN[id]||"");
-  const rules=[],tn=t=>BZ_TN[t]||"Weapons";
-  /* steps: Leveling = five item-level steps; Endgame = one step at Rupture Level 75 (best 2 tiers); Uber Strict = item level 82+, best tier only, core rule needs a top roll */
-  const steps=stg?BZ_STEPS.map(([lv,n,lo],k)=>({lv,n,lo,keep:2,last:k===BZ_STEPS.length-1})):mode==="endgame"?[{lv:0,n:"",lo:75,keep:2,last:true}]:[{lv:7,n:"",lo:84,keep:1,last:true}];
-  const mkA=(t,l,n,act,name,st,top)=>{
-    const caps=l.map(id=>bzCap(id,st.lo,st.keep,st.last?best.get(id):0)),cap=caps.some(c=>!c)?0:Math.max(...caps);
-    const r=newRule({type:t,rarity:4,level:st.lv,action:act,colour:4,quality:top?2:0});r.name=(name+(st.n?" "+st.n:"")).slice(0,NAME_MAX);
-    msetList(r,"a",l);mset(r,"n",String(Math.max(1,Math.min(n,l.length))));if(cap)mset(r,"t",String(cap));rules.push(r);};
-  [...byT.keys()].sort((a,b)=>a-b).forEach(t=>{
-    const m=byT.get(t),ids=[...m.keys()].sort((a,b)=>(filler(a)-filler(b))||(m.get(b)-m.get(a))),core=ids.filter(id=>!filler(id));
-    if(core.length)steps.forEach(st=>mkA(t,core.slice(0,MAXL.a),2,3,"Build "+tn(t)+" core",st,mode==="uber"));
-    if(ids.length>1)steps.forEach(st=>mkA(t,ids.slice(0,MAXL.a),3,2,"Build "+tn(t)+" good",st,false));});
-  /* bases: Leveling highlights every Rare on the build's bases from item level 82; Endgame and Uber Strict only when the item also has at least one wanted line of its type (core lines first) */
-  if(stg){const bl=[...bases];
-    for(let i=0;i<bl.length;i+=MAXL.b){const r=newRule({type:0,rarity:4,level:7,action:3,colour:4});r.name="Build bases 82+";msetList(r,"b",bl.slice(i,i+MAXL.b));rules.push(r);}}
-  else[...bT.keys()].sort((a,b)=>a-b).forEach(t=>{
-    const m=byT.get(t);if(!m)return;const all=[...m.keys()].sort((a,b)=>(filler(a)-filler(b))||(m.get(b)-m.get(a))),ids=(all.some(i=>!filler(i))?all.filter(i=>!filler(i)):all).slice(0,MAXL.a),bl=[...bT.get(t)];
-    for(let i=0;i<bl.length;i+=MAXL.b){const r=newRule({type:t,rarity:4,level:7,action:3,colour:4,quality:mode==="uber"?2:0});r.name=("Build bases "+tn(t)+(mode==="uber"?" top roll":" 82+")).slice(0,NAME_MAX);msetList(r,"b",bl.slice(i,i+MAXL.b));msetList(r,"a",ids);mset(r,"n","1");rules.push(r);}});
-  const rl=[...reds];
-  for(let i=0;i<rl.length;i+=MAXL.rn){
-    const r=newRule({type:0,rarity:0,action:3,colour:4});r.name="Build uniques";
-    msetList(r,"rn",rl.slice(i,i+MAXL.rn));rules.push(r);}
-  /* hide everything else, like the Easy Mode preset of the same strictness: Leveling hides Normal/Magic from item level 20 and Rares from 60, Endgame and Uber Strict hide all Normal/Magic gear and every Rare the rules above did not lift. Kept above the hides: skill levels, maximum resistances, Core-touched, Rune bases, Truesworn bases. */
-  if(o&&o.hide&&rules.some(r=>mlist(r,"a").length)){
-    const pre=[];
-    const kp=(t,name)=>{const r=newRule({type:t,rarity:0,action:1,colour:4});r.name=name;return r;};
-    pre.push(kp(13,"Keep Core-touched"),kp(4,"Keep Rune bases"),kp(16,"Keep Truesworn bases"));
-    if(LINEN.skill_level){const r=newRule({type:0,rarity:4,action:2,colour:4});r.name="Keep skill levels";msetList(r,"a",["skill_level"]);pre.push(r);}
-    const mr=["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91"].filter(i=>LINEN[i]);
-    if(mr.length){const r=newRule({type:0,rarity:4,action:2,colour:4});r.name="Keep max resistances";msetList(r,"a",mr);pre.push(r);}
-    const fl=(r,lo)=>{if(lo)msetRng(r,"i",lo,0);return r;};
-    const hd=(rar,name,lo)=>{const r=newRule({type:0,rarity:rar,action:0});r.name=name;return fl(r,lo);};
-    const lv=mode==="leveling";
-    /* the keeps and the "always" lines go above the build rules, the hides below them */
-    rules.unshift(...pre);
-    /* Rare Ashen / Gnome-made block: below the build's tier highlights, above every hide (same rule as Easy Mode) */
-    rules.push(...gaRules());
-    rules.push(hd(3,"Build: hide other Normal/Magic"+(lv?" 20+":""),lv?20:0),hd(4,"Build: hide other Rares"+(lv?" 60+":""),lv?60:0));
-  }
+    const un=typeof it.unique==="string"?it.unique:"";
+    if(un){if(REDN[un])u.add(un);else skip.add(un);return;}
+    const t=bzType(String(it.base||"")),af=Array.isArray(it.affixes)?it.affixes.slice(0,12):[];
+    if(BASE_BY_ID[it.base]&&af.length&&!/^(normal|magic)$/i.test(String(it.rarity))){if(!b.has(t))b.set(t,new Set());b.get(t).add(it.base);}
+    af.forEach(a=>{const raw=a&&typeof a.id==="string"?a.id:"";if(!bzLab(raw)){if(raw)skip.add(raw);return;}
+      const nr=raw.replace(/^riven95_/,""),id=LINEN[nr]?nr:raw,tr=Math.max(1,Math.min(8,Math.round(+a.tier)||1)),l=bzLab(id);
+      if(!g.has(t))g.set(t,new Map());const m=g.get(t),o=m.get(l)||[id,9,0];o[1]=Math.min(o[1],tr);o[2]++;m.set(l,o);});});
   if(skip.size)notes.push("Left out, not known here ("+skip.size+"): "+[...skip].slice(0,6).join(", ")+(skip.size>6?", …":"")+".");
-  if(!rules.length)notes.push("The build has no gear lines or uniques to highlight.");
-  return{rules,notes,items};}
-/* Easy Mode: which Build focus pills fit a simulator build. A pill fits when the build's gear has lines (by text) of its group worth at least 1 (a line that several pills share counts 1/number of pills); attributes, resistances and regeneration do not count (they are filler, and the max resistances are always shown). Best 6, most lines first. */
+  const bld={n:String(bd&&typeof bd.name==="string"?bd.name:"").replace(/[\u0000-\u001f]/g,"").slice(0,40),ou:1,
+    g:[...g.entries()].sort((x,y)=>x[0]-y[0]).map(([t,m])=>[t,[...m.values()].slice(0,24)]),u:[...u].slice(0,24),
+    b:[...b.entries()].sort((x,y)=>x[0]-y[0]).map(([t,s])=>[t,[...s].slice(0,12)])};
+  return{bld:bld.g.length||bld.u.length?bld:null,notes,items};}
+function bzSane(o){
+  if(!o||typeof o!=="object"||!Array.isArray(o.g))return null;
+  const str=v=>typeof v==="string"?v.slice(0,64):"",n=(v,lo,hi)=>Math.max(lo,Math.min(hi,Math.round(+v)||lo));
+  const g=o.g.slice(0,16).filter(x=>Array.isArray(x)&&BZ_TYPES.has(+x[0])&&Array.isArray(x[1])).map(x=>[+x[0],x[1].slice(0,24).filter(l=>Array.isArray(l)&&typeof l[0]==="string"&&l[0]).map(l=>[str(l[0]),n(l[1],1,8),n(l[2],1,99)])]).filter(x=>x[1].length);
+  const u=Array.isArray(o.u)?o.u.slice(0,24).filter(x=>typeof x==="string"&&x).map(str):[];
+  const b=Array.isArray(o.b)?o.b.slice(0,16).filter(x=>Array.isArray(x)&&BZ_TYPES.has(+x[0])&&Array.isArray(x[1])).map(x=>[+x[0],x[1].slice(0,12).filter(i=>typeof i==="string"&&i).map(str)]):[];
+  if(!g.length&&!u.length)return null;
+  return{n:str(o.n).replace(/[\u0000-\u001f]/g,"").slice(0,40),ou:o.ou===0?0:1,g,u,b};}
+/* The build's rules: per item type, and every line keeps its own tier limit. A rule has one tier limit and counts its lines (n) only inside itself, so per item type there is one rule for each tier limit the type's lines use, listing every line whose own limit is at least that loose (a tier ladder). That way a match never takes a line below its own limit. Two lines are needed (one when the type has a single build line).
+   Limits: Leveling = the Easy Mode steps (best tier that drops at the step's lower item level + keep), the build's tier is not used. Endgame = the preset limit, loosened to the build's tier on that item type (+ keep) where the build wears a worse tier. Uber Strict (keep 1) = the preset limit only.
+   Skill levels (with Leveling) and the max resistances are left out: they have rules of their own. */
+function bzEzRules(bld,s){
+  const R=[],notes=[],gone=new Set();let typed=0;
+  if(!bld)return{rules:R,notes,typed};
+  const mk=(o,name,fn)=>{const r=newRule(o);r.name=name.slice(0,NAME_MAX);if(fn)fn(r);R.push(r);return r;};
+  const tn=t=>BZ_TN[t]||"Weapons",act=s.hl?2:1,rar=s.hm?4:0;
+  const own=new Set(["max_fire_res91","max_cold_res91","max_lightning_res91","max_poison_res91"].concat(s.lv?["skill_level"]:[]).map(i=>LINEN[i]).filter(Boolean));
+  const us=bld.u.filter(i=>REDN[i]);bld.u.filter(i=>!REDN[i]).forEach(i=>gone.add(i));
+  if(bld.ou!==0)for(let i=0;i<us.length;i+=MAXL.rn)mk({type:0,rarity:0,action:3,colour:4},"Build uniques",r=>msetList(r,"rn",us.slice(i,i+MAXL.rn)));
+  const coreOf=new Map();
+  bld.g.forEach(([t,ls])=>{
+    const L=[],seen=new Set();
+    ls.forEach(([sid,tier,c])=>{const l=bzLab(sid);if(!l){gone.add(sid);return;}if(seen.has(l)||own.has(l)||BZ_FILL.test(l))return;seen.add(l);L.push({id:(LINE_IDS[l]||[])[0]||sid,tier,c});});
+    L.sort((a,b)=>b.c-a.c||a.tier-b.tier);coreOf.set(t,L.map(x=>x.id));
+    if(!L.length)return;
+    const cap=(x,lo)=>{let v=ezThr(x.id,lo,s.tk)||99;if(!s.lv&&s.tk>1&&v!==99)v=Math.max(v,Math.min(8,x.tier+s.tk-1));return v;};
+    const need=L.length>1?2:1;
+    const ladder=caps=>{const out=[];[...new Set(caps)].sort((a,b)=>a-b).forEach(c=>{const ids=L.filter((x,i)=>caps[i]>=c).map(x=>x.id);
+      for(let i=0;i<ids.length;i+=MAXL.a){const p=ids.slice(i,i+MAXL.a);if(p.length>=need)out.push({t:c===99?0:c,p});}});return out;};
+    const write=(sp,lv,sn)=>{sp.forEach((q,i)=>{const same=sp.filter(z=>z.t===q.t);
+      mk({type:t,rarity:rar,action:act,colour:4,level:lv},"Build "+tn(t)+(q.t?" T"+q.t:"")+(sn?" "+sn:"")+(same.length>1?" "+(same.indexOf(q)+1):""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);mset(r,"n",String(need));});});typed+=sp.length;};
+    if(!s.lv){write(ladder(L.map(x=>cap(x,s.rl))),0,"");return;}
+    /* Leveling: the nested steps <20 ⊂ <40 ⊂ <60 ⊂ <75 are written only where their limits differ from the next wider step; when <75 and 75+ have the same limits, one rule set without a level covers both */
+    const st=LV_STEPS.map(z=>ladder(L.map(x=>cap(x,z.lo)))),sg=st.map(x=>JSON.stringify(x));
+    [0,1,2].forEach(k=>{if(sg[k]!==sg[k+1])write(st[k],LV_STEPS[k].lv,LV_STEPS[k].n);});
+    if(sg[3]===sg[4])write(st[4],0,"");else{write(st[3],4,"<75");write(st[4],6,"75+");}
+  });
+  /* the build's Rare bases from item level 82 (Beam); Endgame and Uber Strict only with at least one build line of that item type */
+  bld.b.forEach(([t,bl])=>{const ok=bl.filter(i=>BASE_BY_ID[i]),a=(coreOf.get(t)||[]).slice(0,MAXL.a);bl.filter(i=>!BASE_BY_ID[i]).forEach(i=>gone.add(i));
+    if(!ok.length||!s.lv&&!a.length)return;
+    for(let i=0;i<ok.length;i+=MAXL.b)mk({type:t,rarity:4,level:7,action:3,colour:4},"Build bases "+tn(t)+" 82+",r=>{msetList(r,"b",ok.slice(i,i+MAXL.b));if(!s.lv){msetList(r,"a",a);mset(r,"n","1");}});});
+  if(gone.size)notes.push("Build lines or items this game data does not know were left out ("+gone.size+"): "+[...gone].slice(0,6).join(", ")+(gone.size>6?", …":"")+".");
+  return{rules:R,notes,typed};}
+/* Advanced import: the rules Easy Mode writes for this build and strictness. With hide: the whole Easy Mode filter of that strictness (keeps, Ashen block, hides); without: only the build's highlights. */
+function bzRules(bd,o){
+  const mode=o&&EZ_PRESETS[o.mode]?o.mode:"leveling",p=bzParse(bd),notes=p.notes.slice();
+  if(!p.bld)return{rules:[],notes:notes.concat(p.items?["The build has no gear lines or uniques to highlight."]:[]),items:p.items};
+  const s=ezPreset(mode,{arch:{},bld:p.bld});let rules;
+  if(o&&o.hide){const g=easyGen(s);rules=g.rules;g.notes.forEach(x=>{if(!notes.includes(x))notes.push(x);});}
+  else{const z=bzEzRules(s.bld,s);rules=z.rules;notes.push(...z.notes);}
+  return{rules,notes,items:p.items};}
+/* Easy Mode: which Build focus pills fit a simulator build (they are an optional extra; the build's own rules come from bzEzRules).
+   A line counts only when at most 3 pills hold its text (generic lines such as added physical damage say little), weighted by its tier (T1 1, T2 0.8, T3 0.5, worse 0.25).
+   A pill needs at least 2 such lines on at least 2 gear pieces and a score of at least half the best pill. Attributes, resistances and regeneration never count, Resists is never suggested. Best 4. */
 function bzPicks(bd){
-  const txt=new Set();
-  (bd&&Array.isArray(bd.items)?bd.items:[]).slice(0,40).forEach(it=>{if(!it||typeof it!=="object"||typeof it.unique==="string"&&it.unique)return;
-    (Array.isArray(it.affixes)?it.affixes:[]).slice(0,12).forEach(a=>{const r=a&&typeof a.id==="string"?a.id:"",l=LINEN[r]||LINEN[r.replace(/^riven95_/,"")];if(l&&!/\b(strength|dexterity|intelligence|attributes?|resistances?|regenerat)/i.test(l))txt.add(l);});});
-  /* a line that many pills share (skill levels, defences) counts less: weight 1 / number of pills that hold its text */
+  const lines=new Map(),worn=new Set();
+  (bd&&Array.isArray(bd.items)?bd.items:[]).slice(0,40).forEach(it=>{if(it&&typeof it==="object")worn.add(bzType(String(it.base||"")));});
+  (bd&&Array.isArray(bd.items)?bd.items:[]).slice(0,40).forEach((it,ix)=>{if(!it||typeof it!=="object"||typeof it.unique==="string"&&it.unique)return;
+    (Array.isArray(it.affixes)?it.affixes:[]).slice(0,12).forEach(a=>{const l=bzLab(a&&typeof a.id==="string"?a.id:"");if(!l||BZ_FILL.test(l))return;
+      const tr=Math.max(1,Math.min(8,Math.round(+a.tier)||1)),w=tr===1?1:tr===2?.8:tr===3?.5:.25,o=lines.get(l)||{w:0,on:new Set()};o.w+=w;o.on.add(ix);lines.set(l,o);});});
   const holders=new Map();EZ_ARCH.forEach(a=>new Set(a.ids.map(i=>LINEN[i]).filter(Boolean)).forEach(l=>holders.set(l,(holders.get(l)||0)+1)));
-  const sc=EZ_ARCH.map(a=>{const ls=[...new Set(a.ids.map(i=>LINEN[i]).filter(l=>l&&txt.has(l)))];return{k:a.k,n:a.n,score:Math.round(ls.reduce((t,l)=>t+1/(holders.get(l)||1),0)*10)/10};}).filter(x=>x.score>=1&&x.k!=="res").sort((a,b)=>b.score-a.score).slice(0,6);
-  return sc;}
+  /* Bow / Projectile holds only lines other attack builds share too, so it is suggested only when the build wears a bow or a quiver */
+  const sc=EZ_ARCH.filter(a=>a.k!=="res"&&(a.k!=="bow"||worn.has(18)||worn.has(34))).map(a=>{const ls=[...new Set(a.ids.map(i=>LINEN[i]).filter(l=>l&&lines.has(l)&&(holders.get(l)||1)<=3))],on=new Set();ls.forEach(l=>lines.get(l).on.forEach(x=>on.add(x)));
+    return{k:a.k,n:a.n,lines:ls.length,on:on.size,score:Math.round(ls.reduce((t,l)=>t+lines.get(l).w,0)*10)/10};}).filter(x=>x.lines>=2&&x.on>=2&&x.score>0).sort((a,b)=>b.score-a.score);
+  const top=sc.length?sc[0].score:0;
+  return sc.filter(x=>x.score>=top/2).slice(0,4).map(({k,n,score})=>({k,n,score}));}
 export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {bzPicks,bzRules,bzType,BZ_MODES,lineFit,baseLines,baseInType,redInType,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};
+export {bzSane,bzPicks,bzRules,bzParse,bzEzRules,bzType,BZ_MODES,lineFit,baseLines,baseInType,redInType,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};
