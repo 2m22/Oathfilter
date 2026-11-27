@@ -1480,7 +1480,7 @@ function bzEzRules(bld,s){
     if(!L.length)return;
     const cap=(x,lo)=>{let v=ezThr(x.id,lo,s.tk)||99;if(!s.lv&&s.tk>1&&v!==99)v=Math.max(v,Math.min(8,x.tier+s.tk-1));return v;};
     const need=L.length>1?2:1;
-    const ladder=caps=>{const out=[];[...new Set(caps)].sort((a,b)=>a-b).forEach(c=>{const ids=L.filter((x,i)=>caps[i]>=c).map(x=>x.id);
+    const ladder=caps=>{const out=[];[...new Set(caps)].sort((a,b)=>a-b).forEach(c=>{const ids=L.filter((x,i)=>c===99?caps[i]===99:caps[i]<=c).map(x=>x.id);
       for(let i=0;i<ids.length;i+=MAXL.a){const p=ids.slice(i,i+MAXL.a);if(p.length>=need)out.push({t:c===99?0:c,p});}});return out;};
     const write=(sp,lv,sn)=>{sp.forEach((q,i)=>{const same=sp.filter(z=>z.t===q.t);
       mk({type:t,rarity:rar,action:act,colour:4,level:lv},"Build "+tn(t)+(q.t?" T"+q.t:"")+(sn?" "+sn:"")+(same.length>1?" "+(same.indexOf(q)+1):""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);mset(r,"n",String(need));});});typed+=sp.length;};

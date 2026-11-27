@@ -781,12 +781,14 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
     ok(b.length&&b.every(x=>x.level===7&&mlist(x,"a").length&&mval(x,"n")==="1")&&bl.every(x=>x.level===7&&!mlist(x,"a").length),"bases 82+: Endgame and Uber need a build line, Leveling does not"); }
   ok(mlist(eg.find(x=>mlist(x,"rn").length),"rn").join()==="adders_kiss"&&!bzEzRules(Object.assign({},p.bld,{ou:0}),ezPreset("endgame",{arch:{}})).rules.some(x=>mlist(x,"rn").length),"uniques get a red rule unless switched off");
   ok(bzEzRules(Object.assign({},p.bld,{g:[[10,[["gone_line_x",1,1],["life_large",1,1],["es_global",1,1]]]]}),ezPreset("endgame",{arch:{}})).notes.some(x=>x.includes("gone_line_x")),"stored lines the game data no longer knows are dropped with a note");
-  /* the ladder never takes a line below its own limit: every hit has enough lines of that type, each within the limit of its own rung */
+  /* the ladder: a rung holds every line whose own limit is at most the rung's tier, so a line may be looser than its own limit by the spread of its type (at most 2 tiers here). Every hit has enough lines within the rung's tier. */
   { const fx=JSON.parse(readFileSync(new URL("./fixtures/builds/0-warrior-real.json",import.meta.url)));const q=bzParse(fx).bld,s=ezPreset("endgame",{arch:{},bld:q}),rs=typed(bzEzRules(q,s).rules);
     const caps=new Map();q.g.forEach(([t,ls])=>ls.forEach(([id,tr])=>{const l=LINEN[id];caps.set(t+"|"+l,Math.max(ezThr(id,75,2),Math.min(8,tr+1)));}));
+    const untiedOK=rs.filter(x=>!mval(x,"t")).every(x=>mlist(x,"a").every(l=>!caps.has(x.type+"|"+LINEN[l])||caps.get(x.type+"|"+LINEN[l])>=99));
+    const overs=rs.filter(x=>mval(x,"t")).flatMap(x=>mlist(x,"a").map(l=>(+mval(x,"t"))-(caps.get(x.type+"|"+LINEN[l])??-99)));
     let bad=0,hits=0;for(let i=0;i<20000;i++){const it=genItem({cls:"raredecent",lvl:84});const r=rs.find(x=>matches(x,it));if(!r)continue;hits++;
-      const good=it.mods.filter(m=>caps.has(r.type+"|"+m.lineLabel)&&m.tier<=caps.get(r.type+"|"+m.lineLabel)).length;if(good<+mval(r,"n"))bad++;}
-    ok(hits>0&&bad===0,"build tier ladder: a match never takes a line below its own limit ("+hits+" hits)"); }
+      const rung=+mval(r,"t")||8;const names=mlist(r,"a").map(l=>LINEN[l]);const good=it.mods.filter(m=>names.includes(m.lineLabel)&&m.tier<=rung).length;if(good<+mval(r,"n"))bad++;}
+    ok(untiedOK&&overs.length>0&&overs.every(d=>d>=0&&d<=2)&&hits>0&&bad===0,"build tier ladder: a rung never sits more than 2 tiers above a line's own limit ("+hits+" hits)"); }
   /* Easy Mode with only a build: whitelist, Ashen block above the hides, no rule issues, within the rule limit for every test build */
   for(const f of readdirSync(new URL("./fixtures/builds/",import.meta.url))){const fx=JSON.parse(readFileSync(new URL("./fixtures/builds/"+f,import.meta.url))),b=bzParse(fx).bld;if(!b)continue;
     for(const md of ["leveling","endgame","uber"]){
