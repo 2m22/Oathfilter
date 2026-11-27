@@ -16,6 +16,7 @@ All notable changes for players. Newest first.
 ### Fixed
 - Build import keeps Rare Ashen and Gnome-made bases visible above the import's hide rules.
 - Build import: Skill level lines take the build's tier in Endgame and Uber Strict, like other build lines. Leveling is unchanged.
+- Build import: an item with two matching core lines of the build's item type is now highlighted even when those lines fell into different rules before (for example, Rings with many core lines). Builds that would need too many rules keep the previous grouping, so the 200-rule limit still holds.
 
 ## 2026-11-25
 
