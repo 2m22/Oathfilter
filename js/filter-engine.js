@@ -1284,6 +1284,17 @@ function ezThr(id,rl,keep){
   if(thr&&top===1)return 1; /* a one-tier line is always T1, so it must not lift the limit of the rule it sits in */
   return thr&&thr<Math.min(top,EZ_TMAX)?thr:0;
 }
+/* pair cover (greedy): sets of up to MAXL.a lines so that every two of the items share a set. A set's tier is its highest cap; rules keep one tier each, so lines with a lower cap are only loosened by the set's tier. Deterministic. */
+function coverSets(items){const n=items.length;if(!n)return[];if(n===1)return[{t:items[0].c,p:[items[0].id]}];
+ const key=(i,j)=>i<j?i*n+j:j*n+i,unc=new Set();for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)unc.add(key(i,j));
+ const out=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){if(!unc.has(key(i,j)))continue;
+  const S=[i,j];
+  for(;;){if(S.length>=MAXL.a)break;const mx=Math.max(...S.map(s=>items[s].c));let best=-1,bg=0,bd=0;
+   for(let k=0;k<n;k++){if(S.includes(k))continue;let g=0;for(const s of S)if(unc.has(key(k,s)))g++;if(!g)continue;const d=Math.abs(items[k].c-mx);if(g>bg||(g===bg&&d<bd)){best=k;bg=g;bd=d;}}
+   if(best<0)break;S.push(best);}
+  for(const a of S)for(const b of S)if(a<b)unc.delete(key(a,b));
+  out.push({t:Math.max(...S.map(s=>items[s].c)),p:S.map(s=>items[s].id)});}
+ return out;}
 const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=MAXL.a)p.push(ids.slice(i,i+MAXL.a));return p;};
 /* Leveling tier steps. Item-level steps of the compiler (rule level 1..4 = <20, <40, <60, <75, 6 = 75+). Each step caps a line at the best tier that can drop at the step's LOWER item level plus keep-1 tiers, so the best droppable tier is never hidden. */
 const LV_STEPS=[{lv:1,lo:1,n:"<20"},{lv:2,lo:20,n:"<40"},{lv:3,lo:40,n:"<60"},{lv:4,lo:60,n:"<75"},{lv:6,lo:75,n:"75+"}];
@@ -1480,8 +1491,14 @@ function bzEzRules(bld,s){
     if(!L.length)return;
     const cap=(x,lo)=>{let v=ezThr(x.id,lo,s.tk)||99;if(!s.lv){const tc=Math.min(8,x.tier+s.tk-1);if(v===99)v=tc;else if(s.tk>1)v=Math.max(v,tc);}return v;}; /* untiered lines (Skill levels, for example) take the build tier outside Leveling; Leveling keeps its own steps (spec 4.8) */
     const need=L.length>1?2:1;
-    const ladder=caps=>{const out=[];[...new Set(caps)].sort((a,b)=>a-b).forEach(c=>{const ids=L.filter((x,i)=>c===99?caps[i]===99:caps[i]<=c).map(x=>x.id);
+    /* a rung holds the lines whose own cap is at most the rung's tier. Two ways to write a rung as rules of at most 6 lines:
+       chunk (cut in order, as before) and cover (every two lines share a rule, see coverSets). Cover is taken for this item type only when it costs at most 2 rules more than chunk, so dense builds stay within the rule limit. */
+    const ladderChunk=caps=>{const out=[];[...new Set(caps)].sort((a,b)=>a-b).forEach(c=>{const ids=L.filter((x,i)=>c===99?caps[i]===99:caps[i]<=c).map(x=>x.id);
       for(let i=0;i<ids.length;i+=MAXL.a){const p=ids.slice(i,i+MAXL.a);if(p.length>=need)out.push({t:c===99?0:c,p});}});return out;};
+    const ladderCover=caps=>{const out=[],tg=[],un=[];L.forEach((x,i)=>(caps[i]===99?un:tg).push({id:x.id,c:caps[i]}));
+      coverSets(tg).forEach(q=>{if(q.p.length>=need)out.push({t:q.t,p:q.p});});
+      coverSets(un).forEach(q=>{if(q.p.length>=need)out.push({t:0,p:q.p});});return out;};
+    const ladder=caps=>{const c=ladderCover(caps),h=ladderChunk(caps);return c.length<=h.length+2?c:h;};
     const write=(sp,lv,sn)=>{sp.forEach((q,i)=>{const same=sp.filter(z=>z.t===q.t);
       mk({type:t,rarity:rar,action:act,colour:4,level:lv},"Build "+tn(t)+(q.t?" T"+q.t:"")+(sn?" "+sn:"")+(same.length>1?" "+(same.indexOf(q)+1):""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);mset(r,"n",String(need));});});typed+=sp.length;};
     if(!s.lv){write(ladder(L.map(x=>cap(x,s.rl))),0,"");return;}
@@ -1525,4 +1542,4 @@ export function setF(v){F=v;return v;}
 export function bumpRev(){return ++REV;}
 export function setLangId(v){LANG=v;return v;}
 export function setDcRev(v){DC_REV=v;return v;}
-export {bzSane,bzPicks,bzRules,bzParse,bzEzRules,bzType,BZ_MODES,lineFit,baseLines,baseInType,redInType,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};
+export {coverSets,bzSane,bzPicks,bzRules,bzParse,bzEzRules,bzType,BZ_MODES,lineFit,baseLines,baseInType,redInType,idolLineId,EZ_EXCLUDED,REDLAB,DATA_BUILD,fixAn,defOf,MAXL,DATA,RAW_LINE,COND_LINE,cleanLineText,COLL,sortKey,byText,LINE_IDS,LINE_HAY,BASEN,REDN,LINEN,RED_IDS,LANGS,LX,DC_REV,LANG,dl,BASED,REDD,LINED,dItemName,PRIMAL_IDS,redIdOf,MAX_RULES,COPY,T,COLOURS,FIELDS,NEW_RULE,ALPHA,alphaKeep,nameOf,colOf,uid,newRule,MORE_ORDER,parseMore,moreStr,mval,mset,mrng,msetRng,mlist,msetList,hasRaw,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,encode,decode,LINEMAP,LEVEL,RAR,typeMatch,rollOk,moreMatch,matches,NEVER_HIDDEN,SIM,simRules,evaluate,REV,evalC,ARM,ARM_N,ARM_L,BASE_SRC,BASES,BASE_BY_ID,addBase,VAR_SRC,VARIANTS,VAR_IDS,SPECIAL,CHASE,AFF_SRC,AFF,IDOL_G,IDOL_LV,UNIQUE_SRC,UNIQUE_EXTRA,UNIQUES,rnd,pick,wpick,CATKEYS,MISC,tierLvl,tierPick,rollMods,CLASSES,genItem,USER_CODE,GAME_PRESETS,PRESETS,F,LVSTEPS,rngText,EZ_KEY,EZ_ARCH,EZ_ST,EZ_ATK,EZ_GRP,EZ_RL,EZ_KEEP,EZ_TMAX,EZ_LINEIDS,EZ_IDOLTXT,ezDef,ezSane,ezLines,ezEff,ezGearIds,ezIdolIds,ezTP,ezThr,ezChunks,easyGen,ezHash,ezHashF,ezLoad,EZ,ezSave,ezSnap,ezRestore,ezLinked,EZ_PRESETS,EZ_PRE_IDS,ezPreset,EZ_OWNED,ezOwnedChanged,ezBadge,NAME_MAX};

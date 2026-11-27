@@ -2,7 +2,7 @@
    Covers the 200 rule limit: encode / decode round trip, the limit warning, matching with a full rule list. */
 import * as MOD from "../js/modules.js";
 import {readFileSync,readdirSync} from "node:fs";
-import {bzSane,bzParse,bzEzRules,bzPicks,bzRules,bzType,idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
+import {coverSets,bzSane,bzParse,bzEzRules,bzPicks,bzRules,bzType,idolLineId,EZ_EXCLUDED,EZ_ARCH,EZ_GRP,REDD,REDN,DATA,AFF,UNIQUES,msetList,LINEN as LINEN_,MAX_RULES,encode,decode,matches,genItem,newRule,GAME_PRESETS,COPY,defOf,T,LINEN,mlist as mlistT,setF,bumpRev,evaluate,easyGen,ezSane,MORE_ORDER,mset,fixAn,DATA_BUILD,LINEMAP,mval,ruleClash,anOnBasesOrReds,GA_COLOUR,GA_GM,GA_ASH,GA_IDS,gaRules,isGaRule,rulesIssues,BASES,EZ,ezLinked,EZ_PRESETS,ezOwnedChanged,ezBadge,EZ_PRE_IDS,ezPreset,ezThr,tierLvl,LEVEL,mlist,lineFit,baseLines,baseInType,redInType,redIdOf} from "../js/filter-engine.js";
 
 let failed=0,passed=0;
 const ok=(c,msg)=>{if(c){passed++;}else{failed++;console.error("FAIL: "+msg);}};
@@ -789,6 +789,29 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
     let bad=0,hits=0;for(let i=0;i<20000;i++){const it=genItem({cls:"raredecent",lvl:84});const r=rs.find(x=>matches(x,it));if(!r)continue;hits++;
       const rung=+mval(r,"t")||8;const names=mlist(r,"a").map(l=>LINEN[l]);const good=it.mods.filter(m=>names.includes(m.lineLabel)&&m.tier<=rung).length;if(good<+mval(r,"n"))bad++;}
     ok(untiedOK&&overs.length>0&&overs.every(d=>d>=0&&d<=2)&&hits>0&&bad===0,"build tier ladder: a rung never sits more than 2 tiers above a line's own limit ("+hits+" hits)"); }
+  /* pair cover: every two core lines of one item type share a rule (at most 6 lines each), the rule's tier is the highest cap in it */
+  { const cs=(n,seed)=>{let x=seed;const r=()=>(x=(Math.imul(x,1664525)+1013904223)>>>0)/4294967296;return Array.from({length:n},(_,i)=>({id:"l"+i,c:1+Math.floor(r()*8)}));};
+    let allOK=true,sizeOK=true,tOK=true;
+    for(let n=2;n<=20;n++)for(let sd=1;sd<=4;sd++){const it=cs(n,n*7+sd),sets=coverSets(it);
+      const has=(a,b)=>sets.some(s=>s.p.includes(a)&&s.p.includes(b));
+      for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)if(!has(it[i].id,it[j].id))allOK=false;
+      sets.forEach(s=>{if(s.p.length>6||s.p.length<2)sizeOK=false;const cc=s.p.map(id=>it.find(z=>z.id===id).c);if(s.t!==Math.max(...cc))tOK=false;});}
+    ok(allOK,"pair cover: every pair of lines shares a rule (up to 20 lines)");
+    ok(sizeOK,"pair cover: each rule holds 2 to 6 lines");
+    ok(tOK,"pair cover: a rule's tier is the highest cap of its lines");
+    const nine=Array.from({length:9},(_,i)=>({id:"x"+i,c:2}));
+    ok(coverSets(nine).length<=3,"pair cover: 9 lines of one cap need 3 rules: "+coverSets(nine).length); }
+  /* 5-many-core-lines: Rings have 9 core lines, every pair must share a Build rule of the type */
+  for(const md of ["endgame","uber","leveling"]){ const fx=JSON.parse(readFileSync(new URL("./fixtures/builds/5-many-core-lines.json",import.meta.url)));
+    const rs=bzRules(fx,{mode:md,hide:true}).rules.filter(x=>/^Build Rings/.test(x.name)), labs=[...new Set(rs.flatMap(x=>mlist(x,"a")))];
+    let miss=0;for(let i=0;i<labs.length;i++)for(let j=i+1;j<labs.length;j++)if(!rs.some(x=>{const a=mlist(x,"a");return a.includes(labs[i])&&a.includes(labs[j]);}))miss++;
+    ok(labs.length>=9&&miss===0&&rs.every(x=>mlist(x,"a").length<=6),"5-many "+md+": every pair of Ring lines shares a rule ("+labs.length+" lines, "+miss+" uncovered)"); }
+  /* dense builds: many core lines on several item types must stay within the rule limit in every strictness */
+  { const lab=[];const seen=new Set();for(const a of Object.values(AFF)){if(!a||!a.tags)continue;const l=LINEN[a.id];if(!l||seen.has(l)||/Idol|resist|strength|dexterity|intelligence|attribut|regenerat/i.test(l))continue;seen.add(l);lab.push(a.id);if(lab.length>=18)break;}
+    const tr=[1,2,1,3,1,2,1,2,3,1,2,1,2,1,3,2,1,3];
+    const dense={n:"dense",ou:0,g:[10,11,6,2,1,3].map(t=>[t,lab.map((id,i)=>[id,tr[(i+t)%tr.length],1])]),u:[],b:[]};
+    for(const md of ["leveling","endgame","uber"]){const g=easyGen(ezPreset(md,{arch:{},bld:dense}));
+      ok(g.rules.length<=MAX_RULES&&rulesIssues(g.rules).filter(x=>x.level==="error").length===0,"dense build (6 types x 18 lines) "+md+": "+g.rules.length+" rules, within the limit, no issues"); } }
   /* Easy Mode with only a build: whitelist, Ashen block above the hides, no rule issues, within the rule limit for every test build */
   for(const f of readdirSync(new URL("./fixtures/builds/",import.meta.url))){const fx=JSON.parse(readFileSync(new URL("./fixtures/builds/"+f,import.meta.url))),b=bzParse(fx).bld;if(!b)continue;
     for(const md of ["leveling","endgame","uber"]){
