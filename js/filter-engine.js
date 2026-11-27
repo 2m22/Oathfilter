@@ -93,7 +93,8 @@ const newRule=o=>Object.assign({extra:[],m:[]},NEW_RULE,o||{});
 const MORE_ORDER=["b","a","all","an","na","nb","t","k","n","s","d","i","q","g","gx","r","nr","rn","u","rt"];
 /* data version of the item lists above */
 const DATA_BUILD={build:92,source:"local game files",read:"2026-11-26",apiChecked:92};
-const MAXL={a:6,b:12,rn:12,na:6}; /* list limits shown in the game (Patch 87) */
+const MAXL={a:6,b:12,rn:12,na:6};
+const BUILD_RULES=100; /* rules the build may write before it falls back to chunking (Easy Mode limit 200) */ /* list limits shown in the game (Patch 87) */
 const parseMore=s=>s.split(";").filter(x=>x!=="").map(seg=>{const i=seg.indexOf("=");return i<0?[seg,null]:[seg.slice(0,i),seg.slice(i+1)];});
 const moreStr=r=>r.m&&r.m.length?",3:"+r.m.map(p=>p[1]===null?p[0]:p[0]+"="+p[1]).join(";"):"";
 const mval=(r,k)=>{const p=(r.m||[]).find(x=>x[0]===k);return p&&p[1]!==null?p[1]:"";};
@@ -1286,14 +1287,19 @@ function ezThr(id,rl,keep){
 }
 /* pair cover (greedy): sets of up to MAXL.a lines so that every two of the items share a set. A set's tier is its highest cap; rules keep one tier each, so lines with a lower cap are only loosened by the set's tier. Deterministic. */
 function coverSets(items){const n=items.length;if(!n)return[];if(n===1)return[{t:items[0].c,p:[items[0].id]}];
+ let best=null;for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const r=coverGreedy(items,i,j);if(!best||r.length<best.length)best=r;}
+ return best;}
+function coverGreedy(items,i0,j0){const n=items.length;
  const key=(i,j)=>i<j?i*n+j:j*n+i,unc=new Set();for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)unc.add(key(i,j));
- const out=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){if(!unc.has(key(i,j)))continue;
-  const S=[i,j];
+ const out=[];let start=[i0,j0];
+ for(;;){const S=start;start=null;
   for(;;){if(S.length>=MAXL.a)break;const mx=Math.max(...S.map(s=>items[s].c));let best=-1,bg=0,bd=0;
    for(let k=0;k<n;k++){if(S.includes(k))continue;let g=0;for(const s of S)if(unc.has(key(k,s)))g++;if(!g)continue;const d=Math.abs(items[k].c-mx);if(g>bg||(g===bg&&d<bd)){best=k;bg=g;bd=d;}}
    if(best<0)break;S.push(best);}
   for(const a of S)for(const b of S)if(a<b)unc.delete(key(a,b));
-  out.push({t:Math.max(...S.map(s=>items[s].c)),p:S.map(s=>items[s].id)});}
+  out.push({t:Math.max(...S.map(s=>items[s].c)),p:S.map(s=>items[s].id)});
+  let nx=null;for(let i=0;i<n&&!nx;i++)for(let j=i+1;j<n;j++)if(unc.has(key(i,j))){nx=[i,j];break;}
+  if(!nx)break;start=nx;}
  return out;}
 const ezChunks=ids=>{const p=[];for(let i=0;i<ids.length;i+=MAXL.a)p.push(ids.slice(i,i+MAXL.a));return p;};
 /* Leveling tier steps. Item-level steps of the compiler (rule level 1..4 = <20, <40, <60, <75, 6 = 75+). Each step caps a line at the best tier that can drop at the step's LOWER item level plus keep-1 tiers, so the best droppable tier is never hidden. */
@@ -1475,7 +1481,9 @@ function bzSane(o){
 /* The build's rules: per item type, and every line keeps its own tier limit. A rule has one tier limit and counts its lines (n) only inside itself, so per item type there is one rule for each tier limit the type's lines use, listing every line whose own limit is at least that loose (a tier ladder). That way a match never takes a line below its own limit. Two lines are needed (one when the type has a single build line).
    Limits: Leveling = the Easy Mode steps (best tier that drops at the step's lower item level + keep), the build's tier is not used. Endgame = the preset limit, loosened to the build's tier on that item type (+ keep) where the build wears a worse tier. Uber Strict (keep 1) = the preset limit only.
    Skill levels (with Leveling) and the max resistances are left out: they have rules of their own. */
-function bzEzRules(bld,s){
+/* the build's rules: pair cover where it stays within the budget (BUILD_RULES), otherwise chunking only */
+function bzEzRules(bld,s){const a=bzEzRulesOnce(bld,s,true);return a.typed<=BUILD_RULES?a:bzEzRulesOnce(bld,s,false);}
+function bzEzRulesOnce(bld,s,cover){
   const R=[],notes=[],gone=new Set();let typed=0;
   if(!bld)return{rules:R,notes,typed};
   const mk=(o,name,fn)=>{const r=newRule(o);r.name=name.slice(0,NAME_MAX);if(fn)fn(r);R.push(r);return r;};
@@ -1498,7 +1506,7 @@ function bzEzRules(bld,s){
     const ladderCover=caps=>{const out=[],tg=[],un=[];L.forEach((x,i)=>(caps[i]===99?un:tg).push({id:x.id,c:caps[i]}));
       coverSets(tg).forEach(q=>{if(q.p.length>=need)out.push({t:q.t,p:q.p});});
       coverSets(un).forEach(q=>{if(q.p.length>=need)out.push({t:0,p:q.p});});return out;};
-    const ladder=caps=>{const c=ladderCover(caps),h=ladderChunk(caps);return c.length<=h.length+2?c:h;};
+    const ladder=caps=>{if(!cover)return ladderChunk(caps);const c=ladderCover(caps),h=ladderChunk(caps);return c.length<=h.length*1.6+2?c:h;};
     const write=(sp,lv,sn)=>{sp.forEach((q,i)=>{const same=sp.filter(z=>z.t===q.t);
       mk({type:t,rarity:rar,action:act,colour:4,level:lv},"Build "+tn(t)+(q.t?" T"+q.t:"")+(sn?" "+sn:"")+(same.length>1?" "+(same.indexOf(q)+1):""),r=>{if(q.t)mset(r,"t",String(q.t));msetList(r,"a",q.p);mset(r,"n",String(need));});});typed+=sp.length;};
     if(!s.lv){write(ladder(L.map(x=>cap(x,s.rl))),0,"");return;}
