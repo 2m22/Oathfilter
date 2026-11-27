@@ -1478,7 +1478,7 @@ function bzEzRules(bld,s){
     ls.forEach(([sid,tier,c])=>{const l=bzLab(sid);if(!l){gone.add(sid);return;}if(seen.has(l)||own.has(l)||BZ_FILL.test(l))return;seen.add(l);L.push({id:(LINE_IDS[l]||[])[0]||sid,tier,c});});
     L.sort((a,b)=>b.c-a.c||a.tier-b.tier);coreOf.set(t,L.map(x=>x.id));
     if(!L.length)return;
-    const cap=(x,lo)=>{let v=ezThr(x.id,lo,s.tk)||99;if(!s.lv&&s.tk>1&&v!==99)v=Math.max(v,Math.min(8,x.tier+s.tk-1));return v;};
+    const cap=(x,lo)=>{let v=ezThr(x.id,lo,s.tk)||99;if(!s.lv){const tc=Math.min(8,x.tier+s.tk-1);if(v===99)v=tc;else if(s.tk>1)v=Math.max(v,tc);}return v;}; /* untiered lines (Skill levels, for example) take the build tier outside Leveling; Leveling keeps its own steps (spec 4.8) */
     const need=L.length>1?2:1;
     const ladder=caps=>{const out=[];[...new Set(caps)].sort((a,b)=>a-b).forEach(c=>{const ids=L.filter((x,i)=>c===99?caps[i]===99:caps[i]<=c).map(x=>x.id);
       for(let i=0;i<ids.length;i+=MAXL.a){const p=ids.slice(i,i+MAXL.a);if(p.length>=need)out.push({t:c===99?0:c,p});}});return out;};
