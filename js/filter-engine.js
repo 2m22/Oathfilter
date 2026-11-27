@@ -1362,7 +1362,7 @@ function easyGen(s,pack,merge){
   /* 1 specials: the game's own End Game preset rules (kept above every hide so they are never caught) */
   if(s.keep.core)mk({type:13,action:3,colour:0},"Core-touched");
   if(s.keep.runes&&anyHide)mk({type:4,rarity:1,action:1},"Rune bases");
-  if(s.keep.tsw&&anyHide)mk({type:16,rarity:3,level:6,action:2,colour:0},"Truesworn bases");
+  if(s.keep.tsw&&anyHide){mk({type:16,rarity:3,level:6,action:2,colour:0},"Truesworn bases");mk({type:16,rarity:4,level:6,action:2,colour:0},"Truesworn bases Rare");} /* Rare Truesworn bases need their own rule: rarity 3 is Normal and Magic only */
   if(s.gems)mk({type:17,action:s.gems===2?4:0},s.gems===2?"Sell gems":"Hide gems"); /* a Gems rule only catches gems, so its place in the list does not matter */
   if(s.hr)mk({type:33,rarity:3,action:0},"Hide Normal and Magic Dwarven Runes"); /* Sell does not work on Dwarven Runes (in game, 25.11.2026), so Hide; it costs Dwarven Carving material. A rune rule only catches runes, so its place does not matter */
   /* 2 Idols: Type 0 does not cover Idols, so they get their own rules. Picks come first, the hide of the other Idols after them. */
