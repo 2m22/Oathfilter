@@ -5,15 +5,17 @@ All notable changes for players. Newest first.
 ## 2026-11-27
 
 ### Added
-- Import build: paste a build link (`#buildz=`) or code in the Advanced editor (Rules column) or in Easy Mode. The build's gear lines are highlighted per item type and by tier, shaped by the chosen strictness (Leveling, Endgame or Uber Strict). Lines with the same tier limit share one rule.
+- Import build: paste a build link (`#buildz=`) or code in the Advanced editor (Rules column) or in Easy Mode. The build's gear lines are highlighted per item type and by tier, shaped by the chosen strictness (Leveling, Endgame or Uber Strict). Lines are grouped into rules by their tier limit, and lines with mixed limits all stay highlighted.
 - Easy Mode: an imported build stays loaded (shown by name with a "+ builds" badge) until you press "Remove build". Build focus pills can be picked during import.
 - Builds without rolled lines (only bases) import as well. Their Rare bases are highlighted from item level 82.
 
 ### Changed
 - Easy Mode Leveling hides Normal and Magic gear from item level 20 when you have Build focus picks or an imported build. Without either, nothing is hidden by this rule.
+- Easy Mode Endgame and Uber Strict hide rules also apply to an imported build without Gear picks. With Gear picks nothing changes.
 
 ### Fixed
 - Build import keeps Rare Ashen and Gnome-made bases visible above the import's hide rules.
+- Build import: Skill level lines take the build's tier in Endgame and Uber Strict, like other build lines. Leveling is unchanged.
 
 ## 2026-11-25
 
