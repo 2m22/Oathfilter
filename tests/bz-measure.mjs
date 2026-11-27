@@ -1,6 +1,8 @@
 /* Build import measurement (not part of run.mjs): the build import (Easy Mode generator with the build's per-type tier ladder) alone and with the suggested Build focus pills. Run: node tests/bz-measure.mjs. Ground truth: a rare of a type the build wears with at least 2 of that type's core lines good enough (Leveling: best droppable tier at its item level +1, Endgame: item level 75+ and build tier +1, Uber: item level 82+ and T1). Random samples, numbers move by a few percent per run. */
 import * as m from "../js/filter-engine.js";
 import fs from "fs";
+/* deterministic: SEED env selects a fixed sequence (LCG) for every Math.random call, so repeated runs see the same ground truth */
+let SEED=(+(process.env.SEED||1))>>>0;Math.random=()=>{SEED=(Math.imul(SEED,1664525)+1013904223)>>>0;return SEED/4294967296;};
 const {bzParse,LINEN,LINE_IDS,bzType,bzRules,easyGen,ezPreset,matches,genItem,mval,mset,mlist,msetList,newRule,rulesIssues,ezThr,bzPicks}=m;
 const DIR=new URL("./fixtures/builds/",import.meta.url).pathname;
 const filler=id=>/\b(strength|dexterity|intelligence|attributes?|resistances?|regenerat)/i.test(LINEN[id]||"");
