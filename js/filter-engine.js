@@ -1408,7 +1408,6 @@ function ezHash(str){let h=0x811c9dc5;for(let i=0;i<str.length;i++){h^=str.charC
 const ezHashF=f=>ezHash(encode(f).replace(/^BOFILTER:1,[^|]*/,""));
 function ezLoad(){let o=null;try{o=JSON.parse(localStorage.getItem(EZ_KEY)||"null");}catch(e){}
   return{s:ezSane(o&&o.s),h:o&&typeof o.h==="string"?o.h:"",m:o&&o.m==="easy"?"easy":"adv",r:o&&o.r===1?1:0};}
-var EZ=ezLoad();
 function ezSave(){try{localStorage.setItem(EZ_KEY,JSON.stringify({s:EZ.s,h:EZ.h,m:EZ.m,r:EZ.r?1:0}));}catch(e){}}
 const ezSnap=()=>EZ?{s:EZ.s,h:EZ.h}:null;
 function ezRestore(f){if(f&&f.e&&f.e.s){EZ.s=ezSane(f.e.s);EZ.h=typeof f.e.h==="string"?f.e.h:"";ezSave();}if(f)delete f.e;}
@@ -1479,6 +1478,7 @@ function bzSane(o){
   const b=Array.isArray(o.b)?o.b.slice(0,16).filter(x=>Array.isArray(x)&&BZ_TYPES.has(+x[0])&&Array.isArray(x[1])).map(x=>[+x[0],x[1].slice(0,12).filter(i=>typeof i==="string"&&i).map(str)]):[];
   if(!g.length&&!u.length&&!b.length)return null;
   return{n:str(o.n).replace(/[\u0000-\u001f]/g,"").slice(0,40),ou:o.ou===0?0:1,g,u,b};}
+var EZ=ezLoad(); /* loads a saved imported build through bzSane, so it has to run after BZ_TYPES exists (before, a saved build broke the page start) */
 /* The build's rules: per item type, and every line keeps its own tier limit. A rule has one tier limit and counts its lines (n) only inside itself, so per item type there is one rule for each tier limit the type's lines use, listing every line whose own limit is at least that loose (a tier ladder). That way a match never takes a line below its own limit. Two lines are needed (one when the type has a single build line).
    Limits: Leveling = the Easy Mode steps (best tier that drops at the step's lower item level + keep), the build's tier is not used. Endgame = the preset limit, loosened to the build's tier on that item type (+ keep) where the build wears a worse tier. Uber Strict (keep 1) = the preset limit only.
    Skill levels (with Leveling) and the max resistances are left out: they have rules of their own. */

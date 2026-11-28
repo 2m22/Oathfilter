@@ -849,5 +849,16 @@ eq(encode(decode("BOFILTER:1,-1|1,0,1,0,27,0,0,0,0,255").filter),"BOFILTER:1,-1|
   ok(en.filter(r=>/^Everything else/.test(r.name)).length>0&&en.filter(r=>/^Everything else/.test(r.name)).every(r=>mval(r,"i")===""),"without Leveling the catch-all hide has no item level start");
 }
 
+/* a saved imported build must not break the page start (ezLoad ran before BZ_TYPES existed) */
+{
+  const had=globalThis.localStorage;
+  globalThis.localStorage={getItem:()=>JSON.stringify({s:{bld:{n:"x",ou:1,g:[[10,[["life",1,3]]]],u:[],b:[]}},h:"",m:"adv",r:0}),setItem(){}};
+  let err="",m=null;
+  try{m=await import("../js/filter-engine.js?saved-build");}catch(e){err=e.message;}
+  if(had===undefined)delete globalThis.localStorage;else globalThis.localStorage=had;
+  eq(err,"","module loads with a saved imported build");
+  ok(m&&m.EZ.s.bld&&m.EZ.s.bld.g.length===1,"the saved build is restored on load");
+}
+
 console.log(passed+" passed, "+failed+" failed");
 process.exit(failed?1:0);
