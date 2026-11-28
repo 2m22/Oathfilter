@@ -2,6 +2,14 @@
 
 All notable changes for players. Newest first.
 
+## 2026-11-28
+
+### Added
+- Easy Mode: T1 Idols are always highlighted in red, even when you pick Idol lines. They stay visible before any Idol hide rule.
+
+### Fixed
+- Easy Mode: the Idol setting "none" (hide Idols) now works. Before, it was reset to the default.
+
 ## 2026-11-27
 
 ### Added
