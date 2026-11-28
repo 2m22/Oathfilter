@@ -8,6 +8,7 @@ All notable changes for players. Newest first.
 - Easy Mode: T1 Idols are always highlighted in red, even when you pick Idol lines. They stay visible before any Idol hide rule.
 
 ### Fixed
+- The page no longer fails to start when an imported build is saved in your browser (the editor stayed empty before).
 - Easy Mode: the Idol setting "none" (hide Idols) now works. Before, it was reset to the default.
 
 ## 2026-11-27
