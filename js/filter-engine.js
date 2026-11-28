@@ -1244,7 +1244,7 @@ function ezSane(o){
   const n=(v,lo,hi,df)=>{v=Math.round(+v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):df;};
   const on=(v,df)=>v===undefined?df:(v?1:0);
   const s={lv:n(o.lv,0,1,d.lv),rl:+o.rl===90?84:LVSTEPS.includes(+o.rl)?+o.rl:d.rl,tk:n(o.tk,1,3,d.tk),hl:on(o.hl,d.hl),
-    idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),ga:on(o.ga,d.ga),hr:on(o.hr,d.hr),st:n(o.st,0,2,d.st),pre:typeof o.pre==="string"?o.pre.slice(0,24):d.pre,arch:{},keep:{}};
+    idol:["match","all","none"].includes(o.idol)?o.idol:d.idol,hn:on(o.hn,d.hn),hm:on(o.hm,d.hm),hs:on(o.hs,d.hs),gems:n(o.gems,0,2,d.gems),ga:on(o.ga,d.ga),hr:on(o.hr,d.hr),st:n(o.st,0,2,d.st),pre:typeof o.pre==="string"?o.pre.slice(0,24):d.pre,arch:{},keep:{}};
   EZ_ARCH.forEach(a=>{s.arch[a.k]=o.arch&&o.arch[a.k]?1:0;});
   if(o.arch&&o.arch.elem){s.arch.fire=s.arch.cold=s.arch.light=1;} /* older saves had one Elemental pick */
   if(o.arch&&o.arch.dot){s.arch.pois=s.arch.bleed=s.arch.ign=1;} /* ... and one Damage over time pick */
@@ -1367,6 +1367,7 @@ function easyGen(s,pack,merge){
   if(s.hr)mk({type:33,rarity:3,action:0},"Hide Normal and Magic Dwarven Runes"); /* Sell does not work on Dwarven Runes (in game, 25.11.2026), so Hide; it costs Dwarven Carving material. A rune rule only catches runes, so its place does not matter */
   /* 2 Idols: Type 0 does not cover Idols, so they get their own rules. Picks come first, the hide of the other Idols after them. */
   if(s.idol!=="none"&&(s.idol==="match"||s.hl))idolA.forEach(x=>x.parts.forEach((p,i)=>mk({type:14,rarity:0,action:s.hl?2:1,colour:x.a.col},"Idols: "+x.a.n+(x.parts.length>1?" "+(i+1)+"/"+x.parts.length:""),r=>msetList(r,"a",p))));
+  mk({type:14,rarity:0,action:s.hl?3:2,colour:5},"Show T1 Idols",r=>mset(r,"t","1")); /* T1 Idols stay shown before any Idol hide. The tier limit on Idol rules works in game (confirmed 28.11.2026). */
   if(s.idol==="none"){mk({type:14,action:0},"Idols");if(act.some(a=>!a.ids.length))notes.push("Idol-only picks do nothing while all Idols are hidden.");}
   else if(idolWhite)mk({type:14,action:0},"Other idols");
   else if(s.idol==="all"&&!s.hl&&idolA.length)notes.push("Idols stay shown and Highlight is off, so Idol picks change nothing. Turn Highlight on or use Match my picks.");
